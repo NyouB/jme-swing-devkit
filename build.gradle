@@ -1,0 +1,76 @@
+plugins {
+    id 'java'
+    id 'idea'
+    id 'application'
+    id 'maven-publish'
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+}
+
+java {
+    withSourcesJar()
+    withJavadocJar()
+}
+
+group 'com.jayfella'
+version '1.0.0'
+
+mainClassName = "com.jayfella.importer.Main"
+
+repositories {
+    jcenter()
+}
+
+project.ext {
+
+    version_jme = "3.3.2-stable"
+
+    version_log4j = "1.2.17"
+    version_slf4j = "1.7.25"
+
+    version_jackson = "2.10.3"
+}
+
+dependencies {
+
+    // darcula LAF
+    // https://github.com/weisJ/darklaf
+    implementation("com.github.weisj:darklaf-core:2.3.0")
+
+    // swing form building
+    implementation 'com.intellij:forms_rt:7.0.3'
+
+    // logging
+    implementation "log4j:log4j:$version_log4j"
+    implementation "org.slf4j:slf4j-api:$version_slf4j"
+    implementation "org.slf4j:jul-to-slf4j:$version_slf4j"
+    implementation "org.slf4j:slf4j-log4j12:$version_slf4j"
+
+    // jMonkey
+    implementation "org.jmonkeyengine:jme3-core:$version_jme"
+    implementation "org.jmonkeyengine:jme3-desktop:$version_jme"
+    implementation "org.jmonkeyengine:jme3-lwjgl:$version_jme"
+    implementation "org.jmonkeyengine:jme3-plugins:$version_jme"
+
+    // GLTF model importer
+    implementation ("com.simsilica:jmec:1.1.1") {
+        exclude group: "org.jmonkeyengine"
+    }
+
+    // Minie Physics
+    implementation 'com.github.stephengold:Minie:1.7.0'
+
+    // jackson - JSON
+    implementation "com.fasterxml.jackson.core:jackson-core:$version_jackson"
+    implementation "com.fasterxml.jackson.core:jackson-annotations:$version_jackson"
+    implementation "com.fasterxml.jackson.core:jackson-databind:$version_jackson"
+
+
+}
+
