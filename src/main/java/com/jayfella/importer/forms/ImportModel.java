@@ -12,6 +12,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
@@ -111,13 +113,47 @@ public class ImportModel {
                     return;
                 }
 
-                String resultFile = Paths.get(assetPathTextField.getText(), sourceModel.getName() + ".j3o").toString();
+                Path resultFile = Paths.get(
+                        DevKitConfig.getInstance().getProjectConfig().getAssetRootDir(),
+                        assetPathTextField.getText(),
+                        sourceModel.getName() + ".j3o");
+
+                Path extRemoved = Paths.get(
+                        DevKitConfig.getInstance().getProjectConfig().getAssetRootDir(),
+                        assetPathTextField.getText(),
+                        sourceModel.getName()
+                                .replace(".glb", "").replace(".GLB", "")
+                                .replace(".gltf", "").replace(".GLTF", "")
+                        + ".j3o"
+                );
+
+                try {
+                    Files.move(resultFile, extRemoved);
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+
+                    JOptionPane.showMessageDialog(frame,
+                            "An error occurred attempting to rename the model."
+                                    + System.lineSeparator()
+                                    + ex.getMessage()
+                                    + System.lineSeparator()
+                                    + System.lineSeparator()
+                                    + "The model appears to have still been imported."
+                            ,
+                            "Move error",
+                            ERROR_MESSAGE
+                    );
+
+                    return;
+                }
+
+                String result = extRemoved.toString().replace(DevKitConfig.getInstance().getProjectConfig().getAssetRootDir(), "");
 
                 // notify the user on the AWT Thread.
                 SwingUtilities.invokeLater(() -> {
 
                     JOptionPane.showMessageDialog(frame,
-                            "Model imported successfully to: " + resultFile,
+                            "Model imported successfully to: " + result,
                             "Imported Successfully",
                             JOptionPane.INFORMATION_MESSAGE);
 
