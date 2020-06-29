@@ -10,6 +10,7 @@ import com.jayfella.importer.tree.TreeConstants;
 import com.jayfella.importer.tree.spatial.SpatialTreeNode;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
+import com.jme3.light.PointLight;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 
@@ -111,6 +112,17 @@ public class SpatialContextMenu extends JPopupMenu {
         dirLight.addActionListener(e -> {
             DirectionalLight directionalLight = new DirectionalLight(new Vector3f(-1, -1, -1).normalizeLocal());
             ServiceManager.getService(SceneTreeService.class).addLight(directionalLight, spatialTreeNode);
+        });
+
+        JMenuItem pointLight = menu.add(new JMenuItem("Point"));
+        pointLight.addActionListener(e -> {
+
+            // This is a bit misleading because of multi-threading. I can't query the camera location on the AWT thread
+            // but I need to set its position to the camera position, so it will be set when it's attached - which will
+            // be on the JME thread.
+            PointLight light = new PointLight(new Vector3f(0, 0, 0), 10);
+            ServiceManager.getService(SceneTreeService.class).addLight(light, spatialTreeNode);
+
         });
 
         JMenuItem probeLight = menu.add(new JMenuItem("Generate LightProbe..."));

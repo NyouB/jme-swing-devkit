@@ -3,17 +3,11 @@ package com.jayfella.importer.service;
 import com.jayfella.importer.jme.SceneObjectHighlighterState;
 import com.jayfella.importer.tree.MeshTreeNode;
 import com.jayfella.importer.tree.SceneTreeMouseListener;
-import com.jayfella.importer.tree.light.AmbientLightTreeNode;
-import com.jayfella.importer.tree.light.DirectionalLightTreeNode;
-import com.jayfella.importer.tree.light.LightProbeTreeNode;
-import com.jayfella.importer.tree.light.LightTreeNode;
+import com.jayfella.importer.tree.light.*;
 import com.jayfella.importer.tree.spatial.GeometryTreeNode;
 import com.jayfella.importer.tree.spatial.NodeTreeNode;
 import com.jayfella.importer.tree.spatial.SpatialTreeNode;
-import com.jme3.light.AmbientLight;
-import com.jme3.light.DirectionalLight;
-import com.jme3.light.Light;
-import com.jme3.light.LightProbe;
+import com.jme3.light.*;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
@@ -208,8 +202,23 @@ public class SceneTreeService implements Service {
             // update the tree to reflect any changes made.
             reloadTree();
 
+            JmeEngineService engineService = ServiceManager.getService(JmeEngineService.class);
+
             // attach the light on the JME thread. The light no longer belongs to AWT at this point.
-            ServiceManager.getService(JmeEngineService.class).enqueue(() -> parentNode.getUserObject().addLight(light));
+            engineService.enqueue(() -> {
+
+                parentNode.getUserObject().addLight(light);
+
+                // Set the various configurations on the JME thread.
+                // For example a point light needs a position so we position it at the camera position.
+                // The camera is on the JME thread, so we can only set its position now (which is as early as possible)
+                // because this is the earliest time they are both on the same thread.
+
+                if (light instanceof PointLight) {
+                    ((PointLight) light).setPosition(engineService.getCamera().getLocation());
+                }
+
+            });
         }
 
     }
@@ -322,6 +331,9 @@ public class SceneTreeService implements Service {
         }
         else if (light instanceof LightProbe) {
             return new LightProbeTreeNode((LightProbe) light);
+        }
+        else if (light instanceof PointLight) {
+            return new PointLightTreeNode((PointLight) light);
         }
 
         log.warning("Unable to create LightTreeNode from object: " + light.getClass());
