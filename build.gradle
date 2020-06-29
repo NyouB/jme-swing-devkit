@@ -45,6 +45,10 @@ dependencies {
 
     // swing form building
     implementation 'com.intellij:forms_rt:7.0.3'
+    implementation 'org.swinglabs.swingx:swingx-core:1.6.5-1'
+
+    // reflection
+    compile "org.reflections:reflections:0.9.11"
 
     // logging
     implementation "log4j:log4j:$version_log4j"
