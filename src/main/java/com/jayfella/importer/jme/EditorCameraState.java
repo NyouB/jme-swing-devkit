@@ -27,6 +27,7 @@ public class EditorCameraState extends BaseAppState implements AnalogListener, A
     private final Quaternion camRotation = new Quaternion();
 
     // set when onDisable called, read when onEnable called.
+    // This is NOT the current location.
     private final Vector3f cameraLocation = new Vector3f(0, 1, -15);
 
     private float panSpeed = 10.0F;
@@ -286,6 +287,42 @@ public class EditorCameraState extends BaseAppState implements AnalogListener, A
     public void setRotation(Quaternion rotation) {
         this.camRotation.set(rotation);
         this.cam.setRotation(this.camRotation);
+    }
+
+    public void lookAt(Vector3f pos, Vector3f worldUpVector) {
+
+        Vector3f newDirection = new Vector3f();
+        Vector3f newUp = new Vector3f();
+        Vector3f newLeft = new Vector3f();
+
+        newDirection.set(pos).subtractLocal(cam.getLocation()).normalizeLocal();
+
+        newUp.set(worldUpVector).normalizeLocal();
+        if (newUp.equals(Vector3f.ZERO)) {
+            newUp.set(Vector3f.UNIT_Y);
+        }
+
+        newLeft.set(newUp).crossLocal(newDirection).normalizeLocal();
+        if (newLeft.equals(Vector3f.ZERO)) {
+            if (newDirection.x != 0) {
+                newLeft.set(newDirection.y, -newDirection.x, 0f);
+            } else {
+                newLeft.set(0f, newDirection.z, -newDirection.y);
+            }
+        }
+
+        newUp.set(newDirection).crossLocal(newLeft).normalizeLocal();
+
+        Quaternion rotation = new Quaternion().fromAxes(newLeft, newUp, newDirection);
+        // rotation.normalizeLocal();
+        //vars.release();
+
+        // setRotation(rotation);
+        float[] angles = rotation.toAngles(null);
+        setRotation(angles[0], angles[1], angles[2]);
+
+        // onFrameChange();
+
     }
 
     public void setLocation(Vector3f location) {

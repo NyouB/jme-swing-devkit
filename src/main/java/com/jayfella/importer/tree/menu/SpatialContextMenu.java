@@ -2,6 +2,7 @@ package com.jayfella.importer.tree.menu;
 
 import com.jayfella.importer.forms.GenerateLightProbeDialog;
 import com.jayfella.importer.forms.SaveSpatial;
+import com.jayfella.importer.jme.EditorCameraState;
 import com.jayfella.importer.service.JmeEngineService;
 import com.jayfella.importer.service.SceneTreeService;
 import com.jayfella.importer.service.ServiceManager;
@@ -28,6 +29,13 @@ public class SpatialContextMenu extends JPopupMenu {
 
         this.spatialTreeNode = spatialTreeNode;
         this.spatial = spatialTreeNode.getUserObject();
+
+        JMenuItem lookAtItem = add(new JMenuItem("Look at Spatial"));
+        lookAtItem.addActionListener(e -> {
+            JmeEngineService engineService = ServiceManager.getService(JmeEngineService.class);
+            // engineService.enqueue(() -> engineService.getCamera().lookAt(spatial.getWorldTranslation(), Vector3f.UNIT_Y));
+            engineService.getStateManager().getState(EditorCameraState.class).lookAt(spatial.getWorldTranslation(), Vector3f.UNIT_Y);
+        });
 
         addMenu = createAddMenu();
         add(addMenu);
