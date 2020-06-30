@@ -37,7 +37,7 @@ public class PropertyInspectorService implements Service {
     /**
      * Displays all attributes for a given object.
      * This method **must** be called from the AWT thread.
-     * @param
+     * @param propertySections The list of property sections to display.
      */
     public void inspect(java.util.List<PropertySection> propertySections) {
 
