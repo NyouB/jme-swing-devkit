@@ -94,7 +94,7 @@ public class SpatialComponentSetBuilder<T> extends AbstractComponentSetBuilder<S
             batchHint.setEnumValues(com.jme3.scene.Spatial.BatchHint.class);
             batchHint.setPropertyName("batchHint");
 
-            PropertySection spatialSection = new PropertySection("Spatial", /*name,*/ cullHint, shadowMode, queueBucket, batchHint);
+            PropertySection spatialSection = new PropertySection("Spatial", name, cullHint, shadowMode, queueBucket, batchHint);
             propertySections.add(spatialSection);
 
 
