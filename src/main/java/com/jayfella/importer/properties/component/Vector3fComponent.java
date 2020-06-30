@@ -133,7 +133,7 @@ public class Vector3fComponent extends SdkComponent {
      */
     private void $$$setupUI$$$() {
         contentPanel = new JPanel();
-        contentPanel.setLayout(new GridLayoutManager(5, 2, new Insets(0, 0, 20, 0), -1, -1));
+        contentPanel.setLayout(new GridLayoutManager(5, 2, new Insets(0, 0, 0, 0), -1, -1));
         propertyNameLabel = new JLabel();
         propertyNameLabel.setHorizontalAlignment(4);
         propertyNameLabel.setText("Vector3f");
@@ -158,6 +158,7 @@ public class Vector3fComponent extends SdkComponent {
     }
 
     /**
+     * @noinspection ALL
      */
     public JComponent $$$getRootComponent$$$() {
         return contentPanel;
