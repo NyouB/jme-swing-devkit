@@ -28,6 +28,7 @@ public class PropertyInspectorService implements Service {
     public void clearInspector() {
         rootPanel.remove(tabbedPane);
         rootPanel.add(nothingSelectedLabel, BorderLayout.CENTER);
+        rootPanel.repaint();
     }
 
     /**
@@ -59,9 +60,8 @@ public class PropertyInspectorService implements Service {
             clearInspector();
         }
 
-
-        rootPanel.repaint();
         rootPanel.revalidate();
+        rootPanel.repaint();
     }
 
     /**
