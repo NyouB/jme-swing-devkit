@@ -1,7 +1,5 @@
 package com.jayfella.importer;
 
-import com.github.weisj.darklaf.LafManager;
-import com.github.weisj.darklaf.theme.DarculaTheme;
 import com.jayfella.importer.config.DevKitConfig;
 import com.jayfella.importer.core.LogUtil;
 import com.jayfella.importer.forms.Configuration;
@@ -11,18 +9,17 @@ import com.jayfella.importer.forms.MainPage;
 import com.jayfella.importer.jme.AppStateUtils;
 import com.jayfella.importer.jme.CameraRotationWidgetState;
 import com.jayfella.importer.jme.DebugGridState;
-import com.jayfella.importer.service.JmeEngineService;
-import com.jayfella.importer.service.SceneTreeService;
-import com.jayfella.importer.service.ServiceManager;
-import com.jayfella.importer.service.WindowService;
+import com.jayfella.importer.service.*;
 import com.jayfella.importer.service.impl.JmeEngineServiceImpl;
 import com.jayfella.importer.swing.*;
 import com.jme3.app.StatsAppState;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.plugins.FileLocator;
 import org.apache.log4j.Level;
+import org.jdesktop.swingx.VerticalLayout;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -48,10 +45,8 @@ public class Main {
 
     public Main() {
 
-        // @TODO: let the user choose light/dark mode.
-        // LafManager.install(new IntelliJTheme()); // light
-        LafManager.install(new DarculaTheme()); // dark
-        // LafManager.reg
+        // set the theme.
+        SwingTheme.setTheme(DevKitConfig.getInstance().getSdkConfig().getTheme());
 
         ServiceManager.registerService(JmeEngineServiceImpl.class);
         ServiceManager.registerService(WindowService.class);
@@ -87,6 +82,7 @@ public class Main {
             });
 
             initializeTreeView(new JTree());
+            initializeInspectorService();
 
             JMenuBar menu = createMenu();
             frame.add(menu, BorderLayout.NORTH);
@@ -269,7 +265,6 @@ public class Main {
         treeViewFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         treeViewFrame.pack();
 
-
         ServiceManager.getService(WindowService.class).positionWindowFromSavedPosition(treeViewFrame, SceneTreeService.WINDOW_ID);
         ServiceManager.getService(WindowService.class).sizeWindowFromSavedSize(treeViewFrame, SceneTreeService.WINDOW_ID);
 
@@ -280,6 +275,33 @@ public class Main {
         treeViewFrame.setVisible(true);
 
         ServiceManager.registerService(SceneTreeService.class, tree);
+
+    }
+
+    private void initializeInspectorService() {
+
+        JPanel panelRoot = new JPanel(new VerticalLayout());
+        panelRoot.setBorder(new EmptyBorder(10, 10, 10, 10));
+
+        // We don't want the tabbed panel to scroll, we want the contents of the tab to scroll.
+        // Remove the scrollpane from here and add a scrollpane to each PropertySection.
+
+        JFrame frame = new JFrame("Property Inspector");
+        frame.setContentPane(new JScrollPane(panelRoot));
+        // frame.setContentPane(panelRoot);
+        frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+
+
+        ServiceManager.getService(WindowService.class).positionWindowFromSavedPosition(frame, PropertyInspectorService.WINDOW_ID);
+        ServiceManager.getService(WindowService.class).sizeWindowFromSavedSize(frame, PropertyInspectorService.WINDOW_ID);
+
+        frame.addWindowListener(new WindowServiceListener());
+        frame.addComponentListener(new WindowLocationSaver(PropertyInspectorService.WINDOW_ID));
+        frame.addComponentListener(new WindowSizeSaver(PropertyInspectorService.WINDOW_ID));
+
+        frame.setVisible(true);
+
+        ServiceManager.registerService(PropertyInspectorService.class, panelRoot);
 
     }
 
