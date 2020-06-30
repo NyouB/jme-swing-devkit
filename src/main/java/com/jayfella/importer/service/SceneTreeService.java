@@ -1,8 +1,6 @@
 package com.jayfella.importer.service;
 
 import com.jayfella.importer.jme.SceneObjectHighlighterState;
-import com.jayfella.importer.properties.PropertySection;
-import com.jayfella.importer.properties.builder.SpatialComponentSetBuilder;
 import com.jayfella.importer.tree.MeshTreeNode;
 import com.jayfella.importer.tree.SceneTreeMouseListener;
 import com.jayfella.importer.tree.light.*;
@@ -19,7 +17,6 @@ import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
-import java.util.List;
 import java.util.logging.Logger;
 
 import static com.jayfella.importer.tree.TreeConstants.UNDELETABLE_FLAG;
@@ -109,15 +106,7 @@ public class SceneTreeService implements Service {
                 DefaultMutableTreeNode lastSelectedTreeNode = (DefaultMutableTreeNode) paths[paths.length - 1].getLastPathComponent();
 
                 if (lastSelectedTreeNode.getUserObject() instanceof Spatial) {
-
-                    Spatial spatial = (Spatial) lastSelectedTreeNode.getUserObject();
-                    SpatialComponentSetBuilder<Spatial> componentSetBuilder = new SpatialComponentSetBuilder<>();
-                    componentSetBuilder.setObject(spatial);
-
-                    List<PropertySection> propertySections = componentSetBuilder.build();
-
-                    ServiceManager.getService(PropertyInspectorService.class).inspect(propertySections);
-
+                    ServiceManager.getService(PropertyInspectorService.class).inspect(lastSelectedTreeNode.getUserObject());
                 }
 
                 // highlighting
