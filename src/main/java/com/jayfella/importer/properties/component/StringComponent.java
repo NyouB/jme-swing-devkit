@@ -116,7 +116,6 @@ public class StringComponent extends SdkComponent {
     }
 
     /**
-     * @noinspection ALL
      */
     public JComponent $$$getRootComponent$$$() {
         return contentPanel;

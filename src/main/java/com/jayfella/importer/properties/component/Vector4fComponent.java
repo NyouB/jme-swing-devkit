@@ -171,7 +171,6 @@ public class Vector4fComponent extends SdkComponent {
     }
 
     /**
-     * @noinspection ALL
      */
     public JComponent $$$getRootComponent$$$() {
         return contentPanel;

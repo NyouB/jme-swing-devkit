@@ -248,7 +248,6 @@ public class MaterialComponent extends SdkComponent {
      * >>> IMPORTANT!! <<<
      * DO NOT edit this method OR call it in your code!
      *
-     * @noinspection ALL
      */
     private void $$$setupUI$$$() {
         contentPanel = new JPanel();
@@ -256,7 +255,6 @@ public class MaterialComponent extends SdkComponent {
     }
 
     /**
-     * @noinspection ALL
      */
     public JComponent $$$getRootComponent$$$() {
         return contentPanel;

@@ -123,7 +123,6 @@ public class IntegerComponent extends SdkComponent {
     }
 
     /**
-     * @noinspection ALL
      */
     public JComponent $$$getRootComponent$$$() {
         return contentPanel;
