@@ -1,6 +1,7 @@
 package com.jayfella.importer.config;
 
 import com.jayfella.importer.forms.MainPage;
+import com.jayfella.importer.service.PropertyInspectorService;
 import com.jayfella.importer.service.SceneTreeService;
 
 import java.awt.*;
@@ -9,14 +10,10 @@ import java.util.HashMap;
 
 public class SdkConfig {
 
+    private String theme = "com.github.weisj.darklaf.theme.DarculaTheme";
+
     private HashMap<String, Dimension> windowDimensions = new HashMap<>();
     private HashMap<String, Point> windowLocations = new HashMap<>();
-
-    // private int[] mainWindowSize = new int[] { 800, 600 }; // the size of the main window.
-    // private int[] mainWindowLocation = new int[] { -1, -1 }; // the starting location of the window.
-
-    // private int[] treeWindowSize = new int[] { 250, 600 }; // the size of the main window.
-    // private int[] treeWindowLocation = new int[] { 0, 0 }; // the starting location of the window.
 
     private boolean showCamRotationWidget = true;
     private boolean showDebugLightsWindow = false;
@@ -24,13 +21,27 @@ public class SdkConfig {
     public SdkConfig() {
 
         // default values
+
+        // Dimensions
         windowDimensions.putIfAbsent(MainPage.WINDOW_ID, new Dimension(800, 600));
         windowDimensions.putIfAbsent(SceneTreeService.WINDOW_ID, new Dimension(250, 600));
+        windowDimensions.putIfAbsent(PropertyInspectorService.WINDOW_ID, new Dimension(250, 600));
+
+        // Locations
+        // The main window will be placed in the center of the screen..
 
         // put the scene tree in the top left if there is no value.
-        // since the main window has none set, it will be put in the center of the screen.
         windowLocations.putIfAbsent(SceneTreeService.WINDOW_ID, new Point(0, 0));
+
+        // put the propertyInspector in the top-right if there is no value.
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int xPropInspector = (int) (screenSize.getWidth() - 250);
+
+        windowLocations.putIfAbsent(PropertyInspectorService.WINDOW_ID, new Point(xPropInspector, 0));
     }
+
+    public String getTheme() { return theme; }
+    public void setTheme(String theme) { this.theme = theme; }
 
     public HashMap<String, Dimension> getWindowDimensions() { return windowDimensions; }
     public void setWindowDimensions(HashMap<String, Dimension> windowDimensions) { this.windowDimensions = windowDimensions; }
