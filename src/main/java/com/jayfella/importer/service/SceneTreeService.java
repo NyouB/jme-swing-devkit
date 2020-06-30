@@ -105,9 +105,7 @@ public class SceneTreeService implements Service {
                 // We can only inspect one thing at a time, so choose the last selected object.
                 DefaultMutableTreeNode lastSelectedTreeNode = (DefaultMutableTreeNode) paths[paths.length - 1].getLastPathComponent();
 
-                if (lastSelectedTreeNode.getUserObject() instanceof Spatial) {
-                    ServiceManager.getService(PropertyInspectorService.class).inspect(lastSelectedTreeNode.getUserObject());
-                }
+                ServiceManager.getService(PropertyInspectorService.class).inspect(lastSelectedTreeNode.getUserObject());
 
                 // highlighting
                 for (TreePath path : paths) {
