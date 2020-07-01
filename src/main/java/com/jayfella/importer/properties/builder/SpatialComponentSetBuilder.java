@@ -10,19 +10,15 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
 public class SpatialComponentSetBuilder<T> extends AbstractComponentSetBuilder<Spatial> {
 
-    private Spatial object;
-    private String[] ignoredProperties = new String[0];
-
-    @Override
-    public void setObject(Spatial object, String... ignoredProperties) {
-        this.object = object;
-        this.ignoredProperties = ignoredProperties;
+    public SpatialComponentSetBuilder(Spatial object, String... ignoredProperties) {
+        super(object, ignoredProperties);
     }
 
     @Override
@@ -129,29 +125,20 @@ public class SpatialComponentSetBuilder<T> extends AbstractComponentSetBuilder<S
 
                 // Material
                 getter = object.getClass().getMethod("getMaterial");
-                setter = object.getClass().getMethod("setMaterial", Material.class);
+                Material material = null;
 
-                MaterialComponent materialComponent = new MaterialComponent(object, getter, setter);
+                try {
+                    material = (Material) getter.invoke(object);
+                }
+                catch (IllegalAccessException | InvocationTargetException e) {
+                    e.printStackTrace();
+                }
 
-                PropertySection materialSection = new PropertySection("Material", materialComponent);
-                propertySections.add(materialSection);
-
-                // Additional Render State
-                // move it from here to the material titledpane.
-                // that way when the material gets updated, the renderstate does too.
-                /*
-                Geometry geometry = (Geometry) object;
-                Material material = geometry.getMaterial();
-
-                ReflectedComponentBuilder<RenderState> renderStateBuilder = new ReflectedComponentBuilder<>();
-                renderStateBuilder.setObject(material.getAdditionalRenderState());
-
-                List<Component> renderStateComponents = renderStateBuilder.build();
-
-                TitledPane renderStatePane = createTitledPane("AdditionalRenderState", renderStateComponents);
-                titledPanes.add(renderStatePane);
-
-                 */
+                if (material != null) {
+                    MaterialComponentSetBuilder materialComponentSetBuilder = new MaterialComponentSetBuilder(material);
+                    List<PropertySection> sections = materialComponentSetBuilder.build();
+                    propertySections.addAll(sections);
+                }
 
             } catch (NoSuchMethodException e) {
                 e.printStackTrace();
