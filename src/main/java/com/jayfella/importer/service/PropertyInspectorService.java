@@ -52,7 +52,7 @@ public class PropertyInspectorService implements Service {
                     panel.add(component.getJComponent());
                 }
 
-                tabbedPane.addTab(section.getTitle(), null, panel);
+                tabbedPane.addTab(section.getTitle(), section.getIcon(), panel);
             }
 
         }
@@ -74,8 +74,7 @@ public class PropertyInspectorService implements Service {
         if (object instanceof Spatial) {
 
             Spatial spatial = (Spatial) object;
-            SpatialComponentSetBuilder<Spatial> componentSetBuilder = new SpatialComponentSetBuilder<>();
-            componentSetBuilder.setObject(spatial);
+            SpatialComponentSetBuilder<Spatial> componentSetBuilder = new SpatialComponentSetBuilder<>(spatial);
 
             List<PropertySection> propertySections = componentSetBuilder.build();
             ServiceManager.getService(PropertyInspectorService.class).displaySections(propertySections);
