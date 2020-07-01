@@ -18,7 +18,7 @@ public class PropertyInspectorService implements Service {
     private final JPanel rootPanel;
     private final JTabbedPane tabbedPane = new JTabbedPane();
 
-    private JLabel nothingSelectedLabel = new JLabel("Nothing To Inspect.");
+    private final JLabel nothingSelectedLabel = new JLabel("Nothing To Inspect.");
 
     public PropertyInspectorService(JPanel rootPanel) {
         this.rootPanel = rootPanel;
