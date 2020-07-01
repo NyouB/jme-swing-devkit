@@ -50,6 +50,7 @@ public class Main {
 
         ServiceManager.registerService(JmeEngineServiceImpl.class);
         ServiceManager.registerService(WindowService.class);
+        ServiceManager.registerService(ComponentRegistrationService.class);
 
         JmeEngineService engineService = ServiceManager.getService(JmeEngineService.class);
 
