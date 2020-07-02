@@ -9,6 +9,7 @@ import com.jayfella.importer.swing.WindowServiceListener;
 import com.jayfella.importer.tree.spatial.NodeTreeNode;
 import com.jme3.material.Material;
 import com.jme3.material.Materials;
+import com.jme3.scene.BatchNode;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
@@ -78,6 +79,27 @@ public class NodeContextMenu extends SpatialContextMenu {
         // Add -> InstancedNode
         JMenuItem addInstancedNodeItem = getAddMenu().add(new JMenuItem("Instanced Node"));
         addInstancedNodeItem.addActionListener(e -> ServiceManager.getService(SceneTreeService.class).addSpatial(new InstancedNode(), nodeTreeNode));
+
+        // Add -> AssetLinkNode
+//        JMenuItem addLinkNodeItem = getAddMenu().add(new JMenuItem("AssetLink Node"));
+//        addLinkNodeItem.addActionListener(e -> {
+//
+//            AddAssetLinkNode addAssetLinkNode = new AddAssetLinkNode(nodeTreeNode);
+//
+//            JFrame frame = new JFrame("Add Asset Link Node");
+//            frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+//            frame.setContentPane(addAssetLinkNode.$$$getRootComponent$$$());
+//            frame.addWindowListener(new WindowServiceListener());
+//            frame.pack();
+//            frame.setLocationRelativeTo(null);
+//            frame.setVisible(true);
+//
+//        });
+
+        // Add -> BatchNode
+        JMenuItem batchNodeItem = getAddMenu().add(new JMenuItem("Batch Node"));
+        batchNodeItem.addActionListener(e -> ServiceManager.getService(SceneTreeService.class).addSpatial(new BatchNode(), nodeTreeNode));
+
     }
 
     private void addShapes(JMenu parent) {

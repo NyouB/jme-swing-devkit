@@ -4,14 +4,12 @@ import com.jayfella.importer.jme.SceneObjectHighlighterState;
 import com.jayfella.importer.tree.MeshTreeNode;
 import com.jayfella.importer.tree.SceneTreeMouseListener;
 import com.jayfella.importer.tree.light.*;
+import com.jayfella.importer.tree.spatial.BatchNodeTreeNode;
 import com.jayfella.importer.tree.spatial.GeometryTreeNode;
 import com.jayfella.importer.tree.spatial.NodeTreeNode;
 import com.jayfella.importer.tree.spatial.SpatialTreeNode;
 import com.jme3.light.*;
-import com.jme3.scene.Geometry;
-import com.jme3.scene.Mesh;
-import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
+import com.jme3.scene.*;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -317,7 +315,10 @@ public class SceneTreeService implements Service {
      */
     private SpatialTreeNode createSpatialTreeNodeFrom(Spatial spatial) {
 
-        if (spatial instanceof Node) {
+        if (spatial instanceof BatchNode) {
+            return new BatchNodeTreeNode((BatchNode) spatial);
+        }
+        else if (spatial instanceof Node) {
             return new NodeTreeNode( (Node) spatial );
         }
         else if (spatial instanceof Geometry) {
