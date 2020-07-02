@@ -1,5 +1,6 @@
 package com.jayfella.importer.tree.menu;
 
+import com.jayfella.importer.forms.AddAssetLinkNode;
 import com.jayfella.importer.forms.AddModels;
 import com.jayfella.importer.forms.CreateSkyBoxDialog;
 import com.jayfella.importer.service.JmeEngineService;
@@ -81,20 +82,20 @@ public class NodeContextMenu extends SpatialContextMenu {
         addInstancedNodeItem.addActionListener(e -> ServiceManager.getService(SceneTreeService.class).addSpatial(new InstancedNode(), nodeTreeNode));
 
         // Add -> AssetLinkNode
-//        JMenuItem addLinkNodeItem = getAddMenu().add(new JMenuItem("AssetLink Node"));
-//        addLinkNodeItem.addActionListener(e -> {
-//
-//            AddAssetLinkNode addAssetLinkNode = new AddAssetLinkNode(nodeTreeNode);
-//
-//            JFrame frame = new JFrame("Add Asset Link Node");
-//            frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-//            frame.setContentPane(addAssetLinkNode.$$$getRootComponent$$$());
-//            frame.addWindowListener(new WindowServiceListener());
-//            frame.pack();
-//            frame.setLocationRelativeTo(null);
-//            frame.setVisible(true);
-//
-//        });
+        JMenuItem addLinkNodeItem = getAddMenu().add(new JMenuItem("AssetLink Node"));
+        addLinkNodeItem.addActionListener(e -> {
+
+            AddAssetLinkNode addAssetLinkNode = new AddAssetLinkNode(nodeTreeNode);
+
+            JFrame frame = new JFrame("Add Asset Link Node");
+            frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+            frame.setContentPane(addAssetLinkNode.$$$getRootComponent$$$());
+            frame.addWindowListener(new WindowServiceListener());
+            frame.pack();
+            frame.setLocationRelativeTo(null);
+            frame.setVisible(true);
+
+        });
 
         // Add -> BatchNode
         JMenuItem batchNodeItem = getAddMenu().add(new JMenuItem("Batch Node"));
