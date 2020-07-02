@@ -12,6 +12,7 @@ import com.jme3.material.Materials;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
+import com.jme3.scene.instancing.InstancedNode;
 import com.jme3.scene.shape.Cylinder;
 import com.jme3.scene.shape.Dome;
 import com.jme3.scene.shape.Quad;
@@ -73,6 +74,10 @@ public class NodeContextMenu extends SpatialContextMenu {
         JMenuItem addNodeItem = getAddMenu().add(new JMenuItem("Node"));
         addNodeItem.addActionListener(e -> ServiceManager.getService(SceneTreeService.class).addSpatial(new Node(), nodeTreeNode));
         addNodeItem.setMnemonic('N');
+
+        // Add -> InstancedNode
+        JMenuItem addInstancedNodeItem = getAddMenu().add(new JMenuItem("Instanced Node"));
+        addInstancedNodeItem.addActionListener(e -> ServiceManager.getService(SceneTreeService.class).addSpatial(new InstancedNode(), nodeTreeNode));
     }
 
     private void addShapes(JMenu parent) {
