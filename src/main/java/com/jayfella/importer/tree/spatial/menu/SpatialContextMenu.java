@@ -18,7 +18,7 @@ import com.jme3.scene.Spatial;
 import javax.swing.*;
 import java.awt.*;
 
-public class SpatialContextMenu extends JPopupMenu {
+public abstract class SpatialContextMenu extends JPopupMenu {
 
     private final Spatial spatial;
     SpatialTreeNode spatialTreeNode;
