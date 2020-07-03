@@ -1,4 +1,4 @@
-package com.jayfella.importer.tree;
+package com.jayfella.importer.tree.spatial;
 
 import com.jme3.scene.Mesh;
 
