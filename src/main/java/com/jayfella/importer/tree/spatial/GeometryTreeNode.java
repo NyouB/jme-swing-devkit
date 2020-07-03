@@ -1,6 +1,6 @@
 package com.jayfella.importer.tree.spatial;
 
-import com.jayfella.importer.tree.menu.GeometryContextMenu;
+import com.jayfella.importer.tree.spatial.menu.GeometryContextMenu;
 import com.jme3.scene.Geometry;
 
 import javax.swing.*;

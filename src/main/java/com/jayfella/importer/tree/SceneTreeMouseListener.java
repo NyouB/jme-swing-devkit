@@ -1,7 +1,5 @@
 package com.jayfella.importer.tree;
 
-import com.jayfella.importer.tree.menu.TreeContextMenu;
-
 import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;

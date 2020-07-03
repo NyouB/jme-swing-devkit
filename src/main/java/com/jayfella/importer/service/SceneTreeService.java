@@ -11,6 +11,7 @@ import com.jme3.scene.*;
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import java.util.logging.Logger;
 
@@ -178,7 +179,7 @@ public class SceneTreeService implements Service {
             traverseSceneGraph(newNode);
 
             // update the tree to reflect any changes made.
-            reloadTree();
+            reloadTreeNode(parentNode);
 
             // attach the spatial on the JME thread. The spatial no longer belongs to AWT at this point.
             ServiceManager.getService(JmeEngineService.class).enqueue(() -> {
@@ -203,7 +204,7 @@ public class SceneTreeService implements Service {
             parentNode.add(newNode);
 
             // update the tree to reflect any changes made.
-            reloadTree();
+            reloadTreeNode(parentNode);
 
             JmeEngineService engineService = ServiceManager.getService(JmeEngineService.class);
 
@@ -242,7 +243,8 @@ public class SceneTreeService implements Service {
             spatial.removeFromParent();
 
             // reload the tree to reflect the changes made.
-            SwingUtilities.invokeLater(this::reloadTree);
+            // SwingUtilities.invokeLater(this::reloadTree);
+            SwingUtilities.invokeLater(() -> reloadTreeNode(spatialTreeNode.getParent()));
 
         });
 
@@ -267,7 +269,8 @@ public class SceneTreeService implements Service {
             parentNode.removeLight(light);
 
             // reload the tree to reflect the changes made.
-            SwingUtilities.invokeLater(this::reloadTree);
+            // SwingUtilities.invokeLater(this::reloadTree);
+            SwingUtilities.invokeLater(() -> reloadTreeNode(parent));
 
         });
 
@@ -356,6 +359,11 @@ public class SceneTreeService implements Service {
     public void reloadTree() {
         DefaultTreeModel treeModel = (DefaultTreeModel) tree.getModel();
         treeModel.reload();
+    }
+
+    public void reloadTreeNode(TreeNode treeNode) {
+        DefaultTreeModel treeModel = (DefaultTreeModel) tree.getModel();
+        treeModel.reload(treeNode);
     }
 
     @Override

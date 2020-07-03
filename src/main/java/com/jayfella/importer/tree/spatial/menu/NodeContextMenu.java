@@ -1,6 +1,5 @@
 package com.jayfella.importer.tree.spatial.menu;
 
-import com.jayfella.importer.forms.AddAssetLinkNode;
 import com.jayfella.importer.forms.AddModels;
 import com.jayfella.importer.forms.CreateSkyBoxDialog;
 import com.jayfella.importer.service.JmeEngineService;
@@ -10,10 +9,7 @@ import com.jayfella.importer.swing.WindowServiceListener;
 import com.jayfella.importer.tree.spatial.NodeTreeNode;
 import com.jme3.material.Material;
 import com.jme3.material.Materials;
-import com.jme3.scene.BatchNode;
-import com.jme3.scene.Geometry;
-import com.jme3.scene.Mesh;
-import com.jme3.scene.Node;
+import com.jme3.scene.*;
 import com.jme3.scene.instancing.InstancedNode;
 import com.jme3.scene.shape.Cylinder;
 import com.jme3.scene.shape.Dome;
@@ -85,15 +81,18 @@ public class NodeContextMenu extends SpatialContextMenu {
         JMenuItem addLinkNodeItem = getAddMenu().add(new JMenuItem("AssetLink Node"));
         addLinkNodeItem.addActionListener(e -> {
 
-            AddAssetLinkNode addAssetLinkNode = new AddAssetLinkNode(nodeTreeNode);
+//            AddAssetLinkNode addAssetLinkNode = new AddAssetLinkNode(nodeTreeNode);
+//
+//            JFrame frame = new JFrame("Add Asset Link Node");
+//            frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+//            frame.setContentPane(addAssetLinkNode.$$$getRootComponent$$$());
+//            frame.addWindowListener(new WindowServiceListener());
+//            frame.pack();
+//            frame.setLocationRelativeTo(null);
+//            frame.setVisible(true);
 
-            JFrame frame = new JFrame("Add Asset Link Node");
-            frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-            frame.setContentPane(addAssetLinkNode.$$$getRootComponent$$$());
-            frame.addWindowListener(new WindowServiceListener());
-            frame.pack();
-            frame.setLocationRelativeTo(null);
-            frame.setVisible(true);
+            // Just add an AssetLinkNode and provide a context menu to add linked assets.
+            ServiceManager.getService(SceneTreeService.class).addSpatial(new AssetLinkNode(), nodeTreeNode);
 
         });
 
