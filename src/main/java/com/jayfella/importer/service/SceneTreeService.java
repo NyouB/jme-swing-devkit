@@ -7,6 +7,7 @@ import com.jayfella.importer.tree.light.*;
 import com.jayfella.importer.tree.spatial.*;
 import com.jme3.light.*;
 import com.jme3.scene.*;
+import com.jme3.scene.instancing.InstancedNode;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -320,6 +321,9 @@ public class SceneTreeService implements Service {
         }
         else if (spatial instanceof BatchNode) {
             return new BatchNodeTreeNode( (BatchNode) spatial );
+        }
+        else if (spatial instanceof InstancedNode) {
+            return new InstancedNodeTreeNode( (InstancedNode) spatial );
         }
         else if (spatial instanceof Node) {
             return new NodeTreeNode( (Node) spatial );
