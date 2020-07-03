@@ -1,6 +1,7 @@
 package com.jayfella.importer.tree.spatial.menu;
 
 import com.jayfella.importer.service.JmeEngineService;
+import com.jayfella.importer.service.SceneTreeService;
 import com.jayfella.importer.service.ServiceManager;
 import com.jayfella.importer.tree.spatial.BatchNodeTreeNode;
 
@@ -15,7 +16,10 @@ public class BatchNodeContextMenu extends NodeContextMenu {
         add(new JSeparator());
 
         JMenuItem batchItem = add(new JMenuItem("Batch"));
-        batchItem.addActionListener(e -> ServiceManager.getService(JmeEngineService.class).enqueue(() -> nodeTreeNode.getUserObject().batch()));
+        batchItem.addActionListener(e -> ServiceManager.getService(JmeEngineService.class).enqueue(() -> {
+            nodeTreeNode.getUserObject().batch();
+            ServiceManager.getService(SceneTreeService.class).reloadTreeNode(nodeTreeNode);
+        }));
 
     }
 
