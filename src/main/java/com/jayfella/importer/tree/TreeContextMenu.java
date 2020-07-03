@@ -1,4 +1,4 @@
-package com.jayfella.importer.tree.menu;
+package com.jayfella.importer.tree;
 
 import javax.swing.*;
 

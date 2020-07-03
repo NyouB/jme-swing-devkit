@@ -1,6 +1,6 @@
 package com.jayfella.importer.tree.light;
 
-import com.jayfella.importer.tree.menu.AmbientLightContextMenu;
+import com.jayfella.importer.tree.light.menu.AmbientLightContextMenu;
 import com.jme3.light.AmbientLight;
 
 import javax.swing.*;

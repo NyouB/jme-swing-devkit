@@ -1,6 +1,6 @@
 package com.jayfella.importer.tree.light;
 
-import com.jayfella.importer.tree.menu.TreeContextMenu;
+import com.jayfella.importer.tree.TreeContextMenu;
 import com.jme3.light.Light;
 
 import javax.swing.tree.DefaultMutableTreeNode;

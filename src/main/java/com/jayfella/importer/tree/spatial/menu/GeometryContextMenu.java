@@ -1,4 +1,4 @@
-package com.jayfella.importer.tree.menu;
+package com.jayfella.importer.tree.spatial.menu;
 
 import com.jayfella.importer.tree.spatial.GeometryTreeNode;
 

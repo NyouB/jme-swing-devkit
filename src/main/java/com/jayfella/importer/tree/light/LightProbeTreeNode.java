@@ -1,6 +1,6 @@
 package com.jayfella.importer.tree.light;
 
-import com.jayfella.importer.tree.menu.LightProbeContextMenu;
+import com.jayfella.importer.tree.light.menu.LightProbeContextMenu;
 import com.jme3.light.LightProbe;
 
 import javax.swing.*;

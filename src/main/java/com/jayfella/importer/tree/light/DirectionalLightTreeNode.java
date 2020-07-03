@@ -1,6 +1,6 @@
 package com.jayfella.importer.tree.light;
 
-import com.jayfella.importer.tree.menu.DirectionalLightContextMenu;
+import com.jayfella.importer.tree.light.menu.DirectionalLightContextMenu;
 import com.jme3.light.DirectionalLight;
 
 import javax.swing.*;
