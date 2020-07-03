@@ -6,8 +6,10 @@ import com.jayfella.importer.tree.SceneTreeMouseListener;
 import com.jayfella.importer.tree.light.*;
 import com.jayfella.importer.tree.spatial.*;
 import com.jme3.light.*;
+import com.jme3.material.Material;
 import com.jme3.scene.*;
 import com.jme3.scene.instancing.InstancedNode;
+import com.jme3.shader.VarType;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -16,6 +18,7 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import java.util.logging.Logger;
 
+import static com.jayfella.importer.tree.TreeConstants.TREE_ROOT;
 import static com.jayfella.importer.tree.TreeConstants.UNDELETABLE_FLAG;
 
 /**
@@ -61,9 +64,13 @@ public class SceneTreeService implements Service {
             guiNode = new Node("Gui Node");
             rootNode = new Node("Root Node");
 
-            // put some arbitrary data in the "root" nodes so we can reject deleting them.
+            // put the "not deletable" in the "root" nodes so we can reject deleting them.
             guiNode.setUserData(UNDELETABLE_FLAG, UNDELETABLE_FLAG);
             rootNode.setUserData(UNDELETABLE_FLAG, UNDELETABLE_FLAG);
+
+            // put the "root node" flag in the "root" nodes so we know when we've hit our fake nodes.
+            rootNode.setUserData(TREE_ROOT, TREE_ROOT);
+            guiNode.setUserData(TREE_ROOT, TREE_ROOT);
 
             // Attach them in the JME thread.
             engineService.getGuiNode().attachChild(guiNode);
@@ -174,17 +181,53 @@ public class SceneTreeService implements Service {
 
         if (newNode != null) {
 
+            // add the node to the tree.
             parentNode.add(newNode);
 
             // the spatial is still on the AWT thread at this point, so we are safe to traverse it.
+            // this traverses the object and adds any children to the scene tree.
             traverseSceneGraph(newNode);
 
             // update the tree to reflect any changes made.
             reloadTreeNode(parentNode);
 
-            // attach the spatial on the JME thread. The spatial no longer belongs to AWT at this point.
-            ServiceManager.getService(JmeEngineService.class).enqueue(() -> {
+            // traverse all the way back to beginning to check if this a child of an instancedNode.
+            // if it is we need to set "UseInsancing" to "true" before we add it.
+            // the parent will be in the scene already, so we need to touch it in the JME thread.
+            JmeEngineService engineService = ServiceManager.getService(JmeEngineService.class);
+
+            engineService.enqueue(() -> {
+
+                Spatial parent = parentNode.getUserObject();
+
+                boolean isInstancedNode = false;
+
+                while (!isInstancedNode && parent != null) {
+                    isInstancedNode = parent instanceof InstancedNode;
+                    parent = parent.getParent();
+                }
+
+                if (isInstancedNode) {
+
+                    SceneGraphVisitorAdapter adapter = new SceneGraphVisitorAdapter() {
+
+                        @Override
+                        public void visit(Geometry geom) {
+
+                            Material material = geom.getMaterial();
+                            material.getMaterialDef().addMaterialParam(VarType.Boolean, "UseInstancing", true);
+                            material.setBoolean("UseInstancing", true);
+
+                        }
+
+                    };
+
+                    spatial.breadthFirstTraversal(adapter);
+                }
+
+                // attach the spatial on the JME thread. The spatial no longer belongs to AWT at this point.
                 parentNode.getUserObject().attachChild(spatial);
+
             });
 
         }

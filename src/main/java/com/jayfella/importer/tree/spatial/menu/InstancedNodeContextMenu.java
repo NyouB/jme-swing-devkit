@@ -14,7 +14,21 @@ public class InstancedNodeContextMenu extends NodeContextMenu {
 
         JMenuItem instanceItem = add(new JMenuItem("Instance Items"));
         instanceItem.addActionListener(e -> {
-            ServiceManager.getService(JmeEngineService.class).enqueue(() -> instancedNodeTreeNode.getUserObject().instance());
+            ServiceManager.getService(JmeEngineService.class).enqueue(() -> {
+
+                try {
+                    instancedNodeTreeNode.getUserObject().instance();
+                }
+                catch (IllegalStateException ex) {
+
+                    JOptionPane.showMessageDialog(null,
+                            ex.getMessage(),
+                            "Instancing Error",
+                            JOptionPane.ERROR_MESSAGE);
+
+                }
+
+            });
         });
 
     }

@@ -75,21 +75,11 @@ public class NodeContextMenu extends SpatialContextMenu {
 
         // Add -> InstancedNode
         JMenuItem addInstancedNodeItem = getAddMenu().add(new JMenuItem("Instanced Node"));
-        addInstancedNodeItem.addActionListener(e -> ServiceManager.getService(SceneTreeService.class).addSpatial(new InstancedNode(), nodeTreeNode));
+        addInstancedNodeItem.addActionListener(e -> ServiceManager.getService(SceneTreeService.class).addSpatial(new InstancedNode("No Name"), nodeTreeNode));
 
         // Add -> AssetLinkNode
         JMenuItem addLinkNodeItem = getAddMenu().add(new JMenuItem("AssetLink Node"));
         addLinkNodeItem.addActionListener(e -> {
-
-//            AddAssetLinkNode addAssetLinkNode = new AddAssetLinkNode(nodeTreeNode);
-//
-//            JFrame frame = new JFrame("Add Asset Link Node");
-//            frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-//            frame.setContentPane(addAssetLinkNode.$$$getRootComponent$$$());
-//            frame.addWindowListener(new WindowServiceListener());
-//            frame.pack();
-//            frame.setLocationRelativeTo(null);
-//            frame.setVisible(true);
 
             // Just add an AssetLinkNode and provide a context menu to add linked assets.
             ServiceManager.getService(SceneTreeService.class).addSpatial(new AssetLinkNode(), nodeTreeNode);
