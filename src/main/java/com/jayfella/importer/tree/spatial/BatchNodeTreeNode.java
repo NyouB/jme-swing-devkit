@@ -1,6 +1,6 @@
 package com.jayfella.importer.tree.spatial;
 
-import com.jayfella.importer.tree.menu.BatchNodeContextMenu;
+import com.jayfella.importer.tree.spatial.menu.BatchNodeContextMenu;
 import com.jme3.scene.BatchNode;
 
 import javax.swing.*;

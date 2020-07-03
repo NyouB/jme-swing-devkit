@@ -1,4 +1,4 @@
-package com.jayfella.importer.tree.menu;
+package com.jayfella.importer.tree.light.menu;
 
 import com.jayfella.importer.tree.light.PointLightTreeNode;
 
