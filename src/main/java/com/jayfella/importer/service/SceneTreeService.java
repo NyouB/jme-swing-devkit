@@ -235,6 +235,8 @@ public class SceneTreeService implements Service {
      */
     public void removeTreeNode(SpatialTreeNode spatialTreeNode) {
 
+        // get a reference of the parent before we remove it.
+        TreeNode treeParent = spatialTreeNode.getParent();
         spatialTreeNode.removeFromParent();
 
         ServiceManager.getService(JmeEngineService.class).enqueue(() -> {
@@ -242,9 +244,7 @@ public class SceneTreeService implements Service {
             Spatial spatial = spatialTreeNode.getUserObject();
             spatial.removeFromParent();
 
-            // reload the tree to reflect the changes made.
-            // SwingUtilities.invokeLater(this::reloadTree);
-            SwingUtilities.invokeLater(() -> reloadTreeNode(spatialTreeNode.getParent()));
+            SwingUtilities.invokeLater(() -> reloadTreeNode(treeParent));
 
         });
 
