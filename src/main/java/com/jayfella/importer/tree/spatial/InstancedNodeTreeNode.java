@@ -5,7 +5,7 @@ import com.jme3.scene.instancing.InstancedNode;
 
 import javax.swing.*;
 
-public class InstancedNodeTreeNode extends SpatialTreeNode {
+public class InstancedNodeTreeNode extends NodeTreeNode {
 
     public InstancedNodeTreeNode(InstancedNode instancedNode) {
         super(instancedNode);

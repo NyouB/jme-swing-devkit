@@ -143,6 +143,8 @@ public class NodeContextMenu extends SpatialContextMenu {
         Geometry geometry = new Geometry(name, mesh);
 
         Material material = new Material(engineService.getAssetManager(), Materials.PBR);
+        material.setFloat("Roughness", 0.2f);
+        material.setFloat("Metallic", 0.0f);
         geometry.setMaterial(material);
 
         return geometry;

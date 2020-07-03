@@ -7,7 +7,7 @@ import com.jayfella.importer.tree.spatial.InstancedNodeTreeNode;
 import javax.swing.*;
 import java.awt.*;
 
-public class InstancedNodeContextMenu extends SpatialContextMenu {
+public class InstancedNodeContextMenu extends NodeContextMenu {
 
     public InstancedNodeContextMenu(InstancedNodeTreeNode instancedNodeTreeNode) throws HeadlessException {
         super(instancedNodeTreeNode);
