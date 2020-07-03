@@ -353,7 +353,7 @@ public class SceneTreeService implements Service {
     /**
      * Reloads the scene JTree to reflect any changes made.
      */
-    private void reloadTree() {
+    public void reloadTree() {
         DefaultTreeModel treeModel = (DefaultTreeModel) tree.getModel();
         treeModel.reload();
     }
