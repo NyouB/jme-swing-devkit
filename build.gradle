@@ -19,7 +19,7 @@ java {
 }
 
 group 'com.jayfella'
-version '1.0.1'
+version '1.0.2'
 
 mainClassName = "com.jayfella.importer.Main"
 
