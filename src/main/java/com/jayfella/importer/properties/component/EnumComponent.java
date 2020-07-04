@@ -96,7 +96,6 @@ public class EnumComponent extends SdkComponent {
     }
 
     /**
-     * @noinspection ALL
      */
     public JComponent $$$getRootComponent$$$() {
         return contentPanel;

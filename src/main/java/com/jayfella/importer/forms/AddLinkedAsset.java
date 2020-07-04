@@ -147,7 +147,6 @@ public class AddLinkedAsset {
     }
 
     /**
-     * @noinspection ALL
      */
     public JComponent $$$getRootComponent$$$() {
         return rootPanel;
