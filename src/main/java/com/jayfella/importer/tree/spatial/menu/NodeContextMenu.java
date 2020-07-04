@@ -2,6 +2,7 @@ package com.jayfella.importer.tree.spatial.menu;
 
 import com.jayfella.importer.forms.AddModels;
 import com.jayfella.importer.forms.CreateSkyBoxDialog;
+import com.jayfella.importer.service.ClipboardService;
 import com.jayfella.importer.service.JmeEngineService;
 import com.jayfella.importer.service.SceneTreeService;
 import com.jayfella.importer.service.ServiceManager;
@@ -89,6 +90,15 @@ public class NodeContextMenu extends SpatialContextMenu {
         // Add -> BatchNode
         JMenuItem batchNodeItem = getAddMenu().add(new JMenuItem("Batch Node"));
         batchNodeItem.addActionListener(e -> ServiceManager.getService(SceneTreeService.class).addSpatial(new BatchNode(), nodeTreeNode));
+
+        JMenuItem pasteItem = add(new JMenuItem("Paste"));
+        pasteItem.setEnabled(ServiceManager.getService(ClipboardService.class).hasSpatialClipboardItem());
+        pasteItem.addActionListener(e -> {
+
+            Spatial clonedSpatial = ServiceManager.getService(ClipboardService.class).getSpatialClipboardItem().getClonedCopy();
+            ServiceManager.getService(SceneTreeService.class).addSpatial(clonedSpatial, nodeTreeNode);
+
+        });
 
     }
 

@@ -48,9 +48,11 @@ public class Main {
         // set the theme.
         SwingTheme.setTheme(DevKitConfig.getInstance().getSdkConfig().getTheme());
 
+        // register all of our services...
         ServiceManager.registerService(JmeEngineServiceImpl.class);
         ServiceManager.registerService(WindowService.class);
         ServiceManager.registerService(ComponentRegistrationService.class);
+        ServiceManager.registerService(ClipboardService.class);
 
         JmeEngineService engineService = ServiceManager.getService(JmeEngineService.class);
 

@@ -1,8 +1,10 @@
 package com.jayfella.importer.tree.spatial.menu;
 
+import com.jayfella.importer.clipboard.SpatialClipboardItem;
 import com.jayfella.importer.forms.GenerateLightProbeDialog;
 import com.jayfella.importer.forms.SaveSpatial;
 import com.jayfella.importer.jme.EditorCameraState;
+import com.jayfella.importer.service.ClipboardService;
 import com.jayfella.importer.service.JmeEngineService;
 import com.jayfella.importer.service.SceneTreeService;
 import com.jayfella.importer.service.ServiceManager;
@@ -16,7 +18,6 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 
 import javax.swing.*;
-import java.awt.*;
 
 public abstract class SpatialContextMenu extends JPopupMenu {
 
@@ -24,7 +25,7 @@ public abstract class SpatialContextMenu extends JPopupMenu {
     SpatialTreeNode spatialTreeNode;
     private final JMenu addMenu;
 
-    public SpatialContextMenu(final SpatialTreeNode spatialTreeNode) throws HeadlessException {
+    public SpatialContextMenu(final SpatialTreeNode spatialTreeNode) {
         super();
 
         this.spatialTreeNode = spatialTreeNode;
@@ -33,12 +34,44 @@ public abstract class SpatialContextMenu extends JPopupMenu {
         JMenuItem lookAtItem = add(new JMenuItem("Look at Spatial"));
         lookAtItem.addActionListener(e -> {
             JmeEngineService engineService = ServiceManager.getService(JmeEngineService.class);
-            // engineService.enqueue(() -> engineService.getCamera().lookAt(spatial.getWorldTranslation(), Vector3f.UNIT_Y));
             engineService.getStateManager().getState(EditorCameraState.class).lookAt(spatial.getWorldTranslation(), Vector3f.UNIT_Y);
         });
 
         addMenu = createAddMenu();
         add(addMenu);
+
+        add(new JSeparator());
+
+        JMenuItem cutItem = add(new JMenuItem("Cut"));
+        cutItem.addActionListener(e -> {
+
+            if (spatial.getUserData(TreeConstants.TREE_ROOT) != null) {
+
+                JOptionPane.showMessageDialog(null,
+                        "You cannot cut a root tree element.",
+                        "Action Denied",
+                        JOptionPane.ERROR_MESSAGE);
+
+                return;
+            }
+
+            ServiceManager.getService(JmeEngineService.class).enqueue(() -> {
+
+                // Clone the spatial on the JME thread.
+                SpatialClipboardItem spatialClipboardItem = new SpatialClipboardItem(spatial);
+
+                // Put the spatial in the clipboard on the AWT Thread.
+                // Remove the treeItem on the AWT thread.
+                SwingUtilities.invokeLater(() ->
+
+                        ServiceManager.getService(SceneTreeService.class).removeTreeNode(spatialTreeNode));
+                        ServiceManager.getService(ClipboardService.class).setSpatialClipboardItem(spatialClipboardItem);
+
+            });
+
+        });
+
+        add(createCopyMenu());
 
         add(new JSeparator());
 
@@ -88,6 +121,8 @@ public abstract class SpatialContextMenu extends JPopupMenu {
 
         });
         deleteItem.setMnemonic('D');
+
+
 
     }
 
@@ -146,6 +181,56 @@ public abstract class SpatialContextMenu extends JPopupMenu {
             frame.setLocationRelativeTo(null);
 
             frame.setVisible(true);
+
+        });
+
+        return menu;
+    }
+
+    private JMenu createCopyMenu() {
+
+        JMenu menu = new JMenu("Copy...");
+
+        // copying types:
+        // clone (new material)
+        // clone (same material)
+        // clone (same mesh, new material)
+        // clone (same mesh, same material)
+
+
+        JMenuItem cloneWithNewMaterial = menu.add(new JMenuItem("New Mesh(es), New Material(s)"));
+        cloneWithNewMaterial.addActionListener(e -> {
+
+            ServiceManager.getService(JmeEngineService.class).enqueue(() -> {
+                SpatialClipboardItem spatialClipboardItem = new SpatialClipboardItem(spatial, true, true);
+                SwingUtilities.invokeLater(() -> ServiceManager.getService(ClipboardService.class).setSpatialClipboardItem(spatialClipboardItem));
+            });
+
+        });
+
+        JMenuItem cloneWithSameMaterial = menu.add(new JMenuItem("New Mesh(es), Same Material(s)"));
+        cloneWithSameMaterial.addActionListener(e -> {
+
+            ServiceManager.getService(JmeEngineService.class).enqueue(() -> {
+                SpatialClipboardItem spatialClipboardItem = new SpatialClipboardItem(spatial, false, true);
+                SwingUtilities.invokeLater(() -> ServiceManager.getService(ClipboardService.class).setSpatialClipboardItem(spatialClipboardItem));
+            });
+
+        });
+
+        JMenuItem cloneWithSameMeshNewMaterial = menu.add(new JMenuItem("Same Mesh(es), New Material(s)"));
+        cloneWithSameMeshNewMaterial.addActionListener(e -> {
+
+            SpatialClipboardItem spatialClipboardItem = new SpatialClipboardItem(spatial, true, false);
+            SwingUtilities.invokeLater(() -> ServiceManager.getService(ClipboardService.class).setSpatialClipboardItem(spatialClipboardItem));
+
+        });
+
+        JMenuItem cloneWithSameMeshSameMaterial = menu.add(new JMenuItem("Same Mesh(es), Same Material(s)"));
+        cloneWithSameMeshSameMaterial.addActionListener(e -> {
+
+            SpatialClipboardItem spatialClipboardItem = new SpatialClipboardItem(spatial, false, false);
+            SwingUtilities.invokeLater(() -> ServiceManager.getService(ClipboardService.class).setSpatialClipboardItem(spatialClipboardItem));
 
         });
 

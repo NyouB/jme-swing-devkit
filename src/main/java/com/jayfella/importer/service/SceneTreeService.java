@@ -1,7 +1,7 @@
 package com.jayfella.importer.service;
 
 import com.jayfella.importer.jme.SceneObjectHighlighterState;
-import com.jayfella.importer.tree.MeshTreeNode;
+import com.jayfella.importer.tree.spatial.MeshTreeNode;
 import com.jayfella.importer.tree.SceneTreeMouseListener;
 import com.jayfella.importer.tree.light.*;
 import com.jayfella.importer.tree.spatial.*;
