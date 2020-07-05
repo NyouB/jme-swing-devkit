@@ -45,4 +45,17 @@ public class AppStateUtils {
 
     }
 
+    public static boolean isBulletPhysicsOnClassPath() {
+
+        try {
+            Class<?> bulletAppStateClass = Class.forName("com.jme3.bullet.BulletAppState");
+            return true;
+        } catch (ClassNotFoundException e) {
+            // e.printStackTrace();
+            // do nothing.
+        }
+
+        return false;
+    }
+
 }

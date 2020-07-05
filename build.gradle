@@ -68,7 +68,7 @@ dependencies {
     }
 
     // Minie Physics
-    implementation 'com.github.stephengold:Minie:1.7.0'
+    compileOnly 'com.github.stephengold:Minie:1.7.0'
 
     // jackson - JSON
     implementation "com.fasterxml.jackson.core:jackson-core:$version_jackson"

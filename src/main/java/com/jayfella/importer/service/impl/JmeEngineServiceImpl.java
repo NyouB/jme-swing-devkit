@@ -2,16 +2,21 @@ package com.jayfella.importer.service.impl;
 
 import com.jayfella.importer.config.CameraConfig;
 import com.jayfella.importer.config.DevKitConfig;
+import com.jayfella.importer.jme.AppStateUtils;
+import com.jayfella.importer.jme.BulletPhysics;
 import com.jayfella.importer.jme.CameraRotationWidgetState;
 import com.jayfella.importer.jme.DebugGridState;
 import com.jayfella.importer.service.JmeEngineService;
-import com.jme3.bullet.BulletAppState;
+import com.jme3.app.state.AppState;
 import com.jme3.post.FilterPostProcessor;
 import com.jme3.system.JmeCanvasContext;
 
 import java.awt.*;
+import java.util.logging.Logger;
 
 public class JmeEngineServiceImpl extends JmeEngineService {
+
+    private static final Logger log = Logger.getLogger(JmeEngineServiceImpl.class.getName());
 
     private volatile boolean started = false;
     private Canvas canvas;
@@ -29,11 +34,12 @@ public class JmeEngineServiceImpl extends JmeEngineService {
     @Override
     public void simpleInitApp() {
 
-        BulletAppState bulletAppState = new BulletAppState();
-        bulletAppState.setSpeed(0.0f);
-        bulletAppState.setDebugEnabled(true);
-        stateManager.attach(bulletAppState);
+        if (AppStateUtils.isBulletPhysicsOnClassPath()) {
+            log.info("Bullet Physics Detected.");
+            AppState bulletAppState = BulletPhysics.createAppState();
+            stateManager.attach(bulletAppState);
 
+        }
 
         if (DevKitConfig.getInstance().getSdkConfig().isShowCamRotationWidget()) {
             stateManager.attach(new CameraRotationWidgetState());
