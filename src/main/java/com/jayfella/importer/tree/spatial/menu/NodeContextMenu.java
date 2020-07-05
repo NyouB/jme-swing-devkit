@@ -1,5 +1,6 @@
 package com.jayfella.importer.tree.spatial.menu;
 
+import com.jayfella.importer.config.DevKitConfig;
 import com.jayfella.importer.forms.AddModels;
 import com.jayfella.importer.forms.CreateSkyBoxDialog;
 import com.jayfella.importer.service.ClipboardService;
@@ -9,7 +10,6 @@ import com.jayfella.importer.service.ServiceManager;
 import com.jayfella.importer.swing.WindowServiceListener;
 import com.jayfella.importer.tree.spatial.NodeTreeNode;
 import com.jme3.material.Material;
-import com.jme3.material.Materials;
 import com.jme3.scene.*;
 import com.jme3.scene.instancing.InstancedNode;
 import com.jme3.scene.shape.Cylinder;
@@ -142,9 +142,7 @@ public class NodeContextMenu extends SpatialContextMenu {
 
         Geometry geometry = new Geometry(name, mesh);
 
-        Material material = new Material(engineService.getAssetManager(), Materials.PBR);
-        material.setFloat("Roughness", 0.2f);
-        material.setFloat("Metallic", 0.0f);
+        Material material = new Material(engineService.getAssetManager(), DevKitConfig.getInstance().getSdkConfig().getDefaultMaterial());
         geometry.setMaterial(material);
 
         return geometry;
