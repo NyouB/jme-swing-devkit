@@ -1,5 +1,6 @@
-package com.jayfella.importer.tree.spatial;
+package com.jayfella.importer.tree.geometry;
 
+import com.jayfella.importer.tree.spatial.SpatialTreeNode;
 import com.jayfella.importer.tree.spatial.menu.GeometryContextMenu;
 import com.jme3.scene.Geometry;
 
