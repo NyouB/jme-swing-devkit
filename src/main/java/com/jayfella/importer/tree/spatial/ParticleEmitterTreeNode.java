@@ -1,4 +1,4 @@
-package com.jayfella.importer.tree.geometry;
+package com.jayfella.importer.tree.spatial;
 
 import com.jme3.effect.ParticleEmitter;
 
