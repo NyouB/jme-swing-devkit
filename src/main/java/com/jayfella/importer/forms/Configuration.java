@@ -186,6 +186,10 @@ public class Configuration {
                 log.info("Registering New Asset Root: " + newAssetRoot);
             }
 
+            // default material
+            String defaultMaterial = (String) defaultMaterialComboBox.getSelectedItem();
+            devKitConfig.getSdkConfig().setDefaultMaterial(defaultMaterial);
+
             // viewport
             devKitConfig.getCameraConfig().setViewportColor(ColorConverter.toColorRGBA(viewPortColorPreviewPanel.getBackground()));
             devKitConfig.getCameraConfig().setFieldOfView(Float.parseFloat(fieldOfViewTextField.getText()));
