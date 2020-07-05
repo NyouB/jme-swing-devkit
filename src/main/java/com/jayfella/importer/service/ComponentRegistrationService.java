@@ -1,6 +1,7 @@
 package com.jayfella.importer.service;
 
 import com.google.common.collect.ImmutableMap;
+import com.jayfella.importer.properties.builder.AbstractComponentSetBuilder;
 import com.jayfella.importer.properties.component.*;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
@@ -17,6 +18,7 @@ import java.util.Map;
 public class ComponentRegistrationService implements Service {
 
     private final Map<Class<?>, Class<? extends SdkComponent>> componentClasses = new HashMap<>();
+    private final Map<Class<?>, Class<? extends AbstractComponentSetBuilder<?>>> componentBuilderClasses = new HashMap<>();
 
     public ComponentRegistrationService() {
 
@@ -39,12 +41,40 @@ public class ComponentRegistrationService implements Service {
 
     }
 
+    /**
+     * Registers a class with a component. For example, the built-in components are:
+     * - boolean.class, BooleanComponent.class
+     * - ColorRGBA.class, ColorRGBAComponent.class
+     * - Enum.class, EnumComponent.class
+     * and so on.
+     *
+     * @param clazz
+     * @param componentClass
+     */
     public void registerComponent(Class<?> clazz, Class<? extends SdkComponent> componentClass) {
         componentClasses.put(clazz, componentClass);
     }
 
     public Map<Class<?>, Class<? extends SdkComponent>> getComponentClasses() {
         return ImmutableMap.copyOf(componentClasses);
+    }
+
+    /**
+     * Registers a class with a componentBuilder. For example, the built-in componentBuilders are:
+     * - Material.class, MaterialComponetSetBuilder.class
+     * - Spatial.class, SpatialComponentSetBuilder.class
+     *
+     * All classes that are not registered are processed using the ReflectedComponentSetBuilder.
+     *
+     * @param clazz
+     * @param componentBuilderClass
+     */
+    public void registerComponentBuilder(Class<?> clazz, Class<? extends AbstractComponentSetBuilder<?>> componentBuilderClass) {
+        componentBuilderClasses.put(clazz, componentBuilderClass);
+    }
+
+    public Map<Class<?>, Class<? extends AbstractComponentSetBuilder<?>>> getComponentBuilderClasses() {
+        return ImmutableMap.copyOf(componentBuilderClasses);
     }
 
 }
