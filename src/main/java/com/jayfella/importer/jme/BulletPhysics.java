@@ -3,11 +3,14 @@ package com.jayfella.importer.jme;
 import com.jme3.app.state.AppState;
 import com.jme3.bullet.BulletAppState;
 
+/**
+ * A seperate class that allows us to avoid referencing imports to a bullet physics dependency that might not exist.
+ */
 public class BulletPhysics {
 
     /**
-     * Creates an instance of BulletAppState. Avoids us loading these imports if Bullet Physics is not in the classpath.
-     * @return
+     * Creates an instance of BulletAppState.
+     * @return a new BulletAppState instance.
      */
     public static AppState createAppState() {
         BulletAppState bulletAppState = new BulletAppState();
