@@ -11,12 +11,13 @@ import java.util.HashMap;
 public class SdkConfig {
 
     private String theme = "com.github.weisj.darklaf.theme.DarculaTheme";
-
-    private HashMap<String, Dimension> windowDimensions = new HashMap<>();
-    private HashMap<String, Point> windowLocations = new HashMap<>();
+    private String defaultMaterial = "Common/MatDefs/Light/PBRLighting.j3md";
 
     private boolean showCamRotationWidget = true;
     private boolean showDebugLightsWindow = false;
+
+    private HashMap<String, Dimension> windowDimensions = new HashMap<>();
+    private HashMap<String, Point> windowLocations = new HashMap<>();
 
     public SdkConfig() {
 
@@ -54,6 +55,9 @@ public class SdkConfig {
 
     public boolean isShowDebugLightsWindow() { return showDebugLightsWindow; }
     public void setShowDebugLightsWindow(boolean showDebugLightsWindow) { this.showDebugLightsWindow = showDebugLightsWindow; }
+
+    public String getDefaultMaterial() { return defaultMaterial; }
+    public void setDefaultMaterial(String defaultMaterial) { this.defaultMaterial = defaultMaterial; }
 
     @Transient
     public Point getWindowLocation(String name) {
