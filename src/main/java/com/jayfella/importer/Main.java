@@ -92,7 +92,7 @@ public class Main {
             initializeInspectorService();
 
             JMenuBar menu = createMenu();
-            frame.add(menu, BorderLayout.NORTH);
+            frame.setJMenuBar(menu);
 
             // Should this be done on the AWT thread? The examples do... I'm not sure.
             ServiceManager.getService(JmeEngineService.class).startCanvas();
