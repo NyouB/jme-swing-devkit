@@ -7,7 +7,6 @@ import com.jayfella.importer.service.ClipboardService;
 import com.jayfella.importer.service.JmeEngineService;
 import com.jayfella.importer.service.SceneTreeService;
 import com.jayfella.importer.service.ServiceManager;
-import com.jayfella.importer.swing.WindowServiceListener;
 import com.jayfella.importer.tree.spatial.NodeTreeNode;
 import com.jme3.asset.AssetManager;
 import com.jme3.effect.ParticleEmitter;
@@ -47,13 +46,14 @@ public class NodeContextMenu extends SpatialContextMenu {
 
             AddModels addModels = new AddModels(nodeTreeNode);
 
-            JFrame frame = new JFrame("Add Model(s)");
-            frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-            frame.setContentPane(addModels.$$$getRootComponent$$$());
-            frame.addWindowListener(new WindowServiceListener());
-            frame.pack();
-            frame.setLocationRelativeTo(null);
-            frame.setVisible(true);
+            JFrame mainWindow = (JFrame) SwingUtilities.getWindowAncestor(ServiceManager.getService(JmeEngineService.class).getCanvas());
+
+            JDialog dialog = new JDialog(mainWindow, "Add Model(s)", true);
+            dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+            dialog.setContentPane(addModels.$$$getRootComponent$$$());
+            dialog.pack();
+            dialog.setLocationRelativeTo(mainWindow);
+            dialog.setVisible(true);
 
         });
         addModelsItem.setMnemonic('M');
@@ -64,13 +64,14 @@ public class NodeContextMenu extends SpatialContextMenu {
 
             CreateSkyBoxDialog createSkyBoxDialog = new CreateSkyBoxDialog(nodeTreeNode);
 
-            JFrame frame = new JFrame("Create SkyBox");
-            frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-            frame.setContentPane(createSkyBoxDialog.$$$getRootComponent$$$());
-            frame.addWindowListener(new WindowServiceListener());
-            frame.pack();
-            frame.setLocationRelativeTo(null);
-            frame.setVisible(true);
+            JFrame mainWindow = (JFrame) SwingUtilities.getWindowAncestor(ServiceManager.getService(JmeEngineService.class).getCanvas());
+
+            JDialog dialog = new JDialog(mainWindow, "Create SkyBox", true);
+            dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+            dialog.setContentPane(createSkyBoxDialog.$$$getRootComponent$$$());
+            dialog.pack();
+            dialog.setLocationRelativeTo(mainWindow);
+            dialog.setVisible(true);
 
         });
         genSkyBoxItem.setMnemonic('K');

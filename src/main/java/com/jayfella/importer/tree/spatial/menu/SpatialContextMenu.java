@@ -8,7 +8,6 @@ import com.jayfella.importer.service.ClipboardService;
 import com.jayfella.importer.service.JmeEngineService;
 import com.jayfella.importer.service.SceneTreeService;
 import com.jayfella.importer.service.ServiceManager;
-import com.jayfella.importer.swing.WindowServiceListener;
 import com.jayfella.importer.tree.TreeConstants;
 import com.jayfella.importer.tree.spatial.SpatialTreeNode;
 import com.jme3.light.AmbientLight;
@@ -80,14 +79,15 @@ public abstract class SpatialContextMenu extends JPopupMenu {
 
             SaveSpatial saveSpatial = new SaveSpatial(spatial);
 
-            JFrame frame = new JFrame("Save Spatial");
-            frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-            frame.addWindowListener(new WindowServiceListener());
-            frame.setContentPane(saveSpatial.$$$getRootComponent$$$());
-            frame.setLocationRelativeTo(null);
-            frame.pack();
+            JFrame mainWindow = (JFrame) SwingUtilities.getWindowAncestor(ServiceManager.getService(JmeEngineService.class).getCanvas());
 
-            frame.setVisible(true);
+            JDialog dialog = new JDialog(mainWindow, "Save Spatial", true);
+            dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+            dialog.setContentPane(saveSpatial.$$$getRootComponent$$$());
+            dialog.setLocationRelativeTo(mainWindow);
+            dialog.pack();
+
+            dialog.setVisible(true);
 
         });
         saveItem.setMnemonic('S');
@@ -173,14 +173,15 @@ public abstract class SpatialContextMenu extends JPopupMenu {
 
             GenerateLightProbeDialog generateLightProbeDialog = new GenerateLightProbeDialog(spatialTreeNode);
 
-            JFrame frame = new JFrame("Generate LightProbe");
-            frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-            frame.setContentPane(generateLightProbeDialog.$$$getRootComponent$$$());
-            frame.addWindowListener(new WindowServiceListener());
-            frame.pack();
-            frame.setLocationRelativeTo(null);
+            JFrame mainWindow = (JFrame) SwingUtilities.getWindowAncestor(ServiceManager.getService(JmeEngineService.class).getCanvas());
 
-            frame.setVisible(true);
+            JDialog dialog = new JDialog(mainWindow, "Generate LightProbe", true);
+            dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+            dialog.setContentPane(generateLightProbeDialog.$$$getRootComponent$$$());
+            dialog.pack();
+            dialog.setLocationRelativeTo(mainWindow);
+
+            dialog.setVisible(true);
 
         });
 

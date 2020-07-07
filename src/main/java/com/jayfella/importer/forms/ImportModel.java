@@ -83,7 +83,7 @@ public class ImportModel {
             }
 
             JButton button = (JButton) e.getSource();
-            JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(button);
+            Window window = SwingUtilities.getWindowAncestor(button);
 
             // disable the window while we import...
             ComponentUtilities.enableComponents(rootPanel, false);
@@ -104,7 +104,7 @@ public class ImportModel {
 
                     // notify the user on the AWT Thread.
                     SwingUtilities.invokeLater(() -> {
-                        JOptionPane.showMessageDialog(frame,
+                        JOptionPane.showMessageDialog(window,
                                 "An error occured attempting to import the model:\n" + ex.getMessage(),
                                 "Import Failed",
                                 ERROR_MESSAGE);
@@ -132,7 +132,7 @@ public class ImportModel {
                 } catch (IOException ex) {
                     ex.printStackTrace();
 
-                    JOptionPane.showMessageDialog(frame,
+                    JOptionPane.showMessageDialog(window,
                             "An error occurred attempting to rename the model."
                                     + System.lineSeparator()
                                     + ex.getMessage()
@@ -152,13 +152,13 @@ public class ImportModel {
                 // notify the user on the AWT Thread.
                 SwingUtilities.invokeLater(() -> {
 
-                    JOptionPane.showMessageDialog(frame,
+                    JOptionPane.showMessageDialog(window,
                             "Model imported successfully to: " + result,
                             "Imported Successfully",
                             JOptionPane.INFORMATION_MESSAGE);
 
                     // close the window
-                    frame.dispose();
+                    window.dispose();
 
                 });
 

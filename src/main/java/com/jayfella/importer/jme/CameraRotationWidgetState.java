@@ -6,6 +6,7 @@ import com.jme3.app.state.BaseAppState;
 import com.jme3.material.Material;
 import com.jme3.material.Materials;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
@@ -91,9 +92,15 @@ public class CameraRotationWidgetState extends BaseAppState {
         widget.removeFromParent();
     }
 
+    private final float[] angles = new float[3];
+    private final Quaternion rotation = new Quaternion();
+
     @Override
     public void update(float tpf) {
-        widget.setLocalRotation(getApplication().getCamera().getRotation().inverse());
+
+        getApplication().getCamera().getRotation().toAngles(angles);
+        rotation.fromAngles(angles[0], -angles[1], angles[2]);
+        widget.setLocalRotation(rotation);
 
         location.set(size + 10,
                 getApplication().getCamera().getHeight() - size - 10,

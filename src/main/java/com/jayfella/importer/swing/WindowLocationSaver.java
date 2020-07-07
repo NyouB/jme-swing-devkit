@@ -2,7 +2,6 @@ package com.jayfella.importer.swing;
 
 import com.jayfella.importer.config.DevKitConfig;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
@@ -22,8 +21,8 @@ public class WindowLocationSaver implements ComponentListener {
 
     @Override
     public void componentMoved(ComponentEvent e) {
-        JFrame frame = (JFrame) e.getComponent();
-        Point location = frame.getLocation();
+        Window window = (Window) e.getComponent();
+        Point location = window.getLocation();
 
         DevKitConfig.getInstance().getSdkConfig().setWindowLocation(windowId, location);
         DevKitConfig.getInstance().save();

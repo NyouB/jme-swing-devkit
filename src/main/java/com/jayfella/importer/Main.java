@@ -27,6 +27,7 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.logging.Logger;
 
 public class Main {
@@ -141,24 +142,20 @@ public class Main {
 
             ImportModel importModel = new ImportModel();
 
-            JFrame jFrame = new JFrame("Import Model");
-            jFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-            jFrame.setContentPane(importModel.$$$getRootComponent$$$());
-            jFrame.addWindowListener(new WindowServiceListener());
-            jFrame.pack();
-            jFrame.setLocationRelativeTo(jFrame);
+            JDialog importModelDialog = new JDialog(frame, "Import Model", true);
+            importModelDialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+            importModelDialog.setContentPane(importModel.$$$getRootComponent$$$());
+            importModelDialog.pack();
+            importModelDialog.setLocationRelativeTo(frame);
 
-            jFrame.addWindowListener(new WindowServiceListener());
-            jFrame.setVisible(true);
+            importModelDialog.setVisible(true);
 
-            ServiceManager.getService(WindowService.class).add(jFrame);
         });
 
         fileMenu.add(new JSeparator());
 
         JMenuItem exitMenuItem = fileMenu.add(new JMenuItem("Exit"));
         exitMenuItem.addActionListener(e -> {
-            // simpleApplication.stop();
             ServiceManager.getService(JmeEngineService.class).stop();
             frame.dispose();
         });
@@ -169,22 +166,14 @@ public class Main {
         JMenuItem configItem = editMenu.add(new JMenuItem("Configuration..."));
         configItem.addActionListener(e -> {
 
-            Window window = ServiceManager.getService(WindowService.class).getWindow(Configuration.WINDOW_ID);
-
-            if (window == null) {
                 Configuration configuration = new Configuration();
 
-                JFrame frame = new JFrame(Configuration.WINDOW_ID);
-                frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-                frame.setContentPane(configuration.$$$getRootComponent$$$());
-                frame.addWindowListener(new WindowServiceListener());
-                frame.pack();
-                frame.setLocationRelativeTo(null);
-                frame.setVisible(true);
-            }
-            else {
-                window.toFront();
-            }
+                JDialog configDialog = new JDialog(frame, Configuration.WINDOW_ID, true);
+                configDialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+                configDialog.setContentPane(configuration.$$$getRootComponent$$$());
+                configDialog.pack();
+                configDialog.setLocationRelativeTo(frame);
+                configDialog.setVisible(true);
 
         });
 
@@ -230,16 +219,27 @@ public class Main {
             JCheckBoxMenuItem checkBoxMenuItem = (JCheckBoxMenuItem) e.getSource();
             final boolean isSelected = checkBoxMenuItem.isSelected();
 
-            Window window = ServiceManager.getService(WindowService.class).getWindow(DebugLights.DEBUG_LIGHTS_WINDOW_TITLE);
+            // According to the documentation:
+            // A Dialog is still owned even if it is disposed. dispose() only affects a Window's displayability, not its ownership.
+            // A window can be re-created after disposal by calling .setVisible(true) or .pack().
+
+            // so we check if the main window still owns the dialog, and if it does, call .setVisible(true), else create it.
+
+            Window window = Arrays.stream(frame.getOwnedWindows())
+                    .filter(w -> w instanceof Dialog)
+                    .filter(w -> ((Dialog)w).getTitle().equals(DebugLights.DEBUG_LIGHTS_WINDOW_TITLE))
+                    .findFirst()
+                    .orElse(null);
 
             if (isSelected) {
 
                 if (window == null) {
-                    JFrame frame = Windows.createDebugLightsWindow(checkBoxMenuItem);
-                    frame.setVisible(true);
+                    JDialog dialog = Windows.createDebugLightsWindow(frame, checkBoxMenuItem);
+                    dialog.setVisible(true);
+
                 }
                 else {
-                    window.toFront();
+                    window.setVisible(true);
                 }
 
             }
@@ -258,8 +258,8 @@ public class Main {
 
         // bit of a strange place to put it, but we need to menu item to toggle if the window is closed.
         if (DevKitConfig.getInstance().getSdkConfig().isShowDebugLightsWindow()) {
-            JFrame frame = Windows.createDebugLightsWindow(debugLightsItem);
-            frame.setVisible(true);
+            JDialog dialog = Windows.createDebugLightsWindow(frame, debugLightsItem);
+            dialog.setVisible(true);
         }
 
         return menuBar;
@@ -267,7 +267,8 @@ public class Main {
 
     private void initializeTreeView(JTree tree) {
 
-        JFrame treeViewFrame = new JFrame("Scene Tree");
+        JDialog treeViewFrame = new JDialog(frame, "Scene Tree");
+
         treeViewFrame.setContentPane(new JScrollPane(tree));
         treeViewFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         treeViewFrame.pack();
@@ -275,7 +276,7 @@ public class Main {
         ServiceManager.getService(WindowService.class).positionWindowFromSavedPosition(treeViewFrame, SceneTreeService.WINDOW_ID);
         ServiceManager.getService(WindowService.class).sizeWindowFromSavedSize(treeViewFrame, SceneTreeService.WINDOW_ID);
 
-        treeViewFrame.addWindowListener(new WindowServiceListener());
+        //treeViewFrame.addWindowListener(new WindowServiceListener());
         treeViewFrame.addComponentListener(new WindowLocationSaver(SceneTreeService.WINDOW_ID));
         treeViewFrame.addComponentListener(new WindowSizeSaver(SceneTreeService.WINDOW_ID));
 
@@ -290,23 +291,18 @@ public class Main {
         JPanel panelRoot = new JPanel(new VerticalLayout());
         panelRoot.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        // We don't want the tabbed panel to scroll, we want the contents of the tab to scroll.
-        // Remove the scrollpane from here and add a scrollpane to each PropertySection.
+        JDialog inspectorFrame = new JDialog(frame, PropertyInspectorService.WINDOW_ID);
+        inspectorFrame.setContentPane(new JScrollPane(panelRoot));
+        inspectorFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
-        JFrame frame = new JFrame("Property Inspector");
-        frame.setContentPane(new JScrollPane(panelRoot));
-        // frame.setContentPane(panelRoot);
-        frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        ServiceManager.getService(WindowService.class).positionWindowFromSavedPosition(inspectorFrame, PropertyInspectorService.WINDOW_ID);
+        ServiceManager.getService(WindowService.class).sizeWindowFromSavedSize(inspectorFrame, PropertyInspectorService.WINDOW_ID);
 
+        // inspectorFrame.addWindowListener(new WindowServiceListener());
+        inspectorFrame.addComponentListener(new WindowLocationSaver(PropertyInspectorService.WINDOW_ID));
+        inspectorFrame.addComponentListener(new WindowSizeSaver(PropertyInspectorService.WINDOW_ID));
 
-        ServiceManager.getService(WindowService.class).positionWindowFromSavedPosition(frame, PropertyInspectorService.WINDOW_ID);
-        ServiceManager.getService(WindowService.class).sizeWindowFromSavedSize(frame, PropertyInspectorService.WINDOW_ID);
-
-        frame.addWindowListener(new WindowServiceListener());
-        frame.addComponentListener(new WindowLocationSaver(PropertyInspectorService.WINDOW_ID));
-        frame.addComponentListener(new WindowSizeSaver(PropertyInspectorService.WINDOW_ID));
-
-        frame.setVisible(true);
+        inspectorFrame.setVisible(true);
 
         ServiceManager.registerService(PropertyInspectorService.class, panelRoot);
 

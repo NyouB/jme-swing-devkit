@@ -2,7 +2,6 @@ package com.jayfella.importer.swing;
 
 import com.jayfella.importer.config.DevKitConfig;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
@@ -17,8 +16,8 @@ public class WindowSizeSaver implements ComponentListener {
 
     @Override
     public void componentResized(ComponentEvent e) {
-        JFrame frame = (JFrame) e.getComponent();
-        Dimension size = frame.getSize();
+        Window window = (Window) e.getComponent();
+        Dimension size = window.getSize();
 
         DevKitConfig.getInstance().getSdkConfig().setWindowDimensions(windowId, size);
         DevKitConfig.getInstance().save();

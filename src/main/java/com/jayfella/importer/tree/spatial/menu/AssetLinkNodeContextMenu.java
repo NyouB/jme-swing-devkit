@@ -5,7 +5,6 @@ import com.jayfella.importer.forms.RemoveLinkedAsset;
 import com.jayfella.importer.service.JmeEngineService;
 import com.jayfella.importer.service.SceneTreeService;
 import com.jayfella.importer.service.ServiceManager;
-import com.jayfella.importer.swing.WindowServiceListener;
 import com.jayfella.importer.tree.spatial.AssetLinkNodeTreeNode;
 
 import javax.swing.*;
@@ -23,13 +22,14 @@ public class AssetLinkNodeContextMenu extends SpatialContextMenu {
 
             AddLinkedAsset addLinkedAsset = new AddLinkedAsset(spatialTreeNode);
 
-            JFrame frame = new JFrame("Add Linked Asset");
-            frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-            frame.setContentPane(addLinkedAsset.$$$getRootComponent$$$());
-            frame.addWindowListener(new WindowServiceListener());
-            frame.pack();
-            frame.setLocationRelativeTo(null);
-            frame.setVisible(true);
+            JFrame mainWindow = (JFrame) SwingUtilities.getWindowAncestor(ServiceManager.getService(JmeEngineService.class).getCanvas());
+
+            JDialog dialog = new JDialog(mainWindow, "Add Linked Asset", true);
+            dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+            dialog.setContentPane(addLinkedAsset.$$$getRootComponent$$$());
+            dialog.pack();
+            dialog.setLocationRelativeTo(null);
+            dialog.setVisible(true);
 
         });
 
@@ -38,13 +38,14 @@ public class AssetLinkNodeContextMenu extends SpatialContextMenu {
 
             RemoveLinkedAsset addLinkedAsset = new RemoveLinkedAsset(spatialTreeNode);
 
-            JFrame frame = new JFrame("Remove Linked Asset");
-            frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-            frame.setContentPane(addLinkedAsset.$$$getRootComponent$$$());
-            frame.addWindowListener(new WindowServiceListener());
-            frame.pack();
-            frame.setLocationRelativeTo(null);
-            frame.setVisible(true);
+            JFrame mainWindow = (JFrame) SwingUtilities.getWindowAncestor(ServiceManager.getService(JmeEngineService.class).getCanvas());
+
+            JDialog dialog = new JDialog(mainWindow, "Remove Linked Asset", true);
+            dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+            dialog.setContentPane(addLinkedAsset.$$$getRootComponent$$$());
+            dialog.pack();
+            dialog.setLocationRelativeTo(null);
+            dialog.setVisible(true);
 
         });
 

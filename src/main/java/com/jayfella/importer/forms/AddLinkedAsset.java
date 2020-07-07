@@ -97,8 +97,8 @@ public class AddLinkedAsset {
 
 
                             JButton button = (JButton) e.getSource();
-                            JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(button);
-                            topFrame.dispose();
+                            Window window = SwingUtilities.getWindowAncestor(button);
+                            window.dispose();
                         });
 
                     });
