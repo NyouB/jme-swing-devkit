@@ -28,7 +28,7 @@ public class EditorCameraState extends BaseAppState implements AnalogListener, A
 
     // set when onDisable called, read when onEnable called.
     // This is NOT the current location.
-    private final Vector3f cameraLocation = new Vector3f(0, 1, -15);
+    private final Vector3f cameraLocation = new Vector3f(0, 1, 15);
 
     private float panSpeed = 10.0F;
     private float rotateSpeed = 5.0F;
