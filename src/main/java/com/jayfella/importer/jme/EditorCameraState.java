@@ -6,7 +6,6 @@ import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.*;
-import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
@@ -24,12 +23,12 @@ public class EditorCameraState extends BaseAppState implements AnalogListener, A
     // We move in the +Z direction (away/back) so the +X axis points to the right as one would expect.
     // We move slightly "up" so that the grid is visually apparent.
 
-    private final float[] camAngles = new float[] { 0, FastMath.PI, 0 };
+    private final float[] camAngles = new float[] { 0, 0, 0 };
     private final Quaternion camRotation = new Quaternion();
 
     // set when onDisable called, read when onEnable called.
     // This is NOT the current location.
-    private final Vector3f cameraLocation = new Vector3f(0, 1, 15);
+    private final Vector3f cameraLocation = new Vector3f(0, 1, -15);
 
     private float panSpeed = 10.0F;
     private float rotateSpeed = 5.0F;
