@@ -4,6 +4,7 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 import com.jayfella.importer.config.DevKitConfig;
+import com.jayfella.importer.jme.TextureImage;
 import com.jayfella.importer.service.JmeEngineService;
 import com.jayfella.importer.service.SceneTreeService;
 import com.jayfella.importer.service.ServiceManager;
@@ -28,8 +29,6 @@ import java.util.stream.Collectors;
  * Generates a SkyBox and adds it to the given node.
  */
 public class CreateSkyBoxDialog {
-
-    private static final String[] imageExtensions = {".jpg", ".gif", ".png", ".dds", ".hdr"};
 
     private JPanel rootPanel;
     private JComboBox<SkyFactory.EnvMapType> comboBox1;
@@ -95,7 +94,7 @@ public class CreateSkyBoxDialog {
         try {
             modelFiles = Files.walk(new File(DevKitConfig.getInstance().getProjectConfig().getAssetRootDir()).toPath())
                     .filter(p -> {
-                        for (String ext : imageExtensions) {
+                        for (String ext : TextureImage.imageExtensions) {
                             if (p.toString().endsWith(ext)) {
                                 return true;
                             }

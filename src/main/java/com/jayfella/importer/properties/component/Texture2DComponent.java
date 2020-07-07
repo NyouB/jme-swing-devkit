@@ -2,23 +2,34 @@ package com.jayfella.importer.properties.component;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
-import com.intellij.uiDesigner.core.Spacer;
+import com.jayfella.importer.config.DevKitConfig;
+import com.jayfella.importer.jme.TextureImage;
+import com.jayfella.importer.service.JmeEngineService;
+import com.jayfella.importer.service.ServiceManager;
 import com.jme3.texture.Texture2D;
-import org.jdesktop.swingx.VerticalLayout;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.stream.Collectors;
 
-public class Texture2DComponent extends SdkComponent {
+public class Texture2DComponent extends SdkComponent<Texture2D> {
 
     private JPanel contentPanel;
     private JLabel propertyNameLabel;
+    private JButton clearTextureButton;
     private Texture2DPanel imagePanel;
-    private JTextField pathTextField;
+    private JList<String> texturesList;
+
 
     public Texture2DComponent() {
         super(null, null, null);
@@ -40,12 +51,63 @@ public class Texture2DComponent extends SdkComponent {
     }
 
     private void initCustomLayout() {
-        contentPanel.setLayout(new VerticalLayout());
 
-        this.imagePanel = new Texture2DPanel();
-        this.contentPanel.add(imagePanel);
 
-        propertyNameLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        // get a list of all textures in the asset root.
+        List<Path> textureFiles = null;
+
+        try {
+            textureFiles = Files.walk(new File(DevKitConfig.getInstance().getProjectConfig().getAssetRootDir()).toPath())
+                    .filter(p -> {
+                        for (String ext : TextureImage.imageExtensions) {
+                            if (p.toString().endsWith(ext)) {
+                                return true;
+                            }
+                        }
+                        return false;
+                    })
+                    .collect(Collectors.toList());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (textureFiles != null) {
+            // DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+            DefaultListModel<String> model = new DefaultListModel<>();
+
+            for (Path path : textureFiles) {
+
+                String relativePath = path.toString().replace(DevKitConfig.getInstance().getProjectConfig().getAssetRootDir(), "");
+
+                // remove any trailing slashes.
+                if (relativePath.startsWith("/")) {
+                    relativePath = relativePath.substring(1);
+                }
+
+                model.addElement(relativePath);
+            }
+
+            texturesList.setModel(model);
+
+        }
+
+        // contentPanel.setLayout(new VerticalLayout());
+
+        // this.imagePanel = new Texture2DPanel();
+        // this.contentPanel.add(imagePanel);
+
+        clearTextureButton.addActionListener(e -> {
+
+            texturesList.clearSelection();
+
+            imagePanel.setTexture(null);
+            imagePanel.revalidate();
+            imagePanel.repaint();
+
+            setValue(null);
+        });
+
     }
 
     @Override
@@ -63,15 +125,20 @@ public class Texture2DComponent extends SdkComponent {
 
             SwingUtilities.invokeLater(() -> {
 
-                // if the texture is embedded it won't have a key.
-                if (texture2D.getKey() != null) {
-                    this.pathTextField.setText(texture2D.getKey().getName());
-                } else {
-                    this.pathTextField.setText(texture2D.getName());
-                }
+                if (texture2D != null) {
+                    // if the texture is embedded it won't have a key.
+                    if (texture2D.getKey() != null) {
+                        texturesList.setSelectedValue(texture2D.getKey().getName(), true);
 
-                this.imagePanel.setTexture(texture2D);
-                this.imagePanel.revalidate();
+                    } else {
+                        texturesList.setSelectedValue(texture2D.getName(), true);
+                    }
+
+                    this.imagePanel.setTexture(texture2D);
+                    this.imagePanel.revalidate();
+                } else {
+                    texturesList.setSelectedIndex(-1);
+                }
 
                 bind();
             });
@@ -79,29 +146,29 @@ public class Texture2DComponent extends SdkComponent {
 
     }
 
-    private void set() {
-        setValue(pathTextField.getText());
-
-    }
 
     @Override
     public void bind() {
         super.bind();
 
-        this.pathTextField.getDocument().addDocumentListener(new DocumentListener() {
+        texturesList.addMouseListener(new MouseAdapter() {
             @Override
-            public void insertUpdate(DocumentEvent documentEvent) {
-                set();
-            }
+            public void mouseClicked(MouseEvent e) {
 
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                set();
-            }
+                String newValue = texturesList.getSelectedValue();
 
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                set();
+                Texture2D texture2D = null;
+
+                if (newValue != null) {
+                    texture2D = (Texture2D) ServiceManager.getService(JmeEngineService.class)
+                            .getAssetManager().loadTexture(newValue);
+                }
+
+                imagePanel.setTexture(texture2D);
+                imagePanel.revalidate();
+                imagePanel.repaint();
+
+                setValue(newValue);
             }
         });
 
@@ -129,17 +196,28 @@ public class Texture2DComponent extends SdkComponent {
      */
     private void $$$setupUI$$$() {
         contentPanel = new JPanel();
-        contentPanel.setLayout(new GridLayoutManager(3, 1, new Insets(0, 0, 0, 0), -1, -1));
+        contentPanel.setLayout(new GridLayoutManager(5, 1, new Insets(0, 0, 0, 0), -1, -1));
         propertyNameLabel = new JLabel();
         propertyNameLabel.setText("Label");
-        contentPanel.add(propertyNameLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final Spacer spacer1 = new Spacer();
-        contentPanel.add(spacer1, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
-        pathTextField = new JTextField();
-        contentPanel.add(pathTextField, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        contentPanel.add(propertyNameLabel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        imagePanel = new Texture2DPanel();
+        imagePanel.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        contentPanel.add(imagePanel, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        imagePanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.black), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        final JScrollPane scrollPane1 = new JScrollPane();
+        contentPanel.add(scrollPane1, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        scrollPane1.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLoweredBevelBorder(), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        texturesList = new JList();
+        scrollPane1.setViewportView(texturesList);
+        clearTextureButton = new JButton();
+        clearTextureButton.setText("No Texture");
+        contentPanel.add(clearTextureButton, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JSeparator separator1 = new JSeparator();
+        contentPanel.add(separator1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
     }
 
     /**
+     * @noinspection ALL
      */
     public JComponent $$$getRootComponent$$$() {
         return contentPanel;

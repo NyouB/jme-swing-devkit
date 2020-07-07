@@ -22,7 +22,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.*;
 
-public class MaterialComponent extends SdkComponent {
+public class MaterialComponent extends SdkComponent<Material> {
 
     // private static final Logger log = Logger.getInstance(MaterialComponent.class);
 

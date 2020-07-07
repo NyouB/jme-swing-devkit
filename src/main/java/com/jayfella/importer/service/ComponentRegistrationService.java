@@ -3,7 +3,6 @@ package com.jayfella.importer.service;
 import com.google.common.collect.ImmutableMap;
 import com.jayfella.importer.properties.builder.AbstractComponentSetBuilder;
 import com.jayfella.importer.properties.component.*;
-import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
@@ -17,7 +16,7 @@ import java.util.Map;
  */
 public class ComponentRegistrationService implements Service {
 
-    private final Map<Class<?>, Class<? extends SdkComponent>> componentClasses = new HashMap<>();
+    private final Map<Class<?>, Class<? extends SdkComponent<?>>> componentClasses = new HashMap<>();
     private final Map<Class<?>, Class<? extends AbstractComponentSetBuilder<?>>> componentBuilderClasses = new HashMap<>();
 
     public ComponentRegistrationService() {
@@ -28,7 +27,7 @@ public class ComponentRegistrationService implements Service {
         componentClasses.put(Enum.class, EnumComponent.class);
         componentClasses.put(float.class, FloatComponent.class);
         componentClasses.put(int.class, IntegerComponent.class);
-        componentClasses.put(Material.class, MaterialComponent.class);
+        // componentClasses.put(Material.class, MaterialComponent.class);
         componentClasses.put(String.class, StringComponent.class);
         componentClasses.put(Vector3f.class, Vector3fComponent.class);
         componentClasses.put(Vector4f.class, Vector4fComponent.class);
@@ -51,11 +50,11 @@ public class ComponentRegistrationService implements Service {
      * @param clazz
      * @param componentClass
      */
-    public void registerComponent(Class<?> clazz, Class<? extends SdkComponent> componentClass) {
+    public void registerComponent(Class<?> clazz, Class<? extends SdkComponent<?>> componentClass) {
         componentClasses.put(clazz, componentClass);
     }
 
-    public Map<Class<?>, Class<? extends SdkComponent>> getComponentClasses() {
+    public Map<Class<?>, Class<? extends SdkComponent<?>>> getComponentClasses() {
         return ImmutableMap.copyOf(componentClasses);
     }
 

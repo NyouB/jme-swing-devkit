@@ -1,7 +1,10 @@
 package com.jayfella.importer.properties.builder;
 
+import com.jayfella.importer.event.SimpleEventManager;
 import com.jayfella.importer.properties.PropertySection;
 import com.jayfella.importer.properties.component.*;
+import com.jayfella.importer.properties.component.events.SpatialNameChangedEvent;
+import com.jayfella.importer.service.ServiceManager;
 import com.jme3.material.Material;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
@@ -59,7 +62,15 @@ public class SpatialComponentSetBuilder<T> extends AbstractComponentSetBuilder<S
             getter = object.getClass().getMethod("getName");
             setter = object.getClass().getMethod("setName", String.class);
 
-            StringComponent name = new StringComponent(object, getter, setter);
+            // fire an event that the spatial name changed.
+            // the scene tree needs to know when this happened so it can change the name visually.
+            StringComponent name = new StringComponent(object, getter, setter) {
+                @Override
+                public void propertyChanged(String value) {
+                    ServiceManager.getService(SimpleEventManager.class)
+                            .fireEvent(new SpatialNameChangedEvent(object));
+                }
+            };
             name.setPropertyName("name");
 
             getter = object.getClass().getMethod("getCullHint");

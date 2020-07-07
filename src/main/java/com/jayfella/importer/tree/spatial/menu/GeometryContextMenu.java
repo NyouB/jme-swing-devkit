@@ -1,6 +1,6 @@
 package com.jayfella.importer.tree.spatial.menu;
 
-import com.jayfella.importer.tree.geometry.GeometryTreeNode;
+import com.jayfella.importer.tree.spatial.GeometryTreeNode;
 
 import java.awt.*;
 

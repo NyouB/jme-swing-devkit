@@ -9,7 +9,13 @@ import com.jayfella.importer.service.SceneTreeService;
 import com.jayfella.importer.service.ServiceManager;
 import com.jayfella.importer.swing.WindowServiceListener;
 import com.jayfella.importer.tree.spatial.NodeTreeNode;
+import com.jme3.asset.AssetManager;
+import com.jme3.effect.ParticleEmitter;
+import com.jme3.effect.ParticleMesh;
+import com.jme3.effect.shapes.EmitterSphereShape;
 import com.jme3.material.Material;
+import com.jme3.math.ColorRGBA;
+import com.jme3.math.Vector3f;
 import com.jme3.scene.*;
 import com.jme3.scene.instancing.InstancedNode;
 import com.jme3.scene.shape.Cylinder;
@@ -68,6 +74,38 @@ public class NodeContextMenu extends SpatialContextMenu {
 
         });
         genSkyBoxItem.setMnemonic('K');
+
+        // Add -> Particle
+        JMenuItem particeItem = getAddMenu().add(new JMenuItem("ParticleEmitter"));
+        particeItem.addActionListener(e -> {
+
+            AssetManager assetManager = ServiceManager.getService(JmeEngineService.class).getAssetManager();
+
+            ParticleEmitter particleEmitter = new ParticleEmitter("Flame", ParticleMesh.Type.Point, 100);
+            particleEmitter.setSelectRandomImage(true);
+            particleEmitter.setStartColor(new ColorRGBA(1f, 0.4f, 0.05f, (1f / 10)));
+            particleEmitter.setEndColor(new ColorRGBA(.4f, .22f, .12f, 0f));
+            particleEmitter.setStartSize(1.3f);
+            particleEmitter.setEndSize(2f);
+            particleEmitter.setShape(new EmitterSphereShape(Vector3f.ZERO, 1f));
+            particleEmitter.setParticlesPerSec(0);
+            particleEmitter.setGravity(0, -5, 0);
+            particleEmitter.setLowLife(.4f);
+            particleEmitter.setHighLife(.5f);
+            particleEmitter.getParticleInfluencer().setInitialVelocity(new Vector3f(0, 7, 0));
+            particleEmitter.getParticleInfluencer().setVelocityVariation(1f);
+            particleEmitter.setImagesX(2);
+            particleEmitter.setImagesY(2);
+
+            Material mat = new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
+            mat.setTexture("Texture", assetManager.loadTexture("Particles/flame.png"));
+            mat.setBoolean("PointSprite", true);
+
+            particleEmitter.setMaterial(mat);
+
+            ServiceManager.getService(SceneTreeService.class).addSpatial(particleEmitter, nodeTreeNode);
+
+        });
 
         // Add -> Node
         JMenuItem addNodeItem = getAddMenu().add(new JMenuItem("Node"));

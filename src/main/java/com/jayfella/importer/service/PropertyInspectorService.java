@@ -45,7 +45,7 @@ public class PropertyInspectorService implements Service {
 
             for (PropertySection section : propertySections) {
 
-                JPanel panel = new JPanel(new VerticalLayout(16));
+                JPanel panel = new JPanel(new VerticalLayout(5));
                 panel.setBorder(new EmptyBorder(10, 0, 0, 0));
 
                 for (SdkComponent component : section.getComponents()) {

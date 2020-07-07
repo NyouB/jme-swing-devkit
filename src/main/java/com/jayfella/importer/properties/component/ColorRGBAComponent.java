@@ -14,12 +14,13 @@ import java.awt.event.MouseListener;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class ColorRGBAComponent extends SdkComponent {
+public class ColorRGBAComponent extends SdkComponent<ColorRGBA> {
 
     private JPanel contentPanel;
     private JLabel propertyNameLabel;
     private JLabel colorValueLabel;
     private JPanel colorPanel;
+    private JButton clearColorButton;
 
     public ColorRGBAComponent() {
         super(null, null, null);
@@ -41,6 +42,10 @@ public class ColorRGBAComponent extends SdkComponent {
 
     private void addColorPanelListener() {
 
+        clearColorButton.addActionListener(e -> {
+            setValue(null);
+        });
+
         colorPanel.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -49,15 +54,21 @@ public class ColorRGBAComponent extends SdkComponent {
                         "Color",
                         colorPanel.getBackground());
 
+                ColorRGBA newValue = null;
+
                 if (color != null) {
-                    setValue(ColorConverter.toColorRGBA(color));
+                    newValue = ColorConverter.toColorRGBA(color);
+
+                    colorValueLabel.setText(String.format("[ %.2f, %.2f, %.2f, %.2f ]",
+                            newValue.r, newValue.g, newValue.b, newValue.a));
+
+                } else {
+                    colorValueLabel.setText("No Color Set");
+                    colorPanel.setBackground(null);
                 }
 
-                //ColorDialog colorDialog = new ColorDialog(colorPanel.getBackground());
+                setValue(newValue);
 
-                //if (colorDialog.showAndGet()) {
-                //setValue(ColorUtils.toColorRGBA(colorDialog.getColor()));
-                //}
 
             }
 
@@ -93,11 +104,22 @@ public class ColorRGBAComponent extends SdkComponent {
     public void setValue(Object value) {
         super.setValue(value);
 
-        ColorRGBA newVal = (ColorRGBA) value;
+        ColorRGBA newValue = (ColorRGBA) value;
 
         SwingUtilities.invokeLater(() -> {
-            colorPanel.setBackground(ColorConverter.toColor(newVal));
-            colorValueLabel.setText(newVal.toString());
+            if (newValue != null) {
+                colorPanel.setBackground(ColorConverter.toColor(newValue));
+
+                colorValueLabel.setText(String.format("[ %.2f, %.2f, %.2f, %.2f ]",
+                        newValue.r, newValue.g, newValue.b, newValue.a));
+            } else {
+                colorPanel.setBackground(null);
+                colorValueLabel.setText("No Color Set");
+            }
+
+            colorPanel.repaint();
+            colorPanel.revalidate();
+
             bind();
         });
 
@@ -139,22 +161,28 @@ public class ColorRGBAComponent extends SdkComponent {
      */
     private void $$$setupUI$$$() {
         contentPanel = new JPanel();
-        contentPanel.setLayout(new GridLayoutManager(3, 2, new Insets(0, 0, 0, 0), -1, -1));
+        contentPanel.setLayout(new GridLayoutManager(4, 3, new Insets(0, 0, 0, 0), -1, -1));
         final Spacer spacer1 = new Spacer();
-        contentPanel.add(spacer1, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        contentPanel.add(spacer1, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
         colorPanel = new JPanel();
         colorPanel.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        contentPanel.add(colorPanel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, new Dimension(24, 24), new Dimension(24, 24), new Dimension(24, 24), 0, false));
+        contentPanel.add(colorPanel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, new Dimension(24, 24), new Dimension(24, 24), new Dimension(24, 24), 0, false));
         colorPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         colorValueLabel = new JLabel();
         colorValueLabel.setText("Label");
-        contentPanel.add(colorValueLabel, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        contentPanel.add(colorValueLabel, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         propertyNameLabel = new JLabel();
         propertyNameLabel.setText("Label");
-        contentPanel.add(propertyNameLabel, new GridConstraints(0, 0, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        contentPanel.add(propertyNameLabel, new GridConstraints(1, 0, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        clearColorButton = new JButton();
+        clearColorButton.setText("Clear");
+        contentPanel.add(clearColorButton, new GridConstraints(2, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JSeparator separator1 = new JSeparator();
+        contentPanel.add(separator1, new GridConstraints(0, 0, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
     }
 
     /**
+     * @noinspection ALL
      */
     public JComponent $$$getRootComponent$$$() {
         return contentPanel;

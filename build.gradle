@@ -61,6 +61,7 @@ dependencies {
     implementation "org.jmonkeyengine:jme3-desktop:$version_jme"
     implementation "org.jmonkeyengine:jme3-lwjgl:$version_jme"
     implementation "org.jmonkeyengine:jme3-plugins:$version_jme"
+    implementation "org.jmonkeyengine:jme3-effects:$version_jme"
 
     // GLTF model importer
     implementation ("com.simsilica:jmec:1.1.1") {

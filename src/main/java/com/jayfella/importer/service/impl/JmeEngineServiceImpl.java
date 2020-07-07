@@ -9,6 +9,7 @@ import com.jayfella.importer.jme.DebugGridState;
 import com.jayfella.importer.service.JmeEngineService;
 import com.jme3.app.state.AppState;
 import com.jme3.post.FilterPostProcessor;
+import com.jme3.post.filters.TranslucentBucketFilter;
 import com.jme3.system.JmeCanvasContext;
 
 import java.awt.*;
@@ -21,13 +22,25 @@ public class JmeEngineServiceImpl extends JmeEngineService {
     private volatile boolean started = false;
     private Canvas canvas;
 
+    private FilterPostProcessor fpp;
+
     @Override
     public FilterPostProcessor getFilterPostProcessor() {
-        return null;
+        return fpp;
     }
 
     @Override
     public void setFilterPostProcessor(FilterPostProcessor fpp) {
+
+        if (this.fpp != null) {
+            viewPort.removeProcessor(this.fpp);
+        }
+
+        this.fpp = fpp;
+
+        if (this.fpp != null) {
+            viewPort.addProcessor(this.fpp);
+        }
 
     }
 
@@ -53,6 +66,11 @@ public class JmeEngineServiceImpl extends JmeEngineService {
         applyCameraFrustumSizes();
 
         canvas = createAwtCanvas();
+
+        FilterPostProcessor fpp = new FilterPostProcessor(assetManager);
+        fpp.addFilter(new TranslucentBucketFilter());
+
+        setFilterPostProcessor(fpp);
 
         started = true;
     }

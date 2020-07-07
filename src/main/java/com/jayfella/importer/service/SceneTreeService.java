@@ -1,10 +1,16 @@
 package com.jayfella.importer.service;
 
+import com.jayfella.importer.event.EventHandler;
+import com.jayfella.importer.event.EventListener;
+import com.jayfella.importer.event.SimpleEventManager;
 import com.jayfella.importer.jme.SceneObjectHighlighterState;
-import com.jayfella.importer.tree.spatial.MeshTreeNode;
+import com.jayfella.importer.properties.component.events.SpatialNameChangedEvent;
 import com.jayfella.importer.tree.SceneTreeMouseListener;
+import com.jayfella.importer.tree.spatial.GeometryTreeNode;
+import com.jayfella.importer.tree.spatial.ParticleEmitterTreeNode;
 import com.jayfella.importer.tree.light.*;
 import com.jayfella.importer.tree.spatial.*;
+import com.jme3.effect.ParticleEmitter;
 import com.jme3.light.*;
 import com.jme3.material.Material;
 import com.jme3.scene.*;
@@ -25,7 +31,7 @@ import static com.jayfella.importer.tree.TreeConstants.UNDELETABLE_FLAG;
  * Provides a jMonkey Scene Tree visualised in a Swing JTree.
  * This implementation does not reflect any changes made by outside sources.
  */
-public class SceneTreeService implements Service {
+public class SceneTreeService implements Service, EventListener {
 
     private static final Logger log = Logger.getLogger(SceneTreeService.class.getName());
 
@@ -146,6 +152,9 @@ public class SceneTreeService implements Service {
             }
 
         });
+
+        // register our listener
+        ServiceManager.getService(SimpleEventManager.class).registerEventListener(this);
     }
 
     /**
@@ -345,8 +354,10 @@ public class SceneTreeService implements Service {
             }
         }
         else if (treeNode.getUserObject() instanceof Geometry) {
+
             MeshTreeNode childTreeNode = new MeshTreeNode(((Geometry) treeNode.getUserObject()).getMesh());
             treeNode.add(childTreeNode);
+
         }
 
     }
@@ -370,6 +381,9 @@ public class SceneTreeService implements Service {
         }
         else if (spatial instanceof Node) {
             return new NodeTreeNode( (Node) spatial );
+        }
+        else if (spatial instanceof ParticleEmitter) {
+            return new ParticleEmitterTreeNode( (ParticleEmitter) spatial );
         }
         else if (spatial instanceof Geometry) {
             return new GeometryTreeNode( (Geometry) spatial );
@@ -413,8 +427,27 @@ public class SceneTreeService implements Service {
         treeModel.reload(treeNode);
     }
 
+    public void updateTreeNodeRepresentation(TreeNode treeNode) {
+        DefaultTreeModel treeModel = (DefaultTreeModel) tree.getModel();
+        treeModel.nodeChanged(treeNode);
+    }
+
     @Override
     public void stop() {
+        ServiceManager.getService(SimpleEventManager.class).unregisterEventListener(this);
+    }
+
+
+    /**
+     * Called whenever a spatial name changed, so the visual text can be updated.
+     * @param event the event fired.
+     */
+    @EventHandler
+    public void onSpatialNameChangedEvent(SpatialNameChangedEvent event) {
+
+        // if the spatial name changed, it must be the selected treeNode.
+        SpatialTreeNode spatialTreeNode = (SpatialTreeNode) tree.getLastSelectedPathComponent();
+        updateTreeNodeRepresentation(spatialTreeNode);
 
     }
 

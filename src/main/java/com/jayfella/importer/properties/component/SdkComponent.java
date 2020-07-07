@@ -6,7 +6,7 @@ import javax.swing.*;
 import java.lang.reflect.Method;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public abstract class SdkComponent implements ValuedComponent, NamedComponent {
+public abstract class SdkComponent<T> implements ValuedComponent, NamedComponent {
 
     private String propertyName = "";
 
@@ -53,6 +53,7 @@ public abstract class SdkComponent implements ValuedComponent, NamedComponent {
     public void setValue(Object value) {
         if (this.propertyChangedEvent != null) {
             this.propertyChangedEvent.propertyChanged(value);
+            propertyChanged((T) value);
         }
     }
 
@@ -75,4 +76,9 @@ public abstract class SdkComponent implements ValuedComponent, NamedComponent {
     public void bind() {
         isBound.set(true);
     };
+
+    public void propertyChanged(T value) {
+
+    }
+
 }

@@ -21,77 +21,84 @@ public class Texture2DPanel extends JPanel {
 
     public void setTexture(Texture2D texture2D) {
 
-        // this is slow.. but it works.
+        if (texture2D != null) {
 
-        int texWidth = texture2D.getImage().getWidth();
-        int texHeight = texture2D.getImage().getHeight();
 
-        // create a BufferedImage the same dimensions as the texture.
-        img = new BufferedImage(
-                texWidth,
-                texHeight,
-                BufferedImage.TYPE_INT_ARGB);
+            // this is slow.. but it works.
 
-        WritableRaster writableRaster = img.getRaster();
+            int texWidth = texture2D.getImage().getWidth();
+            int texHeight = texture2D.getImage().getHeight();
 
-        // write the texture to the BufferedImage.
-        ImageRaster textureRaster = ImageRaster.create(texture2D.getImage());
+            // create a BufferedImage the same dimensions as the texture.
+            img = new BufferedImage(
+                    texWidth,
+                    texHeight,
+                    BufferedImage.TYPE_INT_ARGB);
 
-        for (int x = 0; x < texture2D.getImage().getWidth(); x++) {
-            for (int y = 0; y < texture2D.getImage().getHeight(); y++) {
+            WritableRaster writableRaster = img.getRaster();
 
-                ColorRGBA pixel = textureRaster.getPixel(x, y);
-                writableRaster.setPixel(x, y, new float[] {
-                        pixel.r * 255,
-                        pixel.g * 255,
-                        pixel.b * 255,
-                        pixel.a * 255 });
+            // write the texture to the BufferedImage.
+            ImageRaster textureRaster = ImageRaster.create(texture2D.getImage());
+
+            for (int x = 0; x < texture2D.getImage().getWidth(); x++) {
+                for (int y = 0; y < texture2D.getImage().getHeight(); y++) {
+
+                    ColorRGBA pixel = textureRaster.getPixel(x, y);
+                    writableRaster.setPixel(x, y, new float[]{
+                            pixel.r * 255,
+                            pixel.g * 255,
+                            pixel.b * 255,
+                            //pixel.a * 255});
+                            255});
+                }
             }
+
+            img.setData(writableRaster);
+
+            // define a max height and width, then determine the biggest from the texture.
+            // the width of this won't work because the panel will be resized by it's parent.
+
+            int maxHeight = 100;
+            int newHeight = Math.min(texHeight, maxHeight);
+
+            float widthRatio = (float) texWidth / (float) texHeight;
+
+            int newWidth = (int) (newHeight * widthRatio);
+
+            Dimension dim = new Dimension(newWidth, newHeight);
+
+            setSize(dim);
+            setMinimumSize(dim);
+            setMaximumSize(dim);
+            setPreferredSize(dim);
         }
+        else {
+            img = null;
 
-        img.setData(writableRaster);
+            Dimension zeroDim = new Dimension(0, 0);
 
-        // define a max height and width, then determine the biggest from the texture.
-        // the width of this won't work because the panel will be resized by it's parent.
-
-        int maxHeight = 100;
-        int newHeight = Math.min(texHeight, maxHeight);
-
-        float widthRatio = (float)texWidth / (float)texHeight;
-
-        int newWidth = (int) (newHeight * widthRatio);
-
-        Dimension dim = new Dimension(newWidth, newHeight);
-
-        setSize(dim);
-        setMinimumSize(dim);
-        setMaximumSize(dim);
-        setPreferredSize(dim);
+            setSize(zeroDim);
+            setMinimumSize(zeroDim);
+            setMaximumSize(zeroDim);
+            setPreferredSize(zeroDim);
+        }
     }
-
-    /*
-    public ImagePanel(String img) {
-        this(new ImageIcon(img).getImage());
-    }
-
-    public ImagePanel(Image img) {
-        this.img = img;
-    }
-
-     */
 
     @Override
     public void invalidate() {
         super.invalidate();
 
-        int width = getWidth();
-        int height = getHeight();
+        if (img != null) {
 
-        if (width > 0 && height > 0) {
-            scaled = img.getScaledInstance(getWidth(), getHeight(),
-                    Image.SCALE_SMOOTH);
+            int width = getWidth();
+            int height = getHeight();
+
+            if (width > 0 && height > 0) {
+                scaled = img.getScaledInstance(getWidth(), getHeight(),
+                        Image.SCALE_SMOOTH);
+            }
+
         }
-
 
     }
 
