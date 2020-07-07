@@ -93,7 +93,7 @@ public class CameraRotationWidgetState extends BaseAppState {
 
     @Override
     public void update(float tpf) {
-        widget.setLocalRotation(getApplication().getCamera().getRotation());
+        widget.setLocalRotation(getApplication().getCamera().getRotation().inverse());
 
         location.set(size + 10,
                 getApplication().getCamera().getHeight() - size - 10,
