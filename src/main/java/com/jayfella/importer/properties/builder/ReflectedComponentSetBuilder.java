@@ -1,7 +1,7 @@
 package com.jayfella.importer.properties.builder;
 
 import com.jayfella.importer.properties.PropertySection;
-import com.jayfella.importer.properties.component.SdkComponent;
+import com.jayfella.importer.properties.component.ReflectedSdkComponent;
 import com.jayfella.importer.properties.reflection.ComponentBuilder;
 import com.jayfella.importer.properties.reflection.UniqueProperties;
 
@@ -24,9 +24,9 @@ public class ReflectedComponentSetBuilder extends AbstractComponentSetBuilder<Ob
         ComponentBuilder componentBuilder = new ComponentBuilder(uniqueProperties);
 
         componentBuilder.build();
-        List<SdkComponent> components = new ArrayList<>(componentBuilder.getSdkComponents());
+        List<ReflectedSdkComponent> components = new ArrayList<>(componentBuilder.getSdkComponents());
 
-        PropertySection propertySection = new PropertySection(name, components.toArray(new SdkComponent[0]));
+        PropertySection propertySection = new PropertySection(name, components.toArray(new ReflectedSdkComponent[0]));
 
         List<PropertySection> propertySections = new ArrayList<>();
         propertySections.add(propertySection);

@@ -18,7 +18,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SpatialComponentSetBuilder<T> extends AbstractComponentSetBuilder<Spatial> {
+public class SpatialComponentSetBuilder extends AbstractComponentSetBuilder<Spatial> {
 
     public SpatialComponentSetBuilder(Spatial object, String... ignoredProperties) {
         super(object, ignoredProperties);

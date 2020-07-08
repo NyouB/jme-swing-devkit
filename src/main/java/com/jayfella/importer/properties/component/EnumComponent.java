@@ -9,7 +9,7 @@ import java.awt.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class EnumComponent extends SdkComponent<Enum<?>> {
+public class EnumComponent extends ReflectedSdkComponent<Enum<?>> {
 
     private JPanel contentPanel;
     private JComboBox valueComboBox;

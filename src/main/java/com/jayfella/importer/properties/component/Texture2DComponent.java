@@ -22,7 +22,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Texture2DComponent extends SdkComponent<Texture2D> {
+public class Texture2DComponent extends ReflectedSdkComponent<Texture2D> {
 
     private JPanel contentPanel;
     private JLabel propertyNameLabel;

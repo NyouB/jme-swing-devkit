@@ -40,7 +40,7 @@ public class MaterialComponentSetBuilder extends AbstractComponentSetBuilder<Mat
 
     private PropertySection createMaterialPropertySection() {
 
-        List<SdkComponent<?>> components = new ArrayList<>();
+        List<ReflectedSdkComponent<?>> components = new ArrayList<>();
 
         // a list of all possible params
         Collection<MatParam> params = object.getMaterialDef().getMaterialParams();
@@ -160,7 +160,7 @@ public class MaterialComponentSetBuilder extends AbstractComponentSetBuilder<Mat
 
                 // a vector4 could also be a ColorRGBA.
 
-                SdkComponent<?> vector4fComponent;
+                ReflectedSdkComponent<?> vector4fComponent;
 
                 if (matParam.getValue() instanceof Vector4f) {
                     vector4fComponent = new Vector4fComponent();
@@ -280,7 +280,7 @@ public class MaterialComponentSetBuilder extends AbstractComponentSetBuilder<Mat
 
         }
 
-        return new PropertySection("Material", components.toArray(new SdkComponent[0]));
+        return new PropertySection("Material", components.toArray(new ReflectedSdkComponent[0]));
     }
 
     private List<PropertySection> createAdditionalRenderStateSection() {

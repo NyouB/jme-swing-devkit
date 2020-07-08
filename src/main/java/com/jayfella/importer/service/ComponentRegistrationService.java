@@ -16,7 +16,7 @@ import java.util.Map;
  */
 public class ComponentRegistrationService implements Service {
 
-    private final Map<Class<?>, Class<? extends SdkComponent<?>>> componentClasses = new HashMap<>();
+    private final Map<Class<?>, Class<? extends ReflectedSdkComponent<?>>> componentClasses = new HashMap<>();
     private final Map<Class<?>, Class<? extends AbstractComponentSetBuilder<?>>> componentBuilderClasses = new HashMap<>();
 
     public ComponentRegistrationService() {
@@ -50,11 +50,11 @@ public class ComponentRegistrationService implements Service {
      * @param clazz
      * @param componentClass
      */
-    public void registerComponent(Class<?> clazz, Class<? extends SdkComponent<?>> componentClass) {
+    public void registerComponent(Class<?> clazz, Class<? extends ReflectedSdkComponent<?>> componentClass) {
         componentClasses.put(clazz, componentClass);
     }
 
-    public Map<Class<?>, Class<? extends SdkComponent<?>>> getComponentClasses() {
+    public Map<Class<?>, Class<? extends ReflectedSdkComponent<?>>> getComponentClasses() {
         return ImmutableMap.copyOf(componentClasses);
     }
 

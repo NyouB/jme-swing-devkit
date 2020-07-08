@@ -12,7 +12,7 @@ import java.awt.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class QuaternionComponent extends SdkComponent<Quaternion> {
+public class QuaternionComponent extends ReflectedSdkComponent<Quaternion> {
 
     private JPanel contentPanel;
     private JFormattedTextField xTextField;

@@ -1,7 +1,7 @@
 package com.jayfella.importer.properties.reflection;
 
 import com.jayfella.importer.properties.component.EnumComponent;
-import com.jayfella.importer.properties.component.SdkComponent;
+import com.jayfella.importer.properties.component.ReflectedSdkComponent;
 import com.jayfella.importer.service.ComponentRegistrationService;
 import com.jayfella.importer.service.ServiceManager;
 
@@ -16,7 +16,7 @@ import java.util.Map;
 public class ComponentBuilder {
 
     // private final Map<Class<?>, Class<? extends SdkComponent>> componentClasses = new HashMap<>();
-    private final List<SdkComponent> sdkComponents = new ArrayList<>();
+    private final List<ReflectedSdkComponent> sdkComponents = new ArrayList<>();
 
     private final UniqueProperties props;
 
@@ -45,14 +45,14 @@ public class ComponentBuilder {
 
     public void build() {
 
-        Map<Class<?>, Class<? extends SdkComponent<?>>> componentClasses =
+        Map<Class<?>, Class<? extends ReflectedSdkComponent<?>>> componentClasses =
                 ServiceManager.getService(ComponentRegistrationService.class).getComponentClasses();
 
         props.getGetters().sort(Comparator.comparing(Method::getName));
 
         for (Method getter : props.getGetters()) {
 
-            Map.Entry<Class<?>, Class<? extends SdkComponent<?>>> entry = componentClasses.entrySet().stream()
+            Map.Entry<Class<?>, Class<? extends ReflectedSdkComponent<?>>> entry = componentClasses.entrySet().stream()
                     .filter(c -> getter.getReturnType() == c.getKey() || ( getter.getReturnType().isEnum() && c.getKey() == Enum.class ) )
                     .findFirst()
                     .orElse(null);
@@ -73,9 +73,9 @@ public class ComponentBuilder {
 
                 try {
 
-                    Class<? extends SdkComponent<?>> componentClass = entry.getValue();
-                    Constructor<? extends SdkComponent<?>> constructor = componentClass.getConstructor(Object.class, Method.class, Method.class);
-                    SdkComponent<?> sdkComponent = constructor.newInstance(props.getObject(), getter, setter);
+                    Class<? extends ReflectedSdkComponent<?>> componentClass = entry.getValue();
+                    Constructor<? extends ReflectedSdkComponent<?>> constructor = componentClass.getConstructor(Object.class, Method.class, Method.class);
+                    ReflectedSdkComponent<?> sdkComponent = constructor.newInstance(props.getObject(), getter, setter);
 
                     sdkComponent.setPropertyName(UniqueProperties.getSuffix(getter.getName()));
 
@@ -100,7 +100,7 @@ public class ComponentBuilder {
 
     }
 
-    public List<SdkComponent> getSdkComponents() {
+    public List<ReflectedSdkComponent> getSdkComponents() {
         return sdkComponents;
     }
 

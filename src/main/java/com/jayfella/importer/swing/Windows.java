@@ -18,7 +18,6 @@ public class Windows {
         JDialog dialog = new JDialog(parent, DebugLights.DEBUG_LIGHTS_WINDOW_TITLE);
         dialog.setContentPane(debugLights.$$$getRootComponent$$$());
         dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        // dialog.addWindowListener(new WindowServiceListener());
         dialog.addComponentListener(new WindowLocationSaver(DebugLights.DEBUG_LIGHTS_WINDOW_TITLE));
         dialog.setResizable(false);
         dialog.pack();

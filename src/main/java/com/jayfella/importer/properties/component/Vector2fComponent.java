@@ -12,7 +12,7 @@ import java.awt.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class Vector2fComponent extends SdkComponent<Vector2f> {
+public class Vector2fComponent extends ReflectedSdkComponent<Vector2f> {
 
     private JPanel contentPanel;
     private JLabel propertyNameLabel;

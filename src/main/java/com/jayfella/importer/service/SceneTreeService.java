@@ -6,14 +6,14 @@ import com.jayfella.importer.event.SimpleEventManager;
 import com.jayfella.importer.jme.SceneObjectHighlighterState;
 import com.jayfella.importer.properties.component.events.SpatialNameChangedEvent;
 import com.jayfella.importer.tree.SceneTreeMouseListener;
-import com.jayfella.importer.tree.spatial.GeometryTreeNode;
-import com.jayfella.importer.tree.spatial.ParticleEmitterTreeNode;
+import com.jayfella.importer.tree.control.ControlTreeNode;
 import com.jayfella.importer.tree.light.*;
 import com.jayfella.importer.tree.spatial.*;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.light.*;
 import com.jme3.material.Material;
 import com.jme3.scene.*;
+import com.jme3.scene.control.Control;
 import com.jme3.scene.instancing.InstancedNode;
 import com.jme3.shader.VarType;
 
@@ -358,6 +358,21 @@ public class SceneTreeService implements Service, EventListener {
             MeshTreeNode childTreeNode = new MeshTreeNode(((Geometry) treeNode.getUserObject()).getMesh());
             treeNode.add(childTreeNode);
 
+        }
+
+        // lights...
+        LightList lights = treeNode.getUserObject().getLocalLightList();
+        for (Light light : lights) {
+            LightTreeNode lightTreeNode = createLightTreeNodeFrom(light);
+            treeNode.add(lightTreeNode);
+        }
+
+        // controls...
+        int controlCount = treeNode.getUserObject().getNumControls();
+        for (int i = 0; i < controlCount; i++) {
+            Control control = treeNode.getUserObject().getControl(i);
+            ControlTreeNode controlTreeNode = new ControlTreeNode(control);
+            treeNode.add(controlTreeNode);
         }
 
     }

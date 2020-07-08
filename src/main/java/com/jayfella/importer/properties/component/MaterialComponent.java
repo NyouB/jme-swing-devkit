@@ -22,7 +22,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.*;
 
-public class MaterialComponent extends SdkComponent<Material> {
+public class MaterialComponent extends ReflectedSdkComponent<Material> {
 
     // private static final Logger log = Logger.getInstance(MaterialComponent.class);
 
@@ -119,7 +119,7 @@ public class MaterialComponent extends SdkComponent<Material> {
 
                 // a vector4 could also be a ColorRGBA.
 
-                SdkComponent vector4fComponent;
+                ReflectedSdkComponent vector4fComponent;
 
                 if (matParam.getValue() instanceof Vector4f) {
                     vector4fComponent = new Vector4fComponent();

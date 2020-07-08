@@ -14,7 +14,7 @@ import java.awt.event.MouseListener;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class ColorRGBAComponent extends SdkComponent<ColorRGBA> {
+public class ColorRGBAComponent extends ReflectedSdkComponent<ColorRGBA> {
 
     private JPanel contentPanel;
     private JLabel propertyNameLabel;

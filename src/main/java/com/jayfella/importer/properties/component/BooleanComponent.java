@@ -7,7 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.lang.reflect.Method;
 
-public class BooleanComponent extends SdkComponent<Boolean> {
+public class BooleanComponent extends ReflectedSdkComponent<Boolean> {
 
     private JCheckBox checkBox;
     private JPanel contentPanel;

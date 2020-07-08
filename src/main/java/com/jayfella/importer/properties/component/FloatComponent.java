@@ -11,7 +11,7 @@ import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.lang.reflect.Method;
 
-public class FloatComponent extends SdkComponent<Float> {
+public class FloatComponent extends ReflectedSdkComponent<Float> {
 
     private JPanel contentPanel;
     private JTextField valueTextField;

@@ -2,7 +2,6 @@ package com.jayfella.importer.properties.component;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
-import com.intellij.uiDesigner.core.Spacer;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -11,7 +10,7 @@ import java.awt.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class StringComponent extends SdkComponent<String> {
+public class StringComponent extends ReflectedSdkComponent<String> {
 
     private JTextField valueTextField;
     private JLabel propertyNameLabel;
