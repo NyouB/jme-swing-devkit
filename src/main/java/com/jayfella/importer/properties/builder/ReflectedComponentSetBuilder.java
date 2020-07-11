@@ -24,9 +24,7 @@ public class ReflectedComponentSetBuilder extends AbstractComponentSetBuilder<Ob
         ComponentBuilder componentBuilder = new ComponentBuilder(uniqueProperties);
 
         componentBuilder.build();
-        List<ReflectedSdkComponent> components = new ArrayList<>(componentBuilder.getSdkComponents());
-
-        PropertySection propertySection = new PropertySection(name, components.toArray(new ReflectedSdkComponent[0]));
+        PropertySection propertySection = new PropertySection(name, componentBuilder.getSdkComponents().toArray(new ReflectedSdkComponent[0]));
 
         List<PropertySection> propertySections = new ArrayList<>();
         propertySections.add(propertySection);

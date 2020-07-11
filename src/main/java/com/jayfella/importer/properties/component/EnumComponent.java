@@ -22,13 +22,7 @@ public class EnumComponent extends ReflectedSdkComponent<Enum<?>> {
         Class<? extends Enum<?>> values = (Class<? extends Enum<?>>) getter.getReturnType();
         valueComboBox.setModel(new DefaultComboBoxModel<>(values.getEnumConstants()));
 
-        try {
-            Enum<?> value = (Enum<?>) getter.invoke(parent);
-            setValue(value);
-            // setValue(getter.invoke(parent));
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
-        }
+        setValue(getReflectedProperty().getValue());
     }
 
     @Override

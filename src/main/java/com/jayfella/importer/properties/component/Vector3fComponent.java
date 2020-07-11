@@ -80,7 +80,7 @@ public class Vector3fComponent extends ReflectedSdkComponent<Vector3f> {
 
         private void set() {
 
-            Vector3f value = (Vector3f) getReflectedProperty().getValue();
+            Vector3f value = getReflectedProperty().getValue();
 
             String x = xTextField.getText().isEmpty() ? "" + value.x : xTextField.getText();
             String y = yTextField.getText().isEmpty() ? "" + value.y : yTextField.getText();

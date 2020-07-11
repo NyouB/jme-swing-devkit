@@ -4,6 +4,7 @@ import com.jayfella.importer.event.SimpleEventManager;
 import com.jayfella.importer.properties.PropertySection;
 import com.jayfella.importer.properties.component.*;
 import com.jayfella.importer.properties.component.events.SpatialNameChangedEvent;
+import com.jayfella.importer.service.PropertyInspectorService;
 import com.jayfella.importer.service.ServiceManager;
 import com.jme3.material.Material;
 import com.jme3.math.Quaternion;
@@ -77,28 +78,24 @@ public class SpatialComponentSetBuilder extends AbstractComponentSetBuilder<Spat
             setter = object.getClass().getMethod("setCullHint", com.jme3.scene.Spatial.CullHint.class);
 
             EnumComponent cullHint = new EnumComponent(object, getter, setter);
-            cullHint.setEnumValues(com.jme3.scene.Spatial.CullHint.class);
             cullHint.setPropertyName("cullHint");
 
             getter = object.getClass().getMethod("getShadowMode");
             setter = object.getClass().getMethod("setShadowMode", RenderQueue.ShadowMode.class);
 
             EnumComponent shadowMode = new EnumComponent(object, getter, setter);
-            shadowMode.setEnumValues(RenderQueue.ShadowMode.class);
             shadowMode.setPropertyName("shadowMode");
 
             getter = object.getClass().getMethod("getQueueBucket");
             setter = object.getClass().getMethod("setQueueBucket", RenderQueue.Bucket.class);
 
             EnumComponent queueBucket = new EnumComponent(object, getter, setter);
-            queueBucket.setEnumValues(RenderQueue.Bucket.class);
             queueBucket.setPropertyName("queueBucket");
 
             getter = object.getClass().getMethod("getBatchHint");
             setter = object.getClass().getMethod("setBatchHint", com.jme3.scene.Spatial.BatchHint.class);
 
             EnumComponent batchHint = new EnumComponent(object, getter, setter);
-            batchHint.setEnumValues(com.jme3.scene.Spatial.BatchHint.class);
             batchHint.setPropertyName("batchHint");
 
             PropertySection spatialSection = new PropertySection("Spatial", name, cullHint, shadowMode, queueBucket, batchHint);
@@ -124,13 +121,35 @@ public class SpatialComponentSetBuilder extends AbstractComponentSetBuilder<Spat
                 BooleanComponent ignoreTranform = new BooleanComponent(object, getter, setter);
                 ignoreTranform.setPropertyName("ignoreTransform");
 
-                getter = object.getClass().getMethod("getLodLevel");
-                setter = object.getClass().getMethod("setLodLevel", int.class);
+                // @TODO: only show lod level if LOD levels are set.
+                //getter = object.getClass().getMethod("getLodLevel");
+                //setter = object.getClass().getMethod("setLodLevel", int.class);
 
-                IntegerComponent lodLevel = new IntegerComponent(object, getter, setter);
-                lodLevel.setPropertyName("lodLevel");
+                //IntegerComponent lodLevel = new IntegerComponent(object, getter, setter);
+                //lodLevel.setPropertyName("lodLevel");
 
-                PropertySection geometrySection = new PropertySection("Geometry", ignoreTranform, lodLevel);
+                // Material chooser.
+                getter = object.getClass().getMethod("getMaterial");
+                setter = object.getClass().getMethod("setMaterial", Material.class);
+                MaterialChooserComponent materialChooser = new MaterialChooserComponent(object, getter, setter) {
+
+                    @Override
+                    public void selectionChanged(Material material) {
+
+                        if (material != null) {
+                            MaterialComponentSetBuilder materialComponentSetBuilder = new MaterialComponentSetBuilder(material);
+                            List<PropertySection> sections = materialComponentSetBuilder.build();
+                            // propertySections.addAll(sections);
+
+                            ServiceManager.getService(PropertyInspectorService.class)
+                                    .updateSections(sections);
+                        }
+
+                    }
+
+                };
+
+                PropertySection geometrySection = new PropertySection("Geometry", ignoreTranform, materialChooser /*, lodLevel */);
                 propertySections.add(geometrySection);
 
 

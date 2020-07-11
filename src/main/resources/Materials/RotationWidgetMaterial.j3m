@@ -1,0 +1,11 @@
+Material Rotation Widget : Common/MatDefs/Misc/Unshaded.j3md {
+
+     MaterialParameters {
+         VertexColor: True
+     }
+
+    AdditionalRenderState {
+            LineWidth 2.0
+     }
+
+}

@@ -1,6 +1,5 @@
 package com.jayfella.importer.properties.reflection;
 
-import com.jayfella.importer.properties.component.EnumComponent;
 import com.jayfella.importer.properties.component.ReflectedSdkComponent;
 import com.jayfella.importer.service.ComponentRegistrationService;
 import com.jayfella.importer.service.ServiceManager;
@@ -15,33 +14,13 @@ import java.util.Map;
 
 public class ComponentBuilder {
 
-    // private final Map<Class<?>, Class<? extends SdkComponent>> componentClasses = new HashMap<>();
-    private final List<ReflectedSdkComponent> sdkComponents = new ArrayList<>();
+    private final List<ReflectedSdkComponent<?>> sdkComponents = new ArrayList<>();
 
     private final UniqueProperties props;
 
     public ComponentBuilder(UniqueProperties props) {
-
         this.props = props;
-
-        // add the default supported components
-        // these should be all the objects commonly used in jmonkey.
-
-//        componentClasses.put(boolean.class, BooleanComponent.class);
-//        componentClasses.put(ColorRGBA.class, ColorRGBAComponent.class);
-//        componentClasses.put(Enum.class, EnumComponent.class);
-//        componentClasses.put(float.class, FloatComponent.class);
-//        componentClasses.put(Quaternion.class, QuaternionComponent.class);
-//        componentClasses.put(Vector3f.class, Vector3fComponent.class);
-//        componentClasses.put(Vector4f.class, Vector4fComponent.class);
-//
-//        componentClasses.put(Material.class, MaterialComponent.class);
-
     }
-
-//    public void registerComponent(Class<?> clazz, Class<? extends SdkComponent> component) {
-//        componentClasses.put(clazz, component);
-//    }
 
     public void build() {
 
@@ -79,15 +58,6 @@ public class ComponentBuilder {
 
                     sdkComponent.setPropertyName(UniqueProperties.getSuffix(getter.getName()));
 
-                    if (getter.getReturnType().isEnum()) {
-
-                        Class<? extends Enum> values = (Class<? extends Enum>) getter.getReturnType();
-
-                        EnumComponent enumComponent = (EnumComponent) sdkComponent;
-                        enumComponent.setEnumValues(values);
-                    }
-
-
                     sdkComponents.add(sdkComponent);
 
                 } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
@@ -100,7 +70,7 @@ public class ComponentBuilder {
 
     }
 
-    public List<ReflectedSdkComponent> getSdkComponents() {
+    public List<ReflectedSdkComponent<?>> getSdkComponents() {
         return sdkComponents;
     }
 

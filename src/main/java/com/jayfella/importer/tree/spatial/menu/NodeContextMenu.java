@@ -11,7 +11,6 @@ import com.jayfella.importer.tree.spatial.NodeTreeNode;
 import com.jme3.asset.AssetManager;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
-import com.jme3.effect.shapes.EmitterSphereShape;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
@@ -82,27 +81,22 @@ public class NodeContextMenu extends SpatialContextMenu {
 
             AssetManager assetManager = ServiceManager.getService(JmeEngineService.class).getAssetManager();
 
-            ParticleEmitter particleEmitter = new ParticleEmitter("Flame", ParticleMesh.Type.Point, 100);
-            particleEmitter.setSelectRandomImage(true);
-            particleEmitter.setStartColor(new ColorRGBA(1f, 0.4f, 0.05f, (1f / 10)));
-            particleEmitter.setEndColor(new ColorRGBA(.4f, .22f, .12f, 0f));
-            particleEmitter.setStartSize(1.3f);
-            particleEmitter.setEndSize(2f);
-            particleEmitter.setShape(new EmitterSphereShape(Vector3f.ZERO, 1f));
-            particleEmitter.setParticlesPerSec(0);
-            particleEmitter.setGravity(0, -5, 0);
-            particleEmitter.setLowLife(.4f);
-            particleEmitter.setHighLife(.5f);
-            particleEmitter.getParticleInfluencer().setInitialVelocity(new Vector3f(0, 7, 0));
-            particleEmitter.getParticleInfluencer().setVelocityVariation(1f);
-            particleEmitter.setImagesX(2);
-            particleEmitter.setImagesY(2);
-
             Material mat = new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
             mat.setTexture("Texture", assetManager.loadTexture("Particles/flame.png"));
-            mat.setBoolean("PointSprite", true);
 
+            ParticleEmitter particleEmitter = new ParticleEmitter("New ParticleEmitter", ParticleMesh.Type.Triangle, 100);
             particleEmitter.setMaterial(mat);
+            particleEmitter.setImagesX(2);
+            particleEmitter.setImagesY(2); // 2x2 texture animation
+            particleEmitter.setEndColor(  new ColorRGBA(1f, 0f, 0f, 1f));   // red
+            particleEmitter.setStartColor(new ColorRGBA(1f, 1f, 0f, 0.5f)); // yellow
+            particleEmitter.getParticleInfluencer().setInitialVelocity(new Vector3f(0, 2, 0));
+            particleEmitter.setStartSize(1.5f);
+            particleEmitter.setEndSize(0.1f);
+            particleEmitter.setGravity(0, 0, 0);
+            particleEmitter.setLowLife(1f);
+            particleEmitter.setHighLife(3f);
+            particleEmitter.getParticleInfluencer().setVelocityVariation(0.3f);
 
             ServiceManager.getService(SceneTreeService.class).addSpatial(particleEmitter, nodeTreeNode);
 

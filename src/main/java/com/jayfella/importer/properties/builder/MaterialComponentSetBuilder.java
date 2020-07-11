@@ -3,8 +3,6 @@ package com.jayfella.importer.properties.builder;
 import com.jayfella.importer.jme.IgnoredProperties;
 import com.jayfella.importer.properties.PropertySection;
 import com.jayfella.importer.properties.component.*;
-import com.jayfella.importer.service.JmeEngineService;
-import com.jayfella.importer.service.ServiceManager;
 import com.jme3.asset.AssetNotFoundException;
 import com.jme3.material.MatParam;
 import com.jme3.material.Material;
@@ -13,10 +11,14 @@ import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.math.Vector4f;
 import com.jme3.shader.VarType;
+import com.jme3.texture.Texture;
 import com.jme3.texture.Texture2D;
 import com.jme3.util.ListMap;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -180,10 +182,10 @@ public class MaterialComponentSetBuilder extends AbstractComponentSetBuilder<Mat
 
                     if (matParam.getValue() instanceof Vector4f) {
                         Vector4f fVal = (Vector4f) setParam.getValue().getValue();
-                        vector4fComponent.setValue(fVal);
+                        ((Vector4fComponent)vector4fComponent).setValue(fVal);
                     } else {
                         ColorRGBA fVal = (ColorRGBA) setParam.getValue().getValue();
-                        vector4fComponent.setValue(fVal);
+                        ((ColorRGBAComponent)vector4fComponent).setValue(fVal);
                     }
                 } else {
 
@@ -255,21 +257,21 @@ public class MaterialComponentSetBuilder extends AbstractComponentSetBuilder<Mat
 
                 texture2DComponent.setPropertyChangedEvent(value -> {
 
-                    String val = (String) value;
+                    // String val = (String) value;
 
                     try {
 
-                        if (val != null) {
-                            Texture2D texture2D = (Texture2D) ServiceManager.getService(JmeEngineService.class).getAssetManager().loadTexture(val);
-                            object.setTexture(matParam.getName(), texture2D);
+                        if (value != null) {
+                            //Texture2D texture2D = (Texture2D) ServiceManager.getService(JmeEngineService.class).getAssetManager().loadTexture(val);
+                            object.setTexture(matParam.getName(), (Texture) value);
                         }
                         else {
                             object.clearParam(matParam.getName());
                         }
 
                     } catch (AssetNotFoundException ex) {
-                        log.warning("Texture2D Not Found: " + val);
-                        log.log(Level.FINER, "Texture2D Not Found: " + val, ex);
+                        log.warning("Texture2D Not Found: " + value);
+                        log.log(Level.FINER, "Texture2D Not Found: " + value, ex);
                     }
 
                 });

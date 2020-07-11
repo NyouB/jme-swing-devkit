@@ -3,7 +3,7 @@ package com.jayfella.importer.properties.component.control;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
-import com.jayfella.importer.properties.component.SdkComponent;
+import com.jayfella.importer.properties.ControlSdkComponent;
 import com.jayfella.importer.service.JmeEngineService;
 import com.jayfella.importer.service.ServiceManager;
 import com.jme3.animation.AnimChannel;
@@ -17,7 +17,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Collection;
 
-public class AnimControlComponent implements SdkComponent {
+public class AnimControlComponent extends ControlSdkComponent<AnimControl> {
 
     private final Timer timer;
 
@@ -32,11 +32,10 @@ public class AnimControlComponent implements SdkComponent {
     private final DefaultBoundedRangeModel animTimelineModel = new DefaultBoundedRangeModel(0, 1, 0, 1000);
 
     // JME objects should touched on the JME thread ONLY.
-    private final AnimControl animControl;
     private AnimChannel animChannel;
 
     public AnimControlComponent(AnimControl animControl) {
-        this.animControl = animControl;
+        super(animControl);
 
         final JmeEngineService engineService = ServiceManager.getService(JmeEngineService.class);
 
@@ -176,7 +175,7 @@ public class AnimControlComponent implements SdkComponent {
 
     @Override
     public void cleanup() {
-        ServiceManager.getService(JmeEngineService.class).enqueue(animControl::clearChannels);
+        ServiceManager.getService(JmeEngineService.class).enqueue(object::clearChannels);
         timer.stop();
     }
 

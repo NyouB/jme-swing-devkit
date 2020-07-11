@@ -9,23 +9,23 @@ public abstract class ReflectedSdkComponent<T> implements SdkComponent, ValuedCo
 
     private String propertyName = "";
 
-    private ReflectedProperty reflectedProperty;
+    private ReflectedProperty<T> reflectedProperty;
     private PropertyChangedEvent propertyChangedEvent;
 
     private final AtomicBoolean isBound = new AtomicBoolean(false);
 
     public ReflectedSdkComponent(Object parent, Method getter, Method setter) {
         if (parent != null) {
-            this.reflectedProperty = new ReflectedProperty(parent, getter, setter, this);
+            this.reflectedProperty = new ReflectedProperty<>(parent, getter, setter, this);
         }
 
     }
 
-    public ReflectedProperty getReflectedProperty() {
+    public ReflectedProperty<T> getReflectedProperty() {
         return reflectedProperty;
     }
 
-    public void setReflectedProperty(ReflectedProperty reflectedProperty) {
+    public void setReflectedProperty(ReflectedProperty<T> reflectedProperty) {
         this.reflectedProperty = reflectedProperty;
     }
 

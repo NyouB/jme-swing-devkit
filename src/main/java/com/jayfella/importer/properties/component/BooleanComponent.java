@@ -18,6 +18,7 @@ public class BooleanComponent extends ReflectedSdkComponent<Boolean> {
 
     public BooleanComponent(Object parent, Method getter, Method setter) {
         super(parent, getter, setter);
+        setValue(getReflectedProperty().getValue());
     }
 
     @Override
@@ -32,7 +33,9 @@ public class BooleanComponent extends ReflectedSdkComponent<Boolean> {
         if (!isBinded()) {
 
             SwingUtilities.invokeLater(() -> {
-                this.checkBox.setSelected(value);
+
+                boolean val = value == null ? false : value;
+                this.checkBox.setSelected(val);
                 bind();
             });
         }

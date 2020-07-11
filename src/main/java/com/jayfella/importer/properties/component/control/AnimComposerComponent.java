@@ -3,7 +3,7 @@ package com.jayfella.importer.properties.component.control;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
-import com.jayfella.importer.properties.component.SdkComponent;
+import com.jayfella.importer.properties.ControlSdkComponent;
 import com.jayfella.importer.service.JmeEngineService;
 import com.jayfella.importer.service.ServiceManager;
 import com.jme3.anim.AnimClip;
@@ -15,7 +15,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Collection;
 
-public class AnimComposerComponent implements SdkComponent {
+public class AnimComposerComponent extends ControlSdkComponent<AnimComposer> {
 
     private final Timer timer;
 
@@ -26,14 +26,12 @@ public class AnimComposerComponent implements SdkComponent {
     private JPanel contentPanel;
     private JSlider speedSlider;
 
-    private final AnimComposer animComposer;
     private final DefaultBoundedRangeModel animTimelineModel = new DefaultBoundedRangeModel(0, 1, 0, 1000);
     private AnimClip animClip;
     private com.jme3.anim.tween.action.Action action;
 
     public AnimComposerComponent(AnimComposer animComposer) {
-
-        this.animComposer = animComposer;
+        super(animComposer);
 
         final JmeEngineService engineService = ServiceManager.getService(JmeEngineService.class);
 

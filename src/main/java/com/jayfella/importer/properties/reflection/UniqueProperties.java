@@ -10,18 +10,17 @@ import java.util.Set;
 
 public class UniqueProperties {
 
-    private Object object;
-    private List<Method> getters = new ArrayList<>();
-    private List<Method> setters = new ArrayList<>();
+    private final Object object;
+    private final List<Method> getters = new ArrayList<>();
+    private final List<Method> setters = new ArrayList<>();
 
-    private String[] ignoredProperties;
+    private final String[] ignoredProperties;
 
     public UniqueProperties(Object object, String... ignoredProperties) {
         this.object = object;
         this.ignoredProperties = ignoredProperties;
         create();
     }
-
 
     public Object getObject() {
         return object;
@@ -54,12 +53,12 @@ public class UniqueProperties {
                 ReflectionUtils.withPrefix("set"),
                 ReflectionUtils.withParametersCount(1));
 
-        Set<Method> settersBoolean = ReflectionUtils.getAllMethods(object.getClass(),
-                ReflectionUtils.withModifier(Modifier.PUBLIC),
-                ReflectionUtils.withPrefix("is"),
-                ReflectionUtils.withParametersCount(1));
-
-        setters.addAll(settersBoolean);
+//        Set<Method> settersBoolean = ReflectionUtils.getAllMethods(object.getClass(),
+//                ReflectionUtils.withModifier(Modifier.PUBLIC),
+//                ReflectionUtils.withPrefix("is"),
+//                ReflectionUtils.withParametersCount(1));
+//
+//        setters.addAll(settersBoolean);
 
         // remove any getters that are declared ignored.
         removeIgnoredGetters(getters);
@@ -75,63 +74,8 @@ public class UniqueProperties {
         // we may have removed some setters that don't conform, so we need to remove those getters we can't deal with.
         cleanGetters(getters, setters);
 
-//        // remove all getters that have no matching setters
-//        getters.removeIf(getter -> {
-//
-//            String suffix = getter.getName().substring(3).toLowerCase();
-//
-//            Method setMethod = setters.stream().filter(m -> m.getName().substring(3).toLowerCase().equals(suffix))
-//                    .findFirst()
-//                    .orElse(null);
-//
-//            return setMethod == null;
-//
-//        });
-//
-//        // remove all setters whose parameter is not the same as the getter return type.
-//        // e.g. getLocalScale returns Vector3f, setLocalScale must accept Vector3f as parameter.
-//        setters.removeIf(setter -> {
-//
-//            String suffix = setter.getName().substring(3).toLowerCase();
-//
-//            Method getter = getters.stream().filter(g -> g.getName().substring(3).toLowerCase().equals(suffix))
-//                    .findFirst()
-//                    .orElse(null);
-//
-//            if (getter == null) {
-//                return true;
-//            }
-//
-//            Class<?>[] params = setter.getParameterTypes();
-//
-//            if (setter.getParameterCount() > 1) {
-//                return true;
-//            }
-//
-//            boolean same =  params[0].isAssignableFrom(getter.getReturnType());
-//            return !same;
-//
-//        });
-//
-//        // AGAIN remove all getters that have no matching setters
-//        // we may have removed some setters that don't conform, so we need to remove those getters we can't deal with.
-//        getters.removeIf(getter -> {
-//
-//            String suffix = getter.getName().substring(3).toLowerCase();
-//
-//            Method setMethod = setters.stream().filter(m -> m.getName().substring(3).toLowerCase().equals(suffix))
-//                    .findFirst()
-//                    .orElse(null);
-//
-//            return setMethod == null;
-//
-//        });
-
         this.getters.addAll(getters);
         this.setters.addAll(setters);
-
-        // this.getters.sort(Comparator.comparing(Method::getName));
-
 
     }
 
@@ -156,7 +100,7 @@ public class UniqueProperties {
     private void cleanGetters(Set<Method> getters, Set<Method> setters) {
         getters.removeIf(getter -> {
 
-            if (getter.toString().contains("abstract")) {
+            if (getter.toString().toLowerCase().contains("abstract")) {
                 return true;
             }
 
@@ -178,7 +122,7 @@ public class UniqueProperties {
     private void cleanSetters(Set<Method> getters, Set<Method> setters) {
         setters.removeIf(setter -> {
 
-            if (setter.toString().contains("abstract")) {
+            if (setter.toString().toLowerCase().contains("abstract")) {
                 return true;
             }
 
@@ -203,16 +147,18 @@ public class UniqueProperties {
         });
     }
 
-    public static String getSuffix(String name) {
+    public static String getSuffix(final String name) {
+
+        String response = name;
 
         if (name.startsWith("is"))
-            name =  name.substring(2);
+            response =  name.substring(2);
         else if (name.startsWith("get"))
-            name = name.substring(3);
+            response = name.substring(3);
         else if (name.startsWith("set"))
-            name = name.substring(3);
+            response = name.substring(3);
 
-        return name;
+        return response;
     }
 
 }

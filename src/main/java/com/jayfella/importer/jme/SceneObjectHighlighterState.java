@@ -12,8 +12,6 @@ import com.jme3.light.LightProbe;
 import com.jme3.light.OrientedBoxProbeArea;
 import com.jme3.light.SphereProbeArea;
 import com.jme3.material.Material;
-import com.jme3.material.Materials;
-import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
@@ -54,15 +52,10 @@ public class SceneObjectHighlighterState extends BaseAppState {
 
     @Override protected void initialize(Application app) {
 
-        highlighterNode.setQueueBucket(RenderQueue.Bucket.Transparent);
-
-        highlightMaterial = new Material(app.getAssetManager(), Materials.UNSHADED);
-        highlightMaterial.getAdditionalRenderState().setWireframe(true);
-        highlightMaterial.getAdditionalRenderState().setLineWidth(2);
-        highlightMaterial.getAdditionalRenderState().setDepthTest(false);
-        highlightMaterial.setColor("Color", ColorRGBA.Blue.clone());
-
+        //highlighterNode.setQueueBucket(RenderQueue.Bucket.Transparent);
+        highlightMaterial = ServiceManager.getService(JmeEngineService.class).getAssetManager().loadMaterial("Materials/HighlightMaterial.j3m");
         ((SimpleApplication)app).getRootNode().attachChild(highlighterNode);
+
     }
 
     @Override protected void cleanup(Application app) { }
@@ -93,10 +86,16 @@ public class SceneObjectHighlighterState extends BaseAppState {
 
     public void highlightMesh(Geometry geometry) {
 
-        Geometry highlighter = geometry.clone(false);
-        highlighter.setName(HIGHLIGHTER_MESH);
+        // if we clone the geometry we also get all of the controls, which we don't think we want.
+        // We use our own material, and sometimes the control changes material values that don't exist.
+        // particle emitters, for example.
+
+        // Geometry highlighter = geometry.clone(false);
+        Geometry highlighter = new Geometry(HIGHLIGHTER_MESH, geometry.getMesh());
+        // highlighter.setName(HIGHLIGHTER_MESH);
         highlighter.setLocalTranslation(geometry.getWorldTranslation());
         highlighter.setLocalRotation(geometry.getWorldRotation());
+        highlighter.setLocalScale(geometry.getWorldScale());
         highlighter.setMaterial(highlightMaterial);
         highlighter.setShadowMode(RenderQueue.ShadowMode.Off);
 

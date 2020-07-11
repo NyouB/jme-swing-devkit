@@ -4,7 +4,6 @@ import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.BaseAppState;
 import com.jme3.material.Material;
-import com.jme3.material.Materials;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
@@ -59,9 +58,7 @@ public class CameraRotationWidgetState extends BaseAppState {
         Geometry arrow_geom_y = new Geometry("Arrow Y", arrow_mesh_y);
         Geometry arrow_geom_z = new Geometry("Arrow Z", arrow_mesh_z);
 
-        Material material = new Material(getApplication().getAssetManager(), Materials.UNSHADED);
-        material.setBoolean("VertexColor", true);
-        material.getAdditionalRenderState().setLineWidth(2);
+        Material material = getApplication().getAssetManager().loadMaterial("Materials/RotationWidgetMaterial.j3m");
 
         arrow_geom_x.setMaterial(material);
         arrow_geom_y.setMaterial(material);

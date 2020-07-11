@@ -6,8 +6,6 @@ import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.BaseAppState;
 import com.jme3.asset.AssetManager;
-import com.jme3.material.Material;
-import com.jme3.material.Materials;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.debug.Grid;
 
@@ -24,7 +22,7 @@ public class DebugGridState extends BaseAppState {
         Grid grid = new Grid((int) sceneConfig.getGridSize().x, (int) sceneConfig.getGridSize().y, sceneConfig.getGridSize().z);
         gridGeometry = new Geometry(DEBUG_GRID_NAME, grid);
 
-        gridGeometry.setMaterial(new Material(assetManager, Materials.UNSHADED));
+        gridGeometry.setMaterial(assetManager.loadMaterial("Materials/GridMaterial.j3m"));
         gridGeometry.getMaterial().setColor("Color", sceneConfig.getGridColor());
 
         gridGeometry.setLocalTranslation(sceneConfig.getGridLocation());

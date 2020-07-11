@@ -23,6 +23,7 @@ public class FloatComponent extends ReflectedSdkComponent<Float> {
 
     public FloatComponent(Object object, Method getter, Method setter) {
         super(object, getter, setter);
+
     }
 
     private void set() {

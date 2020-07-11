@@ -11,7 +11,6 @@ import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class ColorRGBAComponent extends ReflectedSdkComponent<ColorRGBA> {
@@ -30,13 +29,7 @@ public class ColorRGBAComponent extends ReflectedSdkComponent<ColorRGBA> {
 
     public ColorRGBAComponent(Object parent, Method getter, Method setter) {
         super(parent, getter, setter);
-
-        try {
-            setValue((ColorRGBA) getter.invoke(parent));
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
-        }
-
+        setValue(getReflectedProperty().getValue());
         addColorPanelListener();
     }
 

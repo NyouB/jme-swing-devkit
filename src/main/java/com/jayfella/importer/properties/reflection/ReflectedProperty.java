@@ -7,15 +7,15 @@ import com.jayfella.importer.service.ServiceManager;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class ReflectedProperty {
+public class ReflectedProperty<T> {
 
     private final Object parent;
 
     private final Method getter;
     private final Method setter;
-    private final ValuedComponent component;
+    private final ValuedComponent<T> component;
 
-    public ReflectedProperty(Object parent, Method getter, Method setter, ValuedComponent component) {
+    public ReflectedProperty(Object parent, Method getter, Method setter, ValuedComponent<T> component) {
         this.parent = parent;
         this.getter = getter;
         this.setter = setter;
@@ -36,7 +36,8 @@ public class ReflectedProperty {
 
     public void update() {
         try {
-            Object value = getter.invoke(parent);
+            @SuppressWarnings("unchecked")
+            T value = (T)getter.invoke(parent);
             this.component.setValue(value);
         } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
@@ -51,9 +52,11 @@ public class ReflectedProperty {
         }
     }
 
-    public Object getValue() {
+    public T getValue() {
         try {
-            return getter.invoke(parent);
+            @SuppressWarnings("unchecked")
+            T value = (T)getter.invoke(parent);
+            return value;
         } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }

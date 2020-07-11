@@ -46,8 +46,16 @@ public class Vector2fComponent extends ReflectedSdkComponent<Vector2f> {
         if (!isBinded()) {
 
             SwingUtilities.invokeLater(() -> {
-                this.xTextField.setText("" + value.x);
-                this.yTextField.setText("" + value.y);
+
+                if (value != null) {
+                    this.xTextField.setText("" + value.x);
+                    this.yTextField.setText("" + value.y);
+                }
+                else {
+                    this.xTextField.setText("");
+                    this.yTextField.setText("");
+                }
+
 
                 bind();
             });
