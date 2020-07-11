@@ -33,14 +33,13 @@ public class FloatComponent extends ReflectedSdkComponent<Float> {
     }
 
     @Override
-    public void setValue(Object value) {
+    public void setValue(Float value) {
         super.setValue(value);
 
         if (!isBinded()) {
-            float newVal = (float) value;
 
             SwingUtilities.invokeLater(() -> {
-                this.valueTextField.setText("" + newVal);
+                this.valueTextField.setText("" + value);
                 bind();
             });
         }

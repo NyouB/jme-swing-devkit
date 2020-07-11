@@ -34,7 +34,7 @@ public class Vector3fComponent extends ReflectedSdkComponent<Vector3f> {
         zTextField.setFormatterFactory(floatFormatFactory);
 
         try {
-            setValue(getter.invoke(parent));
+            setValue((Vector3f) getter.invoke(parent));
         } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
@@ -42,17 +42,15 @@ public class Vector3fComponent extends ReflectedSdkComponent<Vector3f> {
     }
 
     @Override
-    public void setValue(Object value) {
+    public void setValue(Vector3f value) {
         super.setValue(value);
 
         if (!isBinded()) {
 
-            Vector3f vector3f = (Vector3f) value;
-
             SwingUtilities.invokeLater(() -> {
-                this.xTextField.setText("" + vector3f.x);
-                this.yTextField.setText("" + vector3f.y);
-                this.zTextField.setText("" + vector3f.z);
+                this.xTextField.setText("" + value.x);
+                this.yTextField.setText("" + value.y);
+                this.zTextField.setText("" + value.z);
 
                 bind();
             });

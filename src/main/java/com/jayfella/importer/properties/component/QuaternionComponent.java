@@ -30,20 +30,19 @@ public class QuaternionComponent extends ReflectedSdkComponent<Quaternion> {
         zTextField.setFormatterFactory(floatFormatFactory);
 
         try {
-            setValue(getter.invoke(parent));
+            setValue((Quaternion) getter.invoke(parent));
         } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public void setValue(Object value) {
+    public void setValue(Quaternion value) {
         super.setValue(value);
 
         if (!isBinded()) {
 
-            Quaternion quaternion = (Quaternion) value;
-            float[] angles = quaternion.toAngles(null);
+            float[] angles = value.toAngles(null);
 
             SwingUtilities.invokeLater(() -> {
                 xTextField.setText("" + angles[0]);

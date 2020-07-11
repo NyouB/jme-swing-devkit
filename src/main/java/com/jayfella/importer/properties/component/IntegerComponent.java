@@ -26,7 +26,7 @@ public class IntegerComponent extends ReflectedSdkComponent<Integer> {
         valueTextField.setFormatterFactory(new IntegerFormatFactory());
 
         try {
-            setValue(getter.invoke(parent));
+            setValue((Integer) getter.invoke(parent));
         } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
@@ -34,16 +34,13 @@ public class IntegerComponent extends ReflectedSdkComponent<Integer> {
     }
 
     @Override
-    public void setValue(Object value) {
+    public void setValue(Integer value) {
         super.setValue(value);
 
         if (!isBinded()) {
 
-            // Vector3f vector3f = (Vector3f) value;
-            int integer = (int) value;
-
             SwingUtilities.invokeLater(() -> {
-                valueTextField.setText("" + integer);
+                valueTextField.setText("" + value);
                 bind();
             });
         }

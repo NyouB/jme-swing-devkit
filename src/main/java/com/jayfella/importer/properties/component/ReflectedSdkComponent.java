@@ -5,7 +5,7 @@ import com.jayfella.importer.properties.reflection.ReflectedProperty;
 import java.lang.reflect.Method;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public abstract class ReflectedSdkComponent<T> implements SdkComponent, ValuedComponent, NamedComponent {
+public abstract class ReflectedSdkComponent<T> implements SdkComponent, ValuedComponent<T>, NamedComponent {
 
     private String propertyName = "";
 
@@ -49,10 +49,10 @@ public abstract class ReflectedSdkComponent<T> implements SdkComponent, ValuedCo
     }
 
     @Override
-    public void setValue(Object value) {
+    public void setValue(T value) {
         if (this.propertyChangedEvent != null) {
             this.propertyChangedEvent.propertyChanged(value);
-            propertyChanged((T) value);
+            propertyChanged(value);
         }
     }
 

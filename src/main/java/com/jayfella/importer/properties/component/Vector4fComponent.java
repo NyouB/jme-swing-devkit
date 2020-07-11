@@ -38,7 +38,7 @@ public class Vector4fComponent extends ReflectedSdkComponent<Vector4f> {
         wTextField.setFormatterFactory(floatFormatFactory);
 
         try {
-            setValue(getter.invoke(parent));
+            setValue((Vector4f) getter.invoke(parent));
         } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
@@ -46,18 +46,16 @@ public class Vector4fComponent extends ReflectedSdkComponent<Vector4f> {
     }
 
     @Override
-    public void setValue(Object value) {
+    public void setValue(Vector4f value) {
         super.setValue(value);
 
         if (!isBinded()) {
 
-            Vector4f vector4f = (Vector4f) value;
-
             SwingUtilities.invokeLater(() -> {
-                this.xTextField.setText("" + vector4f.x);
-                this.yTextField.setText("" + vector4f.y);
-                this.zTextField.setText("" + vector4f.z);
-                this.wTextField.setText("" + vector4f.w);
+                this.xTextField.setText("" + value.x);
+                this.yTextField.setText("" + value.y);
+                this.zTextField.setText("" + value.z);
+                this.wTextField.setText("" + value.w);
 
                 bind();
             });

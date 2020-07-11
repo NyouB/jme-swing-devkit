@@ -26,14 +26,13 @@ public class BooleanComponent extends ReflectedSdkComponent<Boolean> {
     }
 
     @Override
-    public void setValue(Object value) {
+    public void setValue(Boolean value) {
         super.setValue(value);
 
         if (!isBinded()) {
-            boolean newVal = (boolean) value;
 
             SwingUtilities.invokeLater(() -> {
-                this.checkBox.setSelected(newVal);
+                this.checkBox.setSelected(value);
                 bind();
             });
         }

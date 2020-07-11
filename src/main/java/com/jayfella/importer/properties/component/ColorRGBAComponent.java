@@ -32,7 +32,7 @@ public class ColorRGBAComponent extends ReflectedSdkComponent<ColorRGBA> {
         super(parent, getter, setter);
 
         try {
-            setValue(getter.invoke(parent));
+            setValue((ColorRGBA) getter.invoke(parent));
         } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
@@ -101,17 +101,15 @@ public class ColorRGBAComponent extends ReflectedSdkComponent<ColorRGBA> {
     }
 
     @Override
-    public void setValue(Object value) {
+    public void setValue(ColorRGBA value) {
         super.setValue(value);
 
-        ColorRGBA newValue = (ColorRGBA) value;
-
         SwingUtilities.invokeLater(() -> {
-            if (newValue != null) {
-                colorPanel.setBackground(ColorConverter.toColor(newValue));
+            if (value != null) {
+                colorPanel.setBackground(ColorConverter.toColor(value));
 
                 colorValueLabel.setText(String.format("[ %.2f, %.2f, %.2f, %.2f ]",
-                        newValue.r, newValue.g, newValue.b, newValue.a));
+                        value.r, value.g, value.b, value.a));
             } else {
                 colorPanel.setBackground(null);
                 colorValueLabel.setText("No Color Set");

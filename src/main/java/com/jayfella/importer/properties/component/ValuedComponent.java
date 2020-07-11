@@ -1,8 +1,8 @@
 package com.jayfella.importer.properties.component;
 
-public interface ValuedComponent {
+public interface ValuedComponent<T> {
 
-    void setValue(Object value);
+    void setValue(T value);
 
     PropertyChangedEvent getPropertyChangedEvent();
     void setPropertyChangedEvent(PropertyChangedEvent event);

@@ -24,22 +24,20 @@ public class StringComponent extends ReflectedSdkComponent<String> {
         super(parent, getter, setter);
 
         try {
-            setValue(getter.invoke(parent));
+            setValue((String) getter.invoke(parent));
         } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public void setValue(Object value) {
+    public void setValue(String value) {
         super.setValue(value);
 
         if (!isBinded()) {
 
-            String string = (String) value;
-
             SwingUtilities.invokeLater(() -> {
-                this.valueTextField.setText(string);
+                this.valueTextField.setText(value);
                 bind();
             });
         }

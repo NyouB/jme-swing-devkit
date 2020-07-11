@@ -32,7 +32,7 @@ public class Vector2fComponent extends ReflectedSdkComponent<Vector2f> {
         yTextField.setFormatterFactory(floatFormatFactory);
 
         try {
-            setValue(getter.invoke(parent));
+            setValue((Vector2f) getter.invoke(parent));
         } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
@@ -40,16 +40,14 @@ public class Vector2fComponent extends ReflectedSdkComponent<Vector2f> {
     }
 
     @Override
-    public void setValue(Object value) {
+    public void setValue(Vector2f value) {
         super.setValue(value);
 
         if (!isBinded()) {
 
-            Vector2f vector2f = (Vector2f) value;
-
             SwingUtilities.invokeLater(() -> {
-                this.xTextField.setText("" + vector2f.x);
-                this.yTextField.setText("" + vector2f.y);
+                this.xTextField.setText("" + value.x);
+                this.yTextField.setText("" + value.y);
 
                 bind();
             });

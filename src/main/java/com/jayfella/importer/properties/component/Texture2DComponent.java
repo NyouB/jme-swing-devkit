@@ -43,7 +43,7 @@ public class Texture2DComponent extends ReflectedSdkComponent<Texture2D> {
         initCustomLayout();
 
         try {
-            setValue(getter.invoke(parent));
+            setValue((Texture2D) getter.invoke(parent));
         } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
@@ -116,25 +116,23 @@ public class Texture2DComponent extends ReflectedSdkComponent<Texture2D> {
     }
 
     @Override
-    public void setValue(Object value) {
+    public void setValue(Texture2D value) {
         super.setValue(value);
 
         if (!isBinded()) {
 
-            Texture2D texture2D = (Texture2D) value;
-
             SwingUtilities.invokeLater(() -> {
 
-                if (texture2D != null) {
+                if (value != null) {
                     // if the texture is embedded it won't have a key.
-                    if (texture2D.getKey() != null) {
-                        texturesList.setSelectedValue(texture2D.getKey().getName(), true);
+                    if (value.getKey() != null) {
+                        texturesList.setSelectedValue(value.getKey().getName(), true);
 
                     } else {
-                        texturesList.setSelectedValue(texture2D.getName(), true);
+                        texturesList.setSelectedValue(value.getName(), true);
                     }
 
-                    this.imagePanel.setTexture(texture2D);
+                    this.imagePanel.setTexture(value);
                     this.imagePanel.revalidate();
                 } else {
                     texturesList.setSelectedIndex(-1);
@@ -168,7 +166,7 @@ public class Texture2DComponent extends ReflectedSdkComponent<Texture2D> {
                 imagePanel.revalidate();
                 imagePanel.repaint();
 
-                setValue(newValue);
+                setValue(texture2D);
             }
         });
 

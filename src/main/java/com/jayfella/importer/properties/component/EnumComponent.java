@@ -12,34 +12,33 @@ import java.lang.reflect.Method;
 public class EnumComponent extends ReflectedSdkComponent<Enum<?>> {
 
     private JPanel contentPanel;
-    private JComboBox valueComboBox;
+    private JComboBox<Enum<?>> valueComboBox;
     private JLabel propertyNameLabel;
 
     public EnumComponent(Object parent, Method getter, Method setter) {
         super(parent, getter, setter);
 
+        @SuppressWarnings("unchecked")
+        Class<? extends Enum<?>> values = (Class<? extends Enum<?>>) getter.getReturnType();
+        valueComboBox.setModel(new DefaultComboBoxModel<>(values.getEnumConstants()));
+
         try {
-            setValue(getter.invoke(parent));
+            Enum<?> value = (Enum<?>) getter.invoke(parent);
+            setValue(value);
+            // setValue(getter.invoke(parent));
         } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
     }
 
-    public void setEnumValues(Class<? extends Enum> enumData) {
-        valueComboBox.setModel(new DefaultComboBoxModel<>(enumData.getEnumConstants()));
-
-    }
-
     @Override
-    public void setValue(Object value) {
+    public void setValue(Enum<?> value) {
         super.setValue(value);
 
         if (!isBinded()) {
 
-            Enum enumValue = (Enum) value;
-
             SwingUtilities.invokeLater(() -> {
-                valueComboBox.setSelectedItem(enumValue);
+                valueComboBox.setSelectedItem(value);
                 bind();
             });
         }
