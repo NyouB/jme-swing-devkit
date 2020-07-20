@@ -2,7 +2,6 @@ package com.jayfella.importer.properties.component;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
-import com.intellij.uiDesigner.core.Spacer;
 import com.jayfella.importer.core.ColorConverter;
 import com.jme3.math.ColorRGBA;
 
@@ -19,25 +18,32 @@ public class ColorRGBAComponent extends ReflectedSdkComponent<ColorRGBA> {
     private JLabel propertyNameLabel;
     private JLabel colorValueLabel;
     private JPanel colorPanel;
-    private JButton clearColorButton;
+    private JButton nullButton;
 
     public ColorRGBAComponent() {
-        super(null, null, null);
-
-        addColorPanelListener();
+        this(null, null, null, false);
     }
 
-    public ColorRGBAComponent(Object parent, Method getter, Method setter) {
+    public ColorRGBAComponent(boolean nullable) {
+        this(null, null, null, nullable);
+    }
+
+    public ColorRGBAComponent(Object parent, Method getter, Method setter, boolean nullable) {
         super(parent, getter, setter);
-        setValue(getReflectedProperty().getValue());
+
+        setNullable(nullable);
+
+        if (getter != null) {
+            setValue(getReflectedProperty().getValue());
+        }
+
+        nullButton.setVisible(nullable);
+        nullButton.addActionListener(e -> setValue(null));
+
         addColorPanelListener();
     }
 
     private void addColorPanelListener() {
-
-        clearColorButton.addActionListener(e -> {
-            setValue(null);
-        });
 
         colorPanel.addMouseListener(new MouseListener() {
             @Override
@@ -152,9 +158,7 @@ public class ColorRGBAComponent extends ReflectedSdkComponent<ColorRGBA> {
      */
     private void $$$setupUI$$$() {
         contentPanel = new JPanel();
-        contentPanel.setLayout(new GridLayoutManager(4, 3, new Insets(0, 0, 0, 0), -1, -1));
-        final Spacer spacer1 = new Spacer();
-        contentPanel.add(spacer1, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        contentPanel.setLayout(new GridLayoutManager(3, 3, new Insets(0, 0, 0, 0), -1, -1));
         colorPanel = new JPanel();
         colorPanel.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
         contentPanel.add(colorPanel, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, new Dimension(24, 24), new Dimension(24, 24), new Dimension(24, 24), 0, false));
@@ -165,9 +169,9 @@ public class ColorRGBAComponent extends ReflectedSdkComponent<ColorRGBA> {
         propertyNameLabel = new JLabel();
         propertyNameLabel.setText("Label");
         contentPanel.add(propertyNameLabel, new GridConstraints(1, 0, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        clearColorButton = new JButton();
-        clearColorButton.setText("Clear");
-        contentPanel.add(clearColorButton, new GridConstraints(2, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        nullButton = new JButton();
+        nullButton.setText("null");
+        contentPanel.add(nullButton, new GridConstraints(2, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JSeparator separator1 = new JSeparator();
         contentPanel.add(separator1, new GridConstraints(0, 0, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
     }

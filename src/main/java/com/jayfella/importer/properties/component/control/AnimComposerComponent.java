@@ -203,6 +203,16 @@ public class AnimComposerComponent extends ControlSdkComponent<AnimComposer> {
     }
 
     @Override
+    public boolean isNullable() {
+        return false;
+    }
+
+    @Override
+    public void setNullable(boolean value) {
+
+    }
+
+    @Override
     public void cleanup() {
         timer.stop();
     }

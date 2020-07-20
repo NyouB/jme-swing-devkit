@@ -16,13 +16,29 @@ public class FloatComponent extends ReflectedSdkComponent<Float> {
     private JPanel contentPanel;
     private JTextField valueTextField;
     private JLabel propertyNameLabel;
+    private JButton nullButton;
 
     public FloatComponent() {
-        super(null, null, null);
+        this(null, null, null, false);
+    }
+
+    public FloatComponent(boolean nullable) {
+        this(null, null, null, nullable);
     }
 
     public FloatComponent(Object object, Method getter, Method setter) {
+        this(object, getter, setter, false);
+    }
+
+    public FloatComponent(Object object, Method getter, Method setter, boolean nullable) {
         super(object, getter, setter);
+
+        setNullable(nullable);
+
+        nullButton.setVisible(isNullable());
+        nullButton.addActionListener(e -> {
+            valueTextField.setText("");
+        });
 
     }
 
@@ -30,6 +46,12 @@ public class FloatComponent extends ReflectedSdkComponent<Float> {
         if (!valueTextField.getText().trim().isEmpty() && NumberUtils.isFloat(valueTextField.getText())) {
             float newValue = Float.parseFloat(valueTextField.getText());
             setValue(newValue);
+        } else {
+            if (isNullable()) {
+                setValue(null);
+            } else {
+                setValue(0.0f);
+            }
         }
     }
 
@@ -40,7 +62,17 @@ public class FloatComponent extends ReflectedSdkComponent<Float> {
         if (!isBinded()) {
 
             SwingUtilities.invokeLater(() -> {
-                this.valueTextField.setText("" + value);
+
+                if (value == null) {
+                    if (isNullable()) {
+                        valueTextField.setText("");
+                    } else {
+                        valueTextField.setText("0");
+                    }
+                } else {
+                    this.valueTextField.setText("" + value);
+                }
+
                 bind();
             });
         }
@@ -96,16 +128,19 @@ public class FloatComponent extends ReflectedSdkComponent<Float> {
      */
     private void $$$setupUI$$$() {
         contentPanel = new JPanel();
-        contentPanel.setLayout(new GridLayoutManager(4, 1, new Insets(0, 0, 0, 0), -1, -1));
+        contentPanel.setLayout(new GridLayoutManager(4, 2, new Insets(0, 0, 0, 0), -1, -1));
         final Spacer spacer1 = new Spacer();
-        contentPanel.add(spacer1, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        contentPanel.add(spacer1, new GridConstraints(3, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
         valueTextField = new JTextField();
-        contentPanel.add(valueTextField, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        contentPanel.add(valueTextField, new GridConstraints(2, 0, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
         propertyNameLabel = new JLabel();
         propertyNameLabel.setText("Float");
         contentPanel.add(propertyNameLabel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JSeparator separator1 = new JSeparator();
-        contentPanel.add(separator1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        contentPanel.add(separator1, new GridConstraints(0, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        nullButton = new JButton();
+        nullButton.setText("null");
+        contentPanel.add(nullButton, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }
 
     /**

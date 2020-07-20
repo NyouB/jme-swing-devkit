@@ -174,6 +174,16 @@ public class AnimControlComponent extends ControlSdkComponent<AnimControl> {
     }
 
     @Override
+    public boolean isNullable() {
+        return false;
+    }
+
+    @Override
+    public void setNullable(boolean value) {
+
+    }
+
+    @Override
     public void cleanup() {
         ServiceManager.getService(JmeEngineService.class).enqueue(object::clearChannels);
         timer.stop();

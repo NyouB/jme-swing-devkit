@@ -85,7 +85,7 @@ public class MaterialComponentSetBuilder extends AbstractComponentSetBuilder<Mat
 
             if (varyType == VarType.Float) {
 
-                FloatComponent floatComponent = new FloatComponent();
+                FloatComponent floatComponent = new FloatComponent(true);
                 floatComponent.setPropertyName(matParam.getName());
 
                 // set the value of the component if one is found.
@@ -95,22 +95,30 @@ public class MaterialComponentSetBuilder extends AbstractComponentSetBuilder<Mat
                         .orElse(null);
 
                 if (setParam != null) {
-                    float fVal = (float) setParam.getValue().getValue();
+                    Float fVal = (Float) setParam.getValue().getValue();
                     floatComponent.setValue(fVal);
+
                 } else {
-                    floatComponent.setValue(0.0f);
+                    // floatComponent.setValue(0.0f);
+                    floatComponent.setValue(null);
                 }
 
                 floatComponent.setPropertyChangedEvent(value -> {
-                    float val = (float) value;
-                    object.setFloat(matParam.getName(), val);
+                    Float val = (Float) value;
+
+                    if (val != null) {
+                        object.setFloat(matParam.getName(), val);
+                    }
+                    else {
+                        object.clearParam(matParam.getName());
+                    }
                 });
 
                 components.add(floatComponent);
 
             } else if (varyType == VarType.Vector2) {
 
-                Vector2fComponent vector2fComponent = new Vector2fComponent();
+                Vector2fComponent vector2fComponent = new Vector2fComponent(true);
                 vector2fComponent.setPropertyName(matParam.getName());
 
                 // set the value of the component if one is found.
@@ -123,19 +131,26 @@ public class MaterialComponentSetBuilder extends AbstractComponentSetBuilder<Mat
                     Vector2f fVal = (Vector2f) setParam.getValue().getValue();
                     vector2fComponent.setValue(fVal);
                 } else {
-                    vector2fComponent.setValue(new Vector2f(0, 0));
+                    // vector2fComponent.setValue(new Vector2f(0, 0));
+                    vector2fComponent.setValue(null);
                 }
 
                 vector2fComponent.setPropertyChangedEvent(value -> {
                     Vector2f val = (Vector2f) value;
-                    object.setVector2(matParam.getName(), val);
+
+                    if (val != null) {
+                        object.setVector2(matParam.getName(), val);
+                    }
+                    else {
+                        object.clearParam(matParam.getName());
+                    }
                 });
 
                 components.add(vector2fComponent);
 
             } else if (varyType == VarType.Vector3) {
 
-                Vector3fComponent vector3fComponent = new Vector3fComponent();
+                Vector3fComponent vector3fComponent = new Vector3fComponent(true);
                 vector3fComponent.setPropertyName(matParam.getName());
 
                 // set the value of the component if one is found.
@@ -148,12 +163,21 @@ public class MaterialComponentSetBuilder extends AbstractComponentSetBuilder<Mat
                     Vector3f fVal = (Vector3f) setParam.getValue().getValue();
                     vector3fComponent.setValue(fVal);
                 } else {
-                    vector3fComponent.setValue(new Vector3f(0, 0, 0));
+                    // vector3fComponent.setValue(new Vector3f(0, 0, 0));
+                    vector3fComponent.setValue(null);
                 }
 
                 vector3fComponent.setPropertyChangedEvent(value -> {
                     Vector3f val = (Vector3f) value;
-                    object.setVector3(matParam.getName(), val);
+
+                    if (val != null) {
+                        object.setVector3(matParam.getName(), val);
+                    }
+                    else {
+                        object.clearParam(matParam.getName());
+                    }
+
+
                 });
 
                 components.add(vector3fComponent);
@@ -167,7 +191,7 @@ public class MaterialComponentSetBuilder extends AbstractComponentSetBuilder<Mat
                 if (matParam.getValue() instanceof Vector4f) {
                     vector4fComponent = new Vector4fComponent();
                 } else {
-                    vector4fComponent = new ColorRGBAComponent();
+                    vector4fComponent = new ColorRGBAComponent(true);
                 }
 
                 vector4fComponent.setPropertyName(matParam.getName());
@@ -188,7 +212,6 @@ public class MaterialComponentSetBuilder extends AbstractComponentSetBuilder<Mat
                         ((ColorRGBAComponent)vector4fComponent).setValue(fVal);
                     }
                 } else {
-
                     vector4fComponent.setValue(null);
                 }
 

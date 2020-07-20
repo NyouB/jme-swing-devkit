@@ -14,6 +14,13 @@ public abstract class ReflectedSdkComponent<T> implements SdkComponent, ValuedCo
 
     private final AtomicBoolean isBound = new AtomicBoolean(false);
 
+    // is the object we're reflecting ever allowed to be NULL?
+    private boolean nullable = false;
+
+    // is the user allowed to set this value to null?
+    // this could be a per-object basis. localTranslation = false, some material value = true.
+    private boolean allowedNullable = false;
+
     public ReflectedSdkComponent(Object parent, Method getter, Method setter) {
         if (parent != null) {
             this.reflectedProperty = new ReflectedProperty<>(parent, getter, setter, this);
@@ -81,7 +88,18 @@ public abstract class ReflectedSdkComponent<T> implements SdkComponent, ValuedCo
     }
 
     @Override
+    public boolean isNullable() {
+        return nullable;
+    }
+
+    @Override
+    public void setNullable(boolean value) {
+        nullable = value;
+    }
+
+    @Override
     public void cleanup() {
 
     }
+
 }
