@@ -3,11 +3,11 @@ package com.jayfella.importer.forms;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.jayfella.importer.config.DevKitConfig;
+import com.jayfella.importer.registration.spatial.AssetLinkNodeRegistrar;
 import com.jayfella.importer.service.JmeEngineService;
 import com.jayfella.importer.service.SceneTreeService;
 import com.jayfella.importer.service.ServiceManager;
 import com.jayfella.importer.swing.ComponentUtilities;
-import com.jayfella.importer.tree.spatial.AssetLinkNodeTreeNode;
 import com.jme3.asset.ModelKey;
 import com.jme3.scene.AssetLinkNode;
 
@@ -26,7 +26,7 @@ public class AddLinkedAsset {
     private JList<String> modelsList;
     private JButton addLinkedAssetButton;
 
-    public AddLinkedAsset(final AssetLinkNodeTreeNode assetLinkNodeTreeNode) {
+    public AddLinkedAsset(final AssetLinkNodeRegistrar.AssetLinkNodeTreeNode assetLinkNodeTreeNode) {
 
         List<Path> modelFiles = null;
 

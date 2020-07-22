@@ -3,14 +3,15 @@ package com.jayfella.importer.tree.spatial.menu;
 import com.jayfella.importer.config.DevKitConfig;
 import com.jayfella.importer.forms.AddModels;
 import com.jayfella.importer.forms.CreateSkyBoxDialog;
-import com.jayfella.importer.service.ClipboardService;
-import com.jayfella.importer.service.JmeEngineService;
-import com.jayfella.importer.service.SceneTreeService;
-import com.jayfella.importer.service.ServiceManager;
+import com.jayfella.importer.registration.spatial.GeometryRegistrar;
+import com.jayfella.importer.registration.spatial.NodeRegistrar;
+import com.jayfella.importer.service.*;
 import com.jayfella.importer.tree.spatial.NodeTreeNode;
 import com.jme3.material.Material;
-import com.jme3.scene.*;
-import com.jme3.scene.instancing.InstancedNode;
+import com.jme3.scene.Geometry;
+import com.jme3.scene.Mesh;
+import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Cylinder;
 import com.jme3.scene.shape.Dome;
 import com.jme3.scene.shape.Quad;
@@ -18,6 +19,7 @@ import com.jme3.scene.shape.Sphere;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Set;
 
 
 public class NodeContextMenu extends SpatialContextMenu {
@@ -70,54 +72,49 @@ public class NodeContextMenu extends SpatialContextMenu {
         });
         genSkyBoxItem.setMnemonic('K');
 
-        // Add -> Particle
-//        JMenuItem particeItem = getAddMenu().add(new JMenuItem("ParticleEmitter"));
-//        particeItem.addActionListener(e -> {
-//
-//            AssetManager assetManager = ServiceManager.getService(JmeEngineService.class).getAssetManager();
-//
-//            Material mat = new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
-//            mat.setTexture("Texture", assetManager.loadTexture("Particles/flame.png"));
-//
-//            ParticleEmitter particleEmitter = new ParticleEmitter("New ParticleEmitter", ParticleMesh.Type.Triangle, 30);
-//            particleEmitter.setMaterial(mat);
-//            particleEmitter.setImagesX(2);
-//            particleEmitter.setImagesY(2); // 2x2 texture animation
-//            particleEmitter.setEndColor(  new ColorRGBA(1f, 0f, 0f, 1f));   // red
-//            particleEmitter.setStartColor(new ColorRGBA(1f, 1f, 0f, 0.5f)); // yellow
-//            particleEmitter.getParticleInfluencer().setInitialVelocity(new Vector3f(0, 2, 0));
-//            particleEmitter.setStartSize(1.5f);
-//            particleEmitter.setEndSize(0.1f);
-//            particleEmitter.setGravity(0, 0, 0);
-//            particleEmitter.setLowLife(1f);
-//            particleEmitter.setHighLife(3f);
-//            particleEmitter.getParticleInfluencer().setVelocityVariation(0.3f);
-//
-//            ServiceManager.getService(SceneTreeService.class).addSpatial(particleEmitter, nodeTreeNode);
-//
-//        });
+        // Add -> Registered Spatials
+        RegistrationService registrationService = ServiceManager.getService(RegistrationService.class);
+        Set<NodeRegistrar> nodeRegistrars = registrationService.getNodeRegistration().getRegistrations();
 
-        // Add -> Node
-        JMenuItem addNodeItem = getAddMenu().add(new JMenuItem("Node"));
-        addNodeItem.addActionListener(e -> ServiceManager.getService(SceneTreeService.class).addSpatial(new Node(), nodeTreeNode));
-        addNodeItem.setMnemonic('N');
+        if (!nodeRegistrars.isEmpty()) {
 
-        // Add -> InstancedNode
-        JMenuItem addInstancedNodeItem = getAddMenu().add(new JMenuItem("Instanced Node"));
-        addInstancedNodeItem.addActionListener(e -> ServiceManager.getService(SceneTreeService.class).addSpatial(new InstancedNode("No Name"), nodeTreeNode));
+            getAddMenu().add(new JSeparator());
 
-        // Add -> AssetLinkNode
-        JMenuItem addLinkNodeItem = getAddMenu().add(new JMenuItem("AssetLink Node"));
-        addLinkNodeItem.addActionListener(e -> {
+            for (NodeRegistrar registrar : nodeRegistrars) {
 
-            // Just add an AssetLinkNode and provide a context menu to add linked assets.
-            ServiceManager.getService(SceneTreeService.class).addSpatial(new AssetLinkNode(), nodeTreeNode);
+                JMenuItem menuItem = getAddMenu().add(new JMenuItem(registrar.getRegisteredClass().getSimpleName()));
 
-        });
+                menuItem.addActionListener(e -> {
 
-        // Add -> BatchNode
-        JMenuItem batchNodeItem = getAddMenu().add(new JMenuItem("Batch Node"));
-        batchNodeItem.addActionListener(e -> ServiceManager.getService(SceneTreeService.class).addSpatial(new BatchNode(), nodeTreeNode));
+                    Node node = registrar.createInstance(ServiceManager.getService(JmeEngineService.class));
+                    ServiceManager.getService(SceneTreeService.class).addSpatial(node, nodeTreeNode);
+
+                });
+
+            }
+        }
+
+        Set<GeometryRegistrar> geometryRegistrars = registrationService.getGeometryRegistration().getRegistrations();
+        if (!geometryRegistrars.isEmpty()) {
+
+            getAddMenu().add(new JSeparator());
+
+            for (GeometryRegistrar registrar : geometryRegistrars) {
+
+                JMenuItem menuItem = getAddMenu().add(new JMenuItem(registrar.getRegisteredClass().getSimpleName()));
+
+                menuItem.addActionListener(e -> {
+
+                    Geometry geometry = registrar.createInstance(ServiceManager.getService(JmeEngineService.class));
+                    ServiceManager.getService(SceneTreeService.class).addSpatial(geometry, nodeTreeNode);
+
+                });
+
+            }
+
+        }
+
+        add(new JSeparator());
 
         JMenuItem pasteItem = add(new JMenuItem("Paste"));
         pasteItem.setEnabled(ServiceManager.getService(ClipboardService.class).hasSpatialClipboardItem());

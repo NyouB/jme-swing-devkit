@@ -3,11 +3,11 @@ package com.jayfella.importer.forms;
 import com.google.common.collect.ImmutableList;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
+import com.jayfella.importer.registration.spatial.AssetLinkNodeRegistrar;
 import com.jayfella.importer.service.JmeEngineService;
 import com.jayfella.importer.service.SceneTreeService;
 import com.jayfella.importer.service.ServiceManager;
 import com.jayfella.importer.swing.ComponentUtilities;
-import com.jayfella.importer.tree.spatial.AssetLinkNodeTreeNode;
 import com.jme3.asset.ModelKey;
 import com.jme3.scene.AssetLinkNode;
 
@@ -21,7 +21,7 @@ public class RemoveLinkedAsset {
     private JList<ModelKey> modelKeysList;
     private JButton removeLinkedAssetsButton;
 
-    public RemoveLinkedAsset(AssetLinkNodeTreeNode assetLinkNodeTreeNode) {
+    public RemoveLinkedAsset(AssetLinkNodeRegistrar.AssetLinkNodeTreeNode assetLinkNodeTreeNode) {
 
         JmeEngineService engineService = ServiceManager.getService(JmeEngineService.class);
 

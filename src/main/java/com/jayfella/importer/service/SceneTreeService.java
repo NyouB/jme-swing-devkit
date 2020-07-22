@@ -5,11 +5,16 @@ import com.jayfella.importer.event.EventListener;
 import com.jayfella.importer.event.SimpleEventManager;
 import com.jayfella.importer.jme.SceneObjectHighlighterState;
 import com.jayfella.importer.properties.component.events.SpatialNameChangedEvent;
+import com.jayfella.importer.registration.Registrar;
+import com.jayfella.importer.registration.spatial.GeometryRegistrar;
+import com.jayfella.importer.registration.spatial.NodeRegistrar;
 import com.jayfella.importer.tree.SceneTreeMouseListener;
 import com.jayfella.importer.tree.control.ControlTreeNode;
 import com.jayfella.importer.tree.light.*;
-import com.jayfella.importer.tree.spatial.*;
-import com.jme3.effect.ParticleEmitter;
+import com.jayfella.importer.tree.spatial.GeometryTreeNode;
+import com.jayfella.importer.tree.spatial.MeshTreeNode;
+import com.jayfella.importer.tree.spatial.NodeTreeNode;
+import com.jayfella.importer.tree.spatial.SpatialTreeNode;
 import com.jme3.light.*;
 import com.jme3.material.Material;
 import com.jme3.scene.*;
@@ -280,6 +285,28 @@ public class SceneTreeService implements Service, EventListener {
 
     }
 
+    public void addControl(Control control, SpatialTreeNode parentNode) {
+
+        ControlTreeNode newNode = new ControlTreeNode(control);
+
+        // null check for whenever we add other controls...
+        if (newNode != null) {
+            parentNode.add(newNode);
+
+            // update the tree to reflect any changes made.
+            reloadTreeNode(parentNode);
+
+            JmeEngineService engineService = ServiceManager.getService(JmeEngineService.class);
+
+            // attach the light on the JME thread. The light no longer belongs to AWT at this point.
+            engineService.enqueue(() -> {
+                parentNode.getUserObject().addControl(control);
+            });
+
+        }
+
+    }
+
     /**
      * Removes the selected scene spatial from the tree and scene.
      * This method **must** be called from the AWT thread.
@@ -297,6 +324,7 @@ public class SceneTreeService implements Service, EventListener {
             Spatial spatial = spatialTreeNode.getUserObject();
             spatial.removeFromParent();
 
+            // reload the tree to reflect the changes made.
             SwingUtilities.invokeLater(() -> reloadTreeNode(treeParent));
 
         });
@@ -322,7 +350,24 @@ public class SceneTreeService implements Service, EventListener {
             parentNode.removeLight(light);
 
             // reload the tree to reflect the changes made.
-            // SwingUtilities.invokeLater(this::reloadTree);
+            SwingUtilities.invokeLater(() -> reloadTreeNode(parent));
+
+        });
+
+    }
+
+    public void removeTreeNode(ControlTreeNode controlTreeNode, SpatialTreeNode parent) {
+
+        controlTreeNode.removeFromParent();
+
+        ServiceManager.getService(JmeEngineService.class).enqueue(() -> {
+
+            Spatial parentNode = parent.getUserObject();
+            Control control = controlTreeNode.getUserObject();
+
+            parentNode.removeControl(control);
+
+            // reload the tree to reflect the changes made.
             SwingUtilities.invokeLater(() -> reloadTreeNode(parent));
 
         });
@@ -385,6 +430,49 @@ public class SceneTreeService implements Service, EventListener {
      */
     private SpatialTreeNode createSpatialTreeNodeFrom(Spatial spatial) {
 
+        RegistrationService registrationService = ServiceManager.getService(RegistrationService.class);
+        JmeEngineService engineService = ServiceManager.getService(JmeEngineService.class);
+
+        SpatialTreeNode treeNode = null;
+
+        if (spatial instanceof Node) {
+
+            Node node = (Node) spatial;
+            Registrar<NodeRegistrar> nodeRegistrar = registrationService.getNodeRegistration();
+
+            for (NodeRegistrar registrar : nodeRegistrar.getRegistrations()) {
+                if (registrar.getRegisteredClass().equals(node.getClass())) {
+                    treeNode = (SpatialTreeNode) registrar.createSceneTreeNode(node, engineService);
+                    break;
+                }
+            }
+
+            if (treeNode == null) {
+                log.info("No TreeNode associated with object: " + spatial.getClass() + ", using default NodeTreeNode.");
+                treeNode = new NodeTreeNode(node);
+            }
+        }
+
+        else if (spatial instanceof Geometry) {
+
+            Geometry geometry = (Geometry) spatial;
+            Registrar<GeometryRegistrar> geometryRegistrar = registrationService.getGeometryRegistration();
+
+            for (GeometryRegistrar registrar : geometryRegistrar.getRegistrations()) {
+                if (registrar.getRegisteredClass().equals(geometry.getClass())) {
+                    treeNode = (SpatialTreeNode) registrar.createSceneTreeNode(geometry, engineService);
+                    break;
+                }
+            }
+
+            if (treeNode == null) {
+                log.info("No TreeNode associated with object: " + spatial.getClass() + ", using default GeometryTreeNode.");
+                treeNode = new GeometryTreeNode(geometry);
+            }
+
+        }
+
+        /*
         if (spatial instanceof AssetLinkNode) {
             return new AssetLinkNodeTreeNode( (Node) spatial );
         }
@@ -404,9 +492,13 @@ public class SceneTreeService implements Service, EventListener {
             return new GeometryTreeNode( (Geometry) spatial );
         }
 
-        log.warning("Unable to create SpatialTreeNode from object: " + spatial.getClass());
+         */
 
-        return null;
+        if (treeNode == null) {
+            log.warning("Unable to create SpatialTreeNode from object: " + spatial.getClass());
+        }
+
+        return treeNode;
     }
 
     private LightTreeNode createLightTreeNodeFrom(Light light) {

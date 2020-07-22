@@ -1,7 +1,7 @@
 package com.jayfella.importer.properties.reflection;
 
 import com.jayfella.importer.properties.component.ReflectedSdkComponent;
-import com.jayfella.importer.service.ComponentRegistrationService;
+import com.jayfella.importer.service.RegistrationService;
 import com.jayfella.importer.service.ServiceManager;
 
 import java.lang.reflect.Constructor;
@@ -25,7 +25,7 @@ public class ComponentBuilder {
     public void build() {
 
         Map<Class<?>, Class<? extends ReflectedSdkComponent<?>>> componentClasses =
-                ServiceManager.getService(ComponentRegistrationService.class).getComponentClasses();
+                ServiceManager.getService(RegistrationService.class).getComponentClasses();
 
         props.getGetters().sort(Comparator.comparing(Method::getName));
 

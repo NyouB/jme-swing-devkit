@@ -8,11 +8,17 @@ import com.jayfella.importer.properties.builder.SpatialComponentSetBuilder;
 import com.jayfella.importer.properties.component.*;
 import com.jayfella.importer.properties.component.control.AnimComposerComponent;
 import com.jayfella.importer.properties.component.control.AnimControlComponent;
+import com.jayfella.importer.registration.Registrar;
+import com.jayfella.importer.registration.control.ControlRegistrar;
+import com.jayfella.importer.registration.control.NoArgsControlRegistrar;
+import com.jayfella.importer.registration.spatial.*;
 import com.jme3.anim.AnimComposer;
 import com.jme3.animation.AnimControl;
 import com.jme3.material.Material;
 import com.jme3.math.*;
+import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.control.BillboardControl;
 import com.jme3.scene.control.Control;
 import com.jme3.texture.Texture2D;
 
@@ -22,7 +28,7 @@ import java.util.Map;
 /**
  * A service that binds types to components. Used for creating components from reflected values to allow modifying the value.
  */
-public class ComponentRegistrationService implements Service {
+public class RegistrationService implements Service {
 
     // a single object that returns a single component. For example a vector3f or a float.
     private final Map<Class<?>, Class<? extends ReflectedSdkComponent<?>>> componentClasses = new HashMap<>();
@@ -33,7 +39,12 @@ public class ComponentRegistrationService implements Service {
     // a control that returns a single component.
     private final Map<Class<? extends Control>, Class<? extends ControlSdkComponent<?>>> controlComponentClasses = new HashMap<>();
 
-    public ComponentRegistrationService() {
+    private final Registrar<NodeRegistrar> nodeRegistration = new Registrar<>(NodeRegistrar.class);
+    private final Registrar<GeometryRegistrar> geometryRegistration = new Registrar<>(GeometryRegistrar.class);
+
+    private final Registrar<ControlRegistrar> controlRegistration = new Registrar<>(ControlRegistrar.class);
+
+    public RegistrationService() {
 
         // register all the built-in components.
 
@@ -54,6 +65,15 @@ public class ComponentRegistrationService implements Service {
 
         controlComponentClasses.put(AnimControl.class, AnimControlComponent.class);
         controlComponentClasses.put(AnimComposer.class, AnimComposerComponent.class);
+
+        nodeRegistration.register(new NoArgsSpatialRegistrar(Node.class));
+        nodeRegistration.register(new AssetLinkNodeRegistrar());
+        nodeRegistration.register(new BatchNodeRegistrar());
+        nodeRegistration.register(new InstancedNodeSpatialRegistrar());
+
+        geometryRegistration.register(new ParticleEmitterSpatialRegistrar());
+
+        controlRegistration.register(NoArgsControlRegistrar.create(BillboardControl.class));
 
     }
 
@@ -117,6 +137,31 @@ public class ComponentRegistrationService implements Service {
 
     public Class<? extends ControlSdkComponent<?>> getControlSdkComponentFor(Class<? extends Control> controlClass) {
         return controlComponentClasses.get(controlClass);
+    }
+
+
+    public void registerNode(NodeRegistrar registrar) {
+        nodeRegistration.register(registrar);
+    }
+
+    public Registrar<NodeRegistrar> getNodeRegistration() {
+        return nodeRegistration;
+    }
+
+    public void registerGeometry(GeometryRegistrar registrar) {
+        geometryRegistration.register(registrar);
+    }
+
+    public Registrar<GeometryRegistrar> getGeometryRegistration() {
+        return geometryRegistration;
+    }
+
+    public void registerControl(ControlRegistrar registrar) {
+        controlRegistration.register(registrar);
+    }
+
+    public Registrar<ControlRegistrar> getControlRegistration() {
+        return controlRegistration;
     }
 
 }

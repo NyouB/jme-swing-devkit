@@ -1,0 +1,76 @@
+package com.jayfella.importer.registration.spatial;
+
+import com.jayfella.importer.service.JmeEngineService;
+import com.jayfella.importer.service.ServiceManager;
+import com.jayfella.importer.tree.spatial.NodeTreeNode;
+import com.jayfella.importer.tree.spatial.menu.NodeContextMenu;
+import com.jme3.app.SimpleApplication;
+import com.jme3.scene.Node;
+import com.jme3.scene.instancing.InstancedNode;
+
+import javax.swing.*;
+import javax.swing.tree.TreeNode;
+import java.awt.*;
+
+public class InstancedNodeSpatialRegistrar extends NodeRegistrar {
+
+    public InstancedNodeSpatialRegistrar() {
+        super(InstancedNode.class);
+    }
+
+    @Override
+    public Node createInstance(SimpleApplication application) {
+        return new InstancedNode("New InstancedNode");
+    }
+
+    @Override
+    public TreeNode createSceneTreeNode(Node node, SimpleApplication application) {
+        return null;
+    }
+
+    public static class InstancedNodeTreeNode extends NodeTreeNode {
+
+        public InstancedNodeTreeNode(InstancedNode instancedNode) {
+            super(instancedNode);
+        }
+
+        @Override
+        public InstancedNode getUserObject() {
+            return (InstancedNode) super.getUserObject();
+        }
+
+        @Override
+        public JPopupMenu getContextMenu() {
+            return new InstancedNodeContextMenu(this);
+        }
+    }
+
+    public static class InstancedNodeContextMenu extends NodeContextMenu {
+
+        public InstancedNodeContextMenu(InstancedNodeTreeNode instancedNodeTreeNode) throws HeadlessException {
+            super(instancedNodeTreeNode);
+
+            JMenuItem instanceItem = add(new JMenuItem("Instance Items"));
+            instanceItem.addActionListener(e -> {
+                ServiceManager.getService(JmeEngineService.class).enqueue(() -> {
+
+                    try {
+                        instancedNodeTreeNode.getUserObject().instance();
+                    }
+                    catch (IllegalStateException ex) {
+
+                        JOptionPane.showMessageDialog(null,
+                                ex.getMessage(),
+                                "Instancing Error",
+                                JOptionPane.ERROR_MESSAGE);
+
+                    }
+
+                });
+            });
+
+        }
+
+    }
+
+}

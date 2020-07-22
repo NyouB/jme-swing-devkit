@@ -103,7 +103,7 @@ public class PropertyInspectorService implements Service {
 
             Control control = (Control) object;
 
-            Class<? extends ControlSdkComponent<?>> componentClass = ServiceManager.getService(ComponentRegistrationService.class)
+            Class<? extends ControlSdkComponent<?>> componentClass = ServiceManager.getService(RegistrationService.class)
                     .getControlSdkComponentFor(control.getClass());
 
             if (componentClass != null) {
@@ -129,7 +129,7 @@ public class PropertyInspectorService implements Service {
 
         } else {
 
-            Class<? extends AbstractComponentSetBuilder<?>> componentSetBuilderClass = ServiceManager.getService(ComponentRegistrationService.class)
+            Class<? extends AbstractComponentSetBuilder<?>> componentSetBuilderClass = ServiceManager.getService(RegistrationService.class)
                     .getComponentSetBuilderFor(object.getClass());
 
             if (componentSetBuilderClass != null) {

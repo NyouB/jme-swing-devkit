@@ -4,10 +4,8 @@ import com.jayfella.importer.clipboard.SpatialClipboardItem;
 import com.jayfella.importer.forms.GenerateLightProbeDialog;
 import com.jayfella.importer.forms.SaveSpatial;
 import com.jayfella.importer.jme.EditorCameraState;
-import com.jayfella.importer.service.ClipboardService;
-import com.jayfella.importer.service.JmeEngineService;
-import com.jayfella.importer.service.SceneTreeService;
-import com.jayfella.importer.service.ServiceManager;
+import com.jayfella.importer.registration.control.ControlRegistrar;
+import com.jayfella.importer.service.*;
 import com.jayfella.importer.tree.TreeConstants;
 import com.jayfella.importer.tree.spatial.SpatialTreeNode;
 import com.jme3.light.AmbientLight;
@@ -15,10 +13,11 @@ import com.jme3.light.DirectionalLight;
 import com.jme3.light.PointLight;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.control.Control;
 
 import javax.swing.*;
 
-public abstract class SpatialContextMenu extends JPopupMenu {
+public class SpatialContextMenu extends JPopupMenu {
 
     private final Spatial spatial;
     SpatialTreeNode spatialTreeNode;
@@ -122,7 +121,21 @@ public abstract class SpatialContextMenu extends JPopupMenu {
         });
         deleteItem.setMnemonic('D');
 
+        // Add -> Registered Spatials
+        RegistrationService registrationService = ServiceManager.getService(RegistrationService.class);
 
+        for (ControlRegistrar registrar : registrationService.getControlRegistration().getRegistrations()) {
+
+            JMenuItem menuItem = getAddMenu().add(new JMenuItem(registrar.getRegisteredClass().getSimpleName()));
+
+            menuItem.addActionListener(e -> {
+
+                Control control = registrar.createInstance(ServiceManager.getService(JmeEngineService.class));
+                ServiceManager.getService(SceneTreeService.class).addControl(control, spatialTreeNode);
+
+            });
+
+        }
 
     }
 

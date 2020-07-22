@@ -19,7 +19,7 @@ public class ControlTreeNode extends DefaultMutableTreeNode implements TreeConte
 
     @Override
     public JPopupMenu getContextMenu() {
-        return null;
+        return new ControlContextMenu(this);
     }
 
 }

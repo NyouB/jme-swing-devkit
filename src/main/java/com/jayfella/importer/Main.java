@@ -53,7 +53,7 @@ public class Main {
         // register all of our services...
         ServiceManager.registerService(JmeEngineServiceImpl.class);
         ServiceManager.registerService(WindowService.class);
-        ServiceManager.registerService(ComponentRegistrationService.class);
+        ServiceManager.registerService(RegistrationService.class);
         ServiceManager.registerService(ClipboardService.class);
 
         JmeEngineService engineService = ServiceManager.getService(JmeEngineService.class);
