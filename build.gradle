@@ -76,6 +76,7 @@ dependencies {
     implementation "com.fasterxml.jackson.core:jackson-annotations:$version_jackson"
     implementation "com.fasterxml.jackson.core:jackson-databind:$version_jackson"
 
-
+    // testing - REMOVE
+    // implementation "com.jayfella:jme-terrain:1.0-SNAPSHOT"
 }
 

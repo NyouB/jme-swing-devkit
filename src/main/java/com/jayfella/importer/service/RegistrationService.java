@@ -71,7 +71,7 @@ public class RegistrationService implements Service {
         nodeRegistration.register(new BatchNodeRegistrar());
         nodeRegistration.register(new InstancedNodeSpatialRegistrar());
 
-        geometryRegistration.register(new ParticleEmitterSpatialRegistrar());
+        // geometryRegistration.register(new ParticleEmitterSpatialRegistrar());
 
         controlRegistration.register(NoArgsControlRegistrar.create(BillboardControl.class));
 

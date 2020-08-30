@@ -1,11 +1,9 @@
 package com.jayfella.importer.tree.spatial;
 
-import com.jayfella.importer.tree.TreeContextMenu;
+import com.jayfella.importer.tree.JmeTreeNode;
 import com.jme3.scene.Spatial;
 
-import javax.swing.tree.DefaultMutableTreeNode;
-
-public abstract class SpatialTreeNode extends DefaultMutableTreeNode implements TreeContextMenu {
+public abstract class SpatialTreeNode extends JmeTreeNode {
 
     public SpatialTreeNode(Spatial spatial) {
         super(spatial);

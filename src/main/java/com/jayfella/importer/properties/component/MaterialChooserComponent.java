@@ -15,11 +15,12 @@ import java.awt.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Set;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 public class MaterialChooserComponent extends ReflectedSdkComponent<Material> {
 
-    private static final String[] materialExtensions = new String[]{".j3md", ".j3m"};
+    private static final Logger log = Logger.getLogger(MaterialChooserComponent.class.getName());
 
     private JComboBox<String> materialsComboBox;
     private JPanel contentPanel;
@@ -31,19 +32,12 @@ public class MaterialChooserComponent extends ReflectedSdkComponent<Material> {
     public MaterialChooserComponent(Object parent, Method getter, Method setter) {
         super(parent, getter, setter);
 
-
-
         // get all available materials.
         DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
-        // model.addElement(Materials.UNSHADED);
-        // model.addElement(Materials.LIGHTING);
-        // model.addElement(Materials.PBR);
-
 
         Reflections reflections = new Reflections(null, new ResourcesScanner());
         Set<String> j3mdResourceList = reflections.getResources(Pattern.compile(".*\\.j3md"));
         Set<String> j3mResourceList = reflections.getResources(Pattern.compile(".*\\.j3m"));
-
 
         for (String resource : j3mdResourceList) {
             model.addElement(resource);
@@ -61,50 +55,6 @@ public class MaterialChooserComponent extends ReflectedSdkComponent<Material> {
             e.printStackTrace();
         }
 
-        // get a list of all textures in the asset root.
-//        List<Path> materialFiles = null;
-//
-//        try {
-//            materialFiles = Files.walk(new File(DevKitConfig.getInstance().getProjectConfig().getAssetRootDir()).toPath())
-//                    .filter(p -> {
-//                        for (String ext : materialExtensions) {
-//                            if (p.toString().endsWith(ext)) {
-//                                return true;
-//                            }
-//                        }
-//                        return false;
-//                    })
-//                    .collect(Collectors.toList());
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        if (materialFiles != null) {
-//            // DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
-//
-//            for (Path path : materialFiles) {
-//
-//                String relativePath = path.toString().replace(DevKitConfig.getInstance().getProjectConfig().getAssetRootDir(), "");
-//
-//                // remove any trailing slashes.
-//                if (relativePath.startsWith("/")) {
-//                    relativePath = relativePath.substring(1);
-//                }
-//
-//                model.addElement(relativePath);
-//            }
-//
-//            materialsComboBox.setModel(model);
-//
-//        }
-//
-//        try {
-//            setValue((Material) getter.invoke(parent));
-//        } catch (IllegalAccessException | InvocationTargetException e) {
-//            e.printStackTrace();
-//        }
-
     }
 
     @Override
@@ -114,7 +64,6 @@ public class MaterialChooserComponent extends ReflectedSdkComponent<Material> {
         if (!isBinded()) {
                 SwingUtilities.invokeLater(() -> {
                 materialsComboBox.setSelectedItem(value.getMaterialDef().getAssetName());
-
                 bind();
             });
         }
@@ -131,10 +80,17 @@ public class MaterialChooserComponent extends ReflectedSdkComponent<Material> {
             AssetManager assetManager = ServiceManager.getService(JmeEngineService.class).getAssetManager();
             Material material = null;
 
-            if (selectedMaterial.endsWith("j3md")) {
-                material = new Material(assetManager, selectedMaterial);
-            } else if (selectedMaterial.endsWith("j3m")) {
-                material = assetManager.loadMaterial(selectedMaterial);
+            if (selectedMaterial != null) {
+
+                if (selectedMaterial.endsWith(".j3md")) {
+                    material = new Material(assetManager, selectedMaterial);
+                } else if (selectedMaterial.endsWith(".j3m")) {
+                    material = assetManager.loadMaterial(selectedMaterial);
+                }
+
+            }
+            else {
+                log.warning("The specified material is NULL. This is probably not intended!");
             }
 
             setValue(material);
