@@ -191,7 +191,6 @@ public class AnimComposerComponent extends ControlSdkComponent<AnimComposer> {
     }
 
     /**
-     * @noinspection ALL
      */
     public JComponent $$$getRootComponent$$$() {
         return contentPanel;

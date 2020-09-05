@@ -6,7 +6,6 @@ import com.intellij.uiDesigner.core.Spacer;
 
 import javax.swing.*;
 import java.awt.*;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class EnumComponent extends ReflectedSdkComponent<Enum<?>> {
@@ -92,7 +91,6 @@ public class EnumComponent extends ReflectedSdkComponent<Enum<?>> {
     }
 
     /**
-     * @noinspection ALL
      */
     public JComponent $$$getRootComponent$$$() {
         return contentPanel;

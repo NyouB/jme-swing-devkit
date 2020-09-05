@@ -177,7 +177,6 @@ public class ColorRGBAComponent extends ReflectedSdkComponent<ColorRGBA> {
     }
 
     /**
-     * @noinspection ALL
      */
     public JComponent $$$getRootComponent$$$() {
         return contentPanel;

@@ -215,7 +215,6 @@ public class Texture2DComponent extends ReflectedSdkComponent<Texture2D> {
     }
 
     /**
-     * @noinspection ALL
      */
     public JComponent $$$getRootComponent$$$() {
         return contentPanel;

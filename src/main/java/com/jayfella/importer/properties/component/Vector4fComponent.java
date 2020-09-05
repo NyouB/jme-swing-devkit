@@ -169,7 +169,6 @@ public class Vector4fComponent extends ReflectedSdkComponent<Vector4f> {
     }
 
     /**
-     * @noinspection ALL
      */
     public JComponent $$$getRootComponent$$$() {
         return contentPanel;

@@ -113,7 +113,6 @@ public class IntegerComponent extends ReflectedSdkComponent<Integer> {
     }
 
     /**
-     * @noinspection ALL
      */
     public JComponent $$$getRootComponent$$$() {
         return contentPanel;

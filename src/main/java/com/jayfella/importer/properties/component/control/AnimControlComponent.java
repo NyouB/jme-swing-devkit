@@ -237,7 +237,6 @@ public class AnimControlComponent extends ControlSdkComponent<AnimControl> {
     }
 
     /**
-     * @noinspection ALL
      */
     public JComponent $$$getRootComponent$$$() {
         return contentPanel;

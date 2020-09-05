@@ -84,7 +84,6 @@ public class BooleanComponent extends ReflectedSdkComponent<Boolean> {
     }
 
     /**
-     * @noinspection ALL
      */
     public JComponent $$$getRootComponent$$$() {
         return contentPanel;

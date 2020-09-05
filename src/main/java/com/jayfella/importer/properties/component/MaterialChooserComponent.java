@@ -143,7 +143,6 @@ public class MaterialChooserComponent extends ReflectedSdkComponent<Material> {
     }
 
     /**
-     * @noinspection ALL
      */
     public JComponent $$$getRootComponent$$$() {
         return contentPanel;

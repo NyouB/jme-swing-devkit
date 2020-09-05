@@ -230,7 +230,6 @@ public class Vector3fComponent extends ReflectedSdkComponent<Vector3f> {
     }
 
     /**
-     * @noinspection ALL
      */
     public JComponent $$$getRootComponent$$$() {
         return contentPanel;

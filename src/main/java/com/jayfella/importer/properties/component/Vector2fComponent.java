@@ -206,7 +206,6 @@ public class Vector2fComponent extends ReflectedSdkComponent<Vector2f> {
     }
 
     /**
-     * @noinspection ALL
      */
     public JComponent $$$getRootComponent$$$() {
         return contentPanel;

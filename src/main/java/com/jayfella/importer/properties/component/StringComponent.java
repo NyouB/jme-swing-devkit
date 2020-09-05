@@ -110,7 +110,6 @@ public class StringComponent extends ReflectedSdkComponent<String> {
     }
 
     /**
-     * @noinspection ALL
      */
     public JComponent $$$getRootComponent$$$() {
         return contentPanel;

@@ -144,7 +144,6 @@ public class FloatComponent extends ReflectedSdkComponent<Float> {
     }
 
     /**
-     * @noinspection ALL
      */
     public JComponent $$$getRootComponent$$$() {
         return contentPanel;

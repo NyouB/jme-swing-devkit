@@ -17,6 +17,7 @@ import com.jme3.app.StatsAppState;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.plugins.FileLocator;
 import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
 import org.jdesktop.swingx.VerticalLayout;
 
 import javax.swing.*;
@@ -41,6 +42,18 @@ public class Main {
 
         LogUtil.initializeLogger(Level.INFO, true);
 
+        Arrays.stream(new String[] {
+                "com.jme3.audio.openal.ALAudioRenderer",
+                "com.jme3.asset.AssetConfig",
+                "com.jme3.material.plugins.J3MLoader",
+
+                // startup information
+                "com.jme3.system.JmeSystem",
+                "com.jme3.system.lwjgl.LwjglContext",
+                "org.reflections"
+                // "com.jme3.renderer.opengl.GLRenderer"
+        }).forEach(p -> LogManager.getLogger(p).setLevel(Level.ERROR));
+
         Main main = new Main();
         main.start();
     }
@@ -55,6 +68,7 @@ public class Main {
         ServiceManager.registerService(WindowService.class);
         ServiceManager.registerService(RegistrationService.class);
         ServiceManager.registerService(ClipboardService.class);
+        ServiceManager.registerService(PluginService.class);
 
         JmeEngineService engineService = ServiceManager.getService(JmeEngineService.class);
 
@@ -66,7 +80,6 @@ public class Main {
             }
         }
 
-        // canvas = createCanvas(engineService);
     }
 
     public void start() {
@@ -120,6 +133,9 @@ public class Main {
             // frame.addComponentListener(new WindowSizeAndLocationSaver(MainPage.WINDOW_ID));
             frame.addComponentListener(new WindowLocationSaver(MainPage.WINDOW_ID));
             ServiceManager.getService(JmeEngineService.class).getCanvas().addComponentListener(new JmeCanvasSizeSaver());
+
+            // load any available plugins.
+            ServiceManager.getService(PluginService.class).loadPlugins();
 
             // show the window.
             frame.setVisible(true);

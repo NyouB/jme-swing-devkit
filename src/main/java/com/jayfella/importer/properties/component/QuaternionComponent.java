@@ -153,7 +153,6 @@ public class QuaternionComponent extends ReflectedSdkComponent<Quaternion> {
     }
 
     /**
-     * @noinspection ALL
      */
     public JComponent $$$getRootComponent$$$() {
         return contentPanel;
