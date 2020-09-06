@@ -19,7 +19,6 @@ import java.util.regex.Pattern;
 
 public class PluginService implements Service {
 
-    // private static final Logger log = LoggerFactory.getLogger(PluginService.class);
     private static final Logger log = Logger.getLogger(PluginService.class.getName());
     private static final Pattern ID_PATTERN = Pattern.compile("^[A-Za-z0-9 _.-]+$");
 
@@ -29,6 +28,10 @@ public class PluginService implements Service {
 
         List<DevkitPlugin> loadedPlugins = new ArrayList<>();
         int pluginErrorCount = 0;
+
+        // We're searching through the entire classpath and it will take a while.
+        // We could enforce a package to drastically reduce the search time.
+        // For example: "plugin.devkit.yourPackageName" and just search "plugin.devkit"
 
         log.info("Searching for Devkit Plugins...");
         Reflections reflections = new Reflections(
@@ -44,8 +47,12 @@ public class PluginService implements Service {
                 Constructor<? extends DevkitPlugin> constructor = pluginClass.getConstructor();
                 plugin = constructor.newInstance();
             } catch (InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
+
+                // let the user know we couldn't create an instance of the plugin.
+                log.warning("Unable to create instance of plugin: " + pluginClass.getName());
                 e.printStackTrace();
                 pluginErrorCount++;
+
             }
 
             if (plugin != null) {
@@ -56,6 +63,7 @@ public class PluginService implements Service {
                     validatePluginConfiguration(plugin.getConfiguration());
 
                     // fire the initialize event.
+                    // we must initialize now so we can read the dependencies it requires.
                     plugin.initialize(this);
 
                     // only add the plugin to the loaded plugins if it successfully initialized.
@@ -63,9 +71,9 @@ public class PluginService implements Service {
 
                 } catch (Exception e) {
                     // else give the user some feedback on what happened.
+                    log.warning("Unable to initialize plugin: " + pluginClass.getName());
                     e.printStackTrace();
                 }
-
 
             }
 
@@ -73,7 +81,6 @@ public class PluginService implements Service {
 
         // at this point the plugin is considered "good to go".
         plugins.addAll(loadedPlugins);
-
 
         // check dependencies of plugin.
         plugins.removeIf(plugin -> {
@@ -83,6 +90,7 @@ public class PluginService implements Service {
             checkSoftDependencies(plugin);
 
             // Check for dependencies that don't exist.
+            // This will remove plugins that require a dependency that doesn't exist.
             try {
                 checkDependencies(plugin);
             } catch (PluginDependencyNotFoundException e) {
@@ -112,7 +120,7 @@ public class PluginService implements Service {
             log.info("All plugins loaded successfully.");
         }
 
-        // fire the onEnable event.
+        // fire the onEnable event for all plugins.
         enablePlugins();
 
     }
@@ -233,7 +241,7 @@ public class PluginService implements Service {
                     plugin.setEnabled(true);
 
                 } catch (Throwable ex) {
-                    log.warning("Error occurred (in the plugin loader) while enabling " + plugin.getClass().getSimpleName() + " (Is it up to date?)");
+                    log.warning("Error occurred while enabling " + plugin.getClass().getSimpleName());
                     ex.printStackTrace();
                 }
             }
