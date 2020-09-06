@@ -6,7 +6,6 @@ import com.jayfella.importer.plugin.exception.InvalidPluginConfigurationExceptio
 import com.jayfella.importer.plugin.exception.PluginDependencyNotFoundException;
 import com.jayfella.importer.plugin.sorter.PluginSorter;
 import org.reflections.Reflections;
-import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 
 import java.lang.reflect.Constructor;
@@ -34,8 +33,9 @@ public class PluginService implements Service {
         // For example: "plugin.devkit.yourPackageName" and just search "plugin.devkit"
 
         log.info("Searching for Devkit Plugins...");
-        Reflections reflections = new Reflections(
-                new ConfigurationBuilder().setUrls(ClasspathHelper.forJavaClassPath()));
+        // Reflections reflections = new Reflections(new ConfigurationBuilder().setUrls(ClasspathHelper.forJavaClassPath()));
+        Reflections reflections = new Reflections(new ConfigurationBuilder().forPackages("plugin.devkit"));
+
 
         Set<Class<? extends DevkitPlugin>> classes = reflections.getSubTypesOf(DevkitPlugin.class);
 
