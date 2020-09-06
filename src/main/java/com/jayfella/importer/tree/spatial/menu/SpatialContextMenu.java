@@ -142,7 +142,7 @@ public class SpatialContextMenu extends JPopupMenu {
         List<JMenuItem> customItems = ServiceManager.getService(MenuService.class)
                 .getCustomMenuItems(SpatialTreeNode.class);
 
-        if (!customItems.isEmpty()) {
+        if (customItems != null && !customItems.isEmpty()) {
 
             // add a separator for clarity.
             add(new JSeparator());
