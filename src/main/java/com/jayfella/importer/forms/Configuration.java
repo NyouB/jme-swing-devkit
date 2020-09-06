@@ -286,7 +286,6 @@ public class Configuration {
      * >>> IMPORTANT!! <<<
      * DO NOT edit this method OR call it in your code!
      *
-     * @noinspection ALL
      */
     private void $$$setupUI$$$() {
         createUIComponents();
@@ -381,7 +380,7 @@ public class Configuration {
         final Spacer spacer3 = new Spacer();
         panel6.add(spacer3, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
         browseAssetRootButton = new JButton();
-        browseAssetRootButton.setText("Button");
+        browseAssetRootButton.setText("Browse...");
         panel6.add(browseAssetRootButton, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JLabel label12 = new JLabel();
         label12.setText("Theme");
