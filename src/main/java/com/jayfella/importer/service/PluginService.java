@@ -64,7 +64,7 @@ public class PluginService implements Service {
 
                     // fire the initialize event.
                     // we must initialize now so we can read the dependencies it requires.
-                    plugin.initialize(this);
+                    plugin.initialize();
 
                     // only add the plugin to the loaded plugins if it successfully initialized.
                     loadedPlugins.add(plugin);
