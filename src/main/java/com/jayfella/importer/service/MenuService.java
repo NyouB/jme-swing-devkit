@@ -1,10 +1,17 @@
 package com.jayfella.importer.service;
 
+import com.jayfella.importer.tree.JmeTreeNode;
+
 import javax.swing.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MenuService implements Service {
 
     private final JMenuBar primaryMenu;
+    private final Map<Class<? extends JmeTreeNode>, List<JMenuItem>> customMenuItems = new HashMap<>();
 
     public MenuService(JMenuBar primaryMenu) {
         this.primaryMenu = primaryMenu;
@@ -43,6 +50,15 @@ public class MenuService implements Service {
         }
 
         return null;
+    }
+
+    public void addItemToContextMenu(Class<? extends JmeTreeNode> treeNodeClass, JMenuItem menuItem) {
+        List<JMenuItem> itemsList = customMenuItems.computeIfAbsent(treeNodeClass, k -> new ArrayList<>());
+        itemsList.add(menuItem);
+    }
+
+    public List<JMenuItem> getCustomMenuItems(Class<? extends JmeTreeNode> treeNodeClass) {
+        return customMenuItems.get(treeNodeClass);
     }
 
     @Override

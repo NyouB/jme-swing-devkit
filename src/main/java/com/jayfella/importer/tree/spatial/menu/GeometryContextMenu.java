@@ -1,8 +1,12 @@
 package com.jayfella.importer.tree.spatial.menu;
 
+import com.jayfella.importer.service.MenuService;
+import com.jayfella.importer.service.ServiceManager;
 import com.jayfella.importer.tree.spatial.GeometryTreeNode;
 
+import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 
 public class GeometryContextMenu extends SpatialContextMenu {
 
@@ -57,6 +61,20 @@ public class GeometryContextMenu extends SpatialContextMenu {
 //            });
 //
 //        });
+
+        // Allow users to also add their options....
+        List<JMenuItem> customItems = ServiceManager.getService(MenuService.class)
+                .getCustomMenuItems(GeometryTreeNode.class);
+
+        if (!customItems.isEmpty()) {
+
+            // add a separator for clarity.
+            add(new JSeparator());
+
+            for (JMenuItem customItem : customItems) {
+                add(customItem);
+            }
+        }
 
     }
 

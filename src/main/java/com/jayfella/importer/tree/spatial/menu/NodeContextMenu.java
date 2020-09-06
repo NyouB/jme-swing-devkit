@@ -19,6 +19,7 @@ import com.jme3.scene.shape.Sphere;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 import java.util.Set;
 
 
@@ -125,6 +126,19 @@ public class NodeContextMenu extends SpatialContextMenu {
 
         });
 
+        // Allow users to also add their options....
+        List<JMenuItem> customItems = ServiceManager.getService(MenuService.class)
+                .getCustomMenuItems(NodeTreeNode.class);
+
+        if (!customItems.isEmpty()) {
+
+            // add a separator for clarity.
+            add(new JSeparator());
+
+            for (JMenuItem customItem : customItems) {
+                add(customItem);
+            }
+        }
     }
 
     private void addShapes(JMenu parent) {

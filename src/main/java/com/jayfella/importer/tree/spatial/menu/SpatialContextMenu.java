@@ -16,6 +16,7 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
 
 import javax.swing.*;
+import java.util.List;
 
 public class SpatialContextMenu extends JPopupMenu {
 
@@ -135,6 +136,20 @@ public class SpatialContextMenu extends JPopupMenu {
 
             });
 
+        }
+
+        // Allow users to also add their options....
+        List<JMenuItem> customItems = ServiceManager.getService(MenuService.class)
+                .getCustomMenuItems(SpatialTreeNode.class);
+
+        if (!customItems.isEmpty()) {
+
+            // add a separator for clarity.
+            add(new JSeparator());
+
+            for (JMenuItem customItem : customItems) {
+                add(customItem);
+            }
         }
 
     }
