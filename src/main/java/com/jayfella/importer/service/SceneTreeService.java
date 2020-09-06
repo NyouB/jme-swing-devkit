@@ -8,8 +8,10 @@ import com.jayfella.importer.properties.component.events.SpatialNameChangedEvent
 import com.jayfella.importer.registration.Registrar;
 import com.jayfella.importer.registration.spatial.GeometryRegistrar;
 import com.jayfella.importer.registration.spatial.NodeRegistrar;
+import com.jayfella.importer.tree.JmeTreeNode;
 import com.jayfella.importer.tree.SceneTreeMouseListener;
 import com.jayfella.importer.tree.control.ControlTreeNode;
+import com.jayfella.importer.tree.event.SceneTreeItemChangedEvent;
 import com.jayfella.importer.tree.light.*;
 import com.jayfella.importer.tree.spatial.GeometryTreeNode;
 import com.jayfella.importer.tree.spatial.MeshTreeNode;
@@ -154,6 +156,10 @@ public class SceneTreeService implements Service, EventListener {
 
                 }
 
+                // fire an event that the scene tree item has changed.
+                if (lastSelectedTreeNode instanceof JmeTreeNode) {
+                    ServiceManager.getService(SimpleEventManager.class).fireEvent(new SceneTreeItemChangedEvent((JmeTreeNode) lastSelectedTreeNode));
+                }
             }
 
         });
