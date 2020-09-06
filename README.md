@@ -45,6 +45,9 @@ supports the `.glTF` or `.glb` extension. For more information on importing mode
  in the `Scene Tree` window will allow you to change the material and material properties of that Geometry.
  
  ### Scene Saving
+ ```
+Right-Click a Spatial in Scene Tree Window -> Save...
+```
  You can save any `Spatial` in the `Scene Tree` window by right-clicking the Spatial in the `Scene Tree` window and
  selecting `Save...`. You will be prompted with a dialog allowing you to select the directory and choose a name.
  The selected directory **must** be inside the `Asset Root` directory. After clicking `OK` the Spatial will be saved
