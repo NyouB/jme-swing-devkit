@@ -2,14 +2,12 @@ package com.jayfella.importer.plugin;
 
 import com.jayfella.importer.plugin.configuration.PluginConfiguration;
 import com.jayfella.importer.service.PluginService;
+import com.jayfella.importer.service.ServiceManager;
 
 public abstract class DevkitPlugin {
 
     protected PluginConfiguration pluginConfiguration = new PluginConfiguration();
     private boolean enabled = false;
-
-    private PluginService pluginService;
-
     private PluginLogger logger;
 
     public DevkitPlugin() {
@@ -19,7 +17,7 @@ public abstract class DevkitPlugin {
     /**
      * Called after the plugin has been constructed.
      */
-    public void initialize(PluginService pluginService) throws Exception {
+    public void initialize() throws Exception {
         this.logger = new PluginLogger(this);
         onInitialize();
     }
@@ -58,6 +56,8 @@ public abstract class DevkitPlugin {
     public DevkitPlugin[] getDependencies() {
 
         DevkitPlugin[] dependencies = new DevkitPlugin[pluginConfiguration.getDependencies().length];
+
+        PluginService pluginService = ServiceManager.getService(PluginService.class);
 
         for (int i = 0; i < dependencies.length; i++) {
             DevkitPlugin plugin = pluginService.getPlugin(pluginConfiguration.getDependencies()[i]);
