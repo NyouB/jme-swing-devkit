@@ -36,7 +36,6 @@ public class Main {
     private static final Logger log = Logger.getLogger(Main.class.getName());
 
     private JFrame frame;
-    // private final Canvas canvas;
 
     public static void main(String[] args){
 
@@ -107,6 +106,7 @@ public class Main {
 
             JMenuBar menu = createMenu();
             frame.setJMenuBar(menu);
+            ServiceManager.registerService(new MenuService(menu));
 
             // Should this be done on the AWT thread? The examples do... I'm not sure.
             ServiceManager.getService(JmeEngineService.class).startCanvas();
@@ -135,6 +135,7 @@ public class Main {
             ServiceManager.getService(JmeEngineService.class).getCanvas().addComponentListener(new JmeCanvasSizeSaver());
 
             // load any available plugins.
+            // I'm not sure where we should put this.
             ServiceManager.getService(PluginService.class).loadPlugins();
 
             // show the window.
