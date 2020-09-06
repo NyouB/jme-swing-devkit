@@ -28,6 +28,10 @@ public class ColorRGBAComponent extends ReflectedSdkComponent<ColorRGBA> {
         this(null, null, null, nullable);
     }
 
+    public ColorRGBAComponent(Object parent, Method getter, Method setter) {
+        this(parent, getter, setter, false);
+    }
+
     public ColorRGBAComponent(Object parent, Method getter, Method setter, boolean nullable) {
         super(parent, getter, setter);
 
