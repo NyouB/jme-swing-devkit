@@ -61,4 +61,11 @@ Skyboxes can be added to a scene by right-clicking any `Node` in the `Scene Tree
 selecting `SkyBox...`. SkyBoxes can be created using a CubeMap, SphereMap or EquirectMap. For some great examples of
  skybox textures, visit [HDRI Haven](https://hdrihaven.com/hdris/).
 
-
+#### Generating LightProbes
+```
+Right-Click a Spatial in Scene Tree Window -> Add -> Light -> Generate LightProbe...
+```
+Lights (including light probes) can be added to any `Spatial` by right-clicking any `Spatial` in the `Scene Tree`
+window and clicking `Add -> Light -> Generate LightProbe...`. You will be presented with a dialog window allowing you
+to choose which node in your scene the lightprobe will use to create an `Environment Map`, the shape (cube or sphere)
+and the radius of the probe.
