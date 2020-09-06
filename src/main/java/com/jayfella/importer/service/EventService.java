@@ -1,6 +1,7 @@
-package com.jayfella.importer.event;
+package com.jayfella.importer.service;
 
-import com.jayfella.importer.service.Service;
+import com.jayfella.importer.event.*;
+import com.jayfella.importer.event.EventListener;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -8,9 +9,9 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class SimpleEventManager implements EventManager, Service {
+public class EventService implements EventManager, Service {
 
-    private static final Logger log = Logger.getLogger(SimpleEventManager.class.getName());
+    private static final Logger log = Logger.getLogger(EventService.class.getName());
 
     private static final String EVENT_REGISTERED = "Registered method '%s(%s)' in Listener '%s'.";
     private static final String EVENT_UNREGISTERED = "Unregistered method '%s(%s)' in Listener '%s'.";
@@ -22,14 +23,14 @@ public class SimpleEventManager implements EventManager, Service {
 
     private final EnumMap<EventPriority, Map<Class<? extends Event>, List<MethodContainer>>> eventListenerMap = new EnumMap<>(EventPriority.class);
 
-    public SimpleEventManager() {
+    public EventService() {
         primaryThread = Thread.currentThread();
     }
 
 
 
     @Override
-    public void registerEventListener(EventListener eventListener) {
+    public void registerEventListener(com.jayfella.importer.event.EventListener eventListener) {
         try {
             tryRegisterEventListener(eventListener);
         } catch (EventThreadingException e) {
@@ -38,7 +39,7 @@ public class SimpleEventManager implements EventManager, Service {
     }
 
     @Override
-    public void tryRegisterEventListener(EventListener eventListener) throws EventThreadingException {
+    public void tryRegisterEventListener(com.jayfella.importer.event.EventListener eventListener) throws EventThreadingException {
 
         if (!isPrimaryThread()) {
             throw new EventThreadingException("Event Listeners must be registered on the main thread.");
@@ -101,7 +102,7 @@ public class SimpleEventManager implements EventManager, Service {
     }
 
     @Override
-    public void unregisterEventListener(EventListener eventListener) {
+    public void unregisterEventListener(com.jayfella.importer.event.EventListener eventListener) {
         try {
             tryUnregisterEventListener(eventListener);
         } catch (EventThreadingException e) {
