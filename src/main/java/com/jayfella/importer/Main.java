@@ -62,6 +62,8 @@ public class Main {
         // Enable font anti-aliasing. On my setup (manjaro linux) this is definitely required.
         // I'll have to do further research to see if this has adverse effects on other systems.
         System.setProperty("awt.useSystemAAFontSettings","on");
+        // cleartype
+        // System.setProperty("awt.useSystemAAFontSettings","lcd");
 
         // set the theme.
         SwingTheme.setTheme(DevKitConfig.getInstance().getSdkConfig().getTheme());
