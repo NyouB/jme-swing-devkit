@@ -2,7 +2,6 @@ package com.jayfella.importer.service;
 
 import com.jayfella.importer.event.EventHandler;
 import com.jayfella.importer.event.EventListener;
-import com.jayfella.importer.event.SimpleEventManager;
 import com.jayfella.importer.jme.SceneObjectHighlighterState;
 import com.jayfella.importer.properties.component.events.SpatialNameChangedEvent;
 import com.jayfella.importer.registration.Registrar;
@@ -158,14 +157,14 @@ public class SceneTreeService implements Service, EventListener {
 
                 // fire an event that the scene tree item has changed.
                 if (lastSelectedTreeNode instanceof JmeTreeNode) {
-                    ServiceManager.getService(SimpleEventManager.class).fireEvent(new SceneTreeItemChangedEvent((JmeTreeNode) lastSelectedTreeNode));
+                    ServiceManager.getService(EventService.class).fireEvent(new SceneTreeItemChangedEvent((JmeTreeNode) lastSelectedTreeNode));
                 }
             }
 
         });
 
         // register our listener
-        ServiceManager.getService(SimpleEventManager.class).registerEventListener(this);
+        ServiceManager.getService(EventService.class).registerEventListener(this);
     }
 
     /**
@@ -547,7 +546,7 @@ public class SceneTreeService implements Service, EventListener {
 
     @Override
     public void stop() {
-        ServiceManager.getService(SimpleEventManager.class).unregisterEventListener(this);
+        ServiceManager.getService(EventService.class).unregisterEventListener(this);
     }
 
 

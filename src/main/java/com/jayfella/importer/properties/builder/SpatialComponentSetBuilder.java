@@ -1,6 +1,6 @@
 package com.jayfella.importer.properties.builder;
 
-import com.jayfella.importer.event.SimpleEventManager;
+import com.jayfella.importer.service.EventService;
 import com.jayfella.importer.properties.PropertySection;
 import com.jayfella.importer.properties.component.*;
 import com.jayfella.importer.properties.component.events.SpatialNameChangedEvent;
@@ -68,7 +68,7 @@ public class SpatialComponentSetBuilder extends AbstractComponentSetBuilder<Spat
             StringComponent name = new StringComponent(object, getter, setter) {
                 @Override
                 public void propertyChanged(String value) {
-                    ServiceManager.getService(SimpleEventManager.class)
+                    ServiceManager.getService(EventService.class)
                             .fireEvent(new SpatialNameChangedEvent(object));
                 }
             };

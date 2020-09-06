@@ -2,7 +2,7 @@ package com.jayfella.importer;
 
 import com.jayfella.importer.config.DevKitConfig;
 import com.jayfella.importer.core.LogUtil;
-import com.jayfella.importer.event.SimpleEventManager;
+import com.jayfella.importer.service.EventService;
 import com.jayfella.importer.forms.Configuration;
 import com.jayfella.importer.forms.DebugLights;
 import com.jayfella.importer.forms.ImportModel;
@@ -92,7 +92,7 @@ public class Main {
         SwingUtilities.invokeLater(() -> {
 
             // register the events manager on the AWT thread.
-            ServiceManager.registerService(SimpleEventManager.class);
+            ServiceManager.registerService(EventService.class);
 
             JPopupMenu.setDefaultLightWeightPopupEnabled(false);
 
