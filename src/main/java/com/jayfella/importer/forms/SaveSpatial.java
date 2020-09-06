@@ -30,11 +30,12 @@ public class SaveSpatial {
 
         browseAssetDirButton.addActionListener(e -> {
 
-            String projectRoot = System.getProperty("user.dir");
+            // String projectRoot = System.getProperty("user.dir");
+            String assetRoot = DevKitConfig.getInstance().getProjectConfig().getAssetRootDir();
 
             JFileChooser chooser = new JFileChooser();
-            chooser.setCurrentDirectory(new File(projectRoot));
-            chooser.setDialogTitle("Select GLTF Model");
+            chooser.setCurrentDirectory(new File(assetRoot));
+            chooser.setDialogTitle("Select Asset Directory");
             chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             chooser.setAcceptAllFileFilterUsed(false);
 
@@ -42,15 +43,15 @@ public class SaveSpatial {
 
                 String chosenPath = chooser.getSelectedFile().getAbsolutePath();
 
-                if (!chosenPath.contains(projectRoot)) {
+                if (!chosenPath.contains(assetRoot)) {
 
                     JOptionPane.showMessageDialog(null,
-                            "The chosen directory must exist inside the project.",
+                            "The chosen directory must exist inside the projects Asset Root directory.",
                             "Invalid Directory",
                             ERROR_MESSAGE);
 
                 } else {
-                    assetPathTextField.setText(chooser.getSelectedFile().getAbsolutePath());
+                    assetPathTextField.setText(chooser.getSelectedFile().getAbsolutePath().replace(assetRoot, ""));
                 }
 
             }
