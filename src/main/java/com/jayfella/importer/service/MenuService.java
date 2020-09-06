@@ -23,8 +23,7 @@ public class MenuService implements Service {
      * @return the given menu.
      */
     public JMenu addPrimaryMenu(JMenu menu) {
-        primaryMenu.add(menu);
-        return menu;
+        return primaryMenu.add(menu);
     }
 
     /**
@@ -52,9 +51,19 @@ public class MenuService implements Service {
         return null;
     }
 
-    public void addItemToContextMenu(Class<? extends JmeTreeNode> treeNodeClass, JMenuItem menuItem) {
+    public boolean addItemToContextMenu(Class<? extends JmeTreeNode> treeNodeClass, JMenuItem menuItem) {
         List<JMenuItem> itemsList = customMenuItems.computeIfAbsent(treeNodeClass, k -> new ArrayList<>());
-        itemsList.add(menuItem);
+        return itemsList.add(menuItem);
+    }
+
+    public boolean removeItemFromContextMenu(Class<? extends JmeTreeNode> treeNodeClass, JMenuItem menuItem) {
+        List<JMenuItem> itemsList = customMenuItems.get(treeNodeClass);
+
+        if (itemsList != null) {
+            return itemsList.remove(menuItem);
+        }
+
+        return false;
     }
 
     public List<JMenuItem> getCustomMenuItems(Class<? extends JmeTreeNode> treeNodeClass) {
