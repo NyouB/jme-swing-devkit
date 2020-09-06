@@ -25,7 +25,6 @@ mainClassName = "com.jayfella.importer.Main"
 
 repositories {
     jcenter()
-    mavenLocal()
 }
 
 project.ext {
@@ -82,6 +81,6 @@ dependencies {
 
     // testing - REMOVE
     // implementation "com.jayfella:jme-terrain:1.0-SNAPSHOT"
-    implementation "com.jayfella:TestDevkitPlugin:1.0.0"
+    //implementation "com.jayfella:TestDevkitPlugin:1.0.0"
 }
 
