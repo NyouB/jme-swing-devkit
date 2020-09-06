@@ -12,6 +12,8 @@ plugins {
 }
 ```
 
+![screenshot](https://i.imgur.com/t7HFH50.png)
+
 ### Features
 - Import Models (glTF using JMEC)
 - Create, Edit, and Save scenes to .j3o format.
