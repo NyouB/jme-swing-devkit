@@ -75,6 +75,10 @@ public class JmeEngineServiceImpl extends JmeEngineService {
         started = true;
     }
 
+    /**
+     * Applies any changes made to the DevKitConfig camera configuration.
+     * Used internally.
+     */
     @Override
     public void applyCameraFrustumSizes() {
 
@@ -95,8 +99,6 @@ public class JmeEngineServiceImpl extends JmeEngineService {
 
         return canvas;
     }
-
-
 
     @Override
     public synchronized boolean isStarted() {

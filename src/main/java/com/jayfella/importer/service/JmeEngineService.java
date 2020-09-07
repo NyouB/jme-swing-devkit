@@ -29,11 +29,30 @@ public abstract class JmeEngineService extends SimpleApplication implements Serv
 
     }
 
+    /**
+     * Returns the currently active FilterPostProcessor.
+     * @return the currently active FilterPostProcessor.
+     */
     public abstract FilterPostProcessor getFilterPostProcessor();
+
+    /**
+     * Removes the existing FilterPostProcessor if one exists and adds the given FilterPostProcessor.
+     * @param fpp the FilterPostProcessor to set.
+     */
     public abstract void setFilterPostProcessor(FilterPostProcessor fpp);
 
     public abstract void applyCameraFrustumSizes();
 
+    /**
+     * Determines whether or not the engine has completed its initialization phase and is ready to use.
+     * @return whether or not the engine is ready to use.
+     */
     public abstract boolean isStarted();
+
+    /**
+     * Returns the AWT canvas.
+     * @return the AWT canvas.
+     */
     public abstract Canvas getCanvas();
+
 }
