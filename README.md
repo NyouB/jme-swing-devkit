@@ -69,3 +69,7 @@ Lights (including light probes) can be added to any `Spatial` by right-clicking 
 window and clicking `Add -> Light -> Generate LightProbe...`. You will be presented with a dialog window allowing you
 to choose which node in your scene the lightprobe will use to create an `Environment Map`, the shape (cube or sphere)
 and the radius of the probe.
+
+#### Creating Plugins
+The [TestDevKitPlugin](https://github.com/jayfella/TestDevkitPlugin) repository contains a working example and
+documentation on how to create plugins. 
