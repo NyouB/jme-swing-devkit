@@ -250,6 +250,11 @@ public class PluginService implements Service {
 
     }
 
+    /**
+     * Returns the plugin with the given exact name, or null if none was found.
+     * @param name the exact name of the plugin.
+     * @return the plugin with the given name, or null if none was found.
+     */
     public DevkitPlugin getPlugin(String name) {
         return plugins.stream()
                 .filter(plugin -> plugin.getConfiguration().getId().equals(name))
@@ -257,6 +262,10 @@ public class PluginService implements Service {
                 .orElse(null);
     }
 
+    /**
+     * Returns all currently loaded plugins.
+     * @return all currently loaded plugins.
+     */
     public DevkitPlugin[] getPlugins() {
         return plugins.toArray(new DevkitPlugin[0]);
     }
