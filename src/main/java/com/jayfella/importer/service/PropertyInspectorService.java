@@ -35,6 +35,9 @@ public class PropertyInspectorService implements Service {
         clearInspector();
     }
 
+    /**
+     * Removes all inspection properties of the object being inspected.
+     */
     public void clearInspector() {
         rootPanel.remove(tabbedPane);
         rootPanel.add(nothingSelectedLabel, BorderLayout.CENTER);
@@ -182,6 +185,11 @@ public class PropertyInspectorService implements Service {
 
     }
 
+    /**
+     * Updates all given sections with a matching name.
+     *
+     * @param updatedSections the sections you wish to update.
+     */
     public void updateSections(Collection<PropertySection> updatedSections) {
 
         for (PropertySection updatedSection : updatedSections) {
