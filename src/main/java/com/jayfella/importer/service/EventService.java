@@ -30,7 +30,7 @@ public class EventService implements EventManager, Service {
 
 
     @Override
-    public void registerEventListener(com.jayfella.importer.event.EventListener eventListener) {
+    public void registerEventListener(EventListener eventListener) {
         try {
             tryRegisterEventListener(eventListener);
         } catch (EventThreadingException e) {
@@ -39,7 +39,7 @@ public class EventService implements EventManager, Service {
     }
 
     @Override
-    public void tryRegisterEventListener(com.jayfella.importer.event.EventListener eventListener) throws EventThreadingException {
+    public void tryRegisterEventListener(EventListener eventListener) throws EventThreadingException {
 
         if (!isPrimaryThread()) {
             throw new EventThreadingException("Event Listeners must be registered on the main thread.");
@@ -102,7 +102,7 @@ public class EventService implements EventManager, Service {
     }
 
     @Override
-    public void unregisterEventListener(com.jayfella.importer.event.EventListener eventListener) {
+    public void unregisterEventListener(EventListener eventListener) {
         try {
             tryUnregisterEventListener(eventListener);
         } catch (EventThreadingException e) {
