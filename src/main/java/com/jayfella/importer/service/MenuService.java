@@ -51,11 +51,23 @@ public class MenuService implements Service {
         return null;
     }
 
+    /**
+     * Adds a menu item to a context (right-click) menu in the Scene Tree window.
+     * @param treeNodeClass the TreeNode to add the menu item.
+     * @param menuItem      the menuItem to add.
+     * @return whether or not the addition was accepted.
+     */
     public boolean addItemToContextMenu(Class<? extends JmeTreeNode> treeNodeClass, JMenuItem menuItem) {
         List<JMenuItem> itemsList = customMenuItems.computeIfAbsent(treeNodeClass, k -> new ArrayList<>());
         return itemsList.add(menuItem);
     }
 
+    /**
+     * Removes a menu item from a context (right-click) menu in the Scene Tree Window.
+     * @param treeNodeClass the TreeNode to remove the menu item.
+     * @param menuItem      the menuItem to remove.
+     * @return whether or not the removal was successful.
+     */
     public boolean removeItemFromContextMenu(Class<? extends JmeTreeNode> treeNodeClass, JMenuItem menuItem) {
         List<JMenuItem> itemsList = customMenuItems.get(treeNodeClass);
 
@@ -66,6 +78,11 @@ public class MenuService implements Service {
         return false;
     }
 
+    /**
+     * Returns all custom menu items for the given TreeNode.
+     * @param treeNodeClass the TreeNode in question.
+     * @return a list of custom MenuItems for the given TreeNode.
+     */
     public List<JMenuItem> getCustomMenuItems(Class<? extends JmeTreeNode> treeNodeClass) {
         return customMenuItems.get(treeNodeClass);
     }
