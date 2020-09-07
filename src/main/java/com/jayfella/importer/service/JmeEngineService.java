@@ -20,8 +20,6 @@ public abstract class JmeEngineService extends SimpleApplication implements Serv
         );
 
         AppSettings settings = new AppSettings(true);
-        //settings.setWidth(640);
-        //settings.setHeight(480);
         settings.setAudioRenderer(null);
 
         setPauseOnLostFocus(false);
@@ -31,12 +29,8 @@ public abstract class JmeEngineService extends SimpleApplication implements Serv
 
     }
 
-    // public abstract FilterManager getFilterManager();
     public abstract FilterPostProcessor getFilterPostProcessor();
     public abstract void setFilterPostProcessor(FilterPostProcessor fpp);
-
-    // public abstract void setView2d();
-    // public abstract void setView3d();
 
     public abstract void applyCameraFrustumSizes();
 
