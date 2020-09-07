@@ -16,6 +16,12 @@ public class ServiceManager {
 
     private static final Map<Class<? extends Service>, Service> services = new HashMap<>();
 
+    /**
+     * Returns the instance of the given Service class, or null if none exists.
+     * @param serviceClass the service class desired.
+     * @param <T>          the service class desired.
+     * @return the instance of the given Service class, or null if none exists.
+     */
     public static <T extends Service> T getService(Class<T> serviceClass) {
         // return (T)services.get(serviceClass);
 
@@ -28,6 +34,13 @@ public class ServiceManager {
         return (T) service;
     }
 
+    /**
+     * Registers the given Service class with the given constructor values.
+     * @param serviceClass      the Service class to register.
+     * @param constructorValues the values to pass to the constructor
+     * @param <T>               the Service class to register.
+     * @return the constructed Service instance.
+     */
     public static <T extends Service> T registerService(Class<T> serviceClass, Object... constructorValues) {
 
         Class<?>[] parameterTypes = new Class<?>[constructorValues.length];
@@ -53,6 +66,12 @@ public class ServiceManager {
 
     }
 
+    /**
+     * Registers the given service class using the noArgs constructor.
+     * @param serviceClass the Service class to register.
+     * @param <T>          the Service class to register.
+     * @return the constructed instance of the given Service class.
+     */
     public static <T extends Service> T registerService(Class<T> serviceClass) {
 
         try {
@@ -71,6 +90,12 @@ public class ServiceManager {
         return null;
     }
 
+    /**
+     * Adds the already constructed service to the ServiceManager.
+     * @param service the Service to add.
+     * @param <T>     the Service Class type.
+     * @return the given service.
+     */
     public static <T extends Service> T registerService(Service service) {
         return (T) services.put(service.getClass(), service);
     }
