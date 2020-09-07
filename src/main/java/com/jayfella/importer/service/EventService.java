@@ -27,8 +27,11 @@ public class EventService implements EventManager, Service {
         primaryThread = Thread.currentThread();
     }
 
-
-
+    /**
+     * Registers an event listener safely.
+     *
+     * @param eventListener the EventListener to register.
+     */
     @Override
     public void registerEventListener(EventListener eventListener) {
         try {
@@ -38,6 +41,13 @@ public class EventService implements EventManager, Service {
         }
     }
 
+    /**
+     * Registers an event listener.
+     *
+     * @param eventListener the EventListener to register.
+     *
+     * @throws EventThreadingException if the event was registered on a thread other than the main thread.
+     */
     @Override
     public void tryRegisterEventListener(EventListener eventListener) throws EventThreadingException {
 
@@ -101,6 +111,11 @@ public class EventService implements EventManager, Service {
 
     }
 
+    /**
+     * Unregisters an event listener safely.
+     *
+     * @param eventListener the EventListener to unregister.
+     */
     @Override
     public void unregisterEventListener(EventListener eventListener) {
         try {
@@ -110,7 +125,13 @@ public class EventService implements EventManager, Service {
         }
     }
 
-
+    /**
+     * Unregisters an event listener.
+     *
+     * @param eventListener the EventListener to unregister.
+     *
+     * @throws EventThreadingException if the event was unregistered on a thread other than the main thread.
+     */
     @Override
     public void tryUnregisterEventListener(EventListener eventListener) throws EventThreadingException {
 
@@ -166,6 +187,11 @@ public class EventService implements EventManager, Service {
 
     }
 
+    /**
+     * Fires the given event to all listeners safely.
+     *
+     * @param event the event to send to all listeners.
+     */
     @Override
     public void fireEvent(Event event) {
         try {
@@ -175,6 +201,16 @@ public class EventService implements EventManager, Service {
         }
     }
 
+    /**
+     * Fires the given event to all listeners.
+     *
+     * @param event the event to send to all listeners.
+     *
+     * @throws EventThreadingException if the event was not fired in accordance with its threading status.
+     * - A synchronous event must be fired from the main thread.
+     * - An asynchronous event must not be fired from synchronous code.
+     * - An asynchronous event must not be fired from the main thread.
+     */
     @Override
     public void tryFireEvent(Event event) throws EventThreadingException {
 
@@ -247,6 +283,10 @@ public class EventService implements EventManager, Service {
         return priorityMap == null ? 0 : priorityMap.size();
     }
 
+    /**
+     * Determines whether or not the thread that called this method is the main thread.
+     * @return whether or not the thread that called this method is the main thread.
+     */
     private boolean isPrimaryThread() {
         return Thread.currentThread().equals(primaryThread);
     }
