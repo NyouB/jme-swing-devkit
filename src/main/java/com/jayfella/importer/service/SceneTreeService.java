@@ -192,6 +192,26 @@ public class SceneTreeService implements Service, EventListener {
     }
 
     /**
+     * Returns the currently selected TreeNode in the scene tree.
+     * @return the currently selected TreeNode in the scene tree.
+     */
+    public JmeTreeNode getSelectedTreeNode() {
+
+        TreePath[] paths = tree.getSelectionPaths();
+        if (paths != null) {
+
+            // We can only inspect one thing at a time, so choose the last selected object.
+            DefaultMutableTreeNode lastSelectedTreeNode = (DefaultMutableTreeNode) paths[paths.length - 1].getLastPathComponent();
+
+            if (lastSelectedTreeNode instanceof JmeTreeNode) {
+                return (JmeTreeNode) lastSelectedTreeNode;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Adds a spatial to the tree and scene. All scene objects should be added to the scene using this method.
      * This should only be called from the AWT thread. The spatial should not be added to the scene yet.
      *
