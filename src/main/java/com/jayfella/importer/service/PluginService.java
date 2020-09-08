@@ -41,9 +41,9 @@ public class PluginService implements Service {
         log.info("Searching for Devkit Plugins...");
         // Reflections reflections = new Reflections(new ConfigurationBuilder().setUrls(ClasspathHelper.forJavaClassPath()));
         Reflections reflections = new Reflections(new ConfigurationBuilder().forPackages("plugin.devkit"));
-
-
         Set<Class<? extends DevkitPlugin>> classes = reflections.getSubTypesOf(DevkitPlugin.class);
+
+        log.info("Found " + classes.size() + " classes extending DevkitPlugin.");
 
         for (Class<? extends DevkitPlugin> pluginClass : classes) {
 
