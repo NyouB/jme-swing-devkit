@@ -30,7 +30,11 @@ public class PropertyInspectorService implements Service {
 
     private List<PropertySection> displayedSections;
 
+    private final long threadId;
+
     public PropertyInspectorService(JPanel rootPanel) {
+        threadId = Thread.currentThread().getId();
+
         this.rootPanel = rootPanel;
         clearInspector();
     }
@@ -233,6 +237,11 @@ public class PropertyInspectorService implements Service {
             displayedSections = null;
         }
 
+    }
+
+    @Override
+    public long getThreadId() {
+        return threadId;
     }
 
     @Override

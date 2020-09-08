@@ -56,7 +56,11 @@ public class SceneTreeService implements Service, EventListener {
 
     // private final SceneObjectHighlighter sceneObjectHighlighter = new SceneObjectHighlighter();
 
+    private final long threadId;
+
     public SceneTreeService(JTree tree) {
+
+        threadId = Thread.currentThread().getId();
 
         this.tree = tree;
 
@@ -542,6 +546,11 @@ public class SceneTreeService implements Service, EventListener {
     public void updateTreeNodeRepresentation(TreeNode treeNode) {
         DefaultTreeModel treeModel = (DefaultTreeModel) tree.getModel();
         treeModel.nodeChanged(treeNode);
+    }
+
+    @Override
+    public long getThreadId() {
+        return threadId;
     }
 
     @Override

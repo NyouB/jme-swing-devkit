@@ -9,6 +9,12 @@ import java.awt.*;
  */
 public class WindowService implements Service {
 
+    private final long threadId;
+
+    public WindowService() {
+        threadId = Thread.currentThread().getId();
+    }
+
     /**
      * Sets the position of a window from saved data.
      * @param window the window to position.
@@ -31,6 +37,11 @@ public class WindowService implements Service {
         if (dimension != null) {
             window.setSize(dimension);
         }
+    }
+
+    @Override
+    public long getThreadId() {
+        return threadId;
     }
 
     @Override

@@ -24,6 +24,8 @@ public class JmeEngineServiceImpl extends JmeEngineService {
 
     private FilterPostProcessor fpp;
 
+    private final long threadId = -1;
+
     @Override
     public FilterPostProcessor getFilterPostProcessor() {
         return fpp;
@@ -46,6 +48,8 @@ public class JmeEngineServiceImpl extends JmeEngineService {
 
     @Override
     public void simpleInitApp() {
+
+        //threadId = Thread.currentThread().getId();
 
         if (AppStateUtils.isBulletPhysicsOnClassPath()) {
             log.info("Bullet Physics Detected.");
@@ -108,6 +112,11 @@ public class JmeEngineServiceImpl extends JmeEngineService {
     @Override
     public Canvas getCanvas() {
         return canvas;
+    }
+
+    @Override
+    public long getThreadId() {
+        return threadId;
     }
 
 }

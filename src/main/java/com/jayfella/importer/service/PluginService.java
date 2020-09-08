@@ -23,6 +23,12 @@ public class PluginService implements Service {
 
     private final List<DevkitPlugin> plugins = new ArrayList<>();
 
+    private final long threadId;
+
+    public PluginService() {
+        threadId = Thread.currentThread().getId();
+    }
+
     public void loadPlugins() {
 
         List<DevkitPlugin> loadedPlugins = new ArrayList<>();
@@ -272,6 +278,11 @@ public class PluginService implements Service {
 
     public Logger getLogger() {
         return log;
+    }
+
+    @Override
+    public long getThreadId() {
+        return threadId;
     }
 
     @Override

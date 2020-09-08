@@ -44,7 +44,11 @@ public class RegistrationService implements Service {
 
     private final Registrar<ControlRegistrar> controlRegistration = new Registrar<>(ControlRegistrar.class);
 
+    private final long threadId;
+
     public RegistrationService() {
+
+        threadId = Thread.currentThread().getId();
 
         // register all the built-in components.
 
@@ -75,6 +79,11 @@ public class RegistrationService implements Service {
 
         controlRegistration.register(NoArgsControlRegistrar.create(BillboardControl.class));
 
+    }
+
+    @Override
+    public long getThreadId() {
+        return threadId;
     }
 
     @Override

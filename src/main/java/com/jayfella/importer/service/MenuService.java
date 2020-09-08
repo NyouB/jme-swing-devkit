@@ -13,7 +13,10 @@ public class MenuService implements Service {
     private final JMenuBar primaryMenu;
     private final Map<Class<? extends JmeTreeNode>, List<JMenuItem>> customMenuItems = new HashMap<>();
 
+    private final long threadId;
+
     public MenuService(JMenuBar primaryMenu) {
+        this.threadId = Thread.currentThread().getId();
         this.primaryMenu = primaryMenu;
     }
 
@@ -85,6 +88,11 @@ public class MenuService implements Service {
      */
     public List<JMenuItem> getCustomMenuItems(Class<? extends JmeTreeNode> treeNodeClass) {
         return customMenuItems.get(treeNodeClass);
+    }
+
+    @Override
+    public long getThreadId() {
+        return threadId;
     }
 
     @Override

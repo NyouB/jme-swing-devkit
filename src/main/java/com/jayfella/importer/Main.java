@@ -68,28 +68,34 @@ public class Main {
         // set the theme.
         SwingTheme.setTheme(DevKitConfig.getInstance().getSdkConfig().getTheme());
 
-        // register all of our services...
-        ServiceManager.registerService(JmeEngineServiceImpl.class);
-        ServiceManager.registerService(WindowService.class);
-        ServiceManager.registerService(RegistrationService.class);
-        ServiceManager.registerService(ClipboardService.class);
-        ServiceManager.registerService(PluginService.class);
+        JmeEngineService engineService = ServiceManager.registerService(JmeEngineServiceImpl.class);
 
-        JmeEngineService engineService = ServiceManager.getService(JmeEngineService.class);
+        if (engineService != null) {
 
-        while (!engineService.isStarted()) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            while (!engineService.isStarted()) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
-        }
 
+        }
+        else {
+            log.severe("Unable to create instance of JmeEngineService. Exiting.");
+            System.exit(-1);
+        }
     }
 
     public void start() {
 
         SwingUtilities.invokeLater(() -> {
+
+            // register all of our services...
+            ServiceManager.registerService(WindowService.class);
+            ServiceManager.registerService(RegistrationService.class);
+            ServiceManager.registerService(ClipboardService.class);
+            ServiceManager.registerService(PluginService.class);
 
             // register the events manager on the AWT thread.
             ServiceManager.registerService(EventService.class);

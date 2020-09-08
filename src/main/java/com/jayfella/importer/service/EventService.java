@@ -19,12 +19,13 @@ public class EventService implements EventManager, Service {
     private static final String EVENT_FIRING = "Firing '%s' Event at method '%s(%s)' in Listener '%s'.";
     private static final String EVENT_FIRED = "Fired '%s' Event at method '%s(%s)' in Listener '%s'.";
 
-    private final Thread primaryThread;
+    // private final Thread primaryThread;
+    private final long threadId;
 
     private final EnumMap<EventPriority, Map<Class<? extends Event>, List<MethodContainer>>> eventListenerMap = new EnumMap<>(EventPriority.class);
 
     public EventService() {
-        primaryThread = Thread.currentThread();
+        threadId = Thread.currentThread().getId();
     }
 
     /**
@@ -288,7 +289,12 @@ public class EventService implements EventManager, Service {
      * @return whether or not the thread that called this method is the main thread.
      */
     private boolean isPrimaryThread() {
-        return Thread.currentThread().equals(primaryThread);
+        return Thread.currentThread().getId() == threadId;
+    }
+
+    @Override
+    public long getThreadId() {
+        return threadId;
     }
 
     @Override

@@ -2,8 +2,8 @@ package com.jayfella.importer.service;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 /**
@@ -14,7 +14,7 @@ public class ServiceManager {
 
     private static final Logger log = Logger.getLogger(ServiceManager.class.getName());
 
-    private static final Map<Class<? extends Service>, Service> services = new HashMap<>();
+    private static final ConcurrentHashMap<Class<? extends Service>, Service> services = new ConcurrentHashMap<>();
 
     /**
      * Returns the instance of the given Service class, or null if none exists.
@@ -25,11 +25,26 @@ public class ServiceManager {
     public static <T extends Service> T getService(Class<T> serviceClass) {
         // return (T)services.get(serviceClass);
 
-       Service service = services.entrySet().stream()
-                .filter(entry -> isAssignable(entry.getValue().getClass(),serviceClass))
+        Service service = services.entrySet().stream()
+                .filter(entry -> isAssignable(entry.getValue().getClass(), serviceClass))
                 .findFirst()
                 .map(Map.Entry::getValue)
                 .orElse(null);
+
+
+        if (service != null) {
+
+            long threadId = service.getThreadId();
+
+            if (threadId > -1) {
+
+                long currentThreadId = Thread.currentThread().getId();
+
+                if (currentThreadId != threadId) {
+                    log.warning("Service '" + serviceClass.getSimpleName() + "' was accessed by the wrong thread: " + Thread.currentThread().getName());
+                }
+            }
+        }
 
         return (T) service;
     }
@@ -55,7 +70,6 @@ public class ServiceManager {
             services.put(serviceClass, service);
 
             log.info("Registered Service: " + serviceClass.getSimpleName());
-
             return service;
 
         } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
@@ -80,7 +94,6 @@ public class ServiceManager {
             services.put(serviceClass, service);
 
             log.info("Registered Service: " + serviceClass.getSimpleName());
-
             return service;
 
         } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
