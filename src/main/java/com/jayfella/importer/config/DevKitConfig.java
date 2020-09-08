@@ -24,6 +24,7 @@ public class DevKitConfig {
 
     private static final File storageDir = new File("devkit");
     private static final File configFile = Paths.get(storageDir.toString(), "devkit-config.json").toFile();
+    public static final File pluginStorageDir = Paths.get(storageDir.toString(), "plugins").toFile();
 
     private static final ObjectMapper objectMapper = new ObjectMapper()
             .enable(SerializationFeature.INDENT_OUTPUT)
@@ -42,6 +43,7 @@ public class DevKitConfig {
     public static DevKitConfig getInstance() {
         if (INSTANCE == null) {
 
+            // Create the storage directory.
             if (!storageDir.exists()) {
 
                 log.info("Creating devkit storage directory: " + storageDir);
@@ -52,6 +54,7 @@ public class DevKitConfig {
                 }
             }
 
+            // create or load the configuration file.
             if (!configFile.exists()) {
 
                 log.info("Creating configuration file: " + configFile);
@@ -74,6 +77,16 @@ public class DevKitConfig {
                     INSTANCE.save();
                 }
 
+            }
+
+            // create the plugins storage dir.
+            if (!pluginStorageDir.exists()) {
+                log.info("Creating plugins storage directory: " + pluginStorageDir);
+                boolean created = pluginStorageDir.mkdirs();
+
+                if (!created) {
+                    throw new RuntimeException("Unable to create plugins storage directory. Exiting.");
+                }
             }
 
         }

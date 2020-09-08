@@ -1,8 +1,12 @@
 package com.jayfella.importer.plugin;
 
+import com.jayfella.importer.config.DevKitConfig;
 import com.jayfella.importer.plugin.configuration.PluginConfiguration;
 import com.jayfella.importer.service.PluginService;
 import com.jayfella.importer.service.ServiceManager;
+
+import java.io.File;
+import java.nio.file.Paths;
 
 public abstract class DevkitPlugin {
 
@@ -19,6 +23,16 @@ public abstract class DevkitPlugin {
      */
     public void initialize() throws Exception {
         this.logger = new PluginLogger(this);
+
+        File storageDir = Paths.get(DevKitConfig.pluginStorageDir.toString(), getConfiguration().getId()).toFile();
+        if (!storageDir.exists()) {
+            boolean created = storageDir.mkdirs();
+
+            if (!created) {
+                throw new RuntimeException("Unable to create plugin storage directory. Exiting.");
+            }
+        }
+
         onInitialize();
     }
 
@@ -66,6 +80,14 @@ public abstract class DevkitPlugin {
 
         return dependencies;
 
+    }
+
+    /**
+     * Returns the directory used to store any data for the plugin.
+     * @return the directory used to store any data for the plugin.
+     */
+    public File getStorageDir() {
+        return Paths.get(DevKitConfig.pluginStorageDir.toString(), getConfiguration().getId()).toFile();
     }
 
     public PluginLogger getLogger() {
