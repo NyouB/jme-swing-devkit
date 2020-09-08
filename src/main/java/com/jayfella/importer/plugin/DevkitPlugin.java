@@ -67,6 +67,10 @@ public abstract class DevkitPlugin {
         return pluginConfiguration;
     }
 
+    /**
+     * Returns the plugin instances of all plugins depended on, or null if the plugin does not exist.
+     * @return the plugin instances of all plugins depended on, or null if the plugin does not exist.
+     */
     public DevkitPlugin[] getDependencies() {
 
         DevkitPlugin[] dependencies = new DevkitPlugin[pluginConfiguration.getDependencies().length];
@@ -79,6 +83,25 @@ public abstract class DevkitPlugin {
         }
 
         return dependencies;
+
+    }
+
+    /**
+     * Returns the plugin instances of all plugins softDepended on, or null if the plugin does not exist.
+     * @return the plugin instances of all plugins softDepended on, or null if the plugin does not exist.
+     */
+    public DevkitPlugin[] getSoftDependencies() {
+
+        DevkitPlugin[] softDependencies = new DevkitPlugin[pluginConfiguration.getSoftDependencies().length];
+
+        PluginService pluginService = ServiceManager.getService(PluginService.class);
+
+        for (int i = 0; i < softDependencies.length; i++) {
+            DevkitPlugin plugin = pluginService.getPlugin(pluginConfiguration.getDependencies()[i]);
+            softDependencies[i] = plugin;
+        }
+
+        return softDependencies;
 
     }
 
