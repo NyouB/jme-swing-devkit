@@ -24,6 +24,7 @@ public class JmeEngineServiceImpl extends JmeEngineService {
 
     private FilterPostProcessor fpp;
 
+    // let this service be accessed by any thread (so we can use .enqueue anywhere).
     private final long threadId = -1;
 
     @Override
@@ -49,7 +50,7 @@ public class JmeEngineServiceImpl extends JmeEngineService {
     @Override
     public void simpleInitApp() {
 
-        //threadId = Thread.currentThread().getId();
+        // threadId = Thread.currentThread().getId();
 
         if (AppStateUtils.isBulletPhysicsOnClassPath()) {
             log.info("Bullet Physics Detected.");

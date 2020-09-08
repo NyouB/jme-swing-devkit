@@ -34,15 +34,24 @@ public class ServiceManager {
 
         if (service != null) {
 
+            // Every service logs a ThreadId that should be used when using the service.
+            // OR -1 to ignore this check. We ignore this check for the JmeEngineService because we want to call enqueue
+            // from anywhere. Engine threading is something the user should already be aware of.
+            // For any other service it's important that they only be accessed from the thread they were created on.
+
             long threadId = service.getThreadId();
 
+            // According to the javadoc thread IDs are positive numbers, so any negative number = ignore this check.
             if (threadId > -1) {
 
                 long currentThreadId = Thread.currentThread().getId();
 
+                // for now we'll leave it as a warning. If the system proves useful we'll up the ante to an exception.
                 if (currentThreadId != threadId) {
                     log.warning("Service '" + serviceClass.getSimpleName() + "' was accessed by the wrong thread: " + Thread.currentThread().getName());
+                    // throw new ConcurrentModificationException("Service '" + serviceClass.getSimpleName() + "' was accessed by the wrong thread: " + Thread.currentThread().getName());
                 }
+
             }
         }
 
