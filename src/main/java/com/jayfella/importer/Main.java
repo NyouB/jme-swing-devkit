@@ -16,6 +16,7 @@ import com.jayfella.importer.swing.*;
 import com.jme3.app.StatsAppState;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.plugins.FileLocator;
+import com.jme3.system.JmeSystem;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.jdesktop.swingx.VerticalLayout;
@@ -52,6 +53,9 @@ public class Main {
                 "org.reflections"
                 // "com.jme3.renderer.opengl.GLRenderer"
         }).forEach(p -> LogManager.getLogger(p).setLevel(Level.ERROR));
+
+        log.info("Engine Version: " + JmeSystem.getFullName());
+        log.info("Operating System: " + System.getProperty("os.name") + " " + System.getProperty("os.arch"));
 
         Main main = new Main();
         main.start();
