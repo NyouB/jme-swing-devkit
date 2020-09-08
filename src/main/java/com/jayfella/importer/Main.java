@@ -80,6 +80,8 @@ public class Main {
                 }
             }
 
+            // start the canvas as early as possible.
+            engineService.startCanvas();
         }
         else {
             log.severe("Unable to create instance of JmeEngineService. Exiting.");
@@ -89,17 +91,16 @@ public class Main {
 
     public void start() {
 
+        // The first "pass" involves just setting up the environment. Do as little as possible just so we can get the
+        // window visible.
         SwingUtilities.invokeLater(() -> {
 
             // register all of our services...
+            // All of these services are created on the AWT thread.
             ServiceManager.registerService(WindowService.class);
-            ServiceManager.registerService(RegistrationService.class);
-            ServiceManager.registerService(ClipboardService.class);
-            ServiceManager.registerService(PluginService.class);
-
-            // register the events manager on the AWT thread.
             ServiceManager.registerService(EventService.class);
 
+            // Why is this being set?
             JPopupMenu.setDefaultLightWeightPopupEnabled(false);
 
             String parentDirName = new File(System.getProperty("user.dir")).getName();
@@ -113,15 +114,12 @@ public class Main {
                 }
             });
 
-            initializeTreeView(new JTree());
+            initializeTreeView();
             initializeInspectorService();
 
             JMenuBar menu = createMenu();
             frame.setJMenuBar(menu);
             ServiceManager.registerService(new MenuService(menu));
-
-            // Should this be done on the AWT thread? The examples do... I'm not sure.
-            ServiceManager.getService(JmeEngineService.class).startCanvas();
 
             // position and size the main window...
             Dimension dimension = DevKitConfig.getInstance().getSdkConfig().getWindowDimensions(MainPage.WINDOW_ID);
@@ -146,15 +144,27 @@ public class Main {
             frame.addComponentListener(new WindowLocationSaver(MainPage.WINDOW_ID));
             ServiceManager.getService(JmeEngineService.class).getCanvas().addComponentListener(new JmeCanvasSizeSaver());
 
-            // load any available plugins.
-            // I'm not sure where we should put this.
-            ServiceManager.getService(PluginService.class).loadPlugins();
-
             // show the window.
             frame.setVisible(true);
 
             // verify that the asset root directory has been set properly.
             checkAssetRootDir();
+
+        });
+
+
+        // now we have the window visible we can display progress data and load anything else we need.
+        SwingUtilities.invokeLater(() -> {
+
+            // register all of our services...
+            // All of these services are created on the AWT thread.
+            ServiceManager.registerService(RegistrationService.class);
+            ServiceManager.registerService(ClipboardService.class);
+            ServiceManager.registerService(PluginService.class);
+
+            // load any available plugins.
+            // I'm not sure where we should put this.
+            ServiceManager.getService(PluginService.class).loadPlugins();
 
         });
 
@@ -294,7 +304,9 @@ public class Main {
         return menuBar;
     }
 
-    private void initializeTreeView(JTree tree) {
+    private void initializeTreeView() {
+
+        JTree tree = new JTree();
 
         JDialog treeViewFrame = new JDialog(frame, "Scene Tree");
 
@@ -305,7 +317,6 @@ public class Main {
         ServiceManager.getService(WindowService.class).positionWindowFromSavedPosition(treeViewFrame, SceneTreeService.WINDOW_ID);
         ServiceManager.getService(WindowService.class).sizeWindowFromSavedSize(treeViewFrame, SceneTreeService.WINDOW_ID);
 
-        //treeViewFrame.addWindowListener(new WindowServiceListener());
         treeViewFrame.addComponentListener(new WindowLocationSaver(SceneTreeService.WINDOW_ID));
         treeViewFrame.addComponentListener(new WindowSizeSaver(SceneTreeService.WINDOW_ID));
 
@@ -327,7 +338,6 @@ public class Main {
         ServiceManager.getService(WindowService.class).positionWindowFromSavedPosition(inspectorFrame, PropertyInspectorService.WINDOW_ID);
         ServiceManager.getService(WindowService.class).sizeWindowFromSavedSize(inspectorFrame, PropertyInspectorService.WINDOW_ID);
 
-        // inspectorFrame.addWindowListener(new WindowServiceListener());
         inspectorFrame.addComponentListener(new WindowLocationSaver(PropertyInspectorService.WINDOW_ID));
         inspectorFrame.addComponentListener(new WindowSizeSaver(PropertyInspectorService.WINDOW_ID));
 
