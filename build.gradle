@@ -19,12 +19,13 @@ java {
 }
 
 group 'com.jayfella'
-version '1.0.4'
+version '1.0.5'
 
 mainClassName = "com.jayfella.importer.Main"
 
 repositories {
     jcenter()
+    //mavenLocal()
 }
 
 project.ext {
@@ -80,7 +81,6 @@ dependencies {
     implementation group: 'it.unimi.dsi', name: 'fastutil', version: '8.3.1'
 
     // testing - REMOVE
-    // implementation "com.jayfella:jme-terrain:1.0-SNAPSHOT"
     //implementation "com.jayfella:TestDevkitPlugin:1.0.0"
 }
 
