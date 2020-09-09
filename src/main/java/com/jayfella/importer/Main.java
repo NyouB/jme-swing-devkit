@@ -101,7 +101,7 @@ public class Main {
 
             // register all of our services...
             // All of these services are created on the AWT thread.
-            ServiceManager.registerService(WindowService.class);
+
             ServiceManager.registerService(EventService.class);
 
             // Why is this being set?
@@ -117,6 +117,8 @@ public class Main {
                     ServiceManager.stop();
                 }
             });
+
+            ServiceManager.registerService(new WindowService(frame));
 
             initializeTreeView();
             initializeInspectorService();
@@ -268,11 +270,14 @@ public class Main {
 
             // so we check if the main window still owns the dialog, and if it does, call .setVisible(true), else create it.
 
-            Window window = Arrays.stream(frame.getOwnedWindows())
-                    .filter(w -> w instanceof Dialog)
-                    .filter(w -> ((Dialog)w).getTitle().equals(DebugLights.DEBUG_LIGHTS_WINDOW_TITLE))
-                    .findFirst()
-                    .orElse(null);
+//            Window window = Arrays.stream(frame.getOwnedWindows())
+//                    .filter(w -> w instanceof Dialog)
+//                    .filter(w -> ((Dialog)w).getTitle().equals(DebugLights.DEBUG_LIGHTS_WINDOW_TITLE))
+//                    .findFirst()
+//                    .orElse(null);
+
+            Window window = ServiceManager.getService(WindowService.class)
+                    .getWindow(DebugLights.DEBUG_LIGHTS_WINDOW_TITLE);
 
             if (isSelected) {
 
