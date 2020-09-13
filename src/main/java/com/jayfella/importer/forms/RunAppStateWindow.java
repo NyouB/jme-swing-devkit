@@ -155,6 +155,9 @@ public class RunAppStateWindow {
             annotatedMethods = reflections.getMethodsAnnotatedWith(ColorProperty.class);
             allAnnotatedMethods.put(ColorProperty.class, annotatedMethods);
 
+            annotatedMethods = reflections.getMethodsAnnotatedWith(EnumProperty.class);
+            allAnnotatedMethods.put(EnumProperty.class, annotatedMethods);
+
             appstatePropertiesPanel.setLayout(new MigLayout("fillx"));
 
             annotatedMethods = allAnnotatedMethods.get(FloatProperty.class);
@@ -374,6 +377,67 @@ public class RunAppStateWindow {
                 }
 
             }
+
+            annotatedMethods = allAnnotatedMethods.get(EnumProperty.class);
+            for (Method method : annotatedMethods) {
+
+                final String methodPartial = method.getName().substring(3);
+
+                try {
+
+                    // We can get the method from the swing thread.
+                    final Method setter = appState.getClass().getDeclaredMethod("set" + methodPartial, method.getReturnType());
+
+                    // Get the value from the JME thread.
+                    ServiceManager.getService(JmeEngineService.class).enqueue(() -> {
+
+                        Enum<?> methodValue = null;
+
+                        try {
+                            methodValue = (Enum<?>) method.invoke(appState);
+                        } catch (IllegalAccessException | InvocationTargetException e) {
+                            e.printStackTrace();
+                        }
+
+                        final Enum<?> finalValue = methodValue;
+
+                        // Back to the AWT thread...
+                        SwingUtilities.invokeLater(() -> {
+
+                            Enum<?>[] values = finalValue.getDeclaringClass().getEnumConstants();
+                            JComboBox<Enum<?>> comboBox = new JComboBox<>(new DefaultComboBoxModel<>(values));
+
+                            comboBox.setSelectedItem(finalValue);
+
+                            comboBox.addActionListener(source -> {
+
+                                final Enum<?> comboVal = (Enum<?>) comboBox.getSelectedItem();
+                                ServiceManager.getService(JmeEngineService.class).enqueue(() -> {
+
+                                    try {
+                                        setter.invoke(appState, comboVal);
+                                    } catch (IllegalAccessException | InvocationTargetException e) {
+                                        e.printStackTrace();
+                                    }
+
+                                });
+                            });
+
+                            appstatePropertiesPanel.add(new Label(methodPartial), "align right");
+                            appstatePropertiesPanel.add(comboBox, "wrap, pushx, growx");
+
+                            rootPane.revalidate();
+                            rootPane.repaint();
+                        });
+
+                    });
+
+                } catch (NoSuchMethodException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
         }
 
         // finally
