@@ -389,7 +389,7 @@ public class RunAppStateWindow {
 
         Set<Class<? extends AppState>> classes = new HashSet<>();
 
-        for (Class<?> aClass : reflections.getTypesAnnotatedWith(DevkitAppState.class)) {
+        for (Class<?> aClass : reflections.getTypesAnnotatedWith(DevKitAppState.class)) {
             if (isAppStateClass(aClass)) {
                 classes.add((Class<? extends AppState>) aClass);
             }
