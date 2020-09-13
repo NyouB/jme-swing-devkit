@@ -1,4 +1,4 @@
-package com.jayfella.importer.annotations;
+package com.jayfella.importer.appstate.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
