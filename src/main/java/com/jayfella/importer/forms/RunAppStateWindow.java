@@ -3,7 +3,7 @@ package com.jayfella.importer.forms;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
-import com.jayfella.importer.annotations.*;
+import com.jayfella.importer.appstate.annotations.*;
 import com.jayfella.importer.core.ColorConverter;
 import com.jayfella.importer.core.DevkitPackages;
 import com.jayfella.importer.service.JmeEngineService;
