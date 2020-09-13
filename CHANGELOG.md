@@ -14,3 +14,4 @@ Changelog
 - Add the ability to run an `AppState`.
 - Add annotations to an `AppState` to display a GUI to modify variables.
 - Rename `DevkitPlugin` to `DevKitPlugin`.
+- Switch plugin package requirement to `devkit.plugin`.
