@@ -80,6 +80,8 @@ dependencies {
     // plugin sorter
     implementation group: 'it.unimi.dsi', name: 'fastutil', version: '8.3.1'
 
+    implementation "com.miglayout:miglayout:3.7.4"
+
     // testing - REMOVE
     //implementation "com.jayfella:TestDevkitPlugin:1.0.0"
 }
