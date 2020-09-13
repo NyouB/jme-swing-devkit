@@ -2,11 +2,8 @@ package com.jayfella.importer;
 
 import com.jayfella.importer.config.DevKitConfig;
 import com.jayfella.importer.core.LogUtil;
+import com.jayfella.importer.forms.*;
 import com.jayfella.importer.service.EventService;
-import com.jayfella.importer.forms.Configuration;
-import com.jayfella.importer.forms.DebugLights;
-import com.jayfella.importer.forms.ImportModel;
-import com.jayfella.importer.forms.MainPage;
 import com.jayfella.importer.jme.AppStateUtils;
 import com.jayfella.importer.jme.CameraRotationWidgetState;
 import com.jayfella.importer.jme.DebugGridState;
@@ -261,28 +258,33 @@ public class Main {
         debugLightsItem.setSelected(DevKitConfig.getInstance().getSdkConfig().isShowDebugLightsWindow());
         debugLightsItem.addActionListener(e -> {
 
-            JCheckBoxMenuItem checkBoxMenuItem = (JCheckBoxMenuItem) e.getSource();
-            final boolean isSelected = checkBoxMenuItem.isSelected();
 
-            // According to the documentation:
             // A Dialog is still owned even if it is disposed. dispose() only affects a Window's displayability, not its ownership.
             // A window can be re-created after disposal by calling .setVisible(true) or .pack().
 
             // so we check if the main window still owns the dialog, and if it does, call .setVisible(true), else create it.
 
-//            Window window = Arrays.stream(frame.getOwnedWindows())
-//                    .filter(w -> w instanceof Dialog)
-//                    .filter(w -> ((Dialog)w).getTitle().equals(DebugLights.DEBUG_LIGHTS_WINDOW_TITLE))
-//                    .findFirst()
-//                    .orElse(null);
-
             Window window = ServiceManager.getService(WindowService.class)
                     .getWindow(DebugLights.DEBUG_LIGHTS_WINDOW_TITLE);
 
-            if (isSelected) {
+            if (debugLightsItem.isSelected()) {
 
                 if (window == null) {
-                    JDialog dialog = Windows.createDebugLightsWindow(frame, checkBoxMenuItem);
+                    DebugLights debugLights = new DebugLights();
+
+                    JDialog dialog = ServiceManager.getService(WindowService.class)
+                            .createDialog(frame,
+                                    debugLights.$$$getRootComponent$$$(),
+                                    DebugLights.DEBUG_LIGHTS_WINDOW_TITLE,
+                                    true, true);
+
+                    dialog.addWindowListener(new WindowAdapter() {
+                        @Override
+                        public void windowClosed(WindowEvent e) {
+                            debugLightsItem.setSelected(false);
+                        }
+                    });
+
                     dialog.setVisible(true);
 
                 }
@@ -299,16 +301,47 @@ public class Main {
 
             }
 
-            DevKitConfig.getInstance().getSdkConfig().setShowDebugLightsWindow(isSelected);
+            DevKitConfig.getInstance().getSdkConfig().setShowDebugLightsWindow(debugLightsItem.isSelected());
             DevKitConfig.getInstance().save();
 
         });
 
         // bit of a strange place to put it, but we need to menu item to toggle if the window is closed.
         if (DevKitConfig.getInstance().getSdkConfig().isShowDebugLightsWindow()) {
-            JDialog dialog = Windows.createDebugLightsWindow(frame, debugLightsItem);
+            DebugLights debugLights = new DebugLights();
+
+            JDialog dialog = ServiceManager.getService(WindowService.class)
+                    .createDialog(frame,
+                            debugLights.$$$getRootComponent$$$(),
+                            DebugLights.DEBUG_LIGHTS_WINDOW_TITLE,
+                            true, true);
+
+            dialog.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosed(WindowEvent e) {
+                    debugLightsItem.setSelected(false);
+                }
+            });
+
             dialog.setVisible(true);
         }
+
+        JCheckBoxMenuItem runAppStateItem = (JCheckBoxMenuItem) windowItem.add(new JCheckBoxMenuItem("Run AppState"));
+        runAppStateItem.addActionListener(e -> {
+
+            RunAppStateWindow runAppStateWindow = new RunAppStateWindow();
+
+            JDialog dialog = ServiceManager.getService(WindowService.class)
+                    .createDialog(frame,
+                            runAppStateWindow.$$$getRootComponent$$$(),
+                            RunAppStateWindow.RUN_APPSTATE_WINDOW_TITLE,
+                            true, true);
+
+            dialog.setMinimumSize(new Dimension(400, 500));
+
+            dialog.setVisible(true);
+
+        });
 
         return menuBar;
     }
