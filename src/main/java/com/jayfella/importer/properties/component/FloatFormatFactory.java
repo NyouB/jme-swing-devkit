@@ -8,7 +8,17 @@ import java.text.NumberFormat;
 
 public class FloatFormatFactory extends JFormattedTextField.AbstractFormatterFactory {
 
+    private final float min;
+    private final float max;
 
+    public FloatFormatFactory() {
+        this(Integer.MIN_VALUE, Integer.MAX_VALUE);
+    }
+
+    public FloatFormatFactory(float min, float max) {
+        this.min = min;
+        this.max = max;
+    }
 
     @Override
     public JFormattedTextField.AbstractFormatter getFormatter(JFormattedTextField tf) {
@@ -21,8 +31,8 @@ public class FloatFormatFactory extends JFormattedTextField.AbstractFormatterFac
 
         InternationalFormatter formatter = new InternationalFormatter(format);
         formatter.setAllowsInvalid(true);
-        formatter.setMinimum(-Float.MAX_VALUE);
-        formatter.setMaximum(Float.MAX_VALUE);
+        formatter.setMinimum(min);
+        formatter.setMaximum(max);
 
         return formatter;
     }
