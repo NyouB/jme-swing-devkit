@@ -182,6 +182,14 @@ public class SceneTreeService implements Service, EventListener {
     }
 
     /**
+     * Returns the root node tree element.
+     * @return the root node tree element.
+     */
+    public NodeTreeNode getRootNodeTreeNode() {
+        return rootNodeTreeNode;
+    }
+
+    /**
      * Returns the "fake" GuiNode as opposed to the "real" guiNode.
      * Note that this node is attached to the JME scene and should be inspected or modified on the JME thread.
      *
@@ -189,6 +197,14 @@ public class SceneTreeService implements Service, EventListener {
      */
     public Node getGuiNode() {
         return guiNode;
+    }
+
+    /**
+     * Returns the gui node tree element.
+     * @return the gui node tree element.
+     */
+    public NodeTreeNode getGuiNodeTreeNode() {
+        return guiNodeTreeNode;
     }
 
     /**
@@ -212,13 +228,15 @@ public class SceneTreeService implements Service, EventListener {
     }
 
     /**
-     * Adds a spatial to the tree and scene. All scene objects should be added to the scene using this method.
+     * Adds a spatial to the tree and scene. All spatials should be added to the scene using this method.
      * This should only be called from the AWT thread. The spatial should not be added to the scene yet.
      *
      * @param spatial    the spatial to add.
      * @param parentNode the treeNode to add the spatial.
+     *
+     * @return the created SpatialTreeNode
      */
-    public void addSpatial(Spatial spatial, NodeTreeNode parentNode) {
+    public SpatialTreeNode addSpatial(Spatial spatial, NodeTreeNode parentNode) {
 
         SpatialTreeNode newNode = createSpatialTreeNodeFrom(spatial);
 
@@ -274,16 +292,20 @@ public class SceneTreeService implements Service, EventListener {
             });
 
         }
+
+        return newNode;
     }
 
     /**
-     * Adds a light to the tree and scene. All scene objects should be added to the scene using this method.
+     * Adds a light to the tree and scene. All lights should be added to the scene using this method.
      * This should only be called from the AWT thread. The light should not be added to the scene yet.
      *
      * @param light      the light to add.
      * @param parentNode the treeNode to add the spatial.
+     *
+     * @return the created LightTreeNode
      */
-    public void addLight(Light light, SpatialTreeNode parentNode) {
+    public LightTreeNode addLight(Light light, SpatialTreeNode parentNode) {
 
         LightTreeNode newNode = createLightTreeNodeFrom(light);
 
@@ -312,9 +334,19 @@ public class SceneTreeService implements Service, EventListener {
             });
         }
 
+        return newNode;
     }
 
-    public void addControl(Control control, SpatialTreeNode parentNode) {
+    /**
+     * Adds a control to the tree and scene. All controls should be added to the scene using this method.
+     * This should only be called from the AWT thread. The control should not be added to the scene yet.
+     *
+     * @param control    the control to add.
+     * @param parentNode the treeNode to add the control.
+     *
+     * @return the created ControlTreeNode
+     */
+    public ControlTreeNode addControl(Control control, SpatialTreeNode parentNode) {
 
         ControlTreeNode newNode = new ControlTreeNode(control);
 
@@ -334,6 +366,7 @@ public class SceneTreeService implements Service, EventListener {
 
         }
 
+        return newNode;
     }
 
     /**
