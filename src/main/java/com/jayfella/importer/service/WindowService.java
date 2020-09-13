@@ -1,6 +1,8 @@
 package com.jayfella.importer.service;
 
 import com.jayfella.importer.config.DevKitConfig;
+import com.jayfella.importer.swing.WindowLocationSaver;
+import com.jayfella.importer.swing.WindowSizeSaver;
 
 import javax.swing.*;
 import java.awt.*;
@@ -62,6 +64,37 @@ public class WindowService implements Service {
         if (dimension != null) {
             window.setSize(dimension);
         }
+    }
+
+    public JDialog createDialog(Frame parent, JComponent content, String title, boolean saveLocation, boolean saveSize) {
+
+        JDialog dialog = new JDialog(parent, title);
+
+        dialog.setContentPane(content);
+        dialog.pack();
+
+        dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+
+        if (saveLocation) {
+            dialog.addComponentListener(new WindowLocationSaver(title));
+        }
+
+        if (saveSize) {
+            dialog.addComponentListener(new WindowSizeSaver(title));
+        }
+
+
+
+        if (saveLocation) {
+            ServiceManager.getService(WindowService.class).positionWindowFromSavedPosition(dialog, title);
+        }
+
+        if (saveSize) {
+            ServiceManager.getService(WindowService.class).sizeWindowFromSavedSize(dialog, title);
+        }
+
+        return dialog;
+
     }
 
     @Override
