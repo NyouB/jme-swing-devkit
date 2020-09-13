@@ -2,6 +2,7 @@ package com.jayfella.importer.service;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
@@ -49,7 +50,8 @@ public class ServiceManager {
                 // for now we'll leave it as a warning. If the system proves useful we'll up the ante to an exception.
                 if (currentThreadId != threadId) {
                     log.warning("Service '" + serviceClass.getSimpleName() + "' was accessed by the wrong thread: " + Thread.currentThread().getName());
-                    // throw new ConcurrentModificationException("Service '" + serviceClass.getSimpleName() + "' was accessed by the wrong thread: " + Thread.currentThread().getName());
+                    // throw new ServiceManagerThreadingException("Service '" + serviceClass.getSimpleName() + "' was accessed by the wrong thread: " + Thread.currentThread().getName());
+                    log.warning(Arrays.toString(Thread.currentThread().getStackTrace()).replace( ',', '\n' ));
                 }
 
             }
