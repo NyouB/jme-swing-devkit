@@ -42,7 +42,7 @@ dependencies {
 
     // darcula LAF
     // https://github.com/weisJ/darklaf
-    implementation("com.github.weisj:darklaf-core:2.3.0")
+    implementation "com.github.weisj:darklaf-core:2.4.7"
 
     // swing form building
     implementation 'com.intellij:forms_rt:7.0.3'
@@ -78,11 +78,13 @@ dependencies {
     implementation "com.fasterxml.jackson.core:jackson-databind:$version_jackson"
 
     // plugin sorter
-    implementation group: 'it.unimi.dsi', name: 'fastutil', version: '8.3.1'
+    implementation "it.unimi.dsi:fastutil:8.3.1"
 
+    // MigLayout
     implementation "com.miglayout:miglayout:3.7.4"
 
     // testing - REMOVE
     //implementation "com.jayfella:TestDevkitPlugin:1.0.0"
+
 }
 
