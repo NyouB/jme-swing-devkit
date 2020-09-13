@@ -24,6 +24,7 @@ plugins {
 - BatchNode Support.
 - AssetLinkNode Support.
 - Plugin Support.
+- Run AppStates from your project in the SDK
 - Much more!
 
 #### Importing Models
@@ -72,4 +73,17 @@ and the radius of the probe.
 
 #### Creating Plugins
 The [TestDevKitPlugin](https://github.com/jayfella/TestDevkitPlugin) repository contains a working example and
-documentation on how to create plugins. 
+documentation on how to create plugins.
+
+#### Run AppStates in the DevKit
+```
+Window -> Run AppState
+```
+Running an AppState from the DevKit gives the user more functionality, as well as allowing the user to create scene
+objects and provide separation of Game Objects. There are several rules in allowing an AppState to be run from the
+DevKit:
+
+- The AppState must be inside the `devkit.appstate` package.
+- The AppState must have a class Annotation `DevKitAppState`.
+- The AppState must have a noArgs constructor.
+
