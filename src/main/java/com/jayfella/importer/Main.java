@@ -326,9 +326,57 @@ public class Main {
             dialog.setVisible(true);
         }
 
+        // AppState Window
         JCheckBoxMenuItem runAppStateItem = (JCheckBoxMenuItem) windowItem.add(new JCheckBoxMenuItem("Run AppState"));
+        runAppStateItem.setSelected(DevKitConfig.getInstance().getSdkConfig().isShowRunAppStateWindow());
         runAppStateItem.addActionListener(e -> {
 
+            Window window = ServiceManager.getService(WindowService.class)
+                    .getWindow(RunAppStateWindow.RUN_APPSTATE_WINDOW_TITLE);
+
+            if (runAppStateItem.isSelected()) {
+
+                if (window == null) {
+                    RunAppStateWindow runAppStateWindow = new RunAppStateWindow();
+
+                    JDialog dialog = ServiceManager.getService(WindowService.class)
+                            .createDialog(frame,
+                                    runAppStateWindow.$$$getRootComponent$$$(),
+                                    RunAppStateWindow.RUN_APPSTATE_WINDOW_TITLE,
+                                    true, true);
+
+                    dialog.setMinimumSize(new Dimension(400, 500));
+
+                    dialog.addWindowListener(new WindowAdapter() {
+                        @Override
+                        public void windowClosed(WindowEvent e) {
+                            runAppStateItem.setSelected(false);
+                        }
+                    });
+
+                    dialog.setVisible(true);
+
+                }
+                else {
+                    window.setVisible(true);
+                }
+
+            }
+            else {
+
+                if (window != null) {
+                    window.dispose();
+                }
+
+            }
+
+            DevKitConfig.getInstance().getSdkConfig().setShowRunAppStateWindow(runAppStateItem.isSelected());
+            DevKitConfig.getInstance().save();
+
+        });
+
+        // bit of a strange place to put it, but we need to menu item to toggle if the window is closed.
+        if (DevKitConfig.getInstance().getSdkConfig().isShowRunAppStateWindow()) {
             RunAppStateWindow runAppStateWindow = new RunAppStateWindow();
 
             JDialog dialog = ServiceManager.getService(WindowService.class)
@@ -339,9 +387,15 @@ public class Main {
 
             dialog.setMinimumSize(new Dimension(400, 500));
 
-            dialog.setVisible(true);
+            dialog.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosed(WindowEvent e) {
+                    runAppStateItem.setSelected(false);
+                }
+            });
 
-        });
+            dialog.setVisible(true);
+        }
 
         return menuBar;
     }
