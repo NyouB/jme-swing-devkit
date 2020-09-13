@@ -1,5 +1,6 @@
 package com.jayfella.importer.service;
 
+import com.jayfella.importer.core.DevkitPackages;
 import com.jayfella.importer.plugin.DevkitPlugin;
 import com.jayfella.importer.plugin.configuration.PluginConfiguration;
 import com.jayfella.importer.plugin.exception.InvalidPluginConfigurationException;
@@ -38,9 +39,9 @@ public class PluginService implements Service {
         // We could enforce a package to drastically reduce the search time.
         // For example: "plugin.devkit.yourPackageName" and just search "plugin.devkit"
 
-        log.info("Searching for Devkit Plugins...");
+        log.info("Searching for DevKit Plugins...");
         // Reflections reflections = new Reflections(new ConfigurationBuilder().setUrls(ClasspathHelper.forJavaClassPath()));
-        Reflections reflections = new Reflections(new ConfigurationBuilder().forPackages("plugin.devkit"));
+        Reflections reflections = new Reflections(new ConfigurationBuilder().forPackages(DevkitPackages.PLUGINS));
         Set<Class<? extends DevkitPlugin>> classes = reflections.getSubTypesOf(DevkitPlugin.class);
 
         log.info("Found " + classes.size() + " classes extending DevkitPlugin.");
