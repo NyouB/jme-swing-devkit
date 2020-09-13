@@ -6,6 +6,7 @@ import com.intellij.uiDesigner.core.Spacer;
 import com.jayfella.importer.appstate.annotations.*;
 import com.jayfella.importer.core.ColorConverter;
 import com.jayfella.importer.core.DevkitPackages;
+import com.jayfella.importer.properties.component.FloatFormatFactory;
 import com.jayfella.importer.service.JmeEngineService;
 import com.jayfella.importer.service.ServiceManager;
 import com.jme3.app.state.AppState;
@@ -17,6 +18,8 @@ import org.reflections.util.ConfigurationBuilder;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -214,7 +217,37 @@ public class RunAppStateWindow {
                             });
 
                             appstatePropertiesPanel.add(new Label(methodPartial), "align right");
-                            appstatePropertiesPanel.add(slider, "wrap, pushx, growx");
+
+                            if (floatProperty.editable()) {
+                                appstatePropertiesPanel.add(slider, "pushx, growx");
+
+                                JFormattedTextField textField = new JFormattedTextField();
+                                textField.setFormatterFactory(new FloatFormatFactory(minValue, maxValue));
+                                textField.setText("" + finalValue);
+
+                                textField.getDocument().addDocumentListener(new DocumentListener() {
+
+                                    private void set() {
+
+                                        final float value = textField.getText().isEmpty()
+                                                ? minValue
+                                                : Float.parseFloat(textField.getText());
+
+                                        slider.getModel().setValue((int) (value * 1000));
+                                    }
+
+                                    @Override public void insertUpdate(DocumentEvent e) { set(); }
+                                    @Override public void removeUpdate(DocumentEvent e) { set(); }
+                                    @Override public void changedUpdate(DocumentEvent e) { set(); }
+                                });
+
+                                appstatePropertiesPanel.add(textField, "pushX, growx, wrap");
+
+                            } else {
+                                appstatePropertiesPanel.add(slider, "wrap, pushx, growx");
+                            }
+
+
 
                             rootPane.revalidate();
                             rootPane.repaint();
