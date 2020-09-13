@@ -8,13 +8,13 @@ import com.jayfella.importer.service.ServiceManager;
 import java.io.File;
 import java.nio.file.Paths;
 
-public abstract class DevkitPlugin {
+public abstract class DevKitPlugin {
 
     protected PluginConfiguration pluginConfiguration = new PluginConfiguration();
     private boolean enabled = false;
     private PluginLogger logger;
 
-    public DevkitPlugin() {
+    public DevKitPlugin() {
 
     }
 
@@ -71,14 +71,14 @@ public abstract class DevkitPlugin {
      * Returns the plugin instances of all plugins depended on, or null if the plugin does not exist.
      * @return the plugin instances of all plugins depended on, or null if the plugin does not exist.
      */
-    public DevkitPlugin[] getDependencies() {
+    public DevKitPlugin[] getDependencies() {
 
-        DevkitPlugin[] dependencies = new DevkitPlugin[pluginConfiguration.getDependencies().length];
+        DevKitPlugin[] dependencies = new DevKitPlugin[pluginConfiguration.getDependencies().length];
 
         PluginService pluginService = ServiceManager.getService(PluginService.class);
 
         for (int i = 0; i < dependencies.length; i++) {
-            DevkitPlugin plugin = pluginService.getPlugin(pluginConfiguration.getDependencies()[i]);
+            DevKitPlugin plugin = pluginService.getPlugin(pluginConfiguration.getDependencies()[i]);
             dependencies[i] = plugin;
         }
 
@@ -90,14 +90,14 @@ public abstract class DevkitPlugin {
      * Returns the plugin instances of all plugins softDepended on, or null if the plugin does not exist.
      * @return the plugin instances of all plugins softDepended on, or null if the plugin does not exist.
      */
-    public DevkitPlugin[] getSoftDependencies() {
+    public DevKitPlugin[] getSoftDependencies() {
 
-        DevkitPlugin[] softDependencies = new DevkitPlugin[pluginConfiguration.getSoftDependencies().length];
+        DevKitPlugin[] softDependencies = new DevKitPlugin[pluginConfiguration.getSoftDependencies().length];
 
         PluginService pluginService = ServiceManager.getService(PluginService.class);
 
         for (int i = 0; i < softDependencies.length; i++) {
-            DevkitPlugin plugin = pluginService.getPlugin(pluginConfiguration.getDependencies()[i]);
+            DevKitPlugin plugin = pluginService.getPlugin(pluginConfiguration.getDependencies()[i]);
             softDependencies[i] = plugin;
         }
 

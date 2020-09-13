@@ -24,7 +24,7 @@
  */
 package com.jayfella.importer.plugin.sorter;
 
-import com.jayfella.importer.plugin.DevkitPlugin;
+import com.jayfella.importer.plugin.DevKitPlugin;
 import com.jayfella.importer.plugin.sorter.DirectedGraph.DataNode;
 
 import java.util.List;
@@ -34,12 +34,12 @@ public final class PluginSorter {
     private PluginSorter() {
     }
 
-    public static List<DevkitPlugin> sort(Iterable<DevkitPlugin> candidates) {
-        DirectedGraph<DevkitPlugin> graph = new DirectedGraph<>();
+    public static List<DevKitPlugin> sort(Iterable<DevKitPlugin> candidates) {
+        DirectedGraph<DevKitPlugin> graph = new DirectedGraph<>();
 
-        for (DevkitPlugin candidate : candidates) {
+        for (DevKitPlugin candidate : candidates) {
             graph.add(candidate);
-            for (DevkitPlugin dependency : candidate.getDependencies()) {
+            for (DevKitPlugin dependency : candidate.getDependencies()) {
                 graph.addEdge(candidate, dependency);
             }
         }

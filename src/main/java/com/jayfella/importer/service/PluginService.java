@@ -1,7 +1,7 @@
 package com.jayfella.importer.service;
 
 import com.jayfella.importer.core.DevkitPackages;
-import com.jayfella.importer.plugin.DevkitPlugin;
+import com.jayfella.importer.plugin.DevKitPlugin;
 import com.jayfella.importer.plugin.configuration.PluginConfiguration;
 import com.jayfella.importer.plugin.exception.InvalidPluginConfigurationException;
 import com.jayfella.importer.plugin.exception.PluginDependencyNotFoundException;
@@ -22,7 +22,7 @@ public class PluginService implements Service {
     private static final Logger log = Logger.getLogger(PluginService.class.getName());
     private static final Pattern ID_PATTERN = Pattern.compile("^[A-Za-z0-9 _.-]+$");
 
-    private final List<DevkitPlugin> plugins = new ArrayList<>();
+    private final List<DevKitPlugin> plugins = new ArrayList<>();
 
     private final long threadId;
 
@@ -32,7 +32,7 @@ public class PluginService implements Service {
 
     public void loadPlugins() {
 
-        List<DevkitPlugin> loadedPlugins = new ArrayList<>();
+        List<DevKitPlugin> loadedPlugins = new ArrayList<>();
         int pluginErrorCount = 0;
 
         // We're searching through the entire classpath and it will take a while.
@@ -42,16 +42,16 @@ public class PluginService implements Service {
         log.info("Searching for DevKit Plugins...");
         // Reflections reflections = new Reflections(new ConfigurationBuilder().setUrls(ClasspathHelper.forJavaClassPath()));
         Reflections reflections = new Reflections(new ConfigurationBuilder().forPackages(DevkitPackages.Plugin));
-        Set<Class<? extends DevkitPlugin>> classes = reflections.getSubTypesOf(DevkitPlugin.class);
+        Set<Class<? extends DevKitPlugin>> classes = reflections.getSubTypesOf(DevKitPlugin.class);
 
         log.info("Found " + classes.size() + " classes extending DevkitPlugin.");
 
-        for (Class<? extends DevkitPlugin> pluginClass : classes) {
+        for (Class<? extends DevKitPlugin> pluginClass : classes) {
 
-            DevkitPlugin plugin = null;
+            DevKitPlugin plugin = null;
 
             try {
-                Constructor<? extends DevkitPlugin> constructor = pluginClass.getConstructor();
+                Constructor<? extends DevKitPlugin> constructor = pluginClass.getConstructor();
                 plugin = constructor.newInstance();
             } catch (InstantiationException | InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
 
@@ -171,13 +171,13 @@ public class PluginService implements Service {
 
     }
 
-    private void checkDependencies(DevkitPlugin plugin) throws PluginDependencyNotFoundException {
+    private void checkDependencies(DevKitPlugin plugin) throws PluginDependencyNotFoundException {
 
         final List<String> dependenciesNotFound = new ArrayList<>();
 
         for (String strDep : plugin.getConfiguration().getDependencies()) {
 
-            DevkitPlugin dependency = getPlugin(strDep);
+            DevKitPlugin dependency = getPlugin(strDep);
 
             if (dependency == null) {
                 dependenciesNotFound.add(strDep);
@@ -204,13 +204,13 @@ public class PluginService implements Service {
 
     }
 
-    private void checkSoftDependencies(DevkitPlugin plugin) {
+    private void checkSoftDependencies(DevKitPlugin plugin) {
 
         final List<String> dependenciesNotFound = new ArrayList<>();
 
         for (String strDep : plugin.getConfiguration().getSoftDependencies()) {
 
-            DevkitPlugin dependency = getPlugin(strDep);
+            DevKitPlugin dependency = getPlugin(strDep);
 
             if (dependency == null) {
                 dependenciesNotFound.add(strDep);
@@ -239,7 +239,7 @@ public class PluginService implements Service {
 
     private void enablePlugins() {
 
-        for (DevkitPlugin plugin : plugins) {
+        for (DevKitPlugin plugin : plugins) {
 
             if (!plugin.isEnabled()) {
                 try {
@@ -262,7 +262,7 @@ public class PluginService implements Service {
      * @param name the exact name of the plugin.
      * @return the plugin with the given name, or null if none was found.
      */
-    public DevkitPlugin getPlugin(String name) {
+    public DevKitPlugin getPlugin(String name) {
         return plugins.stream()
                 .filter(plugin -> plugin.getConfiguration().getId().equals(name))
                 .findFirst()
@@ -273,8 +273,8 @@ public class PluginService implements Service {
      * Returns all currently loaded plugins.
      * @return all currently loaded plugins.
      */
-    public DevkitPlugin[] getPlugins() {
-        return plugins.toArray(new DevkitPlugin[0]);
+    public DevKitPlugin[] getPlugins() {
+        return plugins.toArray(new DevKitPlugin[0]);
     }
 
     public Logger getLogger() {

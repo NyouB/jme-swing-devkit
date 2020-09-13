@@ -23,7 +23,7 @@ public class PluginLogger extends Logger {
      *
      * @param context A reference to the plugin
      */
-    public PluginLogger(DevkitPlugin context) {
+    public PluginLogger(DevKitPlugin context) {
         super(context.getClass().getCanonicalName(), null);
         String prefix = context.getConfiguration().getPrefix();
         pluginName = prefix != null ? "[" + prefix + "] " : "[" + context.getConfiguration().getId() + "] ";
