@@ -11,4 +11,6 @@ public @interface IntegerProperty {
     int min() default Integer.MIN_VALUE;
     int max() default Integer.MAX_VALUE;
     int step() default 1;
+
+    String tab() default "";
 }

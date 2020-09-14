@@ -6,7 +6,6 @@ import com.intellij.uiDesigner.core.Spacer;
 import com.jayfella.importer.appstate.annotations.*;
 import com.jayfella.importer.core.ColorConverter;
 import com.jayfella.importer.core.DevkitPackages;
-import com.jayfella.importer.properties.component.FloatFormatFactory;
 import com.jayfella.importer.service.JmeEngineService;
 import com.jayfella.importer.service.ServiceManager;
 import com.jme3.app.state.AppState;
@@ -18,17 +17,14 @@ import org.reflections.util.ConfigurationBuilder;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.List;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class RunAppStateWindow {
 
@@ -134,11 +130,451 @@ public class RunAppStateWindow {
         });
     }
 
+    private Map<Method, Object> getMethodValues(Set<Method> annotatedMethods, AppState appState) {
+
+        Map<Method, Object> values = new HashMap<>();
+        for (Method getter : annotatedMethods) {
+
+            Object getterValue;
+
+            try {
+
+                // don't invoke methods that return void. They are methods for buttons, and it will "click" the button.
+                getterValue = getter.getReturnType() != void.class
+                        ? getter.invoke(appState)
+                        : null;
+
+                values.put(getter, getterValue);
+
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return values;
+    }
+
+    private void addComponentToGui(JComponent component, String labelText, String tabName, String[] tabs, JPanel[] tabPanels) {
+
+        if (!tabName.isEmpty()) {
+
+            int tabIndex = -1;
+
+            for (int i = 0; i < tabs.length; i++) {
+                if (tabs[i].equalsIgnoreCase(tabName)) {
+                    tabIndex = i;
+                    break;
+                }
+            }
+
+            if (tabIndex > -1) {
+                tabPanels[tabIndex].add(new JLabel(labelText), "align right");
+                tabPanels[tabIndex].add(component, "wrap, pushx, growx");
+            } else {
+                appstatePropertiesPanel.add(new JLabel(labelText), "align right");
+                appstatePropertiesPanel.add(component, "wrap, pushx, growx");
+            }
+        } else {
+            appstatePropertiesPanel.add(new JLabel(labelText), "align right");
+            appstatePropertiesPanel.add(component, "wrap, pushx, growx");
+        }
+
+    }
+
     private void populateStateProperties(AppState appState) {
+
+        // we need to collect each JComponent before we add them because they get added in a random order, which isn't
+        // the end of the world, but when we add a JTabbedPane it gets added at some random position, and that's not cool.
+        // If we collect them, we can at least put them in alphabetical order or something.
+
+        // The idea is to visit the JME thread only once.
 
         appstatePropertiesPanel.removeAll();
 
         if (appState != null) {
+
+            appstatePropertiesPanel.setLayout(new MigLayout("fillx"));
+
+            DevKitAppState devKitAppState = appState.getClass().getAnnotation(DevKitAppState.class);
+
+            String[] tabs = devKitAppState.tabs();
+            final JTabbedPane tabbedPane = tabs.length == 0 ? null : new JTabbedPane();
+            final JPanel[] tabPanels = tabs.length == 0 ? null : new JPanel[tabs.length];
+
+            if (tabs.length > 0) {
+                for (int i = 0; i < tabs.length; i++) {
+
+                    tabPanels[i] = new JPanel(new MigLayout());
+                    tabbedPane.addTab(tabs[i].trim(), tabPanels[i]);
+                }
+            }
+
+            ConcurrentHashMap<Class<? extends Annotation>, Map<Method, Object>> allAnnotatedMethods = new ConcurrentHashMap<>();
+
+            // we need to get the values from the JME thread.
+            ServiceManager.getService(JmeEngineService.class).enqueue(() -> {
+
+                List<Class<? extends Annotation>> annotations = new ArrayList<>();
+                Collections.addAll(annotations,
+                        FloatProperty.class,
+                        IntegerProperty.class,
+                        ButtonProperty.class,
+                        ColorProperty.class,
+                        EnumProperty.class
+                );
+
+                Reflections reflections = new Reflections(appState.getClass(), new MethodAnnotationsScanner());
+
+                Set<Method> annotatedMethods;
+                Map<Method, Object> getterValues;
+
+                for (Class<? extends Annotation> annotation : annotations) {
+                    annotatedMethods = reflections.getMethodsAnnotatedWith(annotation);
+                    getterValues = getMethodValues(annotatedMethods, appState);
+                    allAnnotatedMethods.put(annotation, getterValues);
+                }
+
+                // now we have all the values. We need to create the components on the AWT thread.
+                SwingUtilities.invokeLater(() -> {
+
+                    for (Map.Entry<Class<? extends Annotation>, Map<Method, Object>> entry : allAnnotatedMethods.entrySet()) {
+
+                        Class<? extends Annotation> annotation = entry.getKey();
+                        Map<Method, Object> methodsAndValues = entry.getValue();
+
+                        for (Map.Entry<Method, Object> methodEntries : methodsAndValues.entrySet()) {
+
+                            Method getter = methodEntries.getKey();
+                            String methodPartial = getter.getName().substring(3);
+
+                            // We can get the method from the swing thread.
+                            Method setter;
+
+                            if (annotation == FloatProperty.class) {
+
+                                try {
+                                    setter = appState.getClass().getDeclaredMethod("set" + methodPartial, float.class);
+                                } catch (NoSuchMethodException e) {
+                                    e.printStackTrace();
+                                    continue;
+                                }
+
+                                // this is dictating how many decimal places we're accurate to.
+                                final float multiplier = 1000;
+
+                                float methodValue = (float) methodEntries.getValue();
+                                FloatProperty floatAnnotation = getter.getAnnotation(FloatProperty.class);
+
+                                int value = (int) (methodValue * multiplier);
+                                int min = (int) (floatAnnotation.min() * multiplier);
+                                int max = (int) (floatAnnotation.max() * multiplier);
+                                int step = (int) (floatAnnotation.step() * multiplier);
+
+                                JSlider slider = new JSlider(new DefaultBoundedRangeModel(value, step, min, max));
+
+                                slider.addChangeListener(event -> {
+
+                                    final float sliderVal = slider.getValue() / multiplier;
+
+                                    // invoke the method on the JME thread (it's an appstate, belongs to JME).
+                                    ServiceManager.getService(JmeEngineService.class).enqueue(() -> {
+                                        try {
+                                            setter.invoke(appState, sliderVal);
+                                        } catch (IllegalAccessException | InvocationTargetException e) {
+                                            e.printStackTrace();
+                                        }
+                                    });
+                                });
+
+                                final String tab = floatAnnotation.tab().trim();
+
+                                addComponentToGui(slider, methodPartial, tab, tabs, tabPanels);
+
+//                                if (!tab.isEmpty()) {
+//                                    int tabIndex = -1;
+//                                    for (int i = 0; i < tabs.length; i++) {
+//                                        if (tabs[i].equalsIgnoreCase(tab)) {
+//                                            tabIndex = i;
+//                                            break;
+//                                        }
+//                                    }
+//
+//                                    if (tabIndex > -1) {
+//                                        contentPanels[tabIndex].add(new JLabel(methodPartial), "align right");
+//                                        contentPanels[tabIndex].add(slider, "wrap, pushx, growx");
+//                                    } else {
+//                                        appstatePropertiesPanel.add(new JLabel(methodPartial), "align right");
+//                                        appstatePropertiesPanel.add(slider, "wrap, pushx, growx");
+//                                    }
+//                                } else {
+//                                    appstatePropertiesPanel.add(new JLabel(methodPartial), "align right");
+//                                    appstatePropertiesPanel.add(slider, "wrap, pushx, growx");
+//                                }
+
+                            }
+
+                            else if (annotation == IntegerProperty.class) {
+
+                                try {
+                                    setter = appState.getClass().getDeclaredMethod("set" + methodPartial, int.class);
+                                } catch (NoSuchMethodException e) {
+                                    e.printStackTrace();
+                                    continue;
+                                }
+
+                                int methodValue = (int) methodEntries.getValue();
+                                IntegerProperty integerAnnotation = getter.getAnnotation(IntegerProperty.class);
+
+                                JSlider slider = new JSlider(new DefaultBoundedRangeModel(methodValue,
+                                        integerAnnotation.step(),
+                                        integerAnnotation.min(),
+                                        integerAnnotation.max()));
+
+                                slider.addChangeListener(event -> {
+
+                                    final int sliderVal = slider.getValue();
+
+                                    // invoke the method on the JME thread (it's an appstate, belongs to JME).
+                                    ServiceManager.getService(JmeEngineService.class).enqueue(() -> {
+                                        try {
+                                            setter.invoke(appState, sliderVal);
+                                        } catch (IllegalAccessException | InvocationTargetException e) {
+                                            e.printStackTrace();
+                                        }
+                                    });
+                                });
+
+                                final String tab = integerAnnotation.tab().trim();
+                                addComponentToGui(slider, methodPartial, tab, tabs, tabPanels);
+
+//                                if (!tab.isEmpty()) {
+//                                    int tabIndex = -1;
+//                                    for (int i = 0; i < tabs.length; i++) {
+//                                        if (tabs[i].equalsIgnoreCase(tab)) {
+//                                            tabIndex = i;
+//                                            break;
+//                                        }
+//                                    }
+//
+//                                    if (tabIndex > -1) {
+//                                        contentPanels[tabIndex].add(new JLabel(methodPartial), "align right");
+//                                        contentPanels[tabIndex].add(slider, "wrap, pushx, growx");
+//                                    } else {
+//                                        appstatePropertiesPanel.add(new JLabel(methodPartial), "align right");
+//                                        appstatePropertiesPanel.add(slider, "wrap, pushx, growx");
+//                                    }
+//                                } else {
+//                                    appstatePropertiesPanel.add(new JLabel(methodPartial), "align right");
+//                                    appstatePropertiesPanel.add(slider, "wrap, pushx, growx");
+//                                }
+
+                            }
+
+                            else if (annotation == ButtonProperty.class) {
+
+                                JButton button = new JButton(getter.getName());
+                                button.addActionListener(e -> ServiceManager.getService(JmeEngineService.class).enqueue(() -> {
+                                    try {
+                                        getter.invoke(appState);
+                                    } catch (IllegalAccessException | InvocationTargetException illegalAccessException) {
+                                        illegalAccessException.printStackTrace();
+                                    }
+                                }));
+
+                                ButtonProperty buttonAnnotation = getter.getAnnotation(ButtonProperty.class);
+
+                                final String tab = buttonAnnotation.tab().trim();
+                                addComponentToGui(button, "", tab, tabs, tabPanels);
+//                                if (!tab.isEmpty()) {
+//                                    int tabIndex = -1;
+//                                    for (int i = 0; i < tabs.length; i++) {
+//                                        if (tabs[i].equalsIgnoreCase(tab)) {
+//                                            tabIndex = i;
+//                                            break;
+//                                        }
+//                                    }
+//
+//                                    if (tabIndex > -1) {
+//                                        contentPanels[tabIndex].add(new JLabel(""), "align right");
+//                                        contentPanels[tabIndex].add(button, "wrap, pushx, growx");
+//                                    } else {
+//                                        appstatePropertiesPanel.add(new JLabel(""), "align right");
+//                                        appstatePropertiesPanel.add(button, "wrap, pushx, growx");
+//                                    }
+//                                } else {
+//                                    appstatePropertiesPanel.add(new JLabel(""), "align right");
+//                                    appstatePropertiesPanel.add(button, "wrap, pushx, growx");
+//                                }
+
+                            }
+
+                            else if (annotation == EnumProperty.class) {
+
+                                try {
+                                    setter = appState.getClass().getDeclaredMethod("set" + methodPartial, getter.getReturnType());
+                                } catch (NoSuchMethodException e) {
+                                    e.printStackTrace();
+                                    continue;
+                                }
+
+
+                                Enum<?> methodValue = (Enum<?>) methodEntries.getValue();
+                                EnumProperty enumAnnotation = getter.getAnnotation(EnumProperty.class);
+
+                                Enum<?>[] values = methodValue.getDeclaringClass().getEnumConstants();
+
+                                JComboBox<Enum<?>> comboBox = new JComboBox<>(new DefaultComboBoxModel<>(values));
+                                comboBox.setSelectedItem(methodValue);
+
+                                comboBox.addActionListener(event -> {
+
+                                    final Enum<?> comboVal = (Enum<?>) comboBox.getSelectedItem();
+                                    ServiceManager.getService(JmeEngineService.class).enqueue(() -> {
+
+                                        try {
+                                            setter.invoke(appState, comboVal);
+                                        } catch (IllegalAccessException | InvocationTargetException e) {
+                                            e.printStackTrace();
+                                        }
+
+                                    });
+                                });
+
+                                final String tab = enumAnnotation.tab().trim();
+                                addComponentToGui(comboBox, methodPartial, tab, tabs, tabPanels);
+//                                if (!tab.isEmpty()) {
+//                                    int tabIndex = -1;
+//                                    for (int i = 0; i < tabs.length; i++) {
+//                                        if (tabs[i].equalsIgnoreCase(tab)) {
+//                                            tabIndex = i;
+//                                            break;
+//                                        }
+//                                    }
+//
+//                                    if (tabIndex > -1) {
+//                                        contentPanels[tabIndex].add(new JLabel(methodPartial), "align right");
+//                                        contentPanels[tabIndex].add(comboBox, "wrap, pushx, growx");
+//                                    } else {
+//                                        appstatePropertiesPanel.add(new JLabel(methodPartial), "align right");
+//                                        appstatePropertiesPanel.add(comboBox, "wrap, pushx, growx");
+//                                    }
+//                                } else {
+//                                    appstatePropertiesPanel.add(new JLabel(methodPartial), "align right");
+//                                    appstatePropertiesPanel.add(comboBox, "wrap, pushx, growx");
+//                                }
+
+                            }
+
+                            else if (annotation == ColorProperty.class) {
+
+                                try {
+                                    setter = appState.getClass().getDeclaredMethod("set" + methodPartial, float.class);
+                                } catch (NoSuchMethodException e) {
+                                    e.printStackTrace();
+                                    continue;
+                                }
+
+
+                                ColorRGBA methodValue = (ColorRGBA) methodEntries.getValue();
+                                ColorProperty colorAnnotation = getter.getAnnotation(ColorProperty.class);
+
+                                JColorChooser jColorChooser = new JColorChooser(ColorConverter.toColor(methodValue));
+                                jColorChooser.getSelectionModel().addChangeListener(e -> {
+
+                                    // get the color in the AWT thread.
+                                    final ColorRGBA newColor = ColorConverter.toColorRGBA(jColorChooser.getColor());
+
+                                    // set the color in the JME thread.
+                                    ServiceManager.getService(JmeEngineService.class).enqueue(() -> {
+                                        try {
+                                            setter.invoke(appState, newColor);
+                                        } catch (IllegalAccessException | InvocationTargetException illegalAccessException) {
+                                            illegalAccessException.printStackTrace();
+                                        }
+                                    });
+                                });
+
+                                Window parent = SwingUtilities.getWindowAncestor(rootPane);
+                                JDialog colorDialog = new JDialog(parent, "Color Chooser: " + methodPartial);
+                                colorDialog.setContentPane(jColorChooser);
+                                colorDialog.pack();
+
+                                JButton button = new JButton("Choose...");
+                                button.addActionListener(e -> colorDialog.setVisible(true));
+
+                                colorDialog.setLocationRelativeTo(button);
+
+                                final String tab = colorAnnotation.tab().trim();
+                                addComponentToGui(button, methodPartial, tab, tabs, tabPanels);
+//                                if (!tab.isEmpty()) {
+//                                    int tabIndex = -1;
+//                                    for (int i = 0; i < tabs.length; i++) {
+//                                        if (tabs[i].equalsIgnoreCase(tab)) {
+//                                            tabIndex = i;
+//                                            break;
+//                                        }
+//                                    }
+//
+//                                    if (tabIndex > -1) {
+//                                        contentPanels[tabIndex].add(new JLabel(methodPartial), "align right");
+//                                        contentPanels[tabIndex].add(button, "wrap, pushx, growx");
+//                                    } else {
+//                                        appstatePropertiesPanel.add(new JLabel(methodPartial), "align right");
+//                                        appstatePropertiesPanel.add(button, "wrap, pushx, growx");
+//                                    }
+//                                } else {
+//                                    appstatePropertiesPanel.add(new JLabel(methodPartial), "align right");
+//                                    appstatePropertiesPanel.add(button, "wrap, pushx, growx");
+//                                }
+
+                            }
+
+                        }
+
+                    }
+
+                    // Add the tabbedPane (if it exists) last.
+                    if (tabbedPane != null) {
+                        appstatePropertiesPanel.add(new JSeparator(), "span, wrap");
+                        appstatePropertiesPanel.add(tabbedPane, "span, wrap");
+                    }
+
+                    // we've added all the controls, so we can finally repaint the surface.
+                    rootPane.revalidate();
+                    rootPane.repaint();
+
+                });
+
+
+            });
+
+        }
+
+    }
+
+    private void populateStateProperties2(AppState appState) {
+
+        // we need to collect each JComponent before we add them because they get added in a random order, which isn't
+        // the end of the world, but when we add a JTabbedPane it gets added at some random position, and that's not cool.
+        // If we collect them, we can at least put them in alphabetical order or something.
+
+        appstatePropertiesPanel.removeAll();
+
+        if (appState != null) {
+
+            DevKitAppState devKitAppState = appState.getClass().getAnnotation(DevKitAppState.class);
+
+            String[] tabs = devKitAppState.tabs();
+            final JTabbedPane tabbedPane = tabs.length == 0 ? null : new JTabbedPane();
+            final JPanel[] contentPanels = tabs.length == 0 ? null : new JPanel[tabs.length];
+
+            if (tabs.length > 0) {
+                for (int i = 0; i < tabs.length; i++) {
+
+                    contentPanels[i] = new JPanel(new MigLayout());
+                    tabbedPane.addTab(tabs[i].trim(), contentPanels[i]);
+                }
+            }
 
             Map<Class<? extends Annotation>, Set<Method>> allAnnotatedMethods = new HashMap<>();
 
@@ -186,6 +622,7 @@ public class RunAppStateWindow {
 
                         // while we're here, technically the annotation belongs to the JME thread.
                         FloatProperty floatProperty = method.getAnnotation(FloatProperty.class);
+                        final String tab = floatProperty.tab().trim();
 
                         final float finalValue = methodValue == null ? 0 : methodValue;
                         final float minValue = floatProperty.min();
@@ -216,38 +653,26 @@ public class RunAppStateWindow {
                                 });
                             });
 
-                            appstatePropertiesPanel.add(new Label(methodPartial), "align right");
-
-                            if (floatProperty.editable()) {
-                                appstatePropertiesPanel.add(slider, "pushx, growx");
-
-                                JFormattedTextField textField = new JFormattedTextField();
-                                textField.setFormatterFactory(new FloatFormatFactory(minValue, maxValue));
-                                textField.setText("" + finalValue);
-
-                                textField.getDocument().addDocumentListener(new DocumentListener() {
-
-                                    private void set() {
-
-                                        final float value = textField.getText().isEmpty()
-                                                ? minValue
-                                                : Float.parseFloat(textField.getText());
-
-                                        slider.getModel().setValue((int) (value * 1000));
+                            if (!tab.isEmpty()) {
+                                int tabIndex = -1;
+                                for (int i = 0; i < tabs.length; i++) {
+                                    if (tabs[i].equalsIgnoreCase(tab)) {
+                                        tabIndex = i;
+                                        break;
                                     }
+                                }
 
-                                    @Override public void insertUpdate(DocumentEvent e) { set(); }
-                                    @Override public void removeUpdate(DocumentEvent e) { set(); }
-                                    @Override public void changedUpdate(DocumentEvent e) { set(); }
-                                });
-
-                                appstatePropertiesPanel.add(textField, "pushX, growx, wrap");
-
+                                if (tabIndex > -1) {
+                                    contentPanels[tabIndex].add(new JLabel(methodPartial), "align right");
+                                    contentPanels[tabIndex].add(slider, "wrap, pushx, growx");
+                                } else {
+                                    appstatePropertiesPanel.add(new JLabel(methodPartial), "align right");
+                                    appstatePropertiesPanel.add(slider, "wrap, pushx, growx");
+                                }
                             } else {
+                                appstatePropertiesPanel.add(new JLabel(methodPartial), "align right");
                                 appstatePropertiesPanel.add(slider, "wrap, pushx, growx");
                             }
-
-
 
                             rootPane.revalidate();
                             rootPane.repaint();
@@ -309,7 +734,7 @@ public class RunAppStateWindow {
                                 });
                             });
 
-                            appstatePropertiesPanel.add(new Label(methodPartial), "align right");
+                            appstatePropertiesPanel.add(new JLabel(methodPartial), "align right");
                             appstatePropertiesPanel.add(slider, "wrap, pushx, growx");
 
                             rootPane.revalidate();
@@ -336,7 +761,7 @@ public class RunAppStateWindow {
                     }
                 }));
 
-                appstatePropertiesPanel.add(new Label(method.getName()), "align right");
+                appstatePropertiesPanel.add(new JLabel(method.getName()), "align right");
                 appstatePropertiesPanel.add(button, "wrap, pushx, growx");
 
                 rootPane.revalidate();
@@ -395,7 +820,7 @@ public class RunAppStateWindow {
 
                             colorDialog.setLocationRelativeTo(button);
 
-                            appstatePropertiesPanel.add(new Label(methodPartial), "align right");
+                            appstatePropertiesPanel.add(new JLabel(methodPartial), "align right");
                             appstatePropertiesPanel.add(button, "wrap, pushx, growx");
 
                             rootPane.revalidate();
@@ -456,7 +881,7 @@ public class RunAppStateWindow {
                                 });
                             });
 
-                            appstatePropertiesPanel.add(new Label(methodPartial), "align right");
+                            appstatePropertiesPanel.add(new JLabel(methodPartial), "align right");
                             appstatePropertiesPanel.add(comboBox, "wrap, pushx, growx");
 
                             rootPane.revalidate();
@@ -468,6 +893,15 @@ public class RunAppStateWindow {
                 } catch (NoSuchMethodException e) {
                     e.printStackTrace();
                 }
+
+            }
+
+
+            if (tabbedPane != null) {
+                // invoke it later (i.e. after everything else)
+                SwingUtilities.invokeLater(() -> {
+                    appstatePropertiesPanel.add(tabbedPane, "span, wrap");
+                });
 
             }
 
@@ -548,25 +982,29 @@ public class RunAppStateWindow {
         splitPane1.setLeftComponent(panel1);
         panel1.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         final JPanel panel2 = new JPanel();
-        panel2.setLayout(new GridLayoutManager(1, 3, new Insets(0, 5, 0, 5), -1, -1));
-        panel1.add(panel2, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_NORTH, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        panel2.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        panel1.add(panel2, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        final JScrollPane scrollPane2 = new JScrollPane();
+        panel2.add(scrollPane2, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(-1, 75), null, null, 0, false));
+        appstatesList = new JList();
+        scrollPane2.setViewportView(appstatesList);
+        final JPanel panel3 = new JPanel();
+        panel3.setLayout(new GridLayoutManager(1, 1, new Insets(5, 5, 5, 5), -1, -1));
+        panel1.add(panel3, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        panel3.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), null, TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        final JPanel panel4 = new JPanel();
+        panel4.setLayout(new GridLayoutManager(1, 3, new Insets(0, 5, 0, 5), -1, -1));
+        panel3.add(panel4, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_NORTH, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         runButton = new JButton();
         runButton.setEnabled(false);
         runButton.setText("Run");
-        panel2.add(runButton, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panel4.add(runButton, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer1 = new Spacer();
-        panel2.add(spacer1, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
+        panel4.add(spacer1, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
         stopButton = new JButton();
         stopButton.setEnabled(false);
         stopButton.setText("Stop");
-        panel2.add(stopButton, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JPanel panel3 = new JPanel();
-        panel3.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        panel1.add(panel3, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        final JScrollPane scrollPane2 = new JScrollPane();
-        panel3.add(scrollPane2, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, new Dimension(-1, 75), null, null, 0, false));
-        appstatesList = new JList();
-        scrollPane2.setViewportView(appstatesList);
+        panel4.add(stopButton, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }
 
     /**
@@ -578,7 +1016,6 @@ public class RunAppStateWindow {
     private void createUIComponents() {
         // TODO: place custom component creation code here
         appstatePropertiesPanel = new JPanel();
-        // appstatePropertiesPanel.setLayout(new GridLayoutManager(1, 2, new Insets(5, 5, 5, 5), 5, 5));
         appstatePropertiesPanel.setLayout(new MigLayout());
 
     }

@@ -14,4 +14,6 @@ public @interface FloatProperty {
     float step() default 1;
     boolean editable() default false;
 
+    String tab() default "";
+
 }
