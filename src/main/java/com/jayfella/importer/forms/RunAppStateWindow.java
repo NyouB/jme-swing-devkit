@@ -293,27 +293,6 @@ public class RunAppStateWindow {
 
                                 addComponentToGui(slider, methodPartial, tab, tabs, tabPanels);
 
-//                                if (!tab.isEmpty()) {
-//                                    int tabIndex = -1;
-//                                    for (int i = 0; i < tabs.length; i++) {
-//                                        if (tabs[i].equalsIgnoreCase(tab)) {
-//                                            tabIndex = i;
-//                                            break;
-//                                        }
-//                                    }
-//
-//                                    if (tabIndex > -1) {
-//                                        contentPanels[tabIndex].add(new JLabel(methodPartial), "align right");
-//                                        contentPanels[tabIndex].add(slider, "wrap, pushx, growx");
-//                                    } else {
-//                                        appstatePropertiesPanel.add(new JLabel(methodPartial), "align right");
-//                                        appstatePropertiesPanel.add(slider, "wrap, pushx, growx");
-//                                    }
-//                                } else {
-//                                    appstatePropertiesPanel.add(new JLabel(methodPartial), "align right");
-//                                    appstatePropertiesPanel.add(slider, "wrap, pushx, growx");
-//                                }
-
                             }
 
                             else if (annotation == IntegerProperty.class) {
@@ -350,27 +329,6 @@ public class RunAppStateWindow {
                                 final String tab = integerAnnotation.tab().trim();
                                 addComponentToGui(slider, methodPartial, tab, tabs, tabPanels);
 
-//                                if (!tab.isEmpty()) {
-//                                    int tabIndex = -1;
-//                                    for (int i = 0; i < tabs.length; i++) {
-//                                        if (tabs[i].equalsIgnoreCase(tab)) {
-//                                            tabIndex = i;
-//                                            break;
-//                                        }
-//                                    }
-//
-//                                    if (tabIndex > -1) {
-//                                        contentPanels[tabIndex].add(new JLabel(methodPartial), "align right");
-//                                        contentPanels[tabIndex].add(slider, "wrap, pushx, growx");
-//                                    } else {
-//                                        appstatePropertiesPanel.add(new JLabel(methodPartial), "align right");
-//                                        appstatePropertiesPanel.add(slider, "wrap, pushx, growx");
-//                                    }
-//                                } else {
-//                                    appstatePropertiesPanel.add(new JLabel(methodPartial), "align right");
-//                                    appstatePropertiesPanel.add(slider, "wrap, pushx, growx");
-//                                }
-
                             }
 
                             else if (annotation == ButtonProperty.class) {
@@ -388,26 +346,6 @@ public class RunAppStateWindow {
 
                                 final String tab = buttonAnnotation.tab().trim();
                                 addComponentToGui(button, "", tab, tabs, tabPanels);
-//                                if (!tab.isEmpty()) {
-//                                    int tabIndex = -1;
-//                                    for (int i = 0; i < tabs.length; i++) {
-//                                        if (tabs[i].equalsIgnoreCase(tab)) {
-//                                            tabIndex = i;
-//                                            break;
-//                                        }
-//                                    }
-//
-//                                    if (tabIndex > -1) {
-//                                        contentPanels[tabIndex].add(new JLabel(""), "align right");
-//                                        contentPanels[tabIndex].add(button, "wrap, pushx, growx");
-//                                    } else {
-//                                        appstatePropertiesPanel.add(new JLabel(""), "align right");
-//                                        appstatePropertiesPanel.add(button, "wrap, pushx, growx");
-//                                    }
-//                                } else {
-//                                    appstatePropertiesPanel.add(new JLabel(""), "align right");
-//                                    appstatePropertiesPanel.add(button, "wrap, pushx, growx");
-//                                }
 
                             }
 
@@ -509,26 +447,6 @@ public class RunAppStateWindow {
 
                                 final String tab = colorAnnotation.tab().trim();
                                 addComponentToGui(button, methodPartial, tab, tabs, tabPanels);
-//                                if (!tab.isEmpty()) {
-//                                    int tabIndex = -1;
-//                                    for (int i = 0; i < tabs.length; i++) {
-//                                        if (tabs[i].equalsIgnoreCase(tab)) {
-//                                            tabIndex = i;
-//                                            break;
-//                                        }
-//                                    }
-//
-//                                    if (tabIndex > -1) {
-//                                        contentPanels[tabIndex].add(new JLabel(methodPartial), "align right");
-//                                        contentPanels[tabIndex].add(button, "wrap, pushx, growx");
-//                                    } else {
-//                                        appstatePropertiesPanel.add(new JLabel(methodPartial), "align right");
-//                                        appstatePropertiesPanel.add(button, "wrap, pushx, growx");
-//                                    }
-//                                } else {
-//                                    appstatePropertiesPanel.add(new JLabel(methodPartial), "align right");
-//                                    appstatePropertiesPanel.add(button, "wrap, pushx, growx");
-//                                }
 
                             }
 
@@ -536,7 +454,7 @@ public class RunAppStateWindow {
 
                                 // for this list we need a method that gets all list values, a getter and a setter.
                                 // the given method returns all values
-                                // the `listAnnotation.methodName()` value specifies the getter/setter.
+                                // the `listAnnotation.accessorName()` value specifies the getter/setter.
 
                                 ListProperty listAnnotation = getter.getAnnotation(ListProperty.class);
 
