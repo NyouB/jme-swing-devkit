@@ -1,18 +1,8 @@
 jMonkeyEngine Devkit
 ===
 
-A Software Development Kit created using a Java Swing UI with support for plugins.
-
-### Use the SDK
-To use the SDK add the gradle plugin to your project and run the gradle task `runSdk`
-
-```groovy
-plugins {
-    id "com.jayfella.jme-devkit" version "0.0.15"
-}
-```
-
-![screenshot](https://i.imgur.com/t7HFH50.png)
+A Software Development Kit created using a Java Swing UI with support for plugins and running AppStates from within
+the DevKit.
 
 ### Features
 - Import Models (glTF using JMEC)
@@ -24,8 +14,21 @@ plugins {
 - BatchNode Support.
 - AssetLinkNode Support.
 - Plugin Support.
-- Run AppStates from your project in the SDK
-- Much more!
+- Run AppStates from your project in the SDK with custom property editing.
+
+### Use the SDK
+To use the SDK add the gradle plugin to your project and run the gradle task `runSdk`
+
+```groovy
+plugins {
+    id "com.jayfella.jme-devkit" version "0.0.15"
+}
+```
+
+Documentation
+---
+
+![screenshot](https://i.imgur.com/t7HFH50.png)
 
 #### Importing Models
 ```
@@ -87,3 +90,62 @@ DevKit:
 - The AppState must have a class Annotation `DevKitAppState`.
 - The AppState must have a noArgs constructor.
 
+You may also specify a tabs `String[]` property in the annotation to specify tabs.
+
+In addition to being able to run the AppState you can also specify annotations on methods to change values. These
+annotations will automatically generate GUI components for you when you run the `DevKitAppState` in the DevKit.
+
+- ButtonProperty
+    - Creates a button. Must be Placed on a method returning `void` with no arguments. Executes the method when the
+    button is pressed.
+    For example:
+        - `public void doSomething()` 
+- ColorProperty
+    - Creates a ColorPicker. Placed on a getter method returning `ColorRGBA`. You must also have a setter method.
+    For example:
+        - `public ColorRGBA getMyColor()`
+        - `public void setMyColor(ColorRGBA color)`
+- EnumProperty
+    - Creates a ComboBox. Placed on a getter method returning an Enum. You must also have a setter method.
+    For example:
+        - `public MyEnum getMyEnum()`
+        - `public void setMyEnum(MyEnum myEnum)`
+- FloatProperty
+    - Creates a Slider. Placed on a getter method returning `float`. You must also have a setter method.
+    For example:
+        - `public float getMyFloatValue()`
+        - `public void setMyFloatValue(float value)`
+    - Optional parameters:
+        - min (optional, default Integer.MIN_VALUE)
+            - Specifies the minimum value the slider will allow.
+        - max (optional, default Integer.MAX_VALUE)
+            - Specifies the maximum value the slider will allow
+        - step (optional, default 1.0f)
+            - Specifies the amount of change the slider moves per movement.
+- IntegerProperty
+    - Creates a slider. Placed on a getter method returning `int`. You must also have a setter method.
+    For example:
+        - `public int getMyIntValue()`
+        - `public void setMyIntValue(int value)`
+    - Optional Parameters:
+        - min (optional, default Integer.MIN_VALUE)
+            - Specifies the minimum value the slider will allow.
+        - max (optional, default Integer.MAX_VALUE)
+            - Specifies the maximum value the slider will allow
+        - step (optional, default 1.0f)
+            - Specifies the amount of change the slider moves per movement.
+- ListProperty
+    - Creates a List or ComboBox. Placed on a method returning an Array of any object type with no arguments.
+    In addition there must also be a getter and setter for the index chosen in the list.
+    For example:
+        - `public String[] myStrings()`
+        - `public int getMySelectedIndex()`
+        - `public void setMySelectedIndex(int value)`
+    - accessorName (required)
+        - Specifies the common method name of the getter and setter. For example `getMySelectedIndex` and
+        `setMySelectedIndex` would have an accessorName of `MySelectedIndex`
+    - listType (optional, default ListType.List)
+        - Determines whether or not to create a List or ComboBox.
+
+All of These annotations have a `tab` property. The GUI control will be placed in the tab of the matching name in the
+`DevKitAppState` annotation. If no tab name is specified the GUI component will not be placed in a tab.
