@@ -151,4 +151,4 @@ annotations will automatically generate GUI components for you when you run the 
 All of These annotations have a `tab` property. The GUI control will be placed in the tab of the matching name in the
 `DevKitAppState` annotation. If no tab name is specified the GUI component will not be placed in a tab.
 
-For a complete example, see the TestAppState.
+For a complete example, see the [TestDevKitAppState](https://github.com/jayfella/jme-swing-devkit/blob/master/src/test/java/TestDevKitAppState.java) class.
