@@ -91,7 +91,7 @@ DevKit:
 - The AppState must have a noArgs constructor.
 
 You may also specify a tabs `String[]` property in the annotation to specify tabs. For example
-- @DevKitAppState(tabs = { "Tab 1", "Tab 2", "Tab 3" } )
+- `@DevKitAppState(tabs = { "Tab 1", "Tab 2", "Tab 3" } )`
 
 In addition to being able to run the AppState you can also specify annotations on methods to change values. These
 annotations will automatically generate GUI components for you when you run the `DevKitAppState` in the DevKit.
