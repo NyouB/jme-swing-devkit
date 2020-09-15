@@ -112,21 +112,23 @@ public class RunAppStateWindow {
 
         appstatesList.addListSelectionListener(e -> {
 
-            Class<? extends AppState> selectedClass = appstatesList.getSelectedValue();
+            if (!e.getValueIsAdjusting()) {
+                Class<? extends AppState> selectedClass = appstatesList.getSelectedValue();
 
-            AppState appState = ServiceManager.getService(JmeEngineService.class)
-                    .getStateManager()
-                    .getState(selectedClass);
+                AppState appState = ServiceManager.getService(JmeEngineService.class)
+                        .getStateManager()
+                        .getState(selectedClass);
 
-            if (appState != null) {
-                runButton.setEnabled(false);
-                stopButton.setEnabled(true);
-            } else {
-                runButton.setEnabled(true);
-                stopButton.setEnabled(false);
+                if (appState != null) {
+                    runButton.setEnabled(false);
+                    stopButton.setEnabled(true);
+                } else {
+                    runButton.setEnabled(true);
+                    stopButton.setEnabled(false);
+                }
+
+                populateStateProperties(appState);
             }
-
-            populateStateProperties(appState);
         });
     }
 
@@ -220,7 +222,8 @@ public class RunAppStateWindow {
                         IntegerProperty.class,
                         ButtonProperty.class,
                         ColorProperty.class,
-                        EnumProperty.class
+                        EnumProperty.class,
+                        ListProperty.class
                 );
 
                 Reflections reflections = new Reflections(appState.getClass(), new MethodAnnotationsScanner());
@@ -526,6 +529,112 @@ public class RunAppStateWindow {
 //                                    appstatePropertiesPanel.add(new JLabel(methodPartial), "align right");
 //                                    appstatePropertiesPanel.add(button, "wrap, pushx, growx");
 //                                }
+
+                            }
+
+                            else if (annotation == ListProperty.class) {
+
+                                // for this list we need a method that gets all list values, a getter and a setter.
+                                // the given method returns all values
+                                // the `listAnnotation.methodName()` value specifies the getter/setter.
+
+                                ListProperty listAnnotation = getter.getAnnotation(ListProperty.class);
+
+                                Method listGetter;
+                                Method listSetter;
+
+                                try {
+                                    listGetter = appState.getClass().getDeclaredMethod("get" + listAnnotation.accessorName());
+                                    listSetter = appState.getClass().getDeclaredMethod("set" + listAnnotation.accessorName(), int.class);
+                                } catch (NoSuchMethodException e) {
+                                    e.printStackTrace();
+                                    continue;
+                                }
+
+                                JComponent component = null;
+                                Object[] methodValue = (Object[]) methodEntries.getValue();
+
+                                if (listAnnotation.listType() == ListType.List) {
+
+                                    DefaultListModel<Object> model = new DefaultListModel<>();
+
+                                    for (Object object : methodValue) {
+                                        model.addElement(object);
+                                    }
+
+                                    JList<Object> list = new JList<>(model);
+
+                                    try {
+                                        int getterValue = (int) listGetter.invoke(appState);
+                                        list.setSelectedIndex(getterValue);
+                                    } catch (IllegalAccessException | InvocationTargetException e) {
+                                        e.printStackTrace();
+                                    }
+
+                                    list.addListSelectionListener(listener -> {
+
+                                        if (!listener.getValueIsAdjusting()) {
+
+                                            final int selectedValue = list.getSelectedIndex();
+
+                                            ServiceManager.getService(JmeEngineService.class).enqueue(() -> {
+
+                                                try {
+                                                    listSetter.invoke(appState, selectedValue);
+                                                } catch (IllegalAccessException | InvocationTargetException e) {
+                                                    e.printStackTrace();
+                                                }
+
+                                            });
+
+                                        }
+
+                                    });
+
+                                    component = list;
+
+                                }
+
+                                else if (listAnnotation.listType() == ListType.ComboBox) {
+
+                                    DefaultComboBoxModel<Object> model = new DefaultComboBoxModel<>();
+
+                                    for (Object object : methodValue) {
+                                        model.addElement(object);
+                                    }
+
+                                    JComboBox<Object> comboBox = new JComboBox<>(model);
+
+                                    try {
+                                        int getterValue = (int) listGetter.invoke(appState);
+                                        comboBox.setSelectedIndex(getterValue);
+                                    } catch (IllegalAccessException | InvocationTargetException e) {
+                                        e.printStackTrace();
+                                    }
+
+                                    comboBox.addActionListener(listener -> {
+
+                                        final int selectedValue = comboBox.getSelectedIndex();
+
+                                        ServiceManager.getService(JmeEngineService.class).enqueue(() -> {
+
+                                            try {
+                                                listSetter.invoke(appState, selectedValue);
+                                            } catch (IllegalAccessException | InvocationTargetException e) {
+                                                e.printStackTrace();
+                                            }
+
+                                        });
+
+
+                                    });
+
+                                    component = comboBox;
+
+                                }
+
+                                String tab = listAnnotation.tab();
+                                addComponentToGui(component, methodPartial, tab, tabs, tabPanels);
 
                             }
 
