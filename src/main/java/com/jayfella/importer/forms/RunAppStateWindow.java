@@ -223,7 +223,8 @@ public class RunAppStateWindow {
                         ButtonProperty.class,
                         ColorProperty.class,
                         EnumProperty.class,
-                        ListProperty.class
+                        ListProperty.class,
+                        CustomComponent.class
                 );
 
                 Reflections reflections = new Reflections(appState.getClass(), new MethodAnnotationsScanner());
@@ -552,6 +553,16 @@ public class RunAppStateWindow {
                                 }
 
                                 String tab = listAnnotation.tab();
+                                addComponentToGui(component, methodPartial, tab, tabs, tabPanels);
+
+                            }
+
+                            else if (annotation == CustomComponent.class) {
+
+                                CustomComponent customAnnotation = getter.getAnnotation(CustomComponent.class);
+                                JComponent component = (JComponent) methodEntries.getValue();
+
+                                String tab = customAnnotation.tab();
                                 addComponentToGui(component, methodPartial, tab, tabs, tabPanels);
 
                             }
