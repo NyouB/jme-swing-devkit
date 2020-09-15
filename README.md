@@ -96,22 +96,22 @@ You may also specify a tabs `String[]` property in the annotation to specify tab
 In addition to being able to run the AppState you can also specify annotations on methods to change values. These
 annotations will automatically generate GUI components for you when you run the `DevKitAppState` in the DevKit.
 
-- @ButtonProperty
+- `@ButtonProperty`
     - Creates a button. Must be Placed on a method returning `void` with no arguments. Executes the method when the
     button is pressed.
     For example:
         - `public void doSomething()` 
-- @ColorProperty
+- `@ColorProperty`
     - Creates a ColorPicker. Placed on a getter method returning `ColorRGBA`. You must also have a setter method.
     For example:
         - `public ColorRGBA getMyColor()`
         - `public void setMyColor(ColorRGBA color)`
-- @EnumProperty
+- `@EnumProperty`
     - Creates a ComboBox. Placed on a getter method returning an Enum. You must also have a setter method.
     For example:
         - `public MyEnum getMyEnum()`
         - `public void setMyEnum(MyEnum myEnum)`
-- @FloatProperty
+- `@FloatProperty`
     - Creates a Slider. Placed on a getter method returning `float`. You must also have a setter method.
     For example:
         - `public float getMyFloatValue()`
@@ -123,7 +123,7 @@ annotations will automatically generate GUI components for you when you run the 
             - Specifies the maximum value the slider will allow
         - step (optional, default 1.0f)
             - Specifies the amount of change the slider moves per movement.
-- @IntegerProperty
+- `@IntegerProperty`
     - Creates a slider. Placed on a getter method returning `int`. You must also have a setter method.
     For example:
         - `public int getMyIntValue()`
@@ -135,7 +135,7 @@ annotations will automatically generate GUI components for you when you run the 
             - Specifies the maximum value the slider will allow
         - step (optional, default 1.0f)
             - Specifies the amount of change the slider moves per movement.
-- @ListProperty
+- `@ListProperty`
     - Creates a List or ComboBox. Placed on a method returning an Array of any object type with no arguments.
     In addition there must also be a getter and setter for the index chosen in the list.
     For example:
