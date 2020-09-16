@@ -25,6 +25,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 public class RunAppStateWindow {
 
@@ -132,9 +133,9 @@ public class RunAppStateWindow {
         });
     }
 
-    private Map<Method, Object> getMethodValues(Set<Method> annotatedMethods, AppState appState) {
+    private ConcurrentMap<Method, Object> getMethodValues(Set<Method> annotatedMethods, AppState appState) {
 
-        Map<Method, Object> values = new HashMap<>();
+        ConcurrentMap<Method, Object> values = new ConcurrentHashMap<>();
         for (Method getter : annotatedMethods) {
 
             Object getterValue;
@@ -230,7 +231,9 @@ public class RunAppStateWindow {
                 Reflections reflections = new Reflections(appState.getClass(), new MethodAnnotationsScanner());
 
                 Set<Method> annotatedMethods;
-                Map<Method, Object> getterValues;
+
+                // Read the values from the JME thread.
+                ConcurrentMap<Method, Object> getterValues;
 
                 for (Class<? extends Annotation> annotation : annotations) {
                     annotatedMethods = reflections.getMethodsAnnotatedWith(annotation);
@@ -384,26 +387,6 @@ public class RunAppStateWindow {
 
                                 final String tab = enumAnnotation.tab().trim();
                                 addComponentToGui(comboBox, methodPartial, tab, tabs, tabPanels);
-//                                if (!tab.isEmpty()) {
-//                                    int tabIndex = -1;
-//                                    for (int i = 0; i < tabs.length; i++) {
-//                                        if (tabs[i].equalsIgnoreCase(tab)) {
-//                                            tabIndex = i;
-//                                            break;
-//                                        }
-//                                    }
-//
-//                                    if (tabIndex > -1) {
-//                                        contentPanels[tabIndex].add(new JLabel(methodPartial), "align right");
-//                                        contentPanels[tabIndex].add(comboBox, "wrap, pushx, growx");
-//                                    } else {
-//                                        appstatePropertiesPanel.add(new JLabel(methodPartial), "align right");
-//                                        appstatePropertiesPanel.add(comboBox, "wrap, pushx, growx");
-//                                    }
-//                                } else {
-//                                    appstatePropertiesPanel.add(new JLabel(methodPartial), "align right");
-//                                    appstatePropertiesPanel.add(comboBox, "wrap, pushx, growx");
-//                                }
 
                             }
 
