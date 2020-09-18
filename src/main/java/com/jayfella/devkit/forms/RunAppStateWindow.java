@@ -133,21 +133,23 @@ public class RunAppStateWindow {
         });
     }
 
-    private ConcurrentMap<Method, Object> getMethodValues(Set<Method> annotatedMethods, AppState appState) {
+    private ConcurrentMap<Method, Optional<Object>> getMethodValues(Set<Method> annotatedMethods, AppState appState) {
 
-        ConcurrentMap<Method, Object> values = new ConcurrentHashMap<>();
+        ConcurrentMap<Method, Optional<Object>> values = new ConcurrentHashMap<>();
         for (Method getter : annotatedMethods) {
 
             Object getterValue;
 
             try {
 
+
+
                 // don't invoke methods that return void. They are methods for buttons, and it will "click" the button.
                 getterValue = getter.getReturnType() != void.class
                         ? getter.invoke(appState)
                         : null;
 
-                values.put(getter, getterValue);
+                values.put(getter, Optional.ofNullable(getterValue));
 
             } catch (IllegalAccessException | InvocationTargetException e) {
                 e.printStackTrace();
@@ -171,15 +173,32 @@ public class RunAppStateWindow {
             }
 
             if (tabIndex > -1) {
-                tabPanels[tabIndex].add(new JLabel(labelText), "align right");
-                tabPanels[tabIndex].add(component, "wrap, pushx, growx");
+                if (labelText == null) {
+                    tabPanels[tabIndex].add(component, "span, wrap");
+                }
+                else {
+                    tabPanels[tabIndex].add(new JLabel(labelText), "align right");
+                    tabPanels[tabIndex].add(component, "wrap, pushx, growx");
+                }
+
             } else {
+                if (labelText == null) {
+                    appstatePropertiesPanel.add(component, "span, wrap");
+                }
+                else {
+                    appstatePropertiesPanel.add(new JLabel(labelText), "align right");
+                    appstatePropertiesPanel.add(component, "wrap, pushx, growx");
+                }
+
+            }
+        } else {
+            if (labelText == null) {
+                appstatePropertiesPanel.add(component, "span, wrap");
+            }
+            else{
                 appstatePropertiesPanel.add(new JLabel(labelText), "align right");
                 appstatePropertiesPanel.add(component, "wrap, pushx, growx");
             }
-        } else {
-            appstatePropertiesPanel.add(new JLabel(labelText), "align right");
-            appstatePropertiesPanel.add(component, "wrap, pushx, growx");
         }
 
     }
@@ -212,7 +231,7 @@ public class RunAppStateWindow {
                 }
             }
 
-            ConcurrentHashMap<Class<? extends Annotation>, Map<Method, Object>> allAnnotatedMethods = new ConcurrentHashMap<>();
+            ConcurrentHashMap<Class<? extends Annotation>, Map<Method, Optional<Object>>> allAnnotatedMethods = new ConcurrentHashMap<>();
 
             // we need to get the values from the JME thread.
             ServiceManager.getService(JmeEngineService.class).enqueue(() -> {
@@ -233,7 +252,7 @@ public class RunAppStateWindow {
                 Set<Method> annotatedMethods;
 
                 // Read the values from the JME thread.
-                ConcurrentMap<Method, Object> getterValues;
+                ConcurrentMap<Method, Optional<Object>> getterValues;
 
                 for (Class<? extends Annotation> annotation : annotations) {
                     annotatedMethods = reflections.getMethodsAnnotatedWith(annotation);
@@ -244,12 +263,12 @@ public class RunAppStateWindow {
                 // now we have all the values. We need to create the components on the AWT thread.
                 SwingUtilities.invokeLater(() -> {
 
-                    for (Map.Entry<Class<? extends Annotation>, Map<Method, Object>> entry : allAnnotatedMethods.entrySet()) {
+                    for (Map.Entry<Class<? extends Annotation>, Map<Method, Optional<Object>>> entry : allAnnotatedMethods.entrySet()) {
 
                         Class<? extends Annotation> annotation = entry.getKey();
-                        Map<Method, Object> methodsAndValues = entry.getValue();
+                        Map<Method, Optional<Object>> methodsAndValues = entry.getValue();
 
-                        for (Map.Entry<Method, Object> methodEntries : methodsAndValues.entrySet()) {
+                        for (Map.Entry<Method, Optional<Object>> methodEntries : methodsAndValues.entrySet()) {
 
                             Method getter = methodEntries.getKey();
                             String methodPartial = getter.getName().substring(3);
@@ -269,7 +288,11 @@ public class RunAppStateWindow {
                                 // this is dictating how many decimal places we're accurate to.
                                 final float multiplier = 1000;
 
-                                float methodValue = (float) methodEntries.getValue();
+                                if (!methodEntries.getValue().isPresent()) {
+                                    throw new IllegalArgumentException("Null values are not allowed for FloatProperty values.");
+                                }
+
+                                float methodValue = (float) methodEntries.getValue().get();
                                 FloatProperty floatAnnotation = getter.getAnnotation(FloatProperty.class);
 
                                 int value = (int) (methodValue * multiplier);
@@ -308,7 +331,11 @@ public class RunAppStateWindow {
                                     continue;
                                 }
 
-                                int methodValue = (int) methodEntries.getValue();
+                                if (!methodEntries.getValue().isPresent()) {
+                                    throw new IllegalArgumentException("Null values are not allowed for IntegerProperty values.");
+                                }
+
+                                int methodValue = (int) methodEntries.getValue().get();
                                 IntegerProperty integerAnnotation = getter.getAnnotation(IntegerProperty.class);
 
                                 JSlider slider = new JSlider(new DefaultBoundedRangeModel(methodValue,
@@ -362,8 +389,11 @@ public class RunAppStateWindow {
                                     continue;
                                 }
 
+                                if (!methodEntries.getValue().isPresent()) {
+                                    throw new IllegalArgumentException("Null values are not allowed for EnumProperty values.");
+                                }
 
-                                Enum<?> methodValue = (Enum<?>) methodEntries.getValue();
+                                Enum<?> methodValue = (Enum<?>) methodEntries.getValue().get();
                                 EnumProperty enumAnnotation = getter.getAnnotation(EnumProperty.class);
 
                                 Enum<?>[] values = methodValue.getDeclaringClass().getEnumConstants();
@@ -393,14 +423,17 @@ public class RunAppStateWindow {
                             else if (annotation == ColorProperty.class) {
 
                                 try {
-                                    setter = appState.getClass().getDeclaredMethod("set" + methodPartial, float.class);
+                                    setter = appState.getClass().getDeclaredMethod("set" + methodPartial, ColorRGBA.class);
                                 } catch (NoSuchMethodException e) {
                                     e.printStackTrace();
                                     continue;
                                 }
 
+                                if (!methodEntries.getValue().isPresent()) {
+                                    throw new IllegalArgumentException("Null values are not allowed for ColorProperty values.");
+                                }
 
-                                ColorRGBA methodValue = (ColorRGBA) methodEntries.getValue();
+                                ColorRGBA methodValue = (ColorRGBA) methodEntries.getValue().get();
                                 ColorProperty colorAnnotation = getter.getAnnotation(ColorProperty.class);
 
                                 JColorChooser jColorChooser = new JColorChooser(ColorConverter.toColor(methodValue));
@@ -453,8 +486,12 @@ public class RunAppStateWindow {
                                     continue;
                                 }
 
+                                if (!methodEntries.getValue().isPresent()) {
+                                    throw new IllegalArgumentException("Null values are not allowed for FloatProperty values.");
+                                }
+
                                 JComponent component = null;
-                                Object[] methodValue = (Object[]) methodEntries.getValue();
+                                Object[] methodValue = (Object[]) methodEntries.getValue().get();
 
                                 if (listAnnotation.listType() == ListType.List) {
 
@@ -542,11 +579,21 @@ public class RunAppStateWindow {
 
                             else if (annotation == CustomComponent.class) {
 
+                                if (!methodEntries.getValue().isPresent()) {
+                                    throw new IllegalArgumentException("Null values are not allowed for CustomComponent values.");
+                                }
+
                                 CustomComponent customAnnotation = getter.getAnnotation(CustomComponent.class);
-                                JComponent component = (JComponent) methodEntries.getValue();
+                                JComponent component = (JComponent) methodEntries.getValue().get();
 
                                 String tab = customAnnotation.tab();
-                                addComponentToGui(component, methodPartial, tab, tabs, tabPanels);
+
+                                if (customAnnotation.showLabel()) {
+                                    addComponentToGui(component, methodPartial, tab, tabs, tabPanels);
+                                }
+                                else {
+                                    addComponentToGui(component, null, tab, tabs, tabPanels);
+                                }
 
                             }
 
@@ -559,7 +606,11 @@ public class RunAppStateWindow {
                                     continue;
                                 }
 
-                                boolean methodValue = (boolean) methodEntries.getValue();
+                                if (!methodEntries.getValue().isPresent()) {
+                                    throw new IllegalArgumentException("Null values are not allowed for BooleanProperty values.");
+                                }
+
+                                boolean methodValue = (boolean) methodEntries.getValue().get();
                                 BooleanProperty booleanAnnotation = getter.getAnnotation(BooleanProperty.class);
 
                                 JCheckBox checkBox = new JCheckBox();
