@@ -142,8 +142,6 @@ public class RunAppStateWindow {
 
             try {
 
-
-
                 // don't invoke methods that return void. They are methods for buttons, and it will "click" the button.
                 getterValue = getter.getReturnType() != void.class
                         ? getter.invoke(appState)
