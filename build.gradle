@@ -21,7 +21,7 @@ java {
 group 'com.jayfella'
 version '1.0.8'
 
-mainClassName = "com.jayfella.importer.Main"
+mainClassName = "com.jayfella.devkit.Main"
 
 repositories {
     jcenter()
