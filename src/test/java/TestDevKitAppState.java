@@ -15,6 +15,8 @@ public class TestDevKitAppState {
     private String[] customList = { "String 1", "String 2", "String 3", "String 4" };
     private int customListIndex = 2;
 
+    private boolean myBooleanValue = false;
+
     // required: no-args constructor
     public TestDevKitAppState() {
 
@@ -74,4 +76,14 @@ public class TestDevKitAppState {
         return new JButton("Custom Buttom");
     }
 
+    // Adds a checkbox
+
+    @BooleanProperty
+    public boolean isMyBooleanValue() {
+        return myBooleanValue;
+    }
+
+    public void setMyBooleanValue(boolean myBooleanValue) {
+        this.myBooleanValue = myBooleanValue;
+    }
 }
