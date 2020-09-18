@@ -550,6 +550,41 @@ public class RunAppStateWindow {
 
                             }
 
+                            else if (annotation == BooleanProperty.class) {
+
+                                try {
+                                    setter = appState.getClass().getDeclaredMethod("set" + methodPartial, boolean.class);
+                                } catch (NoSuchMethodException e) {
+                                    e.printStackTrace();
+                                    continue;
+                                }
+
+                                boolean methodValue = (boolean) methodEntries.getValue();
+                                BooleanProperty booleanAnnotation = getter.getAnnotation(BooleanProperty.class);
+
+                                JCheckBox checkBox = new JCheckBox();
+                                checkBox.setSelected(methodValue);
+
+                                checkBox.addChangeListener(event -> {
+
+                                    final boolean checkBoxVal = checkBox.isSelected();
+
+                                    // invoke the method on the JME thread (it's an appstate, belongs to JME).
+                                    ServiceManager.getService(JmeEngineService.class).enqueue(() -> {
+                                        try {
+                                            setter.invoke(appState, checkBoxVal);
+                                        } catch (IllegalAccessException | InvocationTargetException e) {
+                                            e.printStackTrace();
+                                        }
+                                    });
+                                });
+
+                                final String tab = booleanAnnotation.tab().trim();
+
+                                addComponentToGui(checkBox, methodPartial, tab, tabs, tabPanels);
+
+                            }
+
                         }
 
                     }
