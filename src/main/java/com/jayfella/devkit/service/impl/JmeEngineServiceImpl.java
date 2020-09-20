@@ -93,9 +93,20 @@ public class JmeEngineServiceImpl extends JmeEngineService {
 
         CameraConfig cameraConfig = DevKitConfig.getInstance().getCameraConfig();
 
+        float width, height;
+
+        if (getCanvas() != null) {
+            width = getCanvas().getWidth();
+            height = getCanvas().getHeight();
+        }
+        else {
+            width = viewPort.getCamera().getWidth();
+            height = viewPort.getCamera().getHeight();
+        }
+
         viewPort.getCamera().setFrustumPerspective(
                 cameraConfig.getFieldOfView(),
-                (float) viewPort.getCamera().getWidth() / (float) viewPort.getCamera().getHeight(),
+                width / height,
                 cameraConfig.getFrustumNear(),
                 cameraConfig.getFrustumFar());
 
