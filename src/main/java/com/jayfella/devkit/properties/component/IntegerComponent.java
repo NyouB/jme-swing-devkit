@@ -20,13 +20,19 @@ public class IntegerComponent extends ReflectedSdkComponent<Integer> {
         super(null, null, null);
     }
 
+    public IntegerComponent(Object object, String declaredGetter, String declaredSetter) throws NoSuchMethodException {
+        this(object,
+                object.getClass().getDeclaredMethod(declaredGetter),
+                object.getClass().getDeclaredMethod(declaredSetter, int.class));
+    }
+
     public IntegerComponent(Object parent, Method getter, Method setter) {
         super(parent, getter, setter);
 
         valueTextField.setFormatterFactory(new IntegerFormatFactory());
 
         try {
-            setValue((Integer) getter.invoke(parent));
+            setValue((int) getter.invoke(parent));
         } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
@@ -40,7 +46,7 @@ public class IntegerComponent extends ReflectedSdkComponent<Integer> {
         if (!isBinded()) {
 
             SwingUtilities.invokeLater(() -> {
-                valueTextField.setText("" + value);
+                valueTextField.setValue(value);
                 bind();
             });
         }
@@ -58,7 +64,7 @@ public class IntegerComponent extends ReflectedSdkComponent<Integer> {
         valueTextField.getDocument().addDocumentListener(new DocumentListener() {
 
             private void set() {
-                Integer newValue = (Integer) valueTextField.getValue();
+                Integer newValue = (int) valueTextField.getValue();
                 setValue(newValue);
             }
 

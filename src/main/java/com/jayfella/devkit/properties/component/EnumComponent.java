@@ -14,6 +14,12 @@ public class EnumComponent extends ReflectedSdkComponent<Enum<?>> {
     private JComboBox<Enum<?>> valueComboBox;
     private JLabel propertyNameLabel;
 
+    public EnumComponent(Object parent, String declaredGetter, String declaredSetter) throws NoSuchMethodException {
+        this(parent,
+                parent.getClass().getDeclaredMethod(declaredGetter),
+                parent.getClass().getDeclaredMethod(declaredSetter, parent.getClass().getDeclaredMethod(declaredGetter).getReturnType()));
+    }
+
     public EnumComponent(Object parent, Method getter, Method setter) {
         super(parent, getter, setter);
 
@@ -21,7 +27,10 @@ public class EnumComponent extends ReflectedSdkComponent<Enum<?>> {
         Class<? extends Enum<?>> values = (Class<? extends Enum<?>>) getter.getReturnType();
         valueComboBox.setModel(new DefaultComboBoxModel<>(values.getEnumConstants()));
 
-        setValue(getReflectedProperty().getValue());
+        if (getReflectedProperty() != null) {
+            setValue(getReflectedProperty().getValue());
+        }
+
     }
 
     @Override

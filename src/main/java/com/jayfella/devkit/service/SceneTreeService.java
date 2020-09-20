@@ -510,7 +510,7 @@ public class SceneTreeService implements Service, EventListener {
             }
 
             if (treeNode == null) {
-                log.info("No TreeNode associated with object: " + spatial.getClass() + ", using default NodeTreeNode.");
+                log.fine("No TreeNode associated with object: " + spatial.getClass() + ", using default NodeTreeNode.");
                 treeNode = new NodeTreeNode(node);
             }
         }
@@ -528,7 +528,7 @@ public class SceneTreeService implements Service, EventListener {
             }
 
             if (treeNode == null) {
-                log.info("No TreeNode associated with object: " + spatial.getClass() + ", using default GeometryTreeNode.");
+                log.fine("No TreeNode associated with object: " + spatial.getClass() + ", using default GeometryTreeNode.");
                 treeNode = new GeometryTreeNode(geometry);
             }
 

@@ -171,32 +171,36 @@ public class RunAppStateWindow {
             }
 
             if (tabIndex > -1) {
-                if (labelText == null) {
-                    tabPanels[tabIndex].add(component, "span, wrap");
-                }
-                else {
+                if (labelText == null || labelText.trim().isEmpty()) {
+                    tabPanels[tabIndex].add(component, "spanx, wrap, pushx, growx");
+                } else {
                     tabPanels[tabIndex].add(new JLabel(labelText), "align right");
                     tabPanels[tabIndex].add(component, "wrap, pushx, growx");
                 }
 
             } else {
-                if (labelText == null) {
-                    appstatePropertiesPanel.add(component, "span, wrap");
-                }
-                else {
+
+                if (labelText == null || labelText.trim().isEmpty()) {
+                    // appstatePropertiesPanel.add(new Label(""), "align right");
+                    appstatePropertiesPanel.add(component, "spanx, wrap, pushx, growx");
+                } else {
                     appstatePropertiesPanel.add(new JLabel(labelText), "align right");
                     appstatePropertiesPanel.add(component, "wrap, pushx, growx");
                 }
 
+
+
             }
         } else {
-            if (labelText == null) {
-                appstatePropertiesPanel.add(component, "span, wrap");
-            }
-            else{
+
+            if (labelText == null || labelText.trim().isEmpty()) {
+                appstatePropertiesPanel.add(component, "spanx, wrap, pushx, growx");
+            } else {
                 appstatePropertiesPanel.add(new JLabel(labelText), "align right");
                 appstatePropertiesPanel.add(component, "wrap, pushx, growx");
             }
+
+
         }
 
     }
@@ -374,7 +378,7 @@ public class RunAppStateWindow {
                                 ButtonProperty buttonAnnotation = getter.getAnnotation(ButtonProperty.class);
 
                                 final String tab = buttonAnnotation.tab().trim();
-                                addComponentToGui(button, "", tab, tabs, tabPanels);
+                                addComponentToGui(button, null, tab, tabs, tabPanels);
 
                             }
 
@@ -530,9 +534,7 @@ public class RunAppStateWindow {
 
                                     component = list;
 
-                                }
-
-                                else if (listAnnotation.listType() == ListType.ComboBox) {
+                                } else if (listAnnotation.listType() == ListType.ComboBox) {
 
                                     DefaultComboBoxModel<Object> model = new DefaultComboBoxModel<>();
 
@@ -575,26 +577,6 @@ public class RunAppStateWindow {
 
                             }
 
-                            else if (annotation == CustomComponent.class) {
-
-                                if (!methodEntries.getValue().isPresent()) {
-                                    throw new IllegalArgumentException("Null values are not allowed for CustomComponent values.");
-                                }
-
-                                CustomComponent customAnnotation = getter.getAnnotation(CustomComponent.class);
-                                JComponent component = (JComponent) methodEntries.getValue().get();
-
-                                String tab = customAnnotation.tab();
-
-                                if (customAnnotation.showLabel()) {
-                                    addComponentToGui(component, methodPartial, tab, tabs, tabPanels);
-                                }
-                                else {
-                                    addComponentToGui(component, null, tab, tabs, tabPanels);
-                                }
-
-                            }
-
                             else if (annotation == BooleanProperty.class) {
 
                                 try {
@@ -631,6 +613,40 @@ public class RunAppStateWindow {
                                 final String tab = booleanAnnotation.tab().trim();
 
                                 addComponentToGui(checkBox, methodPartial, tab, tabs, tabPanels);
+
+                            }
+
+                        }
+
+                    }
+
+                    // now re-iterate for custom components, which will be added after.
+                    for (Map.Entry<Class<? extends Annotation>, Map<Method, Optional<Object>>> entry : allAnnotatedMethods.entrySet()) {
+
+                        Class<? extends Annotation> annotation = entry.getKey();
+                        Map<Method, Optional<Object>> methodsAndValues = entry.getValue();
+
+                        if (annotation == CustomComponent.class) {
+
+                            for (Map.Entry<Method, Optional<Object>> methodEntries : methodsAndValues.entrySet()) {
+
+                                Method getter = methodEntries.getKey();
+                                String methodPartial = getter.getName().substring(3);
+
+                                if (!methodEntries.getValue().isPresent()) {
+                                    throw new IllegalArgumentException("Null values are not allowed for CustomComponent values.");
+                                }
+
+                                CustomComponent customAnnotation = getter.getAnnotation(CustomComponent.class);
+                                JComponent component = (JComponent) methodEntries.getValue().get();
+
+                                String tab = customAnnotation.tab();
+
+                                if (customAnnotation.showLabel()) {
+                                    addComponentToGui(component, methodPartial, tab, tabs, tabPanels);
+                                } else {
+                                    addComponentToGui(component, null, tab, tabs, tabPanels);
+                                }
 
                             }
 

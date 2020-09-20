@@ -87,7 +87,7 @@ public class Vector4fComponent extends ReflectedSdkComponent<Vector4f> {
 
         private void set() {
 
-            Vector4f value = (Vector4f) getReflectedProperty().getValue();
+            Vector4f value = getReflectedProperty().getValue();
 
             String x = xTextField.getText().isEmpty() ? "" + value.x : xTextField.getText();
             String y = yTextField.getText().isEmpty() ? "" + value.y : yTextField.getText();

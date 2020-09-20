@@ -37,6 +37,12 @@ public class Texture2DComponent extends ReflectedSdkComponent<Texture2D> {
         initCustomLayout();
     }
 
+    public Texture2DComponent(Object object, String declaredGetter, String declaredSetter) throws NoSuchMethodException {
+        this(object,
+                object.getClass().getDeclaredMethod(declaredGetter),
+                object.getClass().getDeclaredMethod(declaredSetter, Texture2D.class));
+    }
+
     public Texture2DComponent(Object parent, Method getter, Method setter) {
         super(parent, getter, setter);
 
@@ -81,15 +87,20 @@ public class Texture2DComponent extends ReflectedSdkComponent<Texture2D> {
                 String relativePath = path.toString().replace(DevKitConfig.getInstance().getProjectConfig().getAssetRootDir(), "");
 
                 // remove any trailing slashes.
-                if (relativePath.startsWith("/")) {
+                if (relativePath.startsWith("/") || relativePath.startsWith("\\")) {
                     relativePath = relativePath.substring(1);
                 }
+
+                relativePath = relativePath.replace("\\", "/");
 
                 model.addElement(relativePath);
             }
 
             texturesList.setModel(model);
 
+            if (getReflectedProperty() != null && getReflectedProperty().getValue() != null) {
+                texturesList.setSelectedValue(getReflectedProperty().getValue(), true);
+            }
         }
 
         // contentPanel.setLayout(new VerticalLayout());
@@ -102,8 +113,9 @@ public class Texture2DComponent extends ReflectedSdkComponent<Texture2D> {
             texturesList.clearSelection();
 
             imagePanel.setTexture(null);
-            imagePanel.revalidate();
-            imagePanel.repaint();
+
+            contentPanel.revalidate();
+            contentPanel.repaint();
 
             setValue(null);
         });
@@ -133,7 +145,10 @@ public class Texture2DComponent extends ReflectedSdkComponent<Texture2D> {
                     }
 
                     this.imagePanel.setTexture(value);
-                    this.imagePanel.revalidate();
+
+                    contentPanel.revalidate();
+                    contentPanel.repaint();
+
                 } else {
                     texturesList.setSelectedIndex(-1);
                 }

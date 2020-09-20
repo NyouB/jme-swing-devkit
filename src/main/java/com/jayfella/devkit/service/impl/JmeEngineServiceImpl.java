@@ -11,6 +11,7 @@ import com.jme3.app.state.AppState;
 import com.jme3.post.FilterPostProcessor;
 import com.jme3.post.filters.TranslucentBucketFilter;
 import com.jme3.system.JmeCanvasContext;
+import com.jme3.util.MaterialDebugAppState;
 
 import java.awt.*;
 import java.util.logging.Logger;
@@ -66,6 +67,9 @@ public class JmeEngineServiceImpl extends JmeEngineService {
         if (DevKitConfig.getInstance().getSceneConfig().isShowGrid()) {
             stateManager.attach(new DebugGridState());
         }
+
+        MaterialDebugAppState materialDebugAppState = new MaterialDebugAppState();
+        stateManager.attach(materialDebugAppState);
 
         viewPort.setBackgroundColor(DevKitConfig.getInstance().getCameraConfig().getViewportColor());
         applyCameraFrustumSizes();

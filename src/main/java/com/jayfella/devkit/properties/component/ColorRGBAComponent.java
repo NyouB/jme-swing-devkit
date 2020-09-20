@@ -28,6 +28,12 @@ public class ColorRGBAComponent extends ReflectedSdkComponent<ColorRGBA> {
         this(null, null, null, nullable);
     }
 
+    public ColorRGBAComponent(Object object, String declaredGetter, String declaredSetter) throws NoSuchMethodException {
+        this(object,
+                object.getClass().getDeclaredMethod(declaredGetter),
+                object.getClass().getDeclaredMethod(declaredSetter, ColorRGBA.class));
+    }
+
     public ColorRGBAComponent(Object parent, Method getter, Method setter) {
         this(parent, getter, setter, false);
     }

@@ -34,6 +34,7 @@ public class QuaternionComponent extends ReflectedSdkComponent<Quaternion> {
         } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
+
     }
 
     @Override

@@ -26,7 +26,7 @@ public class ReflectedProperty<T> {
                 try {
                     setter.invoke(parent, value);
 
-                } catch (IllegalAccessException | InvocationTargetException e) {
+                } catch (IllegalAccessException | InvocationTargetException | IllegalArgumentException e) {
                     e.printStackTrace();
                 }
             });

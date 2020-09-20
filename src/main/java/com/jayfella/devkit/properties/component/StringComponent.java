@@ -20,6 +20,12 @@ public class StringComponent extends ReflectedSdkComponent<String> {
         super(null, null, null);
     }
 
+    public StringComponent(Object object, String declaredGetter, String declaredSetter) throws NoSuchMethodException {
+        this(object,
+                object.getClass().getDeclaredMethod(declaredGetter),
+                object.getClass().getDeclaredMethod(declaredSetter, String.class));
+    }
+
     public StringComponent(Object parent, Method getter, Method setter) {
         super(parent, getter, setter);
 

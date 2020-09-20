@@ -5,6 +5,7 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 
 import javax.swing.*;
 import java.awt.*;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class BooleanComponent extends ReflectedSdkComponent<Boolean> {
@@ -16,9 +17,28 @@ public class BooleanComponent extends ReflectedSdkComponent<Boolean> {
         super(null, null, null);
     }
 
-    public BooleanComponent(Object parent, Method getter, Method setter) {
-        super(parent, getter, setter);
-        setValue(getReflectedProperty().getValue());
+    public BooleanComponent(Object object, String declaredGetter, String declaredSetter) throws NoSuchMethodException {
+        this(object,
+                object.getClass().getDeclaredMethod(declaredGetter),
+                object.getClass().getDeclaredMethod(declaredSetter, boolean.class));
+    }
+
+    public BooleanComponent(Object object, Method getter, Method setter) {
+        super(object, getter, setter);
+
+
+        if (getter != null) {
+            try {
+                if (getter.getReturnType() == boolean.class) {
+                    setValue((boolean) getter.invoke(object));
+                } else if (getter.getReturnType() == Boolean.class) {
+                    setValue((Boolean) getter.invoke(object));
+                }
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
     @Override
