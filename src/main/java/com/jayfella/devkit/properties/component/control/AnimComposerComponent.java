@@ -97,9 +97,9 @@ public class AnimComposerComponent extends ControlSdkComponent<AnimComposer> {
 
             final float animTime = timeSlider.getValue() / 1000f;
 
-            engineService.enqueue(() -> {
-                animComposer.setTime(AnimComposer.DEFAULT_LAYER, animTime);
-            });
+            if (action != null) {
+                engineService.enqueue(() -> animComposer.setTime(AnimComposer.DEFAULT_LAYER, animTime));
+            }
 
         });
 
