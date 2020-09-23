@@ -29,6 +29,12 @@ public class Vector3fComponent extends ReflectedSdkComponent<Vector3f> {
         this(null, null, null, true);
     }
 
+    public Vector3fComponent(Object object, String declaredGetter, String declaredSetter) throws NoSuchMethodException {
+        this(object,
+                object.getClass().getDeclaredMethod(declaredGetter),
+                object.getClass().getDeclaredMethod(declaredSetter, float.class));
+    }
+
     public Vector3fComponent(Object parent, Method getter, Method setter) {
         this(parent, getter, setter, false);
     }

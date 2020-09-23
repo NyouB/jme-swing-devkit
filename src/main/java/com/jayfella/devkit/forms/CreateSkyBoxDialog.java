@@ -116,9 +116,11 @@ public class CreateSkyBoxDialog {
                 String relativePath = path.toString().replace(DevKitConfig.getInstance().getProjectConfig().getAssetRootDir(), "");
 
                 // remove any trailing slashes.
-                if (relativePath.startsWith("/")) {
+                if (relativePath.startsWith("/") || relativePath.startsWith("\\")) {
                     relativePath = relativePath.substring(1);
                 }
+
+                relativePath = relativePath.replace("\\", "/");
 
                 listModel.addElement(relativePath);
             }

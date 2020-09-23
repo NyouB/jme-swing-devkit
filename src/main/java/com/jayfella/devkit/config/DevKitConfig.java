@@ -22,7 +22,7 @@ public class DevKitConfig {
 
     private static DevKitConfig INSTANCE;
 
-    private static final File storageDir = new File("devkit");
+    public static final File storageDir = new File("devkit");
     private static final File configFile = Paths.get(storageDir.toString(), "devkit-config.json").toFile();
     public static final File pluginStorageDir = Paths.get(storageDir.toString(), "plugins").toFile();
 

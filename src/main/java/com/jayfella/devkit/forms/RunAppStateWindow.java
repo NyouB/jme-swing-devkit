@@ -26,8 +26,11 @@ import java.util.List;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.logging.Logger;
 
 public class RunAppStateWindow {
+
+    private static final Logger log = Logger.getLogger(RunAppStateWindow.class.getName());
 
     public static final String RUN_APPSTATE_WINDOW_TITLE = "Run AppState";
 
@@ -249,7 +252,7 @@ public class RunAppStateWindow {
                         CustomComponent.class
                 );
 
-                Reflections reflections = new Reflections(appState.getClass(), new MethodAnnotationsScanner());
+                Reflections reflections = new Reflections(appState.getClass().getName(), new MethodAnnotationsScanner());
 
                 Set<Method> annotatedMethods;
 
@@ -273,7 +276,25 @@ public class RunAppStateWindow {
                         for (Map.Entry<Method, Optional<Object>> methodEntries : methodsAndValues.entrySet()) {
 
                             Method getter = methodEntries.getKey();
-                            String methodPartial = getter.getName().substring(3);
+
+                            // work out if it's a getVal or isVal prefix.
+                            int prefixSize = -1;
+
+                            if (getter.getName().startsWith("get")) {
+                                prefixSize = 3;
+                            }
+                            else if (getter.getName().startsWith("is")) {
+                                prefixSize = 2;
+                            }
+
+                            if (prefixSize < 0) {
+                                // log.warning("Unable to find prefix for getter method '" + getter.getName() + "'. Expected method name prefix 'get' or 'is'.");
+                                // this is a void method (no get/is).
+                                prefixSize = 0;
+                                //continue;
+                            }
+
+                            String methodPartial = getter.getName().substring(prefixSize);
 
                             // We can get the method from the swing thread.
                             Method setter;
@@ -650,6 +671,9 @@ public class RunAppStateWindow {
 
                             }
 
+                            rootPane.revalidate();
+                            rootPane.repaint();
+
                         }
 
                     }
@@ -670,6 +694,9 @@ public class RunAppStateWindow {
             });
 
         }
+
+        rootPane.revalidate();
+        rootPane.repaint();
 
     }
 

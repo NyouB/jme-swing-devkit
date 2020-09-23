@@ -27,7 +27,7 @@ public class PluginService implements Service {
     private final long threadId;
 
     public PluginService() {
-        threadId = Thread.currentThread().getId();
+        threadId = -1; // Thread.currentThread().getId();
     }
 
     public void loadPlugins() {

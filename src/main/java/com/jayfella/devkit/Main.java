@@ -3,13 +3,14 @@ package com.jayfella.devkit;
 import com.jayfella.devkit.config.DevKitConfig;
 import com.jayfella.devkit.core.LogUtil;
 import com.jayfella.devkit.forms.*;
-import com.jayfella.devkit.service.EventService;
 import com.jayfella.devkit.jme.AppStateUtils;
 import com.jayfella.devkit.jme.CameraRotationWidgetState;
 import com.jayfella.devkit.jme.DebugGridState;
 import com.jayfella.devkit.service.*;
 import com.jayfella.devkit.service.impl.JmeEngineServiceImpl;
-import com.jayfella.devkit.swing.*;
+import com.jayfella.devkit.swing.SwingTheme;
+import com.jayfella.devkit.swing.WindowLocationSaver;
+import com.jayfella.devkit.swing.WindowSizeSaver;
 import com.jme3.app.StatsAppState;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.plugins.FileLocator;
@@ -21,6 +22,8 @@ import org.jdesktop.swingx.VerticalLayout;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -107,6 +110,11 @@ public class Main {
             String parentDirName = new File(System.getProperty("user.dir")).getName();
 
             frame = new JFrame("JmeDevKit: " + parentDirName);
+            JLayeredPane layeredPane = new JLayeredPane();
+
+
+            // frame.setContentPane(layeredPane);
+            frame.add(layeredPane, BorderLayout.CENTER);
             frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             frame.addWindowListener(new WindowAdapter(){
                 @Override
@@ -128,7 +136,41 @@ public class Main {
             Dimension dimension = DevKitConfig.getInstance().getSdkConfig().getWindowDimensions(MainPage.WINDOW_ID);
             Point location = DevKitConfig.getInstance().getSdkConfig().getWindowLocation(MainPage.WINDOW_ID);
 
-            ServiceManager.getService(JmeEngineService.class).getCanvas().setSize(dimension);
+            frame.setMinimumSize(new Dimension(400, 400));
+            frame.setSize(dimension);
+
+            frame.addComponentListener(new ComponentListener() {
+                @Override
+                public void componentResized(ComponentEvent e) {
+
+                    layeredPane.setSize(e.getComponent().getSize());
+
+                    ServiceManager.getService(JmeEngineService.class).getCanvas().setSize(e.getComponent().getSize());
+
+                    ServiceManager.getService(JmeEngineService.class).enqueue(() -> {
+                        ServiceManager.getService(JmeEngineService.class).applyCameraFrustumSizes();
+                    });
+
+                    DevKitConfig.getInstance().getSdkConfig().setWindowDimensions(MainPage.WINDOW_ID, e.getComponent().getSize());
+                    DevKitConfig.getInstance().save();
+                }
+
+                @Override
+                public void componentMoved(ComponentEvent e) {
+
+                }
+
+                @Override
+                public void componentShown(ComponentEvent e) {
+
+                }
+
+                @Override
+                public void componentHidden(ComponentEvent e) {
+
+                }
+            });
+
 
             if (location == null) {
                 frame.setLocationRelativeTo(null);
@@ -139,19 +181,29 @@ public class Main {
 
             // add the canvas AFTER we set the window size because the camera.getWidth and .getHeight values will change.
             // whilst it's easy to understand once you know, it can be confusing to figure this out.
-            frame.add(ServiceManager.getService(JmeEngineService.class).getCanvas(), BorderLayout.CENTER);
+            layeredPane.add(ServiceManager.getService(JmeEngineService.class).getCanvas(), 1, 0);
+
+
             frame.pack();
 
             // save any changes of movement and size to the configuration.
             // frame.addComponentListener(new WindowSizeAndLocationSaver(MainPage.WINDOW_ID));
             frame.addComponentListener(new WindowLocationSaver(MainPage.WINDOW_ID));
-            ServiceManager.getService(JmeEngineService.class).getCanvas().addComponentListener(new JmeCanvasSizeSaver());
+            //frame.addComponentListener(new WindowSizeSaver(MainPage.WINDOW_ID));
+
 
             // show the window.
             frame.setVisible(true);
 
             // verify that the asset root directory has been set properly.
             checkAssetRootDir();
+
+            // camera controls
+            JPanel camControlsPanel = new JPanel();
+            camControlsPanel.add(new JButton("Cam"));
+            camControlsPanel.setLocation(300, 300);
+            layeredPane.add(camControlsPanel, 2, 0);
+
 
         });
 
@@ -170,6 +222,9 @@ public class Main {
             ServiceManager.getService(PluginService.class).loadPlugins();
 
         });
+
+
+
 
     }
 
@@ -492,5 +547,7 @@ public class Main {
         }
 
     }
+
+
 
 }
