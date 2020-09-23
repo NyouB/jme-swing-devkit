@@ -3,7 +3,13 @@ package com.jayfella.devkit.service;
 import com.jayfella.devkit.event.EventHandler;
 import com.jayfella.devkit.event.EventListener;
 import com.jayfella.devkit.jme.SceneObjectHighlighterState;
+import com.jayfella.devkit.properties.component.events.ControlCreatedEvent;
+import com.jayfella.devkit.properties.component.events.ControlRemovedEvent;
+import com.jayfella.devkit.properties.component.events.LightCreatedEvent;
+import com.jayfella.devkit.properties.component.events.LightRemovedEvent;
+import com.jayfella.devkit.properties.component.events.SpatialCreatedEvent;
 import com.jayfella.devkit.properties.component.events.SpatialNameChangedEvent;
+import com.jayfella.devkit.properties.component.events.SpatialRemovedEvent;
 import com.jayfella.devkit.registration.Registrar;
 import com.jayfella.devkit.registration.spatial.GeometryRegistrar;
 import com.jayfella.devkit.registration.spatial.NodeRegistrar;
@@ -230,6 +236,7 @@ public class SceneTreeService implements Service, EventListener {
     /**
      * Adds a spatial to the tree and scene. All spatials should be added to the scene using this method.
      * This should only be called from the AWT thread. The spatial should not be added to the scene yet.
+     * Fire a @see SpatialCreatedEvent on creation.
      *
      * @param spatial    the spatial to add.
      * @param parentNode the treeNode to add the spatial.
@@ -290,7 +297,8 @@ public class SceneTreeService implements Service, EventListener {
                 parentNode.getUserObject().attachChild(spatial);
 
             });
-
+            ServiceManager.getService(EventService.class)
+                .fireEvent(new SpatialCreatedEvent(spatial));
         }
 
         return newNode;
@@ -299,6 +307,7 @@ public class SceneTreeService implements Service, EventListener {
     /**
      * Adds a light to the tree and scene. All lights should be added to the scene using this method.
      * This should only be called from the AWT thread. The light should not be added to the scene yet.
+     * Fire a @see LightCreatedEvent on creation.
      *
      * @param light      the light to add.
      * @param parentNode the treeNode to add the spatial.
@@ -332,6 +341,8 @@ public class SceneTreeService implements Service, EventListener {
                 }
 
             });
+            ServiceManager.getService(EventService.class)
+                .fireEvent(new LightCreatedEvent(light));
         }
 
         return newNode;
@@ -340,6 +351,7 @@ public class SceneTreeService implements Service, EventListener {
     /**
      * Adds a control to the tree and scene. All controls should be added to the scene using this method.
      * This should only be called from the AWT thread. The control should not be added to the scene yet.
+     * Fire a @see ControlCreatedEvent on creation.
      *
      * @param control    the control to add.
      * @param parentNode the treeNode to add the control.
@@ -363,7 +375,8 @@ public class SceneTreeService implements Service, EventListener {
             engineService.enqueue(() -> {
                 parentNode.getUserObject().addControl(control);
             });
-
+            ServiceManager.getService(EventService.class)
+                .fireEvent(new ControlCreatedEvent(control));
         }
 
         return newNode;
@@ -372,6 +385,7 @@ public class SceneTreeService implements Service, EventListener {
     /**
      * Removes the selected scene spatial from the tree and scene.
      * This method **must** be called from the AWT thread.
+     * Fire a @see SpatialRemovedEvent on creation.
      *
      * @param spatialTreeNode the treeNode to remove.
      */
@@ -391,11 +405,14 @@ public class SceneTreeService implements Service, EventListener {
 
         });
 
+        ServiceManager.getService(EventService.class)
+            .fireEvent(new SpatialRemovedEvent(spatialTreeNode.getUserObject()));
     }
 
     /**
      * Removes the selected scene light from the tree and scene.
      * This method **must** be called from the AWT thread.
+     * Fire a @see LightRemovedEvent on creation.
      *
      * @param lightTreeNode The lightTreeNode to remove
      * @param parent        The SpatialTreeNode that holds the light.
@@ -416,8 +433,18 @@ public class SceneTreeService implements Service, EventListener {
 
         });
 
+        ServiceManager.getService(EventService.class)
+            .fireEvent(new LightRemovedEvent(lightTreeNode.getUserObject()));
     }
 
+    /**
+     * Removes the selected control from the tree and scene.
+     * This method **must** be called from the AWT thread.
+     * Fire a @see ControlRemovedEvent on creation.
+     *
+     * @param controlTreeNode The ControlTreeNode to remove
+     * @param parent        The SpatialTreeNode that holds the light.
+     */
     public void removeTreeNode(ControlTreeNode controlTreeNode, SpatialTreeNode parent) {
 
         controlTreeNode.removeFromParent();
@@ -434,6 +461,8 @@ public class SceneTreeService implements Service, EventListener {
 
         });
 
+        ServiceManager.getService(EventService.class)
+            .fireEvent(new ControlRemovedEvent(controlTreeNode.getUserObject()));
     }
 
     /**
