@@ -4,6 +4,10 @@ jMonkeyEngine Devkit
 A Software Development Kit created using a Java Swing UI with support for plugins and running AppStates from within
 the DevKit.
 
+### Latest Versions
+- Latest Gradle Plugin Version: `0.0.20`
+- Latest DevKit Version: `1.0.9`
+
 ### Features
 - Import Models (glTF using JMEC)
 - Create, Edit, and Save scenes to .j3o format.
