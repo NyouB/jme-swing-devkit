@@ -200,8 +200,8 @@ public class Configuration {
             devKitConfig.getSceneConfig().setGridColor(ColorConverter.toColorRGBA(gridColorPanel.getBackground()));
 
             devKitConfig.getSceneConfig().setGridSize(new Vector3f(
-                    ((Float) xGridSizeTextField.getValue()).intValue(),
-                    ((Float) yGridSizeTextField.getValue()).intValue(),
+                    (int) xGridSizeTextField.getValue(),
+                    (int) yGridSizeTextField.getValue(),
                     (float) gridSpacingTextField.getValue()));
 
             devKitConfig.getSceneConfig().setGridLocation(new Vector3f(
