@@ -139,11 +139,9 @@ public class Main {
                 public void componentResized(ComponentEvent e) {
 
                     JmeEngineService engineService = ServiceManager.getService(JmeEngineService.class);
+                    engineService.getCanvas().setSize(e.getComponent().getSize());
 
-                    engineService.enqueue(() -> {
-                        engineService.getCanvas().setSize(e.getComponent().getSize());
-                        engineService.applyCameraFrustumSizes();
-                    });
+                    engineService.enqueue(engineService::applyCameraFrustumSizes);
 
                     JFrame frame = (JFrame) e.getSource();
                     Dimension newSize = frame.getSize();
