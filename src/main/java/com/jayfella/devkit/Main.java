@@ -110,11 +110,6 @@ public class Main {
             String parentDirName = new File(System.getProperty("user.dir")).getName();
 
             frame = new JFrame("JmeDevKit: " + parentDirName);
-            JLayeredPane layeredPane = new JLayeredPane();
-
-
-            // frame.setContentPane(layeredPane);
-            frame.add(layeredPane, BorderLayout.CENTER);
             frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             frame.addWindowListener(new WindowAdapter(){
                 @Override
@@ -136,22 +131,24 @@ public class Main {
             Dimension dimension = DevKitConfig.getInstance().getSdkConfig().getWindowDimensions(MainPage.WINDOW_ID);
             Point location = DevKitConfig.getInstance().getSdkConfig().getWindowLocation(MainPage.WINDOW_ID);
 
-            frame.setMinimumSize(new Dimension(400, 400));
-            frame.setSize(dimension);
+            ServiceManager.getService(JmeEngineService.class).getCanvas().setSize(dimension);
+
 
             frame.addComponentListener(new ComponentListener() {
                 @Override
                 public void componentResized(ComponentEvent e) {
 
-                    layeredPane.setSize(e.getComponent().getSize());
+                    JmeEngineService engineService = ServiceManager.getService(JmeEngineService.class);
 
-                    ServiceManager.getService(JmeEngineService.class).getCanvas().setSize(e.getComponent().getSize());
-
-                    ServiceManager.getService(JmeEngineService.class).enqueue(() -> {
-                        ServiceManager.getService(JmeEngineService.class).applyCameraFrustumSizes();
+                    engineService.enqueue(() -> {
+                        engineService.getCanvas().setSize(e.getComponent().getSize());
+                        engineService.applyCameraFrustumSizes();
                     });
 
-                    DevKitConfig.getInstance().getSdkConfig().setWindowDimensions(MainPage.WINDOW_ID, e.getComponent().getSize());
+                    JFrame frame = (JFrame) e.getSource();
+                    Dimension newSize = frame.getSize();
+
+                    DevKitConfig.getInstance().getSdkConfig().setWindowDimensions(MainPage.WINDOW_ID, newSize);
                     DevKitConfig.getInstance().save();
                 }
 
@@ -171,6 +168,8 @@ public class Main {
                 }
             });
 
+            // position and size the main window...
+
 
             if (location == null) {
                 frame.setLocationRelativeTo(null);
@@ -181,9 +180,7 @@ public class Main {
 
             // add the canvas AFTER we set the window size because the camera.getWidth and .getHeight values will change.
             // whilst it's easy to understand once you know, it can be confusing to figure this out.
-            layeredPane.add(ServiceManager.getService(JmeEngineService.class).getCanvas(), 1, 0);
-
-
+            frame.add(ServiceManager.getService(JmeEngineService.class).getCanvas(), BorderLayout.CENTER);
             frame.pack();
 
             // save any changes of movement and size to the configuration.
@@ -197,13 +194,6 @@ public class Main {
 
             // verify that the asset root directory has been set properly.
             checkAssetRootDir();
-
-            // camera controls
-            JPanel camControlsPanel = new JPanel();
-            camControlsPanel.add(new JButton("Cam"));
-            camControlsPanel.setLocation(300, 300);
-            layeredPane.add(camControlsPanel, 2, 0);
-
 
         });
 
@@ -222,9 +212,6 @@ public class Main {
             ServiceManager.getService(PluginService.class).loadPlugins();
 
         });
-
-
-
 
     }
 
