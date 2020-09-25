@@ -9,7 +9,7 @@ plugins {
 }
 
 group 'com.jayfella'
-version '1.0.10'
+version '1.0.11'
 
 publishing {
     publications {
