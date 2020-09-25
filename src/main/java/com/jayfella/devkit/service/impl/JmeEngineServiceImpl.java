@@ -2,12 +2,9 @@ package com.jayfella.devkit.service.impl;
 
 import com.jayfella.devkit.config.CameraConfig;
 import com.jayfella.devkit.config.DevKitConfig;
-import com.jayfella.devkit.jme.AppStateUtils;
-import com.jayfella.devkit.jme.BulletPhysics;
 import com.jayfella.devkit.jme.CameraRotationWidgetState;
 import com.jayfella.devkit.jme.DebugGridState;
 import com.jayfella.devkit.service.JmeEngineService;
-import com.jme3.app.state.AppState;
 import com.jme3.post.FilterPostProcessor;
 import com.jme3.post.filters.TranslucentBucketFilter;
 import com.jme3.system.JmeCanvasContext;
@@ -50,15 +47,6 @@ public class JmeEngineServiceImpl extends JmeEngineService {
 
     @Override
     public void simpleInitApp() {
-
-        // threadId = Thread.currentThread().getId();
-
-        if (AppStateUtils.isBulletPhysicsOnClassPath()) {
-            log.info("Bullet Physics Detected.");
-            AppState bulletAppState = BulletPhysics.createAppState();
-            stateManager.attach(bulletAppState);
-
-        }
 
         if (DevKitConfig.getInstance().getSdkConfig().isShowCamRotationWidget()) {
             stateManager.attach(new CameraRotationWidgetState());
