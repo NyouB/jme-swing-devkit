@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+
 public class MassImport {
 
     private static final Logger log = Logger.getLogger(MassImport.class.getName());
@@ -23,6 +25,7 @@ public class MassImport {
         LogUtil.initializeLogger(Level.INFO, true);
 
         String assetRoot = DevKitConfig.getInstance().getProjectConfig().getAssetRootDir();
+
         Path originalsPath = Paths.get(assetRoot, "Originals");
 
         log.info("Scanning path for models: " + originalsPath.toString());
@@ -48,8 +51,22 @@ public class MassImport {
 
                 convert.setSourceRoot(modelPath.getParent().toFile());
 
-                String targetAssetPath = modelPath.toString().replace(originalsPath.toString(), "");
+                // Get the target folder:
+                // - remove the original
+
+                String targetAssetPath = modelPath.getParent().toString().replace(originalsPath.toString(), "");
                 targetAssetPath = targetAssetPath.replace(modelPath.getFileName().toString(), "");
+
+                if (targetAssetPath.startsWith("\\") || targetAssetPath.startsWith("/")) {
+                    targetAssetPath = targetAssetPath.substring(1);
+                }
+
+                if (targetAssetPath.endsWith("\\") || targetAssetPath.endsWith("/")) {
+                    targetAssetPath = targetAssetPath.substring(0, targetAssetPath.length() - 1);
+                }
+
+                targetAssetPath = targetAssetPath.replace("\\", "/");
+
                 convert.setTargetAssetPath(targetAssetPath);
 
                 String format = "Converting: " + System.lineSeparator();
@@ -77,7 +94,7 @@ public class MassImport {
                 );
 
                 try {
-                    Files.move(resultFile, extRemoved);
+                    Files.move(resultFile, extRemoved, REPLACE_EXISTING);
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
