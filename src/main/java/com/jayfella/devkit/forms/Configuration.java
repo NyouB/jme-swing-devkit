@@ -20,11 +20,8 @@ import javax.swing.*;
 import javax.swing.text.NumberFormatter;
 import java.awt.*;
 import java.io.File;
-import java.nio.file.Paths;
 import java.text.NumberFormat;
 import java.util.logging.Logger;
-
-import static javax.swing.JOptionPane.ERROR_MESSAGE;
 
 public class Configuration {
 
@@ -95,16 +92,7 @@ public class Configuration {
 
                 String chosenPath = chooser.getSelectedFile().getAbsolutePath();
 
-                if (!chosenPath.contains(projectRoot)) {
-
-                    JOptionPane.showMessageDialog(null,
-                            "The chosen directory must exist inside the project.",
-                            "Invalid Directory",
-                            ERROR_MESSAGE);
-
-                } else {
-                    assetRootTextField.setText(chooser.getSelectedFile().getAbsolutePath().replace(projectRoot, ""));
-                }
+                assetRootTextField.setText(chosenPath);
 
             }
 
@@ -174,7 +162,7 @@ public class Configuration {
 
             // asset root
             String existingAssetRoot = devKitConfig.getProjectConfig().getAssetRootDir();
-            String newAssetRoot = Paths.get(System.getProperty("user.dir"), assetRootTextField.getText()).toString();
+            String newAssetRoot = assetRootTextField.getText();
 
             if (!existingAssetRoot.equals(newAssetRoot)) {
 
@@ -200,8 +188,8 @@ public class Configuration {
             devKitConfig.getSceneConfig().setGridColor(ColorConverter.toColorRGBA(gridColorPanel.getBackground()));
 
             devKitConfig.getSceneConfig().setGridSize(new Vector3f(
-                    (int) xGridSizeTextField.getValue(),
-                    (int) yGridSizeTextField.getValue(),
+                    ((Float) xGridSizeTextField.getValue()).intValue(),
+                    ((Float) yGridSizeTextField.getValue()).intValue(),
                     (float) gridSpacingTextField.getValue()));
 
             devKitConfig.getSceneConfig().setGridLocation(new Vector3f(
@@ -286,6 +274,7 @@ public class Configuration {
      * >>> IMPORTANT!! <<<
      * DO NOT edit this method OR call it in your code!
      *
+     * @noinspection ALL
      */
     private void $$$setupUI$$$() {
         createUIComponents();
@@ -405,6 +394,7 @@ public class Configuration {
     }
 
     /**
+     * @noinspection ALL
      */
     public JComponent $$$getRootComponent$$$() {
         return rootPanel;
