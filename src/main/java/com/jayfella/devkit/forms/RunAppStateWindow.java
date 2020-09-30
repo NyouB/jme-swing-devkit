@@ -243,13 +243,14 @@ public class RunAppStateWindow {
 
                 List<Class<? extends Annotation>> annotations = new ArrayList<>();
                 Collections.addAll(annotations,
-                        FloatProperty.class,
-                        IntegerProperty.class,
+                        BooleanProperty.class,
                         ButtonProperty.class,
                         ColorProperty.class,
+                        CustomComponent.class,
                         EnumProperty.class,
-                        ListProperty.class,
-                        CustomComponent.class
+                        FloatProperty.class,
+                        IntegerProperty.class,
+                        ListProperty.class
                 );
 
                 Reflections reflections = new Reflections(appState.getClass().getName(), new MethodAnnotationsScanner());
