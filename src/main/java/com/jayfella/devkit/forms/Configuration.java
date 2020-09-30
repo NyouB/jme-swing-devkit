@@ -17,11 +17,8 @@ import com.jme3.material.Materials;
 import com.jme3.math.Vector3f;
 
 import javax.swing.*;
-import javax.swing.text.NumberFormatter;
 import java.awt.*;
 import java.io.File;
-import java.text.NumberFormat;
-import java.util.Locale;
 import java.util.logging.Logger;
 
 public class Configuration {
