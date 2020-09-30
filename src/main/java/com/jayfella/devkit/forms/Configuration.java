@@ -187,10 +187,18 @@ public class Configuration {
             // grid
             devKitConfig.getSceneConfig().setGridColor(ColorConverter.toColorRGBA(gridColorPanel.getBackground()));
 
+            Float gridSizeX = (Float) xGridSizeTextField.getValue();
+            Float gridSizeY = (Float) yGridSizeTextField.getValue();
+            Float gridSpacing = (Float) gridSpacingTextField.getValue();
+
+            int iGridX = gridSizeX == null ? 200 : gridSizeX.intValue();
+            int iGridY = gridSizeY == null ? 200 : gridSizeY.intValue();
+            float fGridSpacing = gridSpacing == null ? 1.0f : gridSpacing;
+
             devKitConfig.getSceneConfig().setGridSize(new Vector3f(
-                    ((Float) xGridSizeTextField.getValue()).intValue(),
-                    ((Float) yGridSizeTextField.getValue()).intValue(),
-                    (float) gridSpacingTextField.getValue()));
+                    iGridX,
+                    iGridY,
+                    fGridSpacing));
 
             devKitConfig.getSceneConfig().setGridLocation(new Vector3f(
                     (float) xGridLocationTextField.getValue(),
@@ -394,7 +402,6 @@ public class Configuration {
     }
 
     /**
-     * @noinspection ALL
      */
     public JComponent $$$getRootComponent$$$() {
         return rootPanel;
