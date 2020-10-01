@@ -178,9 +178,9 @@ public class Configuration {
 
             // viewport
             devKitConfig.getCameraConfig().setViewportColor(ColorConverter.toColorRGBA(viewPortColorPreviewPanel.getBackground()));
-            devKitConfig.getCameraConfig().setFieldOfView(Float.parseFloat(fieldOfViewTextField.getText()));
-            devKitConfig.getCameraConfig().setFrustumFar(Float.parseFloat(frustumNearTextField.getText()));
-            devKitConfig.getCameraConfig().setFrustumFar(Float.parseFloat(frustumFarTextField.getText()));
+            devKitConfig.getCameraConfig().setFieldOfView(((Number)fieldOfViewTextField.getValue()).floatValue());
+            devKitConfig.getCameraConfig().setFrustumNear(((Number)frustumNearTextField.getValue()).floatValue());
+            devKitConfig.getCameraConfig().setFrustumFar(((Number)frustumFarTextField.getValue()).floatValue());
 
             // grid
             devKitConfig.getSceneConfig().setGridColor(ColorConverter.toColorRGBA(gridColorPanel.getBackground()));
@@ -194,14 +194,14 @@ public class Configuration {
             float fGridSpacing = gridSpacing == null ? 1.0f : gridSpacing;
 
             devKitConfig.getSceneConfig().setGridSize(new Vector3f(
-                    iGridX,
-                    iGridY,
-                    fGridSpacing));
+                    ((Number) xGridSizeTextField.getValue()).floatValue(),
+                    ((Number) yGridSizeTextField.getValue()).floatValue(),
+                    ((Number) gridSpacingTextField.getValue()).floatValue()));
 
             devKitConfig.getSceneConfig().setGridLocation(new Vector3f(
-                    (float) xGridLocationTextField.getValue(),
-                    (float) yGridLocationTextField.getValue(),
-                    (float) zGridLocationTextField.getValue()));
+                ((Number) xGridLocationTextField.getValue()).floatValue(),
+                ((Number) yGridLocationTextField.getValue()).floatValue(),
+                ((Number) zGridLocationTextField.getValue()).floatValue()));
 
 
             devKitConfig.save();
