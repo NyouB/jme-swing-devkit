@@ -16,175 +16,208 @@ import java.nio.file.Paths;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 
 public class SaveSpatial {
-    private JTextField assetPathTextField;
-    private JTextField spatialNameTextField;
-    private JButton browseAssetDirButton;
-    private JButton saveButton;
-    private JPanel rootPanel;
 
-    private final Spatial spatial;
+  private JTextField assetPathTextField;
+  private JTextField spatialNameTextField;
+  private JButton browseAssetDirButton;
+  private JButton saveButton;
+  private JPanel rootPanel;
 
-    public SaveSpatial(Spatial spatial) {
+  private final Spatial spatial;
 
-        this.spatial = spatial;
+  public SaveSpatial(Spatial spatial) {
 
-        browseAssetDirButton.addActionListener(e -> {
+    this.spatial = spatial;
 
-            // String projectRoot = System.getProperty("user.dir");
-            String assetRoot = DevKitConfig.getInstance().getProjectConfig().getAssetRootDir();
+    browseAssetDirButton.addActionListener(e -> {
 
-            JFileChooser chooser = new JFileChooser();
-            chooser.setCurrentDirectory(new File(assetRoot));
-            chooser.setDialogTitle("Select Asset Directory");
-            chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            chooser.setAcceptAllFileFilterUsed(false);
+      // String projectRoot = System.getProperty("user.dir");
+      String assetRoot = DevKitConfig.getInstance().getProjectConfig().getAssetRootDir();
 
-            if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+      JFileChooser chooser = new JFileChooser();
+      chooser.setCurrentDirectory(new File(assetRoot));
+      chooser.setDialogTitle("Select Asset Directory");
+      chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+      chooser.setAcceptAllFileFilterUsed(false);
 
-                String chosenPath = chooser.getSelectedFile().getAbsolutePath();
+      if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
 
-                if (!chosenPath.contains(assetRoot)) {
+        String chosenPath = chooser.getSelectedFile().getAbsolutePath();
 
-                    JOptionPane.showMessageDialog(null,
-                            "The chosen directory must exist inside the projects Asset Root directory.",
-                            "Invalid Directory",
-                            ERROR_MESSAGE);
+        if (!chosenPath.contains(assetRoot)) {
 
-                } else {
-                    assetPathTextField.setText(chooser.getSelectedFile().getAbsolutePath().replace(assetRoot, ""));
-                }
+          JOptionPane.showMessageDialog(null,
+              "The chosen directory must exist inside the projects Asset Root directory.",
+              "Invalid Directory",
+              ERROR_MESSAGE);
 
-            }
+        } else {
+          assetPathTextField
+              .setText(chooser.getSelectedFile().getAbsolutePath().replace(assetRoot, ""));
+        }
 
-        });
+      }
 
-        saveButton.addActionListener(e -> {
+    });
 
-            String name = spatialNameTextField.getText().trim();
+    saveButton.addActionListener(e -> {
 
-            if (name.isEmpty()) {
+      String name = spatialNameTextField.getText().trim();
 
-                JOptionPane.showMessageDialog(null,
-                        "You must specify a name.",
-                        "No Name Specified",
-                        ERROR_MESSAGE);
+      if (name.isEmpty()) {
 
-            } else {
+        JOptionPane.showMessageDialog(null,
+            "You must specify a name.",
+            "No Name Specified",
+            ERROR_MESSAGE);
 
-                String dir = assetPathTextField.getText().trim();
+      } else {
 
-                if (!name.endsWith(".j3o")) {
-                    name += ".j3o";
-                }
+        String dir = assetPathTextField.getText().trim();
 
-                File file = Paths.get(DevKitConfig.getInstance().getProjectConfig().getAssetRootDir(), dir, name).toFile();
+        if (!name.endsWith(".j3o")) {
+          name += ".j3o";
+        }
 
-                if (file.exists()) {
+        File file = Paths
+            .get(DevKitConfig.getInstance().getProjectConfig().getAssetRootDir(), dir, name)
+            .toFile();
 
-                    int overwriteResponse = JOptionPane.showConfirmDialog(null,
-                            "This file already exists. Overwrite?",
-                            "Overwrite File",
-                            JOptionPane.YES_NO_OPTION);
+        if (file.exists()) {
 
-                    // if we didn't explicitly get the YES response, exit now.
-                    if (overwriteResponse != JOptionPane.YES_OPTION) {
-                        return;
-                    }
-                }
+          int overwriteResponse = JOptionPane.showConfirmDialog(null,
+              "This file already exists. Overwrite?",
+              "Overwrite File",
+              JOptionPane.YES_NO_OPTION);
 
-                try {
-                    BinaryExporter.getInstance().save(spatial, file);
-                } catch (IOException ex) {
+          // if we didn't explicitly get the YES response, exit now.
+          if (overwriteResponse != JOptionPane.YES_OPTION) {
+            return;
+          }
+        }
 
-                    String spatialName = spatial.getName() == null ? "No Name" : spatial.getName();
+        try {
+          BinaryExporter.getInstance().save(spatial, file);
+        } catch (IOException ex) {
 
-                    String errorString =
-                            "An error occurred whilst attempting to save the spatial:"
-                                    + System.lineSeparator()
-                                    + spatialName
-                                    + System.lineSeparator()
-                                    + "to file"
-                                    + System.lineSeparator()
-                                    + file.toString()
-                                    + System.lineSeparator()
-                                    + ex.getMessage();
+          String spatialName = spatial.getName() == null ? "No Name" : spatial.getName();
 
-                    JOptionPane.showMessageDialog(null,
-                            errorString,
-                            "Save Failed",
-                            ERROR_MESSAGE);
+          String errorString =
+              "An error occurred whilst attempting to save the spatial:"
+                  + System.lineSeparator()
+                  + spatialName
+                  + System.lineSeparator()
+                  + "to file"
+                  + System.lineSeparator()
+                  + file.toString()
+                  + System.lineSeparator()
+                  + ex.getMessage();
 
-                    return;
-                }
+          JOptionPane.showMessageDialog(null,
+              errorString,
+              "Save Failed",
+              ERROR_MESSAGE);
 
-                String responseString = "Saved successfully to:"
-                        + System.lineSeparator()
-                        + file.toString().replace(DevKitConfig.getInstance().getProjectConfig().getAssetRootDir(), "");
+          return;
+        }
 
-                JOptionPane.showMessageDialog(null,
-                        responseString,
-                        "Spatial Saved",
-                        JOptionPane.INFORMATION_MESSAGE);
+        String responseString = "Saved successfully to:"
+            + System.lineSeparator()
+            + file.toString()
+            .replace(DevKitConfig.getInstance().getProjectConfig().getAssetRootDir(), "");
 
-                // close the window.
-                JButton button = (JButton) e.getSource();
-                Window window = SwingUtilities.getWindowAncestor(button);
-                window.dispose();
+        JOptionPane.showMessageDialog(null,
+            responseString,
+            "Spatial Saved",
+            JOptionPane.INFORMATION_MESSAGE);
 
-            }
+        // close the window.
+        JButton button = (JButton) e.getSource();
+        Window window = SwingUtilities.getWindowAncestor(button);
+        window.dispose();
 
-        });
+      }
 
-    }
+    });
 
-    {
+  }
+
+  {
 // GUI initializer generated by IntelliJ IDEA GUI Designer
 // >>> IMPORTANT!! <<<
 // DO NOT EDIT OR ADD ANY CODE HERE!
-        $$$setupUI$$$();
-    }
+    $$$setupUI$$$();
+  }
 
-    /**
-     * Method generated by IntelliJ IDEA GUI Designer
-     * >>> IMPORTANT!! <<<
-     * DO NOT edit this method OR call it in your code!
-     *
-     * @noinspection ALL
-     */
-    private void $$$setupUI$$$() {
-        rootPanel = new JPanel();
-        rootPanel.setLayout(new GridLayoutManager(4, 4, new Insets(10, 10, 10, 10), -1, -1));
-        final JLabel label1 = new JLabel();
-        label1.setText("Asset Directory");
-        rootPanel.add(label1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final Spacer spacer1 = new Spacer();
-        rootPanel.add(spacer1, new GridConstraints(0, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
-        final Spacer spacer2 = new Spacer();
-        rootPanel.add(spacer2, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
-        final JLabel label2 = new JLabel();
-        label2.setText("Name");
-        rootPanel.add(label2, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        assetPathTextField = new JTextField();
-        rootPanel.add(assetPathTextField, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        spatialNameTextField = new JTextField();
-        rootPanel.add(spatialNameTextField, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        browseAssetDirButton = new JButton();
-        browseAssetDirButton.setText("Browse...");
-        rootPanel.add(browseAssetDirButton, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JPanel panel1 = new JPanel();
-        panel1.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
-        rootPanel.add(panel1, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        saveButton = new JButton();
-        saveButton.setText("Save");
-        panel1.add(saveButton, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final Spacer spacer3 = new Spacer();
-        panel1.add(spacer3, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
-    }
+  /**
+   * Method generated by IntelliJ IDEA GUI Designer >>> IMPORTANT!! <<< DO NOT edit this method OR
+   * call it in your code!
+   *
+   * @noinspection ALL
+   */
+  private void $$$setupUI$$$() {
+    rootPanel = new JPanel();
+    rootPanel.setLayout(new GridLayoutManager(4, 4, new Insets(10, 10, 10, 10), -1, -1));
+    final JLabel label1 = new JLabel();
+    label1.setText("Asset Directory");
+    rootPanel.add(label1,
+        new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE,
+            GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0,
+            false));
+    final Spacer spacer1 = new Spacer();
+    rootPanel.add(spacer1, new GridConstraints(0, 3, 1, 1, GridConstraints.ANCHOR_CENTER,
+        GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null,
+        0, false));
+    final Spacer spacer2 = new Spacer();
+    rootPanel.add(spacer2, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER,
+        GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0,
+        false));
+    final JLabel label2 = new JLabel();
+    label2.setText("Name");
+    rootPanel.add(label2,
+        new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE,
+            GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0,
+            false));
+    assetPathTextField = new JTextField();
+    rootPanel.add(assetPathTextField, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST,
+        GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW,
+        GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+    spatialNameTextField = new JTextField();
+    rootPanel.add(spatialNameTextField, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_WEST,
+        GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW,
+        GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+    browseAssetDirButton = new JButton();
+    browseAssetDirButton.setText("Browse...");
+    rootPanel.add(browseAssetDirButton,
+        new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER,
+            GridConstraints.FILL_HORIZONTAL,
+            GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+            GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+    final JPanel panel1 = new JPanel();
+    panel1.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
+    rootPanel.add(panel1,
+        new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH,
+            GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+            GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null,
+            null, 0, false));
+    saveButton = new JButton();
+    saveButton.setText("Save");
+    panel1.add(saveButton, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER,
+        GridConstraints.FILL_HORIZONTAL,
+        GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+        GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+    final Spacer spacer3 = new Spacer();
+    panel1.add(spacer3, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER,
+        GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null,
+        0, false));
+  }
 
-    /**
-     */
-    public JComponent $$$getRootComponent$$$() {
-        return rootPanel;
-    }
+  /**
+   * @noinspection ALL
+   */
+  public JComponent $$$getRootComponent$$$() {
+    return rootPanel;
+  }
+
 
 }

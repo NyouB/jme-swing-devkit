@@ -1,20 +1,19 @@
 package com.jayfella.devkit.properties;
 
-import com.jayfella.devkit.properties.component.SdkComponent;
-
+import java.awt.Component;
 import javax.swing.*;
 
 public class PropertySection {
 
     private final String title;
     private final Icon icon;
-    private final SdkComponent[] components;
+    private final Component[] components;
 
-    public PropertySection(String title, SdkComponent... components) {
+    public PropertySection(String title, Component... components) {
         this(title, null, components);
     }
 
-    public PropertySection(String title, Icon icon, SdkComponent... components) {
+    public PropertySection(String title, Icon icon, Component... components) {
         this.title = title;
         this.icon = icon;
         this.components = components;
@@ -28,7 +27,7 @@ public class PropertySection {
         return icon;
     }
 
-    public SdkComponent[] getComponents() {
+    public Component[] getComponents() {
         return components;
     }
 

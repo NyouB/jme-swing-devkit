@@ -30,7 +30,7 @@ public class FloatFormatFactory extends JFormattedTextField.AbstractFormatterFac
         format.setRoundingMode(RoundingMode.HALF_UP);
 
         InternationalFormatter formatter = new InternationalFormatter(format);
-        formatter.setAllowsInvalid(false);
+        formatter.setAllowsInvalid(true);
         formatter.setMinimum(min);
         formatter.setMaximum(max);
 

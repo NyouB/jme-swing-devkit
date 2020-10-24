@@ -4,6 +4,7 @@ import com.jayfella.devkit.properties.component.ValuedComponent;
 import com.jayfella.devkit.service.JmeEngineService;
 import com.jayfella.devkit.service.ServiceManager;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -20,12 +21,13 @@ public class ReflectedProperty<T> {
         this.getter = getter;
         this.setter = setter;
         this.component = component;
-
+        Field field;
+field.set();
         component.setPropertyChangedEvent(value -> {
             ServiceManager.getService(JmeEngineService.class).enqueue(() -> {
                 try {
+                    field.set(parent, value);
                     setter.invoke(parent, value);
-
                 } catch (IllegalAccessException | InvocationTargetException | IllegalArgumentException e) {
                     e.printStackTrace();
                 }

@@ -14,6 +14,7 @@ import com.jme3.environment.EnvironmentCamera;
 import com.jme3.environment.LightProbeFactory;
 import com.jme3.environment.generation.JobProgressListener;
 import com.jme3.light.LightProbe;
+import com.jme3.light.LightProbe.AreaType;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -24,221 +25,256 @@ import javax.swing.tree.DefaultTreeModel;
 import java.awt.*;
 
 /**
- * Generates a LightProbe from a user-selected Node as an environment map.
- * Note: LightProbeFactory only allows selecting nodes. You can't select a geometry (possible bug?).
+ * Generates a LightProbe from a user-selected Node as an environment map. Note: LightProbeFactory
+ * only allows selecting nodes. You can't select a geometry (possible bug?).
  */
 public class GenerateLightProbeDialog {
 
-    private JPanel rootPanel;
-    private JTree sceneTree;
-    private JComboBox<LightProbe.AreaType> areaTypeComboBox;
-    private JFormattedTextField radiusTextField;
-    private JButton generateButton;
-    private JButton cancelButton;
+  private JPanel rootPanel;
+  private JTree sceneTree;
+  private JComboBox<AreaType> areaTypeComboBox;
+  private JFormattedTextField radiusTextField;
+  private JButton generateButton;
+  private JButton cancelButton;
 
-    public GenerateLightProbeDialog(final SpatialTreeNode spatialTreeNode) {
+  public GenerateLightProbeDialog(final SpatialTreeNode spatialTreeNode) {
 
-        $$$setupUI$$$();
+    $$$setupUI$$$();
 
-        sceneTree.setRootVisible(false);
-        recurseSceneForNodes();
+    sceneTree.setRootVisible(false);
+    recurseSceneForNodes();
 
-        DefaultComboBoxModel<LightProbe.AreaType> areaTypeDefaultComboBoxModel = new DefaultComboBoxModel<>();
-        for (LightProbe.AreaType type : LightProbe.AreaType.values()) {
-            areaTypeDefaultComboBoxModel.addElement(type);
-        }
-        areaTypeComboBox.setModel(areaTypeDefaultComboBoxModel);
-        areaTypeComboBox.setSelectedItem(LightProbe.AreaType.OrientedBox);
+    DefaultComboBoxModel<AreaType> areaTypeDefaultComboBoxModel = new DefaultComboBoxModel<>();
+    for (AreaType type : AreaType.values()) {
+      areaTypeDefaultComboBoxModel.addElement(type);
+    }
+    areaTypeComboBox.setModel(areaTypeDefaultComboBoxModel);
+    areaTypeComboBox.setSelectedItem(AreaType.OrientedBox);
 
-        generateButton.addActionListener(e -> {
+    generateButton.addActionListener(e -> {
 
-            SpatialTreeNode selectedNode = (SpatialTreeNode) sceneTree.getLastSelectedPathComponent();
+      SpatialTreeNode selectedNode = (SpatialTreeNode) sceneTree.getLastSelectedPathComponent();
 
-            // things we need in the JME thread.
-            final Node selectedSceneNode = (Node) selectedNode.getUserObject();
-            final LightProbe.AreaType selectedAreaType = (LightProbe.AreaType) areaTypeComboBox.getSelectedItem();
-            final float radius = (float) radiusTextField.getValue();
+      // things we need in the JME thread.
+      final Node selectedSceneNode = (Node) selectedNode.getUserObject();
+      final AreaType selectedAreaType = (AreaType) areaTypeComboBox.getSelectedItem();
+      final float radius = (float) radiusTextField.getValue();
 
-            // disable the dialog
-            ComponentUtilities.enableComponents(rootPanel, false);
+      // disable the dialog
+      ComponentUtilities.enableComponents(rootPanel, false);
 
-            JmeEngineService engineService = ServiceManager.getService(JmeEngineService.class);
+      JmeEngineService engineService = ServiceManager.getService(JmeEngineService.class);
 
-            engineService.enqueue(() -> {
+      engineService.enqueue(() -> {
 
-                Vector3f cameraLocation = engineService.getCamera().getLocation();
+        Vector3f cameraLocation = engineService.getCamera().getLocation();
 
-                EnvironmentCamera environmentCamera = engineService.getStateManager().getState(EnvironmentCamera.class);
-                environmentCamera.setPosition(cameraLocation);
+        EnvironmentCamera environmentCamera = engineService.getStateManager()
+            .getState(EnvironmentCamera.class);
+        environmentCamera.setPosition(cameraLocation);
 
-                LightProbeFactory.makeProbe(environmentCamera, selectedSceneNode, new JobProgressListener<LightProbe>() {
-                    @Override
-                    public void start() {
+        LightProbeFactory
+            .makeProbe(environmentCamera, selectedSceneNode, new JobProgressListener<LightProbe>() {
+              @Override
+              public void start() {
 
-                    }
+              }
 
-                    @Override
-                    public void step(String message) {
+              @Override
+              public void step(String message) {
 
-                    }
+              }
 
-                    @Override
-                    public void progress(double value) {
+              @Override
+              public void progress(double value) {
 
-                    }
+              }
 
-                    @Override
-                    public void done(final LightProbe result) {
+              @Override
+              public void done(final LightProbe result) {
 
-                        result.setAreaType(selectedAreaType);
-                        result.getArea().setRadius(radius);
-                        result.setPosition(cameraLocation);
+                result.setAreaType(selectedAreaType);
+                result.getArea().setRadius(radius);
+                result.setPosition(cameraLocation);
 
-                        SwingUtilities.invokeLater(() -> {
+                SwingUtilities.invokeLater(() -> {
 
-                            // add the light to the treenode we selected when we cliked "generate lightprobe".
-                            ServiceManager.getService(SceneTreeService.class).addLight(result, spatialTreeNode);
+                  // add the light to the treenode we selected when we cliked "generate lightprobe".
+                  ServiceManager.getService(SceneTreeService.class)
+                      .addLight(result, spatialTreeNode);
 
-                            JButton button = (JButton) e.getSource();
-                            Window window = SwingUtilities.getWindowAncestor(button);
-                            window.dispose();
+                  JButton button = (JButton) e.getSource();
+                  Window window = SwingUtilities.getWindowAncestor(button);
+                  window.dispose();
 
-                        });
-
-                    }
                 });
 
+              }
             });
 
-        });
+      });
 
-        cancelButton.addActionListener(e -> {
-            JButton button = (JButton) e.getSource();
-            Window window = SwingUtilities.getWindowAncestor(button);
-            window.dispose();
-        });
+    });
 
-    }
+    cancelButton.addActionListener(e -> {
+      JButton button = (JButton) e.getSource();
+      Window window = SwingUtilities.getWindowAncestor(button);
+      window.dispose();
+    });
 
-    private void recurseSceneForNodes() {
+  }
 
-        // create the tree on the JME thread, then pass it to swing.
-        SceneTreeService sceneTreeService = ServiceManager.getService(SceneTreeService.class);
+  private void recurseSceneForNodes() {
 
-        // NodeTreeNode treeRoot = new NodeTreeNode(sceneTreeService.getRootNode());
-        DefaultMutableTreeNode treeRoot = new DefaultMutableTreeNode("Root");
-        sceneTree.setModel(new DefaultTreeModel(treeRoot));
+    // create the tree on the JME thread, then pass it to swing.
+    SceneTreeService sceneTreeService = ServiceManager.getService(SceneTreeService.class);
 
-        NodeTreeNode guiNode = new NodeTreeNode(sceneTreeService.getGuiNode());
-        NodeTreeNode rootNode = new NodeTreeNode(sceneTreeService.getRootNode());
+    // NodeTreeNode treeRoot = new NodeTreeNode(sceneTreeService.getRootNode());
+    DefaultMutableTreeNode treeRoot = new DefaultMutableTreeNode("Root");
+    sceneTree.setModel(new DefaultTreeModel(treeRoot));
 
-        treeRoot.add(guiNode);
-        treeRoot.add(rootNode);
+    NodeTreeNode guiNode = new NodeTreeNode(sceneTreeService.getGuiNode());
+    NodeTreeNode rootNode = new NodeTreeNode(sceneTreeService.getRootNode());
 
-        reloadTree();
+    treeRoot.add(guiNode);
+    treeRoot.add(rootNode);
 
-        recurse(guiNode);
-        recurse(rootNode);
+    reloadTree();
 
-    }
+    recurse(guiNode);
+    recurse(rootNode);
 
-    private void recurse(SpatialTreeNode spatialTreeNode) {
+  }
 
-        JmeEngineService engineService = ServiceManager.getService(JmeEngineService.class);
+  private void recurse(SpatialTreeNode spatialTreeNode) {
 
-        if (spatialTreeNode instanceof NodeTreeNode) {
+    JmeEngineService engineService = ServiceManager.getService(JmeEngineService.class);
 
-            // query the node on the JME thread.
-            engineService.enqueue(() -> {
+    if (spatialTreeNode instanceof NodeTreeNode) {
 
-                Node node = (Node) spatialTreeNode.getUserObject();
-                java.util.List<Spatial> children = node.getChildren();
+      // query the node on the JME thread.
+      engineService.enqueue(() -> {
 
-                for (Spatial child : children) {
+        Node node = (Node) spatialTreeNode.getUserObject();
+        java.util.List<Spatial> children = node.getChildren();
 
-                    if (child instanceof Node) {
-                        // add nodes on the AWT thread.
-                        SwingUtilities.invokeLater(() -> {
+        for (Spatial child : children) {
 
-                            NodeTreeNode childNode = new NodeTreeNode((Node) child);
-                            spatialTreeNode.add(childNode);
+          if (child instanceof Node) {
+            // add nodes on the AWT thread.
+            SwingUtilities.invokeLater(() -> {
 
-                            // its a bit annoying, but we don't really have a way of determining when this is finished
-                            // since we jump from thread to thread, so we'll just update the tree each time we
-                            // add something.
-                            reloadTree();
+              NodeTreeNode childNode = new NodeTreeNode((Node) child);
+              spatialTreeNode.add(childNode);
 
-                            // recurse on the AWT thread.
-                            recurse(childNode);
-                        });
-                    }
+              // its a bit annoying, but we don't really have a way of determining when this is finished
+              // since we jump from thread to thread, so we'll just update the tree each time we
+              // add something.
+              reloadTree();
 
-                }
-
+              // recurse on the AWT thread.
+              recurse(childNode);
             });
+          }
 
         }
 
+      });
+
     }
 
-    /**
-     * Reloads the scene JTree to reflect any changes made.
-     */
-    private void reloadTree() {
-        DefaultTreeModel treeModel = (DefaultTreeModel) sceneTree.getModel();
-        treeModel.reload();
-    }
+  }
 
-    /**
-     * Method generated by IntelliJ IDEA GUI Designer
-     * >>> IMPORTANT!! <<<
-     * DO NOT edit this method OR call it in your code!
-     *
-     * @noinspection ALL
-     */
-    private void $$$setupUI$$$() {
-        createUIComponents();
-        rootPanel = new JPanel();
-        rootPanel.setLayout(new GridLayoutManager(5, 2, new Insets(10, 10, 10, 10), -1, -1));
-        final JScrollPane scrollPane1 = new JScrollPane();
-        rootPanel.add(scrollPane1, new GridConstraints(1, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
-        sceneTree = new JTree();
-        scrollPane1.setViewportView(sceneTree);
-        final JLabel label1 = new JLabel();
-        label1.setText("Area Type");
-        rootPanel.add(label1, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        areaTypeComboBox = new JComboBox();
-        rootPanel.add(areaTypeComboBox, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JLabel label2 = new JLabel();
-        label2.setText("Radius");
-        label2.setToolTipText("The area of effect of this light probe in world units.");
-        rootPanel.add(label2, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        radiusTextField.setText("100.00");
-        rootPanel.add(radiusTextField, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        final JPanel panel1 = new JPanel();
-        panel1.setLayout(new GridLayoutManager(1, 3, new Insets(0, 0, 0, 0), -1, -1));
-        rootPanel.add(panel1, new GridConstraints(4, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        generateButton = new JButton();
-        generateButton.setText("Generate");
-        panel1.add(generateButton, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        cancelButton = new JButton();
-        cancelButton.setText("Cancel");
-        panel1.add(cancelButton, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final Spacer spacer1 = new Spacer();
-        panel1.add(spacer1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
-        final JLabel label3 = new JLabel();
-        label3.setText("<html>\nSelect the Node that will be used to generate the environment.<br />\nThe probe will be positioned at the camera position.\n</html>");
-        rootPanel.add(label3, new GridConstraints(0, 0, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-    }
+  /**
+   * Reloads the scene JTree to reflect any changes made.
+   */
+  private void reloadTree() {
+    DefaultTreeModel treeModel = (DefaultTreeModel) sceneTree.getModel();
+    treeModel.reload();
+  }
 
-    /**
-     */
-    public JComponent $$$getRootComponent$$$() {
-        return rootPanel;
-    }
+  /**
+   * Method generated by IntelliJ IDEA GUI Designer >>> IMPORTANT!! <<< DO NOT edit this method OR
+   * call it in your code!
+   *
+   * @noinspection ALL
+   */
+  private void $$$setupUI$$$() {
+    createUIComponents();
+    rootPanel = new JPanel();
+    rootPanel.setLayout(new GridLayoutManager(5, 2, new Insets(10, 10, 10, 10), -1, -1));
+    final JScrollPane scrollPane1 = new JScrollPane();
+    rootPanel.add(scrollPane1,
+        new GridConstraints(1, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH,
+            GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW,
+            GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null,
+            null, null, 0, false));
+    sceneTree = new JTree();
+    scrollPane1.setViewportView(sceneTree);
+    final JLabel label1 = new JLabel();
+    label1.setText("Area Type");
+    rootPanel.add(label1,
+        new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE,
+            GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0,
+            false));
+    areaTypeComboBox = new JComboBox();
+    rootPanel.add(areaTypeComboBox, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_WEST,
+        GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW,
+        GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+    final JLabel label2 = new JLabel();
+    label2.setText("Radius");
+    label2.setToolTipText("The area of effect of this light probe in world units.");
+    rootPanel.add(label2,
+        new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE,
+            GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0,
+            false));
+    radiusTextField.setText("100.00");
+    rootPanel.add(radiusTextField, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_WEST,
+        GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW,
+        GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+    final JPanel panel1 = new JPanel();
+    panel1.setLayout(new GridLayoutManager(1, 3, new Insets(0, 0, 0, 0), -1, -1));
+    rootPanel.add(panel1,
+        new GridConstraints(4, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH,
+            GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+            GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null,
+            null, 0, false));
+    generateButton = new JButton();
+    generateButton.setText("Generate");
+    panel1.add(generateButton, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER,
+        GridConstraints.FILL_HORIZONTAL,
+        GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+        GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+    cancelButton = new JButton();
+    cancelButton.setText("Cancel");
+    panel1.add(cancelButton, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER,
+        GridConstraints.FILL_HORIZONTAL,
+        GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+        GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+    final Spacer spacer1 = new Spacer();
+    panel1.add(spacer1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER,
+        GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null,
+        0, false));
+    final JLabel label3 = new JLabel();
+    label3.setText(
+        "<html>\nSelect the Node that will be used to generate the environment.<br />\nThe probe will be positioned at the camera position.\n</html>");
+    rootPanel.add(label3,
+        new GridConstraints(0, 0, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
+            GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0,
+            false));
+  }
 
-    private void createUIComponents() {
-        // TODO: place custom component creation code here
-        radiusTextField = new JFormattedTextField(NumberFormatters.createFloatFormatter(1.0f, Float.parseFloat(Integer.MAX_VALUE + ".00f")));
-    }
+  /**
+   * @noinspection ALL
+   */
+  public JComponent $$$getRootComponent$$$() {
+    return rootPanel;
+  }
+
+
+  private void createUIComponents() {
+    // TODO: place custom component creation code here
+    radiusTextField = new JFormattedTextField(
+        NumberFormatters.createFloatFormatter(1.0f, Float.parseFloat(Integer.MAX_VALUE + ".00f")));
+  }
 }

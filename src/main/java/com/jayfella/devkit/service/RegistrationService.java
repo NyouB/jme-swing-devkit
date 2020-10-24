@@ -31,7 +31,7 @@ import java.util.Map;
 public class RegistrationService implements Service {
 
     // a single object that returns a single component. For example a vector3f or a float.
-    private final Map<Class<?>, Class<? extends ReflectedSdkComponent<?>>> componentClasses = new HashMap<>();
+    private final Map<Class<?>, Class<? extends JMEDevKitComponentSwingView<?>>> componentClasses = new HashMap<>();
 
     // a single object that returns multiple components. For example a spatial or a material.
     private final Map<Class<?>, Class<? extends AbstractComponentSetBuilder<?>>> componentBuilderClasses = new HashMap<>();
