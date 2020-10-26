@@ -3,6 +3,8 @@ package com.jayfella.devkit.properties.component;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 
+import com.jme3.math.Vector2f;
+import java.beans.PropertyChangeListener;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -10,86 +12,52 @@ import java.awt.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class IntegerComponent extends ReflectedSdkComponent<Integer> {
+public class IntegerComponent extends JMEDevKitComponentSwingView<Integer> {
 
     private JFormattedTextField valueTextField;
     private JPanel contentPanel;
     private JLabel propertyNameLabel;
 
-    public IntegerComponent() {
-        super(null, null, null);
+
+    public IntegerComponent(Integer integer) {
+        this(integer, null);
     }
 
-    public IntegerComponent(Object object, String declaredGetter, String declaredSetter) throws NoSuchMethodException {
-        this(object,
-                object.getClass().getDeclaredMethod(declaredGetter),
-                object.getClass().getDeclaredMethod(declaredSetter, int.class));
+    public IntegerComponent(Integer integer, String propertyName) {
+        super(integer, propertyName);
+        $$$setupUI$$$();
+        setValue(integer);
     }
 
-    public IntegerComponent(Object parent, Method getter, Method setter) {
-        super(parent, getter, setter);
-
-        valueTextField.setFormatterFactory(new IntegerFormatFactory());
-
-        try {
-            setValue((int) getter.invoke(parent));
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    @Override
     public void setValue(Integer value) {
-        super.setValue(value);
-
-        if (!isBinded()) {
-
-            SwingUtilities.invokeLater(() -> {
-                valueTextField.setValue(value);
-                bind();
-            });
+        if (value != null) {
+            this.valueTextField.setValue(value);
+        } else {
+            this.valueTextField.setText("null");
         }
     }
 
-    @Override
-    public JComponent getJComponent() {
-        return contentPanel;
+    public void bind() {
+        PropertyChangeListener propertyChangeListener = evt -> {
+            saveViewValueToModel();
+            firePropertyChange(propertyName, null, component);
+        };
+        valueTextField.addPropertyChangeListener(propertyChangeListener);
     }
 
-    @Override
-    public void bind() {
-        super.bind();
-
-        valueTextField.getDocument().addDocumentListener(new DocumentListener() {
-
-            private void set() {
-                Integer newValue = (int) valueTextField.getValue();
-                setValue(newValue);
-            }
-
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                set();
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                set();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                set();
-            }
-        });
-
+    private void saveViewValueToModel() {
+        setValue(getInputValue());
     }
 
     @Override
     public void setPropertyName(String propertyName) {
         super.setPropertyName(propertyName);
         propertyNameLabel.setText("Integer: " + propertyName);
+    }
+
+    private Integer getInputValue() {
+        int x = ((Number) valueTextField.getValue()).intValue();
+        return Integer.valueOf(x);
     }
 
     {
@@ -124,4 +92,13 @@ public class IntegerComponent extends ReflectedSdkComponent<Integer> {
         return contentPanel;
     }
 
+    private void createUIComponents() {
+        contentPanel = this;
+
+        valueTextField = new JFormattedTextField();
+
+        FloatFormatFactory floatFormatFactory = new FloatFormatFactory();
+
+        valueTextField.setFormatterFactory(floatFormatFactory);
+    }
 }

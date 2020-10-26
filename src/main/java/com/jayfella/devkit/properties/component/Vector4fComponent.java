@@ -3,8 +3,10 @@ package com.jayfella.devkit.properties.component;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
+import com.jme3.math.Vector3f;
 import com.jme3.math.Vector4f;
 
+import java.beans.PropertyChangeListener;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -12,7 +14,7 @@ import java.awt.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class Vector4fComponent extends ReflectedSdkComponent<Vector4f> {
+public class Vector4fComponent extends JMEDevKitComponentSwingView<Vector4f> {
 
     private JPanel contentPanel;
     private JLabel propertyNameLabel;
@@ -22,58 +24,60 @@ public class Vector4fComponent extends ReflectedSdkComponent<Vector4f> {
     private JFormattedTextField zTextField;
     private JFormattedTextField wTextField;
 
+    private boolean nullable;
 
-    public Vector4fComponent() {
-        super(null, null, null);
+    public Vector4fComponent(boolean nullable) {
+        this(null ,null, true);
+    }
+    public Vector4fComponent(Vector4f vector4f) {
+        this(vector4f, null);
     }
 
-    public Vector4fComponent(Object parent, Method getter, Method setter) {
-        super(parent, getter, setter);
-
-        FloatFormatFactory floatFormatFactory = new FloatFormatFactory();
-
-        xTextField.setFormatterFactory(floatFormatFactory);
-        yTextField.setFormatterFactory(floatFormatFactory);
-        zTextField.setFormatterFactory(floatFormatFactory);
-        wTextField.setFormatterFactory(floatFormatFactory);
-
-        try {
-            setValue((Vector4f) getter.invoke(parent));
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
-        }
-
+    public Vector4fComponent(Vector4f vector4f, String propertyName) {
+        this(vector4f, propertyName, false);
+    }
+    public Vector4fComponent(Vector4f vector4f, String propertyName, boolean nullable) {
+        super(vector4f, propertyName);
+        $$$setupUI$$$();
+        setValue(vector4f);
+        this.nullable = nullable;
     }
 
-    @Override
     public void setValue(Vector4f value) {
-        super.setValue(value);
-
-        if (!isBinded()) {
-
-            SwingUtilities.invokeLater(() -> {
-                this.xTextField.setText("" + value.x);
-                this.yTextField.setText("" + value.y);
-                this.zTextField.setText("" + value.z);
-                this.wTextField.setText("" + value.w);
-
-                bind();
-            });
+        if (value != null) {
+            this.wTextField.setValue(value.w);
+            this.xTextField.setValue(value.x);
+            this.yTextField.setValue(value.y);
+            this.zTextField.setValue(value.z);
+        } else {
+            this.wTextField.setText("null");
+            this.xTextField.setText("null");
+            this.yTextField.setText("null");
+            this.zTextField.setText("null");
         }
     }
 
-    @Override
-    public JComponent getJComponent() {
-        return contentPanel;
+    public void bind() {
+        PropertyChangeListener propertyChangeListener = evt -> {
+            saveViewValueToModel();
+            firePropertyChange(propertyName , null, component);
+        };
+        wTextField.addPropertyChangeListener(propertyChangeListener);
+        xTextField.addPropertyChangeListener(propertyChangeListener);
+        yTextField.addPropertyChangeListener(propertyChangeListener);
+        zTextField.addPropertyChangeListener(propertyChangeListener);
     }
 
-    @Override
-    public void bind() {
-        super.bind();
-        xTextField.getDocument().addDocumentListener(changeListener);
-        yTextField.getDocument().addDocumentListener(changeListener);
-        zTextField.getDocument().addDocumentListener(changeListener);
-        wTextField.getDocument().addDocumentListener(changeListener);
+    private void saveViewValueToModel() {
+        setValue(getInputValue());
+    }
+
+    private Vector4f getInputValue() {
+        float w = ((Number) wTextField.getValue()).floatValue();
+        float x = ((Number) xTextField.getValue()).floatValue();
+        float y = ((Number) yTextField.getValue()).floatValue();
+        float z = ((Number) zTextField.getValue()).floatValue();
+        return new Vector4f(w, x, y, z);
     }
 
     @Override
@@ -81,45 +85,6 @@ public class Vector4fComponent extends ReflectedSdkComponent<Vector4f> {
         super.setPropertyName(propertyName);
         propertyNameLabel.setText("Vector4f: " + propertyName);
     }
-
-
-    private final DocumentListener changeListener = new DocumentListener() {
-
-        private void set() {
-
-            Vector4f value = getReflectedProperty().getValue();
-
-            String x = xTextField.getText().isEmpty() ? "" + value.x : xTextField.getText();
-            String y = yTextField.getText().isEmpty() ? "" + value.y : yTextField.getText();
-            String z = zTextField.getText().isEmpty() ? "" + value.z : zTextField.getText();
-            String w = wTextField.getText().isEmpty() ? "" + value.w : wTextField.getText();
-
-            Vector4f newValue = new Vector4f(
-                    Float.parseFloat(x),
-                    Float.parseFloat(y),
-                    Float.parseFloat(z),
-                    Float.parseFloat(w)
-            );
-
-            setValue(newValue);
-        }
-
-        @Override
-        public void insertUpdate(DocumentEvent e) {
-            set();
-        }
-
-        @Override
-        public void removeUpdate(DocumentEvent e) {
-            set();
-        }
-
-        @Override
-        public void changedUpdate(DocumentEvent e) {
-            set();
-        }
-
-    };
 
     {
 // GUI initializer generated by IntelliJ IDEA GUI Designer
@@ -174,4 +139,19 @@ public class Vector4fComponent extends ReflectedSdkComponent<Vector4f> {
         return contentPanel;
     }
 
+    private void createUIComponents() {
+        contentPanel = this;
+
+        wTextField = new JFormattedTextField();
+        xTextField = new JFormattedTextField();
+        yTextField = new JFormattedTextField();
+        zTextField = new JFormattedTextField();
+
+        FloatFormatFactory floatFormatFactory = new FloatFormatFactory();
+
+        wTextField.setFormatterFactory(floatFormatFactory);
+        xTextField.setFormatterFactory(floatFormatFactory);
+        yTextField.setFormatterFactory(floatFormatFactory);
+        zTextField.setFormatterFactory(floatFormatFactory);
+    }
 }

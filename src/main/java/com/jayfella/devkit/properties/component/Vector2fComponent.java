@@ -3,15 +3,17 @@ package com.jayfella.devkit.properties.component;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.jme3.math.Vector2f;
+import java.awt.Dimension;
+import java.awt.Insets;
+import java.beans.PropertyChangeListener;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JFormattedTextField;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSeparator;
 
-import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import java.awt.*;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
-public class Vector2fComponent extends ReflectedSdkComponent<Vector2f> {
+public class Vector2fComponent extends JMEDevKitComponentSwingView<Vector2f> {
 
   private JPanel contentPanel;
   private JLabel propertyNameLabel;
@@ -19,149 +21,61 @@ public class Vector2fComponent extends ReflectedSdkComponent<Vector2f> {
   private JFormattedTextField yTextField;
   private JButton nullButton;
   private JButton normalizeButton;
-
-  public Vector2fComponent() {
-    this(null, null, null);
-
-  }
+  private boolean nullable;
 
   public Vector2fComponent(boolean nullable) {
-    this(null, null, null, nullable);
+    this(null, null, true);
   }
 
-  public Vector2fComponent(Object parent, Method getter, Method setter) {
-    this(parent, getter, setter, false);
+  public Vector2fComponent(Vector2f vector2f) {
+    this(vector2f, null);
   }
 
-  public Vector2fComponent(Object parent, Method getter, Method setter, boolean nullable) {
-    super(parent, getter, setter);
-
-    setNullable(nullable);
-
-    FloatFormatFactory floatFormatFactory = new FloatFormatFactory();
-
-    xTextField.setFormatterFactory(floatFormatFactory);
-    yTextField.setFormatterFactory(floatFormatFactory);
-
-    if (getter != null) {
-      try {
-        setValue((Vector2f) getter.invoke(parent));
-      } catch (IllegalAccessException | InvocationTargetException e) {
-        e.printStackTrace();
-      }
-    }
-
-    normalizeButton.addActionListener(e -> {
-
-      Vector2f value = getInputValue();
-
-      if (value != null) {
-        Vector2f normalized = value.normalize();
-        xTextField.setValue(normalized.x);
-        yTextField.setValue(normalized.y);
-      }
-
-    });
-
-    nullButton.setVisible(nullable);
-    nullButton.addActionListener(e -> {
-      xTextField.setText("");
-      yTextField.setText("");
-    });
-
-
+  public Vector2fComponent(Vector2f vector2f, String propertyName) {
+    this(vector2f, propertyName, false);
   }
 
-  @Override
+  public Vector2fComponent(Vector2f vector2f, String propertyName, boolean nullable) {
+    super(vector2f, propertyName);
+    $$$setupUI$$$();
+    setValue(vector2f);
+    this.nullable = nullable;
+  }
+
   public void setValue(Vector2f value) {
-    super.setValue(value);
-
-    if (!isBinded()) {
-
-      SwingUtilities.invokeLater(() -> {
-
-        if (value != null) {
-          this.xTextField.setText("" + value.x);
-          this.yTextField.setText("" + value.y);
-        } else {
-          this.xTextField.setText("");
-          this.yTextField.setText("");
-        }
-
-        bind();
-      });
+    if (value != null) {
+      this.xTextField.setValue(value.x);
+      this.yTextField.setValue(value.y);
+    } else {
+      this.xTextField.setText("null");
+      this.yTextField.setText("null");
     }
   }
 
-  @Override
-  public JComponent getJComponent() {
-    return contentPanel;
+  public void bind() {
+    PropertyChangeListener propertyChangeListener = evt -> {
+      saveViewValueToModel();
+      firePropertyChange(propertyName, null, component);
+    };
+    xTextField.addPropertyChangeListener(propertyChangeListener);
+    yTextField.addPropertyChangeListener(propertyChangeListener);
   }
 
-  @Override
-  public void bind() {
-    super.bind();
-    xTextField.getDocument().addDocumentListener(changeListener);
-    yTextField.getDocument().addDocumentListener(changeListener);
+  private void saveViewValueToModel() {
+    setValue(getInputValue());
   }
 
   @Override
   public void setPropertyName(String propertyName) {
     super.setPropertyName(propertyName);
-    propertyNameLabel.setText("Vector2f: " + propertyName);
+    propertyNameLabel.setText("Vector3f: " + propertyName);
   }
 
   private Vector2f getInputValue() {
-
-    String x = xTextField.getText().trim();
-    String y = yTextField.getText().trim();
-
-    if (x.isEmpty() && y.isEmpty()) {
-
-      return isNullable()
-          ? null
-          : new Vector2f();
-
-    }
-
-    if (x.isEmpty()) {
-      x = "0";
-    }
-    if (y.isEmpty()) {
-      y = "0";
-    }
-
-    return new Vector2f(
-        Float.parseFloat(x),
-        Float.parseFloat(y)
-    );
-
+    float x = ((Number) xTextField.getValue()).floatValue();
+    float y = ((Number) yTextField.getValue()).floatValue();
+    return new Vector2f(x, y);
   }
-
-  private final DocumentListener changeListener = new DocumentListener() {
-
-    private void set() {
-
-      Vector2f newValue = getInputValue();
-      setValue(newValue);
-    }
-
-    @Override
-    public void insertUpdate(DocumentEvent e) {
-      set();
-    }
-
-    @Override
-    public void removeUpdate(DocumentEvent e) {
-      set();
-    }
-
-    @Override
-    public void changedUpdate(DocumentEvent e) {
-      set();
-    }
-
-  };
 
   {
 // GUI initializer generated by IntelliJ IDEA GUI Designer
@@ -245,5 +159,41 @@ public class Vector2fComponent extends ReflectedSdkComponent<Vector2f> {
     return contentPanel;
   }
 
+
+  private void createUIComponents() {
+    contentPanel = this;
+
+    xTextField = new JFormattedTextField();
+    yTextField = new JFormattedTextField();
+
+    normalizeButton = new JButton();
+
+    normalizeButton.addActionListener(e -> {
+
+      Vector2f value = getInputValue();
+
+      if (value != null) {
+        Vector2f normalized = value.normalize();
+        // setValue(normalized);
+        xTextField.setValue(normalized.x);
+        yTextField.setValue(normalized.y);
+      }
+
+    });
+    nullButton = new JButton();
+
+    nullButton.setVisible(nullable);
+    nullButton.addActionListener(e -> {
+      if (nullable) {
+        xTextField.setText("null");
+        yTextField.setText("null");
+      }
+    });
+
+    FloatFormatFactory floatFormatFactory = new FloatFormatFactory();
+
+    xTextField.setFormatterFactory(floatFormatFactory);
+    yTextField.setFormatterFactory(floatFormatFactory);
+  }
 
 }
