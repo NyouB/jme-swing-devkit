@@ -4,6 +4,8 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 
+import com.jme3.math.Quaternion;
+import java.beans.PropertyChangeListener;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -11,127 +13,44 @@ import java.awt.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class FloatComponent extends ReflectedSdkComponent<Float> {
+public class FloatComponent extends JMEDevKitComponentSwingView<Float> {
 
     private JPanel contentPanel;
     private JFormattedTextField valueTextField;
     private JLabel propertyNameLabel;
-    private JButton nullButton;
-
-    public FloatComponent() {
-        this(null, null, null, false);
+    public FloatComponent(Float value) {
+        this(value, null);
     }
 
-    public FloatComponent(boolean nullable) {
-        this(null, null, null, nullable);
+    public FloatComponent(Float value, String propertyName) {
+        super(value, propertyName);
+        $$$setupUI$$$();
+        setValue(value);
     }
 
-    public FloatComponent(Object object, Method getter, Method setter) {
-        this(object, getter, setter, false);
-
-    }
-
-    public FloatComponent(Object object, String declaredGetter, String declaredSetter) throws NoSuchMethodException {
-        this(object,
-                object.getClass().getDeclaredMethod(declaredGetter),
-                object.getClass().getDeclaredMethod(declaredSetter, float.class));
-    }
-
-    public FloatComponent(Object object, Method getter, Method setter, boolean nullable) {
-        super(object, getter, setter);
-
-        setNullable(nullable);
-
-        valueTextField.setFormatterFactory(new FloatFormatFactory());
-
-        if (getter != null) {
-            try {
-                if (getter.getReturnType() == float.class) {
-                    setValue((float) getter.invoke(object));
-                } else if (getter.getReturnType() == Float.class) {
-                    setValue((Float) getter.invoke(object));
-                }
-            } catch (IllegalAccessException | InvocationTargetException e) {
-                e.printStackTrace();
-            }
-        }
-
-        nullButton.setVisible(isNullable());
-        nullButton.addActionListener(l -> setValue(null));
-    }
-
-    @Override
-    public void setValue(Float value) {
-        super.setValue(value);
-
-        if (!isBinded()) {
-
-            SwingUtilities.invokeLater(() -> {
-
-                if (value == null) {
-                    if (isNullable()) {
-                        valueTextField.setText("");
-                    } else {
-                        valueTextField.setText("0");
-                    }
-                } else {
-                    this.valueTextField.setText("" + value);
-                }
-
-                bind();
-            });
-        }
-
-    }
-
-    @Override
-    public JComponent getJComponent() {
-        return contentPanel;
-    }
-
-    @Override
     public void bind() {
-        super.bind();
-
-        this.valueTextField.getDocument().addDocumentListener(new DocumentListener() {
-
-            private void set() {
-
-                String inputVal = valueTextField.getText().trim();
-
-                if (inputVal.isEmpty()) {
-                    if (isNullable()) {
-                        setValue(null);
-                    } else {
-                        setValue(0.0f);
-                    }
-                } else {
-                    setValue(Float.parseFloat(valueTextField.getText()));
-                }
-
-            }
-
-            @Override
-            public void insertUpdate(DocumentEvent documentEvent) {
-                set();
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent documentEvent) {
-                set();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent documentEvent) {
-                set();
-            }
-        });
+        PropertyChangeListener propertyChangeListener = evt -> {
+            saveViewValueToModel();
+            firePropertyChange(propertyName , null, component);
+        };
+        valueTextField.addPropertyChangeListener(propertyChangeListener);
     }
-
     @Override
     public void setPropertyName(String propertyName) {
         super.setPropertyName(propertyName);
         propertyNameLabel.setText("Float: " + propertyName);
+    }
+
+    private void saveViewValueToModel() {
+        setValue(getInputValue());
+    }
+
+    private Float getInputValue() {
+        return Float.valueOf(((Number) valueTextField.getValue()).floatValue());
+    }
+
+    public void setValue(Float value) {
+        this.valueTextField.setValue(value);
     }
 
     {
@@ -168,6 +87,14 @@ public class FloatComponent extends ReflectedSdkComponent<Float> {
      */
     public JComponent $$$getRootComponent$$$() {
         return contentPanel;
+    }
+
+    private void createUIComponents() {
+        contentPanel = this;
+        valueTextField = new JFormattedTextField();
+        FloatFormatFactory floatFormatFactory = new FloatFormatFactory();
+        valueTextField.setFormatterFactory(floatFormatFactory);
+        bind();
     }
 
 }

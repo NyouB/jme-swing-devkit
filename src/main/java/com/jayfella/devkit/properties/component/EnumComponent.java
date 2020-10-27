@@ -4,65 +4,50 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 
+import com.jme3.math.Quaternion;
+import java.awt.event.ItemListener;
+import java.beans.PropertyChangeListener;
+import java.util.EnumSet;
 import javax.swing.*;
 import java.awt.*;
 import java.lang.reflect.Method;
 
-public class EnumComponent extends ReflectedSdkComponent<Enum<?>> {
+public class EnumComponent extends JMEDevKitComponentSwingView<Enum<?>> {
 
     private JPanel contentPanel;
     private JComboBox<Enum<?>> valueComboBox;
     private JLabel propertyNameLabel;
 
-    public EnumComponent(Object parent, String declaredGetter, String declaredSetter) throws NoSuchMethodException {
-        this(parent,
-                parent.getClass().getDeclaredMethod(declaredGetter),
-                parent.getClass().getDeclaredMethod(declaredSetter, parent.getClass().getDeclaredMethod(declaredGetter).getReturnType()));
+    public EnumComponent(Enum<?> value) {
+        super(value);
+        $$$setupUI$$$();
+        setValue(value);
     }
 
-    public EnumComponent(Object parent, Method getter, Method setter) {
-        super(parent, getter, setter);
-
-        @SuppressWarnings("unchecked")
-        Class<? extends Enum<?>> values = (Class<? extends Enum<?>>) getter.getReturnType();
-        valueComboBox.setModel(new DefaultComboBoxModel<>(values.getEnumConstants()));
-
-        if (getReflectedProperty() != null) {
-            setValue(getReflectedProperty().getValue());
-        }
-
+    public EnumComponent(Enum<?> value, String propertyName) {
+        super(value, propertyName);
+        $$$setupUI$$$();
+        setValue(value);
     }
 
-    @Override
     public void setValue(Enum<?> value) {
-        super.setValue(value);
-
-        if (!isBinded()) {
-
-            SwingUtilities.invokeLater(() -> {
-                valueComboBox.setSelectedItem(value);
-                bind();
-            });
-        }
+       valueComboBox.setSelectedItem(value);
     }
 
-    @Override
-    public JComponent getJComponent() {
-        return contentPanel;
-    }
-
-    @Override
     public void bind() {
-        super.bind();
+        ItemListener itemListener = evt -> {
+            saveViewValueToModel();
+            firePropertyChange(propertyName , null, component);
+        };
+        valueComboBox.addItemListener(itemListener);
+    }
 
-        valueComboBox.addActionListener(actionEvent -> {
-            Enum<?> newValue = (Enum<?>) valueComboBox.getSelectedItem();
-            setValue(newValue);
+    private void saveViewValueToModel() {
+        setValue(getInputValue());
+    }
 
-            if (!isBinded()) {
-                bind();
-            }
-        });
+    private Enum<?> getInputValue() {
+        return (Enum<?>) valueComboBox.getSelectedItem();
     }
 
     @Override
@@ -105,4 +90,17 @@ public class EnumComponent extends ReflectedSdkComponent<Enum<?>> {
         return contentPanel;
     }
 
+    private void createUIComponents() {
+
+        contentPanel = this;
+        valueComboBox.setModel(new DefaultComboBoxModel<>(
+            (Enum<?>[]) EnumSet.allOf(component.getClass()).toArray()));
+
+        valueComboBox.addActionListener(actionEvent -> {
+            Enum<?> newValue = (Enum<?>) valueComboBox.getSelectedItem();
+            setValue(newValue);
+        });
+        bind();
+
+    }
 }

@@ -158,6 +158,8 @@ public class QuaternionComponent extends JMEDevKitComponentSwingView<Quaternion>
     xTextField.setFormatterFactory(floatFormatFactory);
     yTextField.setFormatterFactory(floatFormatFactory);
     zTextField.setFormatterFactory(floatFormatFactory);
+
+    bind();
   }
 
   public JFormattedTextField getxTextField() {

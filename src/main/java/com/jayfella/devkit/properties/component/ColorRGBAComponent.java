@@ -5,6 +5,8 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.jayfella.devkit.core.ColorConverter;
 import com.jme3.math.ColorRGBA;
 
+import com.jme3.math.Vector2f;
+import java.beans.PropertyChangeListener;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
@@ -12,137 +14,60 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.lang.reflect.Method;
 
-public class ColorRGBAComponent extends ReflectedSdkComponent<ColorRGBA> {
+public class ColorRGBAComponent extends JMEDevKitComponentSwingView<ColorRGBA> {
 
     private JPanel contentPanel;
     private JLabel propertyNameLabel;
     private JLabel colorValueLabel;
     private JPanel colorPanel;
     private JButton nullButton;
-
-    public ColorRGBAComponent() {
-        this(null, null, null, false);
-    }
+    private boolean nullable;
 
     public ColorRGBAComponent(boolean nullable) {
-        this(null, null, null, nullable);
+        this(null, null, nullable);
     }
 
-    public ColorRGBAComponent(Object object, String declaredGetter, String declaredSetter) throws NoSuchMethodException {
-        this(object,
-                object.getClass().getDeclaredMethod(declaredGetter),
-                object.getClass().getDeclaredMethod(declaredSetter, ColorRGBA.class));
+    public ColorRGBAComponent(ColorRGBA colorRGBA) {
+        this(colorRGBA, null);
     }
 
-    public ColorRGBAComponent(Object parent, Method getter, Method setter) {
-        this(parent, getter, setter, false);
+    public ColorRGBAComponent(ColorRGBA colorRGBA, String propertyName) {
+        this(colorRGBA, propertyName, false);
     }
 
-    public ColorRGBAComponent(Object parent, Method getter, Method setter, boolean nullable) {
-        super(parent, getter, setter);
+    public ColorRGBAComponent(ColorRGBA colorRGBA, String propertyName, boolean nullable) {
+        super(colorRGBA, propertyName);
+        $$$setupUI$$$();
+        setValue(colorRGBA);
+        this.nullable = nullable;
+    }
 
-        setNullable(nullable);
+    public void setValue(ColorRGBA value) {
+        if (value != null) {
+            colorPanel.setBackground(ColorConverter.toColor(value));
 
-        if (getter != null) {
-            setValue(getReflectedProperty().getValue());
+            colorValueLabel.setText(String.format("[ %.2f, %.2f, %.2f, %.2f ]",
+                value.r, value.g, value.b, value.a));
+        } else {
+            colorPanel.setBackground(null);
+            colorValueLabel.setText("No Color Set");
         }
 
-        nullButton.setVisible(nullable);
-        nullButton.addActionListener(e -> setValue(null));
-
-        addColorPanelListener();
+        colorPanel.repaint();
+        colorPanel.revalidate();
+        firePropertyChange(propertyName, null, component);
     }
 
-    private void addColorPanelListener() {
-
-        colorPanel.addMouseListener(new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-
-                Color color = JColorChooser.showDialog(null,
-                        "Color",
-                        colorPanel.getBackground());
-
-                ColorRGBA newValue = null;
-
-                if (color != null) {
-                    newValue = ColorConverter.toColorRGBA(color);
-
-                    colorValueLabel.setText(String.format("[ %.2f, %.2f, %.2f, %.2f ]",
-                            newValue.r, newValue.g, newValue.b, newValue.a));
-
-                } else {
-                    colorValueLabel.setText("No Color Set");
-                    colorPanel.setBackground(null);
-                }
-
-                setValue(newValue);
-
-
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-
-            }
-        });
-
-    }
-
-    @Override
-    public JComponent getJComponent() {
-        return contentPanel;
-    }
-
-    @Override
-    public void setValue(ColorRGBA value) {
-        super.setValue(value);
-
-        SwingUtilities.invokeLater(() -> {
-            if (value != null) {
-                colorPanel.setBackground(ColorConverter.toColor(value));
-
-                colorValueLabel.setText(String.format("[ %.2f, %.2f, %.2f, %.2f ]",
-                        value.r, value.g, value.b, value.a));
-            } else {
-                colorPanel.setBackground(null);
-                colorValueLabel.setText("No Color Set");
-            }
-
-            colorPanel.repaint();
-            colorPanel.revalidate();
-
-            bind();
-        });
-
-    }
-
-    @Override
     public void bind() {
-        super.bind();
+        PropertyChangeListener propertyChangeListener = evt -> {
+            saveViewValueToModel();
+            firePropertyChange(propertyName, null, component);
+        };
+        colorPanel.addPropertyChangeListener(propertyChangeListener);
+    }
 
-        /*
-        this.jColorChooser.getSelectionModel().addChangeListener(e -> {
-            setValue(toColorRGBA(jColorChooser.getColor()));
-        });
-
-         */
-
+    private void saveViewValueToModel() {
+        setValue(getInputValue());
     }
 
     @Override
@@ -151,6 +76,9 @@ public class ColorRGBAComponent extends ReflectedSdkComponent<ColorRGBA> {
         propertyNameLabel.setText("ColorRGBA: " + propertyName);
     }
 
+    private ColorRGBA getInputValue() {
+        return ColorConverter.toColorRGBA(colorPanel.getBackground());
+    }
 
     {
 // GUI initializer generated by IntelliJ IDEA GUI Designer
@@ -192,4 +120,52 @@ public class ColorRGBAComponent extends ReflectedSdkComponent<ColorRGBA> {
         return contentPanel;
     }
 
+    private void createUIComponents() {
+        contentPanel = this;
+
+        colorPanel.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+                Color color = JColorChooser.showDialog(null,
+                    "Color",
+                    colorPanel.getBackground());
+
+                ColorRGBA newValue = null;
+
+                if (color != null) {
+                    newValue = ColorConverter.toColorRGBA(color);
+
+                    colorValueLabel.setText(String.format("[ %.2f, %.2f, %.2f, %.2f ]",
+                        newValue.r, newValue.g, newValue.b, newValue.a));
+
+                } else {
+                    colorValueLabel.setText("No Color Set");
+                    colorPanel.setBackground(null);
+                }
+
+                setValue(newValue);
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+        });
+    }
 }

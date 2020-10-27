@@ -194,6 +194,8 @@ public class Vector2fComponent extends JMEDevKitComponentSwingView<Vector2f> {
 
     xTextField.setFormatterFactory(floatFormatFactory);
     yTextField.setFormatterFactory(floatFormatFactory);
+
+    bind();
   }
 
 }

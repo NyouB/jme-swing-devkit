@@ -18,15 +18,14 @@ public class IntegerComponent extends JMEDevKitComponentSwingView<Integer> {
     private JPanel contentPanel;
     private JLabel propertyNameLabel;
 
-
-    public IntegerComponent(Integer integer) {
-        this(integer, null);
+    public IntegerComponent(Integer value) {
+        this(value, null);
     }
 
-    public IntegerComponent(Integer integer, String propertyName) {
-        super(integer, propertyName);
+    public IntegerComponent(Integer value, String propertyName) {
+        super(value, propertyName);
         $$$setupUI$$$();
-        setValue(integer);
+        setValue(value);
     }
 
     public void setValue(Integer value) {
@@ -52,12 +51,11 @@ public class IntegerComponent extends JMEDevKitComponentSwingView<Integer> {
     @Override
     public void setPropertyName(String propertyName) {
         super.setPropertyName(propertyName);
-        propertyNameLabel.setText("Integer: " + propertyName);
+        propertyNameLabel.setText("Vector3f: " + propertyName);
     }
 
     private Integer getInputValue() {
-        int x = ((Number) valueTextField.getValue()).intValue();
-        return Integer.valueOf(x);
+        return Integer.valueOf(((Number) valueTextField.getValue()).intValue());
     }
 
     {
@@ -94,11 +92,6 @@ public class IntegerComponent extends JMEDevKitComponentSwingView<Integer> {
 
     private void createUIComponents() {
         contentPanel = this;
-
-        valueTextField = new JFormattedTextField();
-
-        FloatFormatFactory floatFormatFactory = new FloatFormatFactory();
-
-        valueTextField.setFormatterFactory(floatFormatFactory);
+        bind();
     }
 }
