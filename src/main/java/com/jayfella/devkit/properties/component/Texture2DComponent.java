@@ -7,22 +7,33 @@ import com.jayfella.devkit.jme.TextureImage;
 import com.jayfella.devkit.service.JmeEngineService;
 import com.jayfella.devkit.service.ServiceManager;
 import com.jme3.texture.Texture2D;
-
-import javax.swing.*;
-import javax.swing.border.TitledBorder;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Insets;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
+import javax.swing.BorderFactory;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.border.TitledBorder;
+import javax.swing.event.ListSelectionListener;
+import org.jdesktop.swingx.JXErrorPane;
+import org.jdesktop.swingx.error.ErrorInfo;
 
-public class Texture2DComponent extends ReflectedSdkComponent<Texture2D> {
+public class Texture2DComponent extends JMEDevKitComponentSwingView<Texture2D> {
 
   private JPanel contentPanel;
   private JLabel propertyNameLabel;
@@ -31,30 +42,10 @@ public class Texture2DComponent extends ReflectedSdkComponent<Texture2D> {
   private JList<String> texturesList;
 
 
-  public Texture2DComponent() {
-    super(null, null, null);
-
+  public Texture2DComponent(Texture2D texture2D) {
+    super(texture2D);
     initCustomLayout();
-  }
-
-  public Texture2DComponent(Object object, String declaredGetter, String declaredSetter)
-      throws NoSuchMethodException {
-    this(object,
-        object.getClass().getDeclaredMethod(declaredGetter),
-        object.getClass().getDeclaredMethod(declaredSetter, Texture2D.class));
-  }
-
-  public Texture2DComponent(Object parent, Method getter, Method setter) {
-    super(parent, getter, setter);
-
-    initCustomLayout();
-
-    try {
-      setValue((Texture2D) getter.invoke(parent));
-    } catch (IllegalAccessException | InvocationTargetException e) {
-      e.printStackTrace();
-    }
-
+    setComponent(texture2D);
   }
 
   private void initCustomLayout() {
@@ -76,7 +67,12 @@ public class Texture2DComponent extends ReflectedSdkComponent<Texture2D> {
           .collect(Collectors.toList());
 
     } catch (IOException e) {
-      e.printStackTrace();
+      JXErrorPane pane = new JXErrorPane();
+      pane.setErrorInfo(new ErrorInfo("DevKitError",
+          "Error while listing textures in the folder" + DevKitConfig.getInstance()
+              .getProjectConfig().getAssetRootDir(), "IOException", e.getMessage(), e,
+          Level.SEVERE, null));
+      JXErrorPane.showDialog(this, pane);
     }
 
     if (textureFiles != null) {
@@ -99,10 +95,6 @@ public class Texture2DComponent extends ReflectedSdkComponent<Texture2D> {
       }
 
       texturesList.setModel(model);
-
-      if (getReflectedProperty() != null && getReflectedProperty().getValue() != null) {
-        texturesList.setSelectedValue(getReflectedProperty().getValue(), true);
-      }
     }
 
     // contentPanel.setLayout(new VerticalLayout());
@@ -110,83 +102,48 @@ public class Texture2DComponent extends ReflectedSdkComponent<Texture2D> {
     // this.imagePanel = new Texture2DPanel();
     // this.contentPanel.add(imagePanel);
 
-    clearTextureButton.addActionListener(e -> {
-
-      texturesList.clearSelection();
-
-      imagePanel.setTexture(null);
-
-      contentPanel.revalidate();
-      contentPanel.repaint();
-
-      setValue(null);
-    });
 
   }
 
   @Override
-  public JComponent getJComponent() {
-    return contentPanel;
-  }
-
-  @Override
-  public void setValue(Texture2D value) {
-    super.setValue(value);
-
-    if (!isBinded()) {
-
-      SwingUtilities.invokeLater(() -> {
-
-        if (value != null) {
-          // if the texture is embedded it won't have a key.
-          if (value.getKey() != null) {
-            texturesList.setSelectedValue(value.getKey().getName(), true);
-
-          } else {
-            texturesList.setSelectedValue(value.getName(), true);
-          }
-
-          this.imagePanel.setTexture(value);
-
-          contentPanel.revalidate();
-          contentPanel.repaint();
-
-        } else {
-          texturesList.setSelectedIndex(-1);
-        }
-
-        bind();
-      });
+  public void setComponent(Texture2D value) {
+    if (value == null) {
+      component = null;
+      texturesList.setSelectedIndex(-1);
+      return;
     }
 
+    component = value;
+    // if the texture is embedded it won't have a key.
+    if (value.getKey() != null) {
+      texturesList.setSelectedValue(component.getKey().getName(), true);
+    } else {
+      texturesList.setSelectedValue(component.getName(), true);
+    }
+
+    this.imagePanel.setTexture(component);
+    contentPanel.revalidate();
+    contentPanel.repaint();
   }
 
+  public Texture2D computeValue(){
+    String newValue = texturesList.getSelectedValue();
+    if (newValue == null) {
+      return null;
+    }
 
-  @Override
+    Texture2D texture2D = (Texture2D) ServiceManager.getService(JmeEngineService.class)
+        .getAssetManager().loadTexture(newValue);
+    return texture2D;
+  }
+
   public void bind() {
-    super.bind();
 
-    texturesList.addMouseListener(new MouseAdapter() {
-      @Override
-      public void mouseClicked(MouseEvent e) {
-
-        String newValue = texturesList.getSelectedValue();
-
-        Texture2D texture2D = null;
-
-        if (newValue != null) {
-          texture2D = (Texture2D) ServiceManager.getService(JmeEngineService.class)
-              .getAssetManager().loadTexture(newValue);
-        }
-
-        imagePanel.setTexture(texture2D);
-        imagePanel.revalidate();
-        imagePanel.repaint();
-
-        setValue(texture2D);
-      }
-    });
-
+    ListSelectionListener listSelectionListener = evt -> {
+      setComponent(computeValue());
+      firePropertyChange(propertyName, null, component);
+    };
+    texturesList.addListSelectionListener(listSelectionListener);
   }
 
   @Override
@@ -259,4 +216,40 @@ public class Texture2DComponent extends ReflectedSdkComponent<Texture2D> {
   }
 
 
+  private void createUIComponents() {
+    contentPanel = this;
+
+    clearTextureButton.addActionListener(e -> {
+
+      texturesList.clearSelection();
+
+      imagePanel.setTexture(null);
+
+      contentPanel.revalidate();
+      contentPanel.repaint();
+
+      setComponent(null);
+    });
+
+    texturesList.addMouseListener(new MouseAdapter() {
+      @Override
+      public void mouseClicked(MouseEvent e) {
+
+        String newValue = texturesList.getSelectedValue();
+        if (newValue == null) {
+          return;
+        }
+
+        Texture2D texture2D = (Texture2D) ServiceManager.getService(JmeEngineService.class)
+            .getAssetManager().loadTexture(newValue);
+
+        setComponent(texture2D);
+        imagePanel.setTexture(texture2D);
+        imagePanel.revalidate();
+        imagePanel.repaint();
+      }
+    });
+
+    bind();
+  }
 }

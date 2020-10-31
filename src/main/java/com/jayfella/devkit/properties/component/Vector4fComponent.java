@@ -3,157 +3,169 @@ package com.jayfella.devkit.properties.component;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
-import com.jme3.math.Vector3f;
 import com.jme3.math.Vector4f;
-
+import java.awt.Dimension;
+import java.awt.Insets;
 import java.beans.PropertyChangeListener;
-import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import java.awt.*;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import javax.swing.JComponent;
+import javax.swing.JFormattedTextField;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSeparator;
 
 public class Vector4fComponent extends JMEDevKitComponentSwingView<Vector4f> {
 
-    private JPanel contentPanel;
-    private JLabel propertyNameLabel;
+  private JPanel contentPanel;
+  private JLabel propertyNameLabel;
 
-    private JFormattedTextField xTextField;
-    private JFormattedTextField yTextField;
-    private JFormattedTextField zTextField;
-    private JFormattedTextField wTextField;
+  private JFormattedTextField xTextField;
+  private JFormattedTextField yTextField;
+  private JFormattedTextField zTextField;
+  private JFormattedTextField wTextField;
 
-    private boolean nullable;
+  public Vector4fComponent(Vector4f vector4f) {
+    this(vector4f, null);
+  }
 
-    public Vector4fComponent(boolean nullable) {
-        this(null ,null, true);
+  public Vector4fComponent(Vector4f vector4f, String propertyName) {
+    super(vector4f, propertyName);
+    $$$setupUI$$$();
+    setComponent(vector4f);
+  }
+
+  @Override
+  public void setComponent(Vector4f value) {
+    if (value == null) {
+      value = new Vector4f();
     }
-    public Vector4fComponent(Vector4f vector4f) {
-        this(vector4f, null);
-    }
+    component = value;
+    this.wTextField.setValue(value.w);
+    this.xTextField.setValue(value.x);
+    this.yTextField.setValue(value.y);
+    this.zTextField.setValue(value.z);
+  }
 
-    public Vector4fComponent(Vector4f vector4f, String propertyName) {
-        this(vector4f, propertyName, false);
-    }
-    public Vector4fComponent(Vector4f vector4f, String propertyName, boolean nullable) {
-        super(vector4f, propertyName);
-        $$$setupUI$$$();
-        setValue(vector4f);
-        this.nullable = nullable;
-    }
+  public void bind() {
+    PropertyChangeListener propertyChangeListener = evt -> {
+      setComponent(computeValue());
+      firePropertyChange(propertyName, null, component);
+    };
+    wTextField.addPropertyChangeListener(propertyChangeListener);
+    xTextField.addPropertyChangeListener(propertyChangeListener);
+    yTextField.addPropertyChangeListener(propertyChangeListener);
+    zTextField.addPropertyChangeListener(propertyChangeListener);
+  }
 
-    public void setValue(Vector4f value) {
-        if (value != null) {
-            this.wTextField.setValue(value.w);
-            this.xTextField.setValue(value.x);
-            this.yTextField.setValue(value.y);
-            this.zTextField.setValue(value.z);
-        } else {
-            this.wTextField.setText("null");
-            this.xTextField.setText("null");
-            this.yTextField.setText("null");
-            this.zTextField.setText("null");
-        }
-    }
+  private Vector4f computeValue() {
+    float w = ((Number) wTextField.getValue()).floatValue();
+    float x = ((Number) xTextField.getValue()).floatValue();
+    float y = ((Number) yTextField.getValue()).floatValue();
+    float z = ((Number) zTextField.getValue()).floatValue();
+    return new Vector4f(w, x, y, z);
+  }
 
-    public void bind() {
-        PropertyChangeListener propertyChangeListener = evt -> {
-            saveViewValueToModel();
-            firePropertyChange(propertyName , null, component);
-        };
-        wTextField.addPropertyChangeListener(propertyChangeListener);
-        xTextField.addPropertyChangeListener(propertyChangeListener);
-        yTextField.addPropertyChangeListener(propertyChangeListener);
-        zTextField.addPropertyChangeListener(propertyChangeListener);
-    }
+  @Override
+  public void setPropertyName(String propertyName) {
+    super.setPropertyName(propertyName);
+    propertyNameLabel.setText("Vector4f: " + propertyName);
+  }
 
-    private void saveViewValueToModel() {
-        setValue(getInputValue());
-    }
-
-    private Vector4f getInputValue() {
-        float w = ((Number) wTextField.getValue()).floatValue();
-        float x = ((Number) xTextField.getValue()).floatValue();
-        float y = ((Number) yTextField.getValue()).floatValue();
-        float z = ((Number) zTextField.getValue()).floatValue();
-        return new Vector4f(w, x, y, z);
-    }
-
-    @Override
-    public void setPropertyName(String propertyName) {
-        super.setPropertyName(propertyName);
-        propertyNameLabel.setText("Vector4f: " + propertyName);
-    }
-
-    {
+  {
 // GUI initializer generated by IntelliJ IDEA GUI Designer
 // >>> IMPORTANT!! <<<
 // DO NOT EDIT OR ADD ANY CODE HERE!
-        $$$setupUI$$$();
-    }
+    $$$setupUI$$$();
+  }
 
-    /**
-     * Method generated by IntelliJ IDEA GUI Designer
-     * >>> IMPORTANT!! <<<
-     * DO NOT edit this method OR call it in your code!
-     *
-     * @noinspection ALL
-     */
-    private void $$$setupUI$$$() {
-        contentPanel = new JPanel();
-        contentPanel.setLayout(new GridLayoutManager(7, 2, new Insets(0, 0, 0, 0), -1, -1));
-        propertyNameLabel = new JLabel();
-        propertyNameLabel.setText("Vector4f");
-        contentPanel.add(propertyNameLabel, new GridConstraints(1, 0, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final Spacer spacer1 = new Spacer();
-        contentPanel.add(spacer1, new GridConstraints(6, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
-        final JLabel label1 = new JLabel();
-        label1.setHorizontalAlignment(0);
-        label1.setText("x");
-        contentPanel.add(label1, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JLabel label2 = new JLabel();
-        label2.setText("y");
-        contentPanel.add(label2, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JLabel label3 = new JLabel();
-        label3.setText("z");
-        contentPanel.add(label3, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JLabel label4 = new JLabel();
-        label4.setText("w");
-        contentPanel.add(label4, new GridConstraints(5, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        xTextField = new JFormattedTextField();
-        contentPanel.add(xTextField, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        yTextField = new JFormattedTextField();
-        contentPanel.add(yTextField, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        zTextField = new JFormattedTextField();
-        contentPanel.add(zTextField, new GridConstraints(4, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        wTextField = new JFormattedTextField();
-        contentPanel.add(wTextField, new GridConstraints(5, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-        final JSeparator separator1 = new JSeparator();
-        contentPanel.add(separator1, new GridConstraints(0, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
-    }
+  /**
+   * Method generated by IntelliJ IDEA GUI Designer >>> IMPORTANT!! <<< DO NOT edit this method OR
+   * call it in your code!
+   *
+   * @noinspection ALL
+   */
+  private void $$$setupUI$$$() {
+    contentPanel = new JPanel();
+    contentPanel.setLayout(new GridLayoutManager(7, 2, new Insets(0, 0, 0, 0), -1, -1));
+    propertyNameLabel = new JLabel();
+    propertyNameLabel.setText("Vector4f");
+    contentPanel.add(propertyNameLabel,
+        new GridConstraints(1, 0, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
+            GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0,
+            false));
+    final Spacer spacer1 = new Spacer();
+    contentPanel.add(spacer1, new GridConstraints(6, 0, 1, 2, GridConstraints.ANCHOR_CENTER,
+        GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0,
+        false));
+    final JLabel label1 = new JLabel();
+    label1.setHorizontalAlignment(0);
+    label1.setText("x");
+    contentPanel.add(label1,
+        new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE,
+            GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0,
+            false));
+    final JLabel label2 = new JLabel();
+    label2.setText("y");
+    contentPanel.add(label2,
+        new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE,
+            GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0,
+            false));
+    final JLabel label3 = new JLabel();
+    label3.setText("z");
+    contentPanel.add(label3,
+        new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE,
+            GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0,
+            false));
+    final JLabel label4 = new JLabel();
+    label4.setText("w");
+    contentPanel.add(label4,
+        new GridConstraints(5, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE,
+            GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0,
+            false));
+    xTextField = new JFormattedTextField();
+    contentPanel.add(xTextField, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_WEST,
+        GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW,
+        GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+    yTextField = new JFormattedTextField();
+    contentPanel.add(yTextField, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_WEST,
+        GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW,
+        GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+    zTextField = new JFormattedTextField();
+    contentPanel.add(zTextField, new GridConstraints(4, 1, 1, 1, GridConstraints.ANCHOR_WEST,
+        GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW,
+        GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+    wTextField = new JFormattedTextField();
+    contentPanel.add(wTextField, new GridConstraints(5, 1, 1, 1, GridConstraints.ANCHOR_WEST,
+        GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW,
+        GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+    final JSeparator separator1 = new JSeparator();
+    contentPanel.add(separator1,
+        new GridConstraints(0, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH,
+            GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_WANT_GROW, null, null,
+            null, 0, false));
+  }
 
-    /**
-     */
-    public JComponent $$$getRootComponent$$$() {
-        return contentPanel;
-    }
+  /**
+   *
+   */
+  public JComponent $$$getRootComponent$$$() {
+    return contentPanel;
+  }
 
-    private void createUIComponents() {
-        contentPanel = this;
+  private void createUIComponents() {
+    contentPanel = this;
 
-        wTextField = new JFormattedTextField();
-        xTextField = new JFormattedTextField();
-        yTextField = new JFormattedTextField();
-        zTextField = new JFormattedTextField();
+    wTextField = new JFormattedTextField();
+    xTextField = new JFormattedTextField();
+    yTextField = new JFormattedTextField();
+    zTextField = new JFormattedTextField();
 
-        FloatFormatFactory floatFormatFactory = new FloatFormatFactory();
+    FloatFormatFactory floatFormatFactory = new FloatFormatFactory();
 
-        wTextField.setFormatterFactory(floatFormatFactory);
-        xTextField.setFormatterFactory(floatFormatFactory);
-        yTextField.setFormatterFactory(floatFormatFactory);
-        zTextField.setFormatterFactory(floatFormatFactory);
+    wTextField.setFormatterFactory(floatFormatFactory);
+    xTextField.setFormatterFactory(floatFormatFactory);
+    yTextField.setFormatterFactory(floatFormatFactory);
+    zTextField.setFormatterFactory(floatFormatFactory);
 
-        bind();
-    }
+    bind();
+  }
 }

@@ -4,18 +4,14 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 import com.jme3.math.Quaternion;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.beans.PropertyChangeListener;
-import java.lang.reflect.Method;
-import java.util.Observable;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
-import javax.swing.SwingUtilities;
 
 public class QuaternionComponent extends JMEDevKitComponentSwingView<Quaternion> {
 
@@ -29,16 +25,20 @@ public class QuaternionComponent extends JMEDevKitComponentSwingView<Quaternion>
   public QuaternionComponent(Quaternion quaternion) {
     super(quaternion);
     $$$setupUI$$$();
-    setValue(quaternion);
+    setComponent(quaternion);
   }
 
   public QuaternionComponent(Quaternion quaternion, String propertyName) {
     super(quaternion, propertyName);
     $$$setupUI$$$();
-    setValue(quaternion);
+    setComponent(quaternion);
   }
 
-  public void setValue(Quaternion value) {
+  public void setComponent(Quaternion value) {
+    if(value == null){
+      value = new Quaternion();
+    }
+    component = value;
     this.wTextField.setValue(value.getW());
     this.xTextField.setValue(value.getX());
     this.yTextField.setValue(value.getY());
@@ -47,7 +47,7 @@ public class QuaternionComponent extends JMEDevKitComponentSwingView<Quaternion>
 
   public void bind() {
     PropertyChangeListener propertyChangeListener = evt -> {
-      saveViewValueToModel();
+      setComponent(computeValue());
       firePropertyChange(propertyName , null, component);
     };
     wTextField.addPropertyChangeListener(propertyChangeListener);
@@ -60,16 +60,11 @@ public class QuaternionComponent extends JMEDevKitComponentSwingView<Quaternion>
     propertyNameLabel.setText("Quaternion: " + propertyName);
   }
 
-  private void saveViewValueToModel() {
-    setValue(getInputValue());
-  }
-
-  private Quaternion getInputValue() {
+  private Quaternion computeValue() {
     float w = ((Number) wTextField.getValue()).floatValue();
     float x = ((Number) xTextField.getValue()).floatValue();
     float y = ((Number) yTextField.getValue()).floatValue();
     float z = ((Number) zTextField.getValue()).floatValue();
-
     return new Quaternion(w, x, y, z);
   }
 

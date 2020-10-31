@@ -2,7 +2,6 @@ package com.jayfella.devkit.properties.component;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
-import com.jme3.math.Quaternion;
 import java.awt.Insets;
 import java.beans.PropertyChangeListener;
 import javax.swing.JCheckBox;
@@ -18,34 +17,31 @@ public class BooleanComponent extends JMEDevKitComponentSwingView<Boolean> {
   public BooleanComponent(Boolean bool) {
     super(bool);
     $$$setupUI$$$();
-    setValue(bool);
+    setComponent(bool);
   }
 
-  public BooleanComponent(Boolean bool, String propertyName) throws NoSuchMethodException {
+  public BooleanComponent(Boolean bool, String propertyName)  {
     super(bool, propertyName);
     $$$setupUI$$$();
-    setValue(bool);
+    setComponent(bool);
   }
 
-  public void setValue(Boolean value) {
+  @Override
+  public void setComponent(Boolean value) {
     boolean val = value == null ? false : value;
+    component = val;
     this.checkBox.setSelected(val);
   }
 
     public void bind() {
         PropertyChangeListener propertyChangeListener = evt -> {
-            saveViewValueToModel();
+          setComponent(computeValue());
             firePropertyChange(propertyName , null, component);
         };
         checkBox.addPropertyChangeListener(propertyChangeListener);
     }
 
-    private void saveViewValueToModel() {
-        setValue(getInputValue());
-    }
-
-
-    private boolean getInputValue() {
+    private boolean computeValue() {
       return checkBox.isSelected();
     }
 

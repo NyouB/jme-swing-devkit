@@ -21,4 +21,11 @@ public abstract class JMEDevKitComponentSwingView<T> extends JPanel {
     this.propertyName = propertyName;
   }
 
+  public void setComponent(T component){
+    this.component = component;
+  }
+
+  public T getComponent() {
+    return component;
+  }
 }

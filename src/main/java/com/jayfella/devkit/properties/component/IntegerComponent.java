@@ -3,14 +3,9 @@ package com.jayfella.devkit.properties.component;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 
-import com.jme3.math.Vector2f;
 import java.beans.PropertyChangeListener;
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import java.awt.*;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 public class IntegerComponent extends JMEDevKitComponentSwingView<Integer> {
 
@@ -25,27 +20,24 @@ public class IntegerComponent extends JMEDevKitComponentSwingView<Integer> {
     public IntegerComponent(Integer value, String propertyName) {
         super(value, propertyName);
         $$$setupUI$$$();
-        setValue(value);
+        setComponent(value);
     }
 
-    public void setValue(Integer value) {
-        if (value != null) {
-            this.valueTextField.setValue(value);
-        } else {
-            this.valueTextField.setText("null");
+    @Override
+    public void setComponent(Integer value) {
+        if (value == null) {
+            value = 0;
         }
+        component = value;
+        this.valueTextField.setValue(value);
     }
 
     public void bind() {
         PropertyChangeListener propertyChangeListener = evt -> {
-            saveViewValueToModel();
+            setComponent(computeValue());
             firePropertyChange(propertyName, null, component);
         };
         valueTextField.addPropertyChangeListener(propertyChangeListener);
-    }
-
-    private void saveViewValueToModel() {
-        setValue(getInputValue());
     }
 
     @Override
@@ -54,8 +46,8 @@ public class IntegerComponent extends JMEDevKitComponentSwingView<Integer> {
         propertyNameLabel.setText("Vector3f: " + propertyName);
     }
 
-    private Integer getInputValue() {
-        return Integer.valueOf(((Number) valueTextField.getValue()).intValue());
+    private Integer computeValue() {
+        return ((Number) valueTextField.getValue()).intValue();
     }
 
     {

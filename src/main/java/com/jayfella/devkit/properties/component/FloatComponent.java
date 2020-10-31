@@ -4,14 +4,9 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 
-import com.jme3.math.Quaternion;
 import java.beans.PropertyChangeListener;
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import java.awt.*;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 public class FloatComponent extends JMEDevKitComponentSwingView<Float> {
 
@@ -25,12 +20,12 @@ public class FloatComponent extends JMEDevKitComponentSwingView<Float> {
     public FloatComponent(Float value, String propertyName) {
         super(value, propertyName);
         $$$setupUI$$$();
-        setValue(value);
+        setComponent(value);
     }
 
     public void bind() {
         PropertyChangeListener propertyChangeListener = evt -> {
-            saveViewValueToModel();
+            setComponent(computeValue());
             firePropertyChange(propertyName , null, component);
         };
         valueTextField.addPropertyChangeListener(propertyChangeListener);
@@ -41,15 +36,16 @@ public class FloatComponent extends JMEDevKitComponentSwingView<Float> {
         propertyNameLabel.setText("Float: " + propertyName);
     }
 
-    private void saveViewValueToModel() {
-        setValue(getInputValue());
+    private Float computeValue() {
+        return ((Number) valueTextField.getValue()).floatValue();
     }
 
-    private Float getInputValue() {
-        return Float.valueOf(((Number) valueTextField.getValue()).floatValue());
-    }
-
-    public void setValue(Float value) {
+    @Override
+    public void setComponent(Float value) {
+        if(value == null){
+            value = 0f;
+        }
+        component = value;
         this.valueTextField.setValue(value);
     }
 

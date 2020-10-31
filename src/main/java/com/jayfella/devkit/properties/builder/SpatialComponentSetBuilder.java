@@ -12,14 +12,10 @@ import com.jayfella.devkit.service.EventService;
 import com.jayfella.devkit.service.PropertyInspectorService;
 import com.jayfella.devkit.service.ServiceManager;
 import com.jme3.material.Material;
-import com.jme3.math.Vector3f;
-import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import java.beans.PropertyChangeEvent;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang3.reflect.FieldUtils;
@@ -29,6 +25,13 @@ public class SpatialComponentSetBuilder extends AbstractComponentSetBuilder<Spat
   public static final String LOCAL_ROTATION = "localRotation";
   public static final String LOCAL_TRANSLATION = "localTranslation";
   public static final String LOCAL_SCALE = "localScale";
+  public static final String IGNORE_TRANSFORM = "ignoreTransform";
+  public static final String NAME = "name";
+  public static final String CULL_HINT = "cullHint";
+  public static final String SHADOW_MODE = "shadowMode";
+  public static final String QUEUE_BUCKET = "queueBucket";
+  public static final String BATCH_HINT = "batchHint";
+  public static final String MATERIAL = "material";
 
   public SpatialComponentSetBuilder(Spatial object, String... ignoredProperties) {
     super(object, ignoredProperties);
@@ -39,142 +42,98 @@ public class SpatialComponentSetBuilder extends AbstractComponentSetBuilder<Spat
 
     List<PropertySection> propertySections = new ArrayList<>();
 
-    Method getter, setter;
+    // Transform : location, rotation, scale
 
-    try {
+    Vector3fComponent localTranslation = new Vector3fComponent(object.getLocalTranslation());
+    localTranslation.setPropertyName(LOCAL_TRANSLATION);
+    bind(FieldUtils.getField(Spatial.class, LOCAL_TRANSLATION), localTranslation);
 
-      // Transform : location, rotation, scale
+    QuaternionComponent localRotation = new QuaternionComponent(object.getLocalRotation());
+    localRotation.setPropertyName(LOCAL_ROTATION);
+    bind(FieldUtils.getField(Spatial.class, LOCAL_ROTATION), localRotation);
 
-      Vector3fComponent localTranslation = new Vector3fComponent(object.getLocalTranslation());
-      localTranslation.setPropertyName(LOCAL_TRANSLATION);
+    Vector3fComponent localScale = new Vector3fComponent(object.getLocalScale());
+    localScale.setPropertyName(LOCAL_SCALE);
+    bind(FieldUtils.getField(Spatial.class, LOCAL_SCALE), localScale);
 
-      QuaternionComponent localRotation = new QuaternionComponent(object.getLocalRotation());
-      localRotation.setPropertyName(LOCAL_ROTATION);
-      bind(FieldUtils.getField(Spatial.class, LOCAL_ROTATION), localRotation);
+    PropertySection transformSection = new PropertySection("Transform", localTranslation,
+        localRotation, localScale);
+    propertySections.add(transformSection);
 
-      Vector3fComponent localScale = new Vector3fComponent(object.getLocalScale());
-      localScale.setPropertyName(LOCAL_SCALE);
+    // Spatial: name, cullHint, lastFrustumIntersection, shadowMode, QueueBucket, BatchHint
+    // fire an event that the spatial name changed.
+    // the scene tree needs to know when this happened so it can change the name visually.
+    PropertyChangeListener propertyChangeListener = evt -> {
+      ServiceManager.getService(EventService.class)
+          .fireEvent(new SpatialNameChangedEvent(object));
+    };
+    StringComponent name = new StringComponent(object.getName());
+    name.addPropertyChangeListener(propertyChangeListener);
+    name.setPropertyName("name");
+    bind(FieldUtils.getField(Spatial.class, NAME), name);
 
-      PropertySection transformSection = new PropertySection("Transform", localTranslation,
-          localRotation, localScale);
-      propertySections.add(transformSection);
+    EnumComponent cullHint = new EnumComponent(object.getCullHint());
+    cullHint.setPropertyName("cullHint");
+    bind(FieldUtils.getField(Spatial.class, CULL_HINT), cullHint);
 
-      // Spatial: name, cullHint, lastFrustumIntersection, shadowMode, QueueBucket, BatchHint
+    EnumComponent shadowMode = new EnumComponent(object.getShadowMode());
+    shadowMode.setPropertyName("shadowMode");
+    bind(FieldUtils.getField(Spatial.class, SHADOW_MODE), shadowMode);
 
-      getter = object.getClass().getMethod("getName");
-      setter = object.getClass().getMethod("setName", String.class);
+    EnumComponent queueBucket = new EnumComponent(object.getQueueBucket());
+    queueBucket.setPropertyName("queueBucket");
+    bind(FieldUtils.getField(Spatial.class, QUEUE_BUCKET), queueBucket);
 
-      // fire an event that the spatial name changed.
-      // the scene tree needs to know when this happened so it can change the name visually.
-      StringComponent name = new StringComponent(object, getter, setter) {
-        @Override
-        public void propertyChanged(String value) {
-          ServiceManager.getService(EventService.class)
-              .fireEvent(new SpatialNameChangedEvent(object));
-        }
-      };
-      name.setPropertyName("name");
+    EnumComponent batchHint = new EnumComponent(object.getBatchHint());
+    batchHint.setPropertyName("batchHint");
+    bind(FieldUtils.getField(Spatial.class, BATCH_HINT), batchHint);
 
-      getter = object.getClass().getMethod("getCullHint");
-      setter = object.getClass().getMethod("setCullHint", com.jme3.scene.Spatial.CullHint.class);
-
-      EnumComponent cullHint = new EnumComponent(object, getter, setter);
-      cullHint.setPropertyName("cullHint");
-
-      getter = object.getClass().getMethod("getShadowMode");
-      setter = object.getClass().getMethod("setShadowMode", RenderQueue.ShadowMode.class);
-
-      EnumComponent shadowMode = new EnumComponent(object, getter, setter);
-      shadowMode.setPropertyName("shadowMode");
-
-      getter = object.getClass().getMethod("getQueueBucket");
-      setter = object.getClass().getMethod("setQueueBucket", RenderQueue.Bucket.class);
-
-      EnumComponent queueBucket = new EnumComponent(object, getter, setter);
-      queueBucket.setPropertyName("queueBucket");
-
-      getter = object.getClass().getMethod("getBatchHint");
-      setter = object.getClass().getMethod("setBatchHint", com.jme3.scene.Spatial.BatchHint.class);
-
-      EnumComponent batchHint = new EnumComponent(object, getter, setter);
-      batchHint.setPropertyName("batchHint");
-
-      PropertySection spatialSection = new PropertySection("Spatial", name, cullHint, shadowMode,
-          queueBucket, batchHint);
-      propertySections.add(spatialSection);
-
-
-    } catch (NoSuchMethodException e) {
-      e.printStackTrace();
-    }
+    PropertySection spatialSection = new PropertySection("Spatial", name, cullHint, shadowMode,
+        queueBucket, batchHint);
+    propertySections.add(spatialSection);
 
     if (object instanceof Node) {
       // Node doesn't have any properties we want.
       // Leave the comment here so we're aware that we know.
     } else if (object instanceof Geometry) {
+      // Geometry-specific data
 
-      try {
+      BooleanComponent ignoreTransform = new BooleanComponent(
+          ((Geometry) object).isIgnoreTransform());
+      ignoreTransform.setPropertyName("ignoreTransform");
+      bind(FieldUtils.getField(Spatial.class, IGNORE_TRANSFORM), ignoreTransform);
 
-        // Geometry-specific data
-        getter = object.getClass().getMethod("isIgnoreTransform");
-        setter = object.getClass().getMethod("setIgnoreTransform", boolean.class);
+      // @TODO: only show lod level if LOD levels are set.
+      //getter = object.getClass().getMethod("getLodLevel");
+      //setter = object.getClass().getMethod("setLodLevel", int.class);
 
-        BooleanComponent ignoreTranform = new BooleanComponent(object, getter, setter);
-        ignoreTranform.setPropertyName("ignoreTransform");
+      //IntegerComponent lodLevel = new IntegerComponent(object, getter, setter);
+      //lodLevel.setPropertyName("lodLevel");
 
-        // @TODO: only show lod level if LOD levels are set.
-        //getter = object.getClass().getMethod("getLodLevel");
-        //setter = object.getClass().getMethod("setLodLevel", int.class);
-
-        //IntegerComponent lodLevel = new IntegerComponent(object, getter, setter);
-        //lodLevel.setPropertyName("lodLevel");
-
-        // Material chooser.
-        getter = object.getClass().getMethod("getMaterial");
-        setter = object.getClass().getMethod("setMaterial", Material.class);
-        MaterialChooserComponent materialChooser = new MaterialChooserComponent(object, getter,
-            setter) {
-
-          @Override
-          public void selectionChanged(Material material) {
-
-            if (material != null) {
-              MaterialComponentSetBuilder materialComponentSetBuilder = new MaterialComponentSetBuilder(
-                  material);
-              List<PropertySection> sections = materialComponentSetBuilder.build();
-              // propertySections.addAll(sections);
-
-              ServiceManager.getService(PropertyInspectorService.class)
-                  .updateSections(sections);
-            }
-
-          }
-
-        };
-
-        PropertySection geometrySection = new PropertySection("Geometry", ignoreTranform,
-            materialChooser /*, lodLevel */);
-        propertySections.add(geometrySection);
-
-        // Material
-        getter = object.getClass().getMethod("getMaterial");
-        Material material = null;
-
-        try {
-          material = (Material) getter.invoke(object);
-        } catch (IllegalAccessException | InvocationTargetException e) {
-          e.printStackTrace();
+      // Material chooser.
+      MaterialChooserComponent materialChooser = new MaterialChooserComponent(
+          ((Geometry) object).getMaterial());
+      PropertyChangeListener materialChangeListener = evt -> {
+        Material material = (Material) evt.getNewValue();
+        List<PropertySection> sections = buildMaterialSection(material);
+        if (!sections.isEmpty()) {
+          ServiceManager.getService(PropertyInspectorService.class)
+              .updateSections(sections);
         }
+      };
 
-        if (material != null) {
-          MaterialComponentSetBuilder materialComponentSetBuilder = new MaterialComponentSetBuilder(
-              material);
-          List<PropertySection> sections = materialComponentSetBuilder.build();
-          propertySections.addAll(sections);
-        }
+      materialChooser.addPropertyChangeListener(materialChangeListener);
+      bind(FieldUtils.getField(Geometry.class, MATERIAL), materialChooser);
 
-      } catch (NoSuchMethodException e) {
-        e.printStackTrace();
+      PropertySection geometrySection = new PropertySection("Geometry", ignoreTransform,
+          materialChooser /*, lodLevel */);
+      propertySections.add(geometrySection);
+
+      // Material
+      Material material = ((Geometry) object).getMaterial();
+      List<PropertySection> sections = buildMaterialSection(material);
+      if (!sections.isEmpty()) {
+        propertySections.addAll(sections);
       }
 
     }
@@ -182,9 +141,13 @@ public class SpatialComponentSetBuilder extends AbstractComponentSetBuilder<Spat
     return propertySections;
   }
 
-
-  @Override
-  public void propertyChange(PropertyChangeEvent evt) {
-
+  public List<PropertySection> buildMaterialSection(Material material) {
+    List<PropertySection> sections = new ArrayList<>();
+    if (material != null) {
+      MaterialComponentSetBuilder materialComponentSetBuilder = new MaterialComponentSetBuilder(
+          material);
+      sections = materialComponentSetBuilder.build();
+    }
+    return sections;
   }
 }

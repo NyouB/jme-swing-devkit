@@ -19,50 +19,35 @@ public class Vector2fComponent extends JMEDevKitComponentSwingView<Vector2f> {
   private JLabel propertyNameLabel;
   private JFormattedTextField xTextField;
   private JFormattedTextField yTextField;
-  private JButton nullButton;
   private JButton normalizeButton;
-  private boolean nullable;
-
-  public Vector2fComponent(boolean nullable) {
-    this(null, null, true);
-  }
 
   public Vector2fComponent(Vector2f vector2f) {
     this(vector2f, null);
   }
 
   public Vector2fComponent(Vector2f vector2f, String propertyName) {
-    this(vector2f, propertyName, false);
-  }
-
-  public Vector2fComponent(Vector2f vector2f, String propertyName, boolean nullable) {
     super(vector2f, propertyName);
     $$$setupUI$$$();
-    setValue(vector2f);
-    this.nullable = nullable;
+    setComponent(vector2f);
   }
 
-  public void setValue(Vector2f value) {
-    if (value != null) {
-      this.xTextField.setValue(value.x);
-      this.yTextField.setValue(value.y);
-    } else {
-      this.xTextField.setText("null");
-      this.yTextField.setText("null");
+  @Override
+  public void setComponent(Vector2f value) {
+    if (value == null) {
+      value = new Vector2f();
     }
+    component = value;
+    this.xTextField.setValue(value.x);
+    this.yTextField.setValue(value.y);
   }
 
   public void bind() {
     PropertyChangeListener propertyChangeListener = evt -> {
-      saveViewValueToModel();
+      setComponent(computeValue());
       firePropertyChange(propertyName, null, component);
     };
     xTextField.addPropertyChangeListener(propertyChangeListener);
     yTextField.addPropertyChangeListener(propertyChangeListener);
-  }
-
-  private void saveViewValueToModel() {
-    setValue(getInputValue());
   }
 
   @Override
@@ -71,7 +56,7 @@ public class Vector2fComponent extends JMEDevKitComponentSwingView<Vector2f> {
     propertyNameLabel.setText("Vector3f: " + propertyName);
   }
 
-  private Vector2f getInputValue() {
+  private Vector2f computeValue() {
     float x = ((Number) xTextField.getValue()).floatValue();
     float y = ((Number) yTextField.getValue()).floatValue();
     return new Vector2f(x, y);
@@ -169,25 +154,9 @@ public class Vector2fComponent extends JMEDevKitComponentSwingView<Vector2f> {
     normalizeButton = new JButton();
 
     normalizeButton.addActionListener(e -> {
-
-      Vector2f value = getInputValue();
-
-      if (value != null) {
-        Vector2f normalized = value.normalize();
-        // setValue(normalized);
-        xTextField.setValue(normalized.x);
-        yTextField.setValue(normalized.y);
-      }
-
-    });
-    nullButton = new JButton();
-
-    nullButton.setVisible(nullable);
-    nullButton.addActionListener(e -> {
-      if (nullable) {
-        xTextField.setText("null");
-        yTextField.setText("null");
-      }
+      Vector2f value = computeValue();
+      Vector2f normalized = value.normalize();
+      setComponent(normalized);
     });
 
     FloatFormatFactory floatFormatFactory = new FloatFormatFactory();

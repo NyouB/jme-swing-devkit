@@ -2,20 +2,16 @@ package com.jayfella.devkit.properties.component;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
-import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.beans.PropertyChangeListener;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
-import javax.swing.SwingUtilities;
 
 public class Vector3fComponent extends JMEDevKitComponentSwingView<Vector3f> {
 
@@ -24,53 +20,37 @@ public class Vector3fComponent extends JMEDevKitComponentSwingView<Vector3f> {
   private JFormattedTextField xTextField;
   private JFormattedTextField yTextField;
   private JFormattedTextField zTextField;
-  private JButton nullButton;
   private JButton normalizeButton;
-  private boolean nullable;
 
-  public Vector3fComponent(boolean nullable) {
-    this(null ,null, true);
-  }
   public Vector3fComponent(Vector3f vector3f) {
     this(vector3f, null);
   }
 
   public Vector3fComponent(Vector3f vector3f, String propertyName) {
-    this(vector3f, propertyName, false);
-  }
-
-  public Vector3fComponent(Vector3f vector3f, String propertyName, boolean nullable) {
     super(vector3f, propertyName);
     $$$setupUI$$$();
-    setValue(vector3f);
-    this.nullable = nullable;
-
+    setComponent(vector3f);
   }
 
-  public void setValue(Vector3f value) {
-    if (value != null) {
-      this.xTextField.setValue(value.x);
-      this.yTextField.setValue(value.y);
-      this.zTextField.setValue(value.z);
-    } else {
-      this.xTextField.setText("null");
-      this.yTextField.setText("null");
-      this.zTextField.setText("null");
+  @Override
+  public void setComponent(Vector3f value) {
+    if (value == null) {
+      value = new Vector3f();
     }
+    component = value;
+    this.xTextField.setValue(value.x);
+    this.yTextField.setValue(value.y);
+    this.zTextField.setValue(value.z);
   }
 
   public void bind() {
     PropertyChangeListener propertyChangeListener = evt -> {
-      saveViewValueToModel();
-      firePropertyChange(propertyName , null, component);
+      setComponent(computeValue());
+      firePropertyChange(propertyName, null, component);
     };
     xTextField.addPropertyChangeListener(propertyChangeListener);
     yTextField.addPropertyChangeListener(propertyChangeListener);
     zTextField.addPropertyChangeListener(propertyChangeListener);
-  }
-
-  private void saveViewValueToModel() {
-    setValue(getInputValue());
   }
 
   @Override
@@ -79,7 +59,7 @@ public class Vector3fComponent extends JMEDevKitComponentSwingView<Vector3f> {
     propertyNameLabel.setText("Vector3f: " + propertyName);
   }
 
-  private Vector3f getInputValue() {
+  private Vector3f computeValue() {
     float x = ((Number) xTextField.getValue()).floatValue();
     float y = ((Number) yTextField.getValue()).floatValue();
     float z = ((Number) zTextField.getValue()).floatValue();
@@ -195,27 +175,9 @@ public class Vector3fComponent extends JMEDevKitComponentSwingView<Vector3f> {
     normalizeButton = new JButton();
 
     normalizeButton.addActionListener(e -> {
-
-      Vector3f value = getInputValue();
-
-      if (value != null) {
-        Vector3f normalized = value.normalize();
-        // setValue(normalized);
-        xTextField.setValue(normalized.x);
-        yTextField.setValue(normalized.y);
-        zTextField.setValue(normalized.z);
-      }
-
-    });
-    nullButton = new JButton();
-
-    nullButton.setVisible(nullable);
-    nullButton.addActionListener(e -> {
-      if (nullable) {
-        xTextField.setText("null");
-        yTextField.setText("null");
-        zTextField.setText("null");
-      }
+      Vector3f value = computeValue();
+      Vector3f normalized = value.normalize();
+      setComponent(normalized);
     });
 
     FloatFormatFactory floatFormatFactory = new FloatFormatFactory();

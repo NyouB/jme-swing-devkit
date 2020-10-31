@@ -17,7 +17,7 @@ class QuaternionComponentTest extends AbstractJmeDevKitTest{
 
   @org.junit.jupiter.api.Test
   void setValue() {
-    quaternionComponent.setValue(new Quaternion(1,2,3,4));
+    quaternionComponent.setComponent(new Quaternion(1,2,3,4));
     Assertions.assertEquals(1,((Number)quaternionComponent.getwTextField().getValue()).floatValue());
     Assertions.assertEquals(2,((Number)quaternionComponent.getxTextField().getValue()).floatValue());
     Assertions.assertEquals(3,((Number)quaternionComponent.getyTextField().getValue()).floatValue());

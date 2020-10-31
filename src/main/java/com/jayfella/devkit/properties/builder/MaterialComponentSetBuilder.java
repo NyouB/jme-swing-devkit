@@ -96,11 +96,11 @@ public class MaterialComponentSetBuilder extends AbstractComponentSetBuilder<Mat
 
                 if (setParam != null) {
                     Float fVal = (Float) setParam.getValue().getValue();
-                    floatComponent.setValue(fVal);
+                    floatComponent.setComponent(fVal);
 
                 } else {
                     // floatComponent.setValue(0.0f);
-                    floatComponent.setValue(null);
+                    floatComponent.setComponent(null);
                 }
 
                 floatComponent.setPropertyChangedEvent(value -> {
@@ -129,10 +129,10 @@ public class MaterialComponentSetBuilder extends AbstractComponentSetBuilder<Mat
 
                 if (setParam != null) {
                     Vector2f fVal = (Vector2f) setParam.getValue().getValue();
-                    vector2fComponent.setValue(fVal);
+                    vector2fComponent.setComponent(fVal);
                 } else {
                     // vector2fComponent.setValue(new Vector2f(0, 0));
-                    vector2fComponent.setValue(null);
+                    vector2fComponent.setComponent(null);
                 }
 
                 vector2fComponent.setPropertyChangedEvent(value -> {
@@ -161,10 +161,10 @@ public class MaterialComponentSetBuilder extends AbstractComponentSetBuilder<Mat
 
                 if (setParam != null) {
                     Vector3f fVal = (Vector3f) setParam.getValue().getValue();
-                    vector3fComponent.setValue(fVal);
+                    vector3fComponent.setComponent(fVal);
                 } else {
                     // vector3fComponent.setValue(new Vector3f(0, 0, 0));
-                    vector3fComponent.setValue(null);
+                    vector3fComponent.setComponent(null);
                 }
 
                 vector3fComponent.setPropertyChangedEvent(value -> {
@@ -206,10 +206,10 @@ public class MaterialComponentSetBuilder extends AbstractComponentSetBuilder<Mat
 
                     if (matParam.getValue() instanceof Vector4f) {
                         Vector4f fVal = (Vector4f) setParam.getValue().getValue();
-                        ((Vector4fComponent)vector4fComponent).setValue(fVal);
+                        ((Vector4fComponent)vector4fComponent).setComponent(fVal);
                     } else {
                         ColorRGBA fVal = (ColorRGBA) setParam.getValue().getValue();
-                        ((ColorRGBAComponent)vector4fComponent).setValue(fVal);
+                        ((ColorRGBAComponent)vector4fComponent).setComponent(fVal);
                     }
                 } else {
                     vector4fComponent.setValue(null);
@@ -248,9 +248,9 @@ public class MaterialComponentSetBuilder extends AbstractComponentSetBuilder<Mat
 
                 if (setParam != null) {
                     boolean fVal = (boolean) setParam.getValue().getValue();
-                    booleanComponent.setValue(fVal);
+                    booleanComponent.setComponent(fVal);
                 } else {
-                    booleanComponent.setValue(false);
+                    booleanComponent.setComponent(false);
                 }
 
                 booleanComponent.setPropertyChangedEvent(value -> {
@@ -272,10 +272,10 @@ public class MaterialComponentSetBuilder extends AbstractComponentSetBuilder<Mat
 
                 if (setParam != null) {
                     Texture2D fVal = (Texture2D) setParam.getValue().getValue();
-                    texture2DComponent.setValue(fVal);
+                    texture2DComponent.setComponent(fVal);
                 }
                 else {
-                    texture2DComponent.setValue(null);
+                    texture2DComponent.setComponent(null);
                 }
 
                 texture2DComponent.setPropertyChangedEvent(value -> {

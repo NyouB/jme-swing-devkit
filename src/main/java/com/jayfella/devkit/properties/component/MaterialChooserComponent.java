@@ -8,18 +8,21 @@ import com.jayfella.devkit.service.ServiceManager;
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
 import com.jme3.util.MaterialDebugAppState;
-import org.reflections.Reflections;
-import org.reflections.scanners.ResourcesScanner;
-
-import javax.swing.*;
-import java.awt.*;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.awt.Insets;
+import java.awt.event.ItemListener;
 import java.util.Set;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import org.reflections.Reflections;
+import org.reflections.scanners.ResourcesScanner;
 
-public class MaterialChooserComponent extends ReflectedSdkComponent<Material> {
+public class MaterialChooserComponent extends JMEDevKitComponentSwingView<Material> {
 
   private static final Logger log = Logger.getLogger(MaterialChooserComponent.class.getName());
 
@@ -27,75 +30,19 @@ public class MaterialChooserComponent extends ReflectedSdkComponent<Material> {
   private JPanel contentPanel;
   private JButton reloadMaterialButton;
 
-  public MaterialChooserComponent() {
-    super(null, null, null);
 
+  public MaterialChooserComponent(Material value) {
+    this(value, null);
   }
 
-  public MaterialChooserComponent(Object parent, Method getter, Method setter) {
-    super(parent, getter, setter);
-
-    // get all available materials.
-    DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
-
-    Reflections reflections = new Reflections(null, new ResourcesScanner());
-    Set<String> j3mdResourceList = reflections.getResources(Pattern.compile(".*\\.j3md"));
-    Set<String> j3mResourceList = reflections.getResources(Pattern.compile(".*\\.j3m"));
-
-    for (String resource : j3mdResourceList) {
-      model.addElement(resource);
-    }
-
-    for (String resource : j3mResourceList) {
-      model.addElement(resource);
-    }
-
-    materialsComboBox.setModel(model);
-
-    try {
-      setValue((Material) getter.invoke(parent));
-    } catch (IllegalAccessException | InvocationTargetException e) {
-      e.printStackTrace();
-    }
-
-    reloadMaterialButton.addActionListener(e -> {
-
-      if (getReflectedProperty() != null) {
-
-        Material material = getReflectedProperty().getValue();
-
-        if (material != null) {
-          JmeEngineService engineService = ServiceManager.getService(JmeEngineService.class);
-          engineService.enqueue(() -> engineService
-              .getStateManager()
-              .getState(MaterialDebugAppState.class)
-              .reloadMaterial(material));
-        }
-
-      }
-
-    });
-
+  public MaterialChooserComponent(Material value, String propertyName) {
+    super(value, propertyName);
+    $$$setupUI$$$();
+    setComponent(value);
   }
 
-  @Override
-  public void setValue(Material value) {
-    super.setValue(value);
-
-    if (!isBinded()) {
-      SwingUtilities.invokeLater(() -> {
-        materialsComboBox.setSelectedItem(value.getMaterialDef().getAssetName());
-        bind();
-      });
-    }
-  }
-
-  @Override
   public void bind() {
-    super.bind();
-
-    materialsComboBox.addActionListener(e -> {
-
+    ItemListener itemListener = evt -> {
       String selectedMaterial = (String) materialsComboBox.getSelectedItem();
 
       AssetManager assetManager = ServiceManager.getService(JmeEngineService.class)
@@ -114,25 +61,17 @@ public class MaterialChooserComponent extends ReflectedSdkComponent<Material> {
         log.warning("The specified material is NULL. This is probably not intended!");
       }
 
-      setValue(material);
-      selectionChanged(material);
-    });
+      setComponent(material);
+      firePropertyChange(propertyName, null, component);
+    };
+    materialsComboBox.addItemListener(itemListener);
 
-  }
-
-  public void selectionChanged(Material material) {
-
-  }
-
-
-  @Override
-  public JComponent getJComponent() {
-    return contentPanel;
   }
 
   @Override
-  public void cleanup() {
-
+  public void setComponent(Material value) {
+    component = value;
+    materialsComboBox.setSelectedItem(component.getMaterialDef().getAssetName());
   }
 
   {
@@ -183,6 +122,40 @@ public class MaterialChooserComponent extends ReflectedSdkComponent<Material> {
    */
   public JComponent $$$getRootComponent$$$() {
     return contentPanel;
+  }
+
+  private void createUIComponents() {
+    contentPanel = this;
+
+    DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
+
+    Reflections reflections = new Reflections(null, new ResourcesScanner());
+    Set<String> j3mdResourceList = reflections.getResources(Pattern.compile(".*\\.j3md"));
+    Set<String> j3mResourceList = reflections.getResources(Pattern.compile(".*\\.j3m"));
+
+    for (String resource : j3mdResourceList) {
+      model.addElement(resource);
+    }
+
+    for (String resource : j3mResourceList) {
+      model.addElement(resource);
+    }
+
+    materialsComboBox.setModel(model);
+
+    reloadMaterialButton.addActionListener(e -> {
+
+      if (component != null) {
+        JmeEngineService engineService = ServiceManager.getService(JmeEngineService.class);
+        engineService.enqueue(() -> engineService
+            .getStateManager()
+            .getState(MaterialDebugAppState.class)
+            .reloadMaterial(component));
+      }
+
+    });
+
+    bind();
   }
 
 }
