@@ -1,34 +1,84 @@
 package com.jayfella.devkit.properties.builder;
 
 import com.jayfella.devkit.properties.PropertySection;
-import com.jayfella.devkit.properties.component.ReflectedSdkComponent;
-import com.jayfella.devkit.properties.reflection.ComponentBuilder;
-import com.jayfella.devkit.properties.reflection.UniqueProperties;
-
+import com.jayfella.devkit.properties.component.AbstractSDKComponent;
+import com.jayfella.devkit.service.RegistrationService;
+import com.jayfella.devkit.service.ServiceManager;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.lang3.reflect.FieldUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class ReflectedComponentSetBuilder extends AbstractComponentSetBuilder<Object> {
+public class ReflectedComponentSetBuilder extends AbstractPropertySectionBuilder<Object> {
 
-    private final String name;
+  private static final Logger LOGGER = LoggerFactory.getLogger(CustomPropertyBuilder.class);
 
-    public ReflectedComponentSetBuilder(String name, Object object, String... ignoredProperties) {
-        super(object, ignoredProperties);
-        this.name = name;
+  private final List<Field> fields;
+
+  private final String name;
+
+  public ReflectedComponentSetBuilder(String name, Object object, Field... ignoredFieldsArray) {
+    super(object, ignoredFieldsArray);
+    fields = FieldUtils.getAllFieldsList(object.getClass());
+    fields.removeAll(ignoredFields);
+    this.name = name;
+  }
+
+  public ReflectedComponentSetBuilder(Object object, Field... ignoredFieldsArray) {
+    this(object.getClass().getCanonicalName(), object, ignoredFieldsArray);
+  }
+
+  public ReflectedComponentSetBuilder addField(Field field) {
+    fields.add(field);
+    return this;
+  }
+
+  public ReflectedComponentSetBuilder removeField(Field field) {
+    fields.remove(field);
+    return this;
+  }
+
+  @Override
+  public List<PropertySection> build() {
+
+    List<AbstractSDKComponent> components = new ArrayList<>();
+
+    for (Field field : fields) {
+      try {
+        AbstractSDKComponent newComponent = buildComponentFromField(field);
+        if (newComponent == null) {
+          continue;
+        }
+        components.add(newComponent);
+      } catch (IllegalAccessException e) {
+        LOGGER.error(
+            "Error happen while getting field value from field {} from object class {}. The field will be ignored and not map",
+            field.getName(), object.getClass().getCanonicalName(), e);
+        ignoredFields.add(field);
+      }
     }
+    fields.removeAll(ignoredFields);
 
-    @Override
-    public List<PropertySection> build() {
+    PropertySection propertySection = new PropertySection(object.getClass().getSimpleName(),
+        components.toArray(new AbstractSDKComponent[components.size()]));
 
-        UniqueProperties uniqueProperties = new UniqueProperties(object, ignoredProperties);
-        ComponentBuilder componentBuilder = new ComponentBuilder(uniqueProperties);
+    List<PropertySection> sections = new ArrayList<>();
+    sections.add(propertySection);
 
-        componentBuilder.build();
-        PropertySection propertySection = new PropertySection(name, componentBuilder.getSdkComponents().toArray(new ReflectedSdkComponent[0]));
+    return sections;
+  }
 
-        List<PropertySection> propertySections = new ArrayList<>();
-        propertySections.add(propertySection);
-        return propertySections;
-
+  public AbstractSDKComponent buildComponentFromField(Field field)
+      throws IllegalAccessException {
+    Object fieldObject = field.get(object);
+    AbstractSDKComponent component = ServiceManager.getService(RegistrationService.class)
+        .getComponentFactoryFor(fieldObject.getClass()).create(fieldObject);
+    if (component != null) {
+      bind(field, component);
+      component.setPropertyName(field.getName());
     }
+    return component;
+  }
 }

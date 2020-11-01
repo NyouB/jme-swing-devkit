@@ -3,21 +3,33 @@ package com.jayfella.devkit.properties.component.control;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
-import com.jayfella.devkit.properties.ControlSdkComponent;
+import com.jayfella.devkit.properties.component.AbstractSDKComponent;
 import com.jayfella.devkit.service.JmeEngineService;
 import com.jayfella.devkit.service.ServiceManager;
 import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.LoopMode;
-
-import javax.swing.*;
-import javax.swing.border.TitledBorder;
-import java.awt.*;
+import java.awt.Insets;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Collection;
+import javax.swing.BorderFactory;
+import javax.swing.DefaultBoundedRangeModel;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSlider;
+import javax.swing.SwingUtilities;
+import javax.swing.Timer;
+import javax.swing.border.TitledBorder;
 
-public class AnimControlComponent extends ControlSdkComponent<AnimControl> {
+public class AnimControlComponent extends AbstractSDKComponent<AnimControl> {
 
   private final Timer timer;
 
@@ -174,18 +186,8 @@ public class AnimControlComponent extends ControlSdkComponent<AnimControl> {
   }
 
   @Override
-  public boolean isNullable() {
-    return false;
-  }
-
-  @Override
-  public void setNullable(boolean value) {
-
-  }
-
-  @Override
   public void cleanup() {
-    ServiceManager.getService(JmeEngineService.class).enqueue(object::clearChannels);
+    ServiceManager.getService(JmeEngineService.class).enqueue(component::clearChannels);
     timer.stop();
   }
 
@@ -271,5 +273,6 @@ public class AnimControlComponent extends ControlSdkComponent<AnimControl> {
   public JComponent $$$getRootComponent$$$() {
     return contentPanel;
   }
+
 
 }

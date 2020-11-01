@@ -1,5 +1,6 @@
 package com.jayfella.devkit.properties.component;
 
+import com.jayfella.devkit.properties.component.quaternion.QuaternionComponent;
 import com.jme3.math.Quaternion;
 import org.junit.jupiter.api.Assertions;
 
@@ -12,7 +13,7 @@ class QuaternionComponentTest extends AbstractJmeDevKitTest{
   void setUp() {
     Quaternion quaternion = new Quaternion();
 
-    quaternionComponent = new QuaternionComponent(quaternion,null ,null);
+    quaternionComponent = new QuaternionComponent(quaternion);
   }
 
   @org.junit.jupiter.api.Test
