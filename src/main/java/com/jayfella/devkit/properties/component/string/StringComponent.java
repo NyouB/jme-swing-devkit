@@ -19,9 +19,14 @@ public class StringComponent extends AbstractSDKComponent<String> {
   private JPanel contentPanel;
 
   public StringComponent(String value) {
+   this(value ,null);
+  }
+
+  public StringComponent(String value, String propertyName) {
     super(value);
     $$$setupUI$$$();
     setComponent(value);
+    setPropertyName(propertyName);
   }
 
   @Override
@@ -30,15 +35,7 @@ public class StringComponent extends AbstractSDKComponent<String> {
       value = "";
     }
     component = value;
-    this.valueTextField.setText(value);
-  }
-
-  public void bind() {
-    PropertyChangeListener propertyChangeListener = evt -> {
-      setComponent(valueTextField.getText());
-      firePropertyChange(propertyName, null, component);
-    };
-    valueTextField.addPropertyChangeListener(propertyChangeListener);
+    this.valueTextField.setText(component);
   }
 
   @Override
@@ -81,17 +78,19 @@ public class StringComponent extends AbstractSDKComponent<String> {
     return contentPanel;
   }
 
-  private void createUIComponents() {
-    bind();
-  }
-
   @Override
   public JComponent getJComponent() {
     return contentPanel;
   }
 
   @Override
-  public void cleanup() {
+  protected String computeValue() {
+    return valueTextField.getText();
+  }
 
+  private void createUIComponents() {
+    valueTextField = new JTextField();
+    PropertyChangeListener textFieldChangeListener = getPropertyChangeListener("value");
+    valueTextField.addPropertyChangeListener(textFieldChangeListener);
   }
 }

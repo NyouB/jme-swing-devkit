@@ -6,8 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public abstract class AbstractSDKComponent<T> implements SdkComponent {
-
-  public static final Logger LOGGER = LoggerFactory.getLogger(AbstractSDKComponent.class);
   /*
    * In some cases using "this" as an object to synchronize by
    * can lead to a deadlock if client code also uses synchronization
@@ -51,6 +49,23 @@ public abstract class AbstractSDKComponent<T> implements SdkComponent {
   public void cleanup() {
 
   }
+
+  public PropertyChangeListener getPropertyChangeListener(String propertyName) {
+    return evt -> {
+      if (!evt.getPropertyName().equals(propertyName) || evt.getOldValue().equals(evt.getNewValue())) {
+        return;
+      }
+      T oldComponent = component;
+      T newComponent = computeValue();
+      if(!oldComponent.equals(newComponent)){
+        setComponent(newComponent);
+        firePropertyChange(propertyName, oldComponent, component);
+      }
+    };
+  }
+
+
+  protected abstract T computeValue();
 
   Object getObjectLock() {
     return objectLock;

@@ -5,6 +5,7 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.jayfella.devkit.config.DevKitConfig;
 import com.jayfella.devkit.jme.TextureImage;
 import com.jayfella.devkit.properties.component.AbstractSDKComponent;
+import com.jayfella.devkit.properties.component.material.MaterialChooserComponent;
 import com.jayfella.devkit.service.JmeEngineService;
 import com.jayfella.devkit.service.ServiceManager;
 import com.jme3.asset.AssetNotFoundException;
@@ -28,12 +29,17 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
+import javax.swing.ListSelectionModel;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionListener;
 import org.jdesktop.swingx.JXErrorPane;
 import org.jdesktop.swingx.error.ErrorInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Texture2DComponent extends AbstractSDKComponent<Texture2D> {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(MaterialChooserComponent.class);
 
   private JPanel contentPanel;
   private JLabel propertyNameLabel;
@@ -157,14 +163,6 @@ public class Texture2DComponent extends AbstractSDKComponent<Texture2D> {
     return texture2D;
   }
 
-  public void bind() {
-
-    ListSelectionListener listSelectionListener = evt -> {
-      setComponent(computeValue());
-      firePropertyChange(propertyName, null, component);
-    };
-    texturesList.addListSelectionListener(listSelectionListener);
-  }
 
   @Override
   public void setPropertyName(String propertyName) {
@@ -257,7 +255,19 @@ public class Texture2DComponent extends AbstractSDKComponent<Texture2D> {
       }
     });
 
-    bind();
+    ListSelectionListener listSelectionListener = evt -> {
+      ListSelectionModel lsm = (ListSelectionModel) evt.getSource();
+      if (lsm.isSelectionEmpty()) {
+        return;
+      }
+      Texture2D oldTexture = component;
+      Texture2D newTexture = computeValue();
+      if (!oldTexture.equals(newTexture)) {
+        setComponent(computeValue());
+        firePropertyChange(propertyName, oldTexture, component);
+      }
+    };
+    texturesList.addListSelectionListener(listSelectionListener);
   }
 
   @Override

@@ -54,12 +54,9 @@ public class Vector2fComponent extends AbstractSDKComponent<Vector2f> {
   }
 
   public void bind() {
-    PropertyChangeListener propertyChangeListener = evt -> {
-      setComponent(computeValue());
-      firePropertyChange(propertyName, null, component);
-    };
-    xTextField.addPropertyChangeListener(propertyChangeListener);
-    yTextField.addPropertyChangeListener(propertyChangeListener);
+    PropertyChangeListener textFieldChangeListener = getPropertyChangeListener("value");
+    xTextField.addPropertyChangeListener(textFieldChangeListener);
+    yTextField.addPropertyChangeListener(textFieldChangeListener);
   }
 
   @Override
@@ -68,7 +65,7 @@ public class Vector2fComponent extends AbstractSDKComponent<Vector2f> {
     propertyNameLabel.setText("Vector3f: " + propertyName);
   }
 
-  private Vector2f computeValue() {
+  protected Vector2f computeValue() {
     float x = ((Number) xTextField.getValue()).floatValue();
     float y = ((Number) yTextField.getValue()).floatValue();
     return new Vector2f(x, y);
@@ -142,8 +139,9 @@ public class Vector2fComponent extends AbstractSDKComponent<Vector2f> {
 
 
   private void createUIComponents() {
-    xTextField = new JFormattedTextField();
-    yTextField = new JFormattedTextField();
+    FloatFormatFactory floatFormatFactory = new FloatFormatFactory();
+    xTextField = new JFormattedTextField(floatFormatFactory);
+    yTextField = new JFormattedTextField(floatFormatFactory);
 
     normalizeButton = new JButton();
 
@@ -152,11 +150,6 @@ public class Vector2fComponent extends AbstractSDKComponent<Vector2f> {
       Vector2f normalized = value.normalize();
       setComponent(normalized);
     });
-
-    FloatFormatFactory floatFormatFactory = new FloatFormatFactory();
-
-    xTextField.setFormatterFactory(floatFormatFactory);
-    yTextField.setFormatterFactory(floatFormatFactory);
 
     bind();
   }

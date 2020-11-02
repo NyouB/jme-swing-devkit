@@ -33,7 +33,7 @@ public class QuaternionComponent extends AbstractSDKComponent<Quaternion> {
     super(quaternion, propertyName);
     $$$setupUI$$$();
     setComponent(quaternion);
-    bind();
+    setPropertyName(propertyName);
   }
 
   public void setComponent(Quaternion value) {
@@ -48,27 +48,15 @@ public class QuaternionComponent extends AbstractSDKComponent<Quaternion> {
   }
 
   public void bind() {
-    PropertyChangeListener propertyChangeListener = evt -> {
-      if (!evt.getPropertyName().equals("value")) {
-        return;
-      }
-      if (evt.getOldValue().equals(evt.getNewValue())) {
-        return;
-      }
-      setComponent(computeValue());
-      firePropertyChange(propertyName, null, component);
-    };
-    wTextField.addPropertyChangeListener(propertyChangeListener);
-    xTextField.addPropertyChangeListener(propertyChangeListener);
-    yTextField.addPropertyChangeListener(propertyChangeListener);
-    zTextField.addPropertyChangeListener(propertyChangeListener);
+
   }
 
   public void setPropertyName(String propertyName) {
     propertyNameLabel.setText("Quaternion: " + propertyName);
   }
 
-  private Quaternion computeValue() {
+  @Override
+  protected Quaternion computeValue() {
     float w = ((Number) wTextField.getValue()).floatValue();
     float x = ((Number) xTextField.getValue()).floatValue();
     float y = ((Number) yTextField.getValue()).floatValue();
@@ -153,6 +141,11 @@ public class QuaternionComponent extends AbstractSDKComponent<Quaternion> {
     xTextField = new JFormattedTextField(floatFormatFactory);
     yTextField = new JFormattedTextField(floatFormatFactory);
     zTextField = new JFormattedTextField(floatFormatFactory);
+    PropertyChangeListener textFieldChangeListener = getPropertyChangeListener("value");
+    wTextField.addPropertyChangeListener(textFieldChangeListener);
+    xTextField.addPropertyChangeListener(textFieldChangeListener);
+    yTextField.addPropertyChangeListener(textFieldChangeListener);
+    zTextField.addPropertyChangeListener(textFieldChangeListener);
   }
 
   @Override

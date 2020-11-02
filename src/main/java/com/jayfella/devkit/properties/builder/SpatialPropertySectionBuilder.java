@@ -41,6 +41,7 @@ public class SpatialPropertySectionBuilder extends AbstractPropertySectionBuilde
   public static final String BATCH_HINT = "batchHint";
   public static final String MATERIAL = "material";
   public static final String LOD_LEVEL = "lodLevel";
+  public static final String GEOMETRY = "Geometry";
 
 
   public SpatialPropertySectionBuilder(Spatial object, Field... ignoredProperties) {
@@ -54,20 +55,17 @@ public class SpatialPropertySectionBuilder extends AbstractPropertySectionBuilde
 
     // Transform : location, rotation, scale
 
-    Vector3fComponent localTranslation = new Vector3fComponent(object.getLocalTranslation());
-    localTranslation.setPropertyName(LOCAL_TRANSLATION);
+    Vector3fComponent localTranslation = new Vector3fComponent(object.getLocalTranslation(), LOCAL_TRANSLATION);
     localTranslation.addPropertyChangeListener(
         value -> ServiceManager.getService(JmeEngineService.class)
             .enqueue(() -> object.setLocalTranslation((Vector3f) value.getNewValue())));
 
-    QuaternionComponent localRotation = new QuaternionComponent(object.getLocalRotation());
-    localRotation.setPropertyName(LOCAL_ROTATION);
+    QuaternionComponent localRotation = new QuaternionComponent(object.getLocalRotation(), LOCAL_ROTATION);
     localRotation.addPropertyChangeListener(
         value -> ServiceManager.getService(JmeEngineService.class)
             .enqueue(() -> object.setLocalRotation((Quaternion) value.getNewValue())));
 
-    Vector3fComponent localScale = new Vector3fComponent(object.getLocalScale());
-    localScale.setPropertyName(LOCAL_SCALE);
+    Vector3fComponent localScale = new Vector3fComponent(object.getLocalScale(), LOCAL_SCALE);
     localScale.addPropertyChangeListener(value -> ServiceManager.getService(JmeEngineService.class)
         .enqueue(() -> object.setLocalScale((Vector3f) value.getNewValue())));
 
@@ -78,33 +76,28 @@ public class SpatialPropertySectionBuilder extends AbstractPropertySectionBuilde
     // Spatial: name, cullHint, lastFrustumIntersection, shadowMode, QueueBucket, BatchHint
     // fire an event that the spatial name changed.
     // the scene tree needs to know when this happened so it can change the name visually.
-    StringComponent name = new StringComponent(object.getName());
-    name.setPropertyName(NAME);
+    StringComponent name = new StringComponent(object.getName(), NAME);
     name.addPropertyChangeListener(evt -> ServiceManager.getService(EventService.class)
         .fireEvent(new SpatialNameChangedEvent(object)));
     name.addPropertyChangeListener(value -> ServiceManager.getService(JmeEngineService.class)
         .enqueue(() -> object.setName((String) value.getNewValue())));
 
-    EnumComponent cullHint = new EnumComponent(object.getCullHint());
-    cullHint.setPropertyName(CULL_HINT);
+    EnumComponent cullHint = new EnumComponent(object.getCullHint(), CULL_HINT);
     cullHint.addPropertyChangeListener(
         value -> ServiceManager.getService(JmeEngineService.class).enqueue(() -> object.setCullHint(
             (CullHint) value.getNewValue())));
 
-    EnumComponent shadowMode = new EnumComponent(object.getShadowMode());
-    shadowMode.setPropertyName(SHADOW_MODE);
+    EnumComponent shadowMode = new EnumComponent(object.getShadowMode(), SHADOW_MODE);
     shadowMode.addPropertyChangeListener(value -> ServiceManager.getService(JmeEngineService.class)
         .enqueue(() -> object.setShadowMode(
             (ShadowMode) value.getNewValue())));
 
-    EnumComponent queueBucket = new EnumComponent(object.getQueueBucket());
-    queueBucket.setPropertyName(QUEUE_BUCKET);
+    EnumComponent queueBucket = new EnumComponent(object.getQueueBucket(), QUEUE_BUCKET);
     queueBucket.addPropertyChangeListener(value -> ServiceManager.getService(JmeEngineService.class)
         .enqueue(() -> object.setQueueBucket(
             (Bucket) value.getNewValue())));
 
-    EnumComponent batchHint = new EnumComponent(object.getBatchHint());
-    batchHint.setPropertyName(BATCH_HINT);
+    EnumComponent batchHint = new EnumComponent(object.getBatchHint(), BATCH_HINT);
     batchHint.addPropertyChangeListener(value -> ServiceManager.getService(JmeEngineService.class)
         .enqueue(() -> object.setBatchHint(
             (BatchHint) value.getNewValue())));
@@ -120,8 +113,7 @@ public class SpatialPropertySectionBuilder extends AbstractPropertySectionBuilde
       // Geometry-specific data
 
       BooleanComponent ignoreTransform = new BooleanComponent(
-          ((Geometry) object).isIgnoreTransform());
-      ignoreTransform.setPropertyName(IGNORE_TRANSFORM);
+          ((Geometry) object).isIgnoreTransform(), IGNORE_TRANSFORM);
       ignoreTransform.addPropertyChangeListener(
           value -> ServiceManager.getService(JmeEngineService.class)
               .enqueue(() -> ((Geometry) object).setIgnoreTransform(
@@ -159,7 +151,7 @@ public class SpatialPropertySectionBuilder extends AbstractPropertySectionBuilde
               .enqueue(() -> object.setMaterial(
                   (Material) value.getNewValue())));
 
-      PropertySection geometrySection = new PropertySection("Geometry", ignoreTransform,
+      PropertySection geometrySection = new PropertySection(GEOMETRY, ignoreTransform,
           materialChooser /*, lodLevel */);
       propertySections.add(geometrySection);
 

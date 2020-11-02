@@ -37,21 +37,13 @@ public class IntegerComponent extends AbstractSDKComponent<Integer> {
     this.valueTextField.setValue(value);
   }
 
-  public void bind() {
-    PropertyChangeListener propertyChangeListener = evt -> {
-      setComponent(computeValue());
-      firePropertyChange(propertyName, null, component);
-    };
-    valueTextField.addPropertyChangeListener(propertyChangeListener);
-  }
-
   @Override
   public void setPropertyName(String propertyName) {
     super.setPropertyName(propertyName);
     propertyNameLabel.setText("Vector3f: " + propertyName);
   }
 
-  private Integer computeValue() {
+  protected Integer computeValue() {
     return ((Number) valueTextField.getValue()).intValue();
   }
 
@@ -89,7 +81,8 @@ public class IntegerComponent extends AbstractSDKComponent<Integer> {
   }
 
   private void createUIComponents() {
-    bind();
+    valueTextField = new JFormattedTextField();
+    valueTextField.addPropertyChangeListener(getPropertyChangeListener("value"));
   }
 
   @Override

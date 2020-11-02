@@ -31,6 +31,7 @@ public class BooleanComponent extends AbstractSDKComponent<Boolean> {
     super(bool != null && bool, propertyName);
     setComponent(bool);
     setPropertyName(propertyName);
+    bind();
   }
 
   @Override
@@ -51,14 +52,10 @@ public class BooleanComponent extends AbstractSDKComponent<Boolean> {
   }
 
   public void bind() {
-    PropertyChangeListener propertyChangeListener = evt -> {
-      setComponent(computeValue());
-      firePropertyChange(propertyName, null, component);
-    };
     checkBox.addPropertyChangeListener(propertyChangeListener);
   }
 
-  private boolean computeValue() {
+  protected Boolean computeValue() {
     return checkBox.isSelected();
   }
 
@@ -104,6 +101,4 @@ public class BooleanComponent extends AbstractSDKComponent<Boolean> {
     return contentPanel;
   }
 
-  private void createUIComponents() {
-  }
 }

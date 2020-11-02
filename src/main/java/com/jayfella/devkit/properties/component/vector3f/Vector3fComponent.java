@@ -54,15 +54,6 @@ public class Vector3fComponent extends AbstractSDKComponent<Vector3f> {
     this.zTextField.setValue(value.z);
   }
 
-  public void bind() {
-    PropertyChangeListener propertyChangeListener = evt -> {
-      setComponent(computeValue());
-      firePropertyChange(propertyName, null, component);
-    };
-    xTextField.addPropertyChangeListener(propertyChangeListener);
-    yTextField.addPropertyChangeListener(propertyChangeListener);
-    zTextField.addPropertyChangeListener(propertyChangeListener);
-  }
 
   @Override
   public void setPropertyName(String propertyName) {
@@ -70,7 +61,7 @@ public class Vector3fComponent extends AbstractSDKComponent<Vector3f> {
     propertyNameLabel.setText("Vector3f: " + propertyName);
   }
 
-  private Vector3f computeValue() {
+  protected Vector3f computeValue() {
     float x = ((Number) xTextField.getValue()).floatValue();
     float y = ((Number) yTextField.getValue()).floatValue();
     float z = ((Number) zTextField.getValue()).floatValue();
@@ -156,9 +147,10 @@ public class Vector3fComponent extends AbstractSDKComponent<Vector3f> {
 
 
   private void createUIComponents() {
-    xTextField = new JFormattedTextField();
-    yTextField = new JFormattedTextField();
-    zTextField = new JFormattedTextField();
+    FloatFormatFactory floatFormatFactory = new FloatFormatFactory();
+    xTextField = new JFormattedTextField(floatFormatFactory);
+    yTextField = new JFormattedTextField(floatFormatFactory);
+    zTextField = new JFormattedTextField(floatFormatFactory);
 
     normalizeButton = new JButton();
 
@@ -168,13 +160,10 @@ public class Vector3fComponent extends AbstractSDKComponent<Vector3f> {
       setComponent(normalized);
     });
 
-    FloatFormatFactory floatFormatFactory = new FloatFormatFactory();
-
-    xTextField.setFormatterFactory(floatFormatFactory);
-    yTextField.setFormatterFactory(floatFormatFactory);
-    zTextField.setFormatterFactory(floatFormatFactory);
-
-    bind();
+    PropertyChangeListener textFieldChangeListener = getPropertyChangeListener("value");
+    xTextField.addPropertyChangeListener(textFieldChangeListener);
+    yTextField.addPropertyChangeListener(textFieldChangeListener);
+    zTextField.addPropertyChangeListener(textFieldChangeListener);
   }
 
   @Override

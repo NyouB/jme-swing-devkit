@@ -16,7 +16,7 @@
         <properties/>
         <border type="none"/>
         <children>
-          <component id="8056d" class="javax.swing.JButton" binding="playButton" default-binding="true">
+          <component id="8056d" class="javax.swing.JButton" binding="playButton" custom-create="true" default-binding="true">
             <constraints>
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -29,7 +29,7 @@
               <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
           </hspacer>
-          <component id="5751f" class="javax.swing.JButton" binding="stopButton" default-binding="true">
+          <component id="5751f" class="javax.swing.JButton" binding="stopButton" custom-create="true" default-binding="true">
             <constraints>
               <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -47,7 +47,7 @@
           <text value="Time"/>
         </properties>
       </component>
-      <component id="9b9a3" class="javax.swing.JSlider" binding="timeSlider">
+      <component id="9b9a3" class="javax.swing.JSlider" binding="timeSlider" custom-create="true">
         <constraints>
           <grid row="2" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
@@ -61,13 +61,13 @@
           <text value="Speed"/>
         </properties>
       </component>
-      <component id="6d090" class="javax.swing.JSlider" binding="speedSlider">
+      <component id="6d090" class="javax.swing.JSlider" binding="speedSlider" custom-create="true">
         <constraints>
           <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties/>
       </component>
-      <component id="a93a0" class="javax.swing.JComboBox" binding="loopModeComboBox">
+      <component id="a93a0" class="javax.swing.JComboBox" binding="loopModeComboBox" custom-create="true">
         <constraints>
           <grid row="3" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
@@ -80,7 +80,7 @@
         <properties/>
         <border type="bevel-lowered"/>
         <children>
-          <component id="a83e2" class="javax.swing.JList" binding="animationsList">
+          <component id="a83e2" class="javax.swing.JList" binding="animationsList" custom-create="true">
             <constraints/>
             <properties/>
           </component>

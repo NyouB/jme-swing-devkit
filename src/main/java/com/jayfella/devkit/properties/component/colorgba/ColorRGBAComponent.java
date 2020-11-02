@@ -56,14 +56,9 @@ public class ColorRGBAComponent extends AbstractSDKComponent<ColorRGBA> {
 
     colorPanel.repaint();
     colorPanel.revalidate();
-    firePropertyChange(propertyName, null, component);
   }
 
   public void bind() {
-    PropertyChangeListener propertyChangeListener = evt -> {
-      setComponent(computeValue());
-      firePropertyChange(propertyName, null, component);
-    };
     colorPanel.addPropertyChangeListener(propertyChangeListener);
   }
 
@@ -73,7 +68,7 @@ public class ColorRGBAComponent extends AbstractSDKComponent<ColorRGBA> {
     propertyNameLabel.setText("ColorRGBA: " + propertyName);
   }
 
-  private ColorRGBA computeValue() {
+  protected ColorRGBA computeValue() {
     return ColorConverter.toColorRGBA(colorPanel.getBackground());
   }
 

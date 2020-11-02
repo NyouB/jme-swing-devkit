@@ -40,18 +40,7 @@ public class EnumComponent extends AbstractSDKComponent<Enum> {
     valueComboBox.setSelectedItem(component);
   }
 
-  public void bind() {
-    ItemListener itemListener = evt -> {
-      if (ItemEvent.DESELECTED == evt.getStateChange()) {
-        return;
-      }
-      setComponent(computeValue());
-      firePropertyChange(propertyName, null, component);
-    };
-    valueComboBox.addItemListener(itemListener);
-  }
-
-  private Enum<?> computeValue() {
+  protected Enum<?> computeValue() {
     return (Enum<?>) valueComboBox.getSelectedItem();
   }
 
@@ -102,7 +91,18 @@ public class EnumComponent extends AbstractSDKComponent<Enum> {
     valueComboBox.setModel(new DefaultComboBoxModel<>(
         (Enum[]) EnumSet.allOf(component.getClass()).toArray()));
 
-    bind();
+    ItemListener itemListener = evt -> {
+      if (ItemEvent.DESELECTED == evt.getStateChange()) {
+        return;
+      }
+      Enum oldComponent = component;
+      Enum<?> newComponent = computeValue();
+      if (!oldComponent.equals(newComponent)) {
+        setComponent(newComponent);
+        firePropertyChange(propertyName, oldComponent, newComponent);
+      }
+    };
+    valueComboBox.addItemListener(itemListener);
   }
 
   @Override

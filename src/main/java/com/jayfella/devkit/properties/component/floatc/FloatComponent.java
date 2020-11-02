@@ -40,21 +40,13 @@ public class FloatComponent extends AbstractSDKComponent<Float> {
         setPropertyName(propertyName);
     }
 
-    public void bind() {
-        PropertyChangeListener propertyChangeListener = evt -> {
-            setComponent(computeValue());
-            firePropertyChange(propertyName, null, component);
-        };
-        valueTextField.addPropertyChangeListener(propertyChangeListener);
-    }
-
     @Override
     public void setPropertyName(String propertyName) {
         super.setPropertyName(propertyName);
         propertyNameLabel.setText("Float: " + propertyName);
     }
 
-    private Float computeValue() {
+    protected Float computeValue() {
         return ((Number) valueTextField.getValue()).floatValue();
     }
 
@@ -113,7 +105,7 @@ public class FloatComponent extends AbstractSDKComponent<Float> {
         valueTextField = new JFormattedTextField();
         FloatFormatFactory floatFormatFactory = new FloatFormatFactory();
         valueTextField.setFormatterFactory(floatFormatFactory);
-        bind();
+        valueTextField.addPropertyChangeListener(getPropertyChangeListener("value"));
     }
 
     @Override

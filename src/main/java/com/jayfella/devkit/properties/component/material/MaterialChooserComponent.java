@@ -10,9 +10,9 @@ import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
 import com.jme3.util.MaterialDebugAppState;
 import java.awt.Insets;
+import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.Set;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -22,10 +22,12 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MaterialChooserComponent extends AbstractSDKComponent<Material> {
 
-  private static final Logger log = Logger.getLogger(MaterialChooserComponent.class.getName());
+  private static final Logger LOGGER = LoggerFactory.getLogger(MaterialChooserComponent.class);
 
   private JComboBox<String> materialsComboBox;
   private JPanel contentPanel;
@@ -40,39 +42,35 @@ public class MaterialChooserComponent extends AbstractSDKComponent<Material> {
     super(value, propertyName);
     $$$setupUI$$$();
     setComponent(value);
-  }
-
-  public void bind() {
-    ItemListener itemListener = evt -> {
-      String selectedMaterial = (String) materialsComboBox.getSelectedItem();
-
-      AssetManager assetManager = ServiceManager.getService(JmeEngineService.class)
-          .getAssetManager();
-      Material material = null;
-
-      if (selectedMaterial != null) {
-
-        if (selectedMaterial.endsWith(".j3md")) {
-          material = new Material(assetManager, selectedMaterial);
-        } else if (selectedMaterial.endsWith(".j3m")) {
-          material = assetManager.loadMaterial(selectedMaterial);
-        }
-
-      } else {
-        log.warning("The specified material is NULL. This is probably not intended!");
-      }
-
-      setComponent(material);
-      firePropertyChange(propertyName, null, component);
-    };
-    materialsComboBox.addItemListener(itemListener);
-
+    setPropertyName(propertyName);
   }
 
   @Override
   public void setComponent(Material value) {
     component = value;
     materialsComboBox.setSelectedItem(component.getMaterialDef().getAssetName());
+  }
+
+  @Override
+  protected Material computeValue() {
+    String selectedMaterial = (String) materialsComboBox.getSelectedItem();
+
+    AssetManager assetManager = ServiceManager.getService(JmeEngineService.class)
+        .getAssetManager();
+    Material material = null;
+
+    if (selectedMaterial != null) {
+
+      if (selectedMaterial.endsWith(".j3md")) {
+        material = new Material(assetManager, selectedMaterial);
+      } else if (selectedMaterial.endsWith(".j3m")) {
+        material = assetManager.loadMaterial(selectedMaterial);
+      }
+
+    } else {
+      LOGGER.warn("The specified material is NULL. This is probably not intended!");
+    }
+    return material;
   }
 
   /**
@@ -132,9 +130,19 @@ public class MaterialChooserComponent extends AbstractSDKComponent<Material> {
     for (String resource : j3mResourceList) {
       model.addElement(resource);
     }
-
+    materialsComboBox = new JComboBox();
     materialsComboBox.setModel(model);
 
+    ItemListener itemListener = evt -> {
+      if (evt.getStateChange() == ItemEvent.SELECTED) {
+        Material oldMaterial = component;
+        setComponent(computeValue());
+        firePropertyChange(propertyName, oldMaterial, component);
+      }
+    };
+    materialsComboBox.addItemListener(itemListener);
+
+    reloadMaterialButton = new JButton();
     reloadMaterialButton.addActionListener(e -> {
 
       if (component != null) {
@@ -147,7 +155,6 @@ public class MaterialChooserComponent extends AbstractSDKComponent<Material> {
 
     });
 
-    bind();
   }
 
   @Override

@@ -12,7 +12,6 @@ import com.jme3.animation.LoopMode;
 import java.awt.Insets;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Collection;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultBoundedRangeModel;
 import javax.swing.DefaultComboBoxModel;
@@ -31,7 +30,7 @@ import javax.swing.border.TitledBorder;
 
 public class AnimControlComponent extends AbstractSDKComponent<AnimControl> {
 
-  private final Timer timer;
+  private Timer timer;
 
   private JList<String> animationsList;
   private JPanel contentPanel;
@@ -44,140 +43,11 @@ public class AnimControlComponent extends AbstractSDKComponent<AnimControl> {
   private final DefaultBoundedRangeModel animTimelineModel = new DefaultBoundedRangeModel(0, 1, 0,
       1000);
 
-  // JME objects should touched on the JME thread ONLY.
+  // JME objects should be touched on the JME thread ONLY.
   private AnimChannel animChannel;
 
   public AnimControlComponent(AnimControl animControl) {
     super(animControl);
-
-    final JmeEngineService engineService = ServiceManager.getService(JmeEngineService.class);
-
-    timeSlider.setModel(animTimelineModel);
-
-    DefaultComboBoxModel<LoopMode> loopModeModel = new DefaultComboBoxModel<>(LoopMode.values());
-    loopModeComboBox.setModel(loopModeModel);
-    loopModeComboBox.setSelectedItem(LoopMode.Loop);
-
-    engineService.enqueue(() -> {
-
-      final Collection<String> animNames = animControl.getAnimationNames();
-
-      animChannel = animControl.createChannel();
-
-      // fill our list
-      SwingUtilities.invokeLater(() -> {
-
-        DefaultListModel<String> listModel = new DefaultListModel<>();
-        for (String animName : animNames) {
-          listModel.addElement(animName);
-        }
-
-        animationsList.setModel(listModel);
-
-      });
-
-    });
-
-    animationsList.addMouseListener(new MouseAdapter() {
-      @Override
-      public void mouseClicked(MouseEvent e) {
-
-        final String animName = animationsList.getSelectedValue();
-        final LoopMode loopMode = (LoopMode) loopModeComboBox.getSelectedItem();
-
-        if (animName != null) {
-
-          // set the animation on the JME thread.
-          engineService.enqueue(() -> {
-
-            animChannel.setAnim(animName);
-            animChannel.setLoopMode(loopMode);
-
-            final float maxTime = animChannel.getAnimMaxTime();
-
-            // update the slider on the AWT thread.
-            SwingUtilities.invokeLater(() -> {
-
-              int max = (int) (maxTime * 1000);
-              animTimelineModel.setMaximum(max);
-
-            });
-          });
-        }
-      }
-    });
-
-    // the extent is the step, basically. How much it moves when you click either side
-    // of the slider knob.
-    // the speed is multiplied by 1000, so 1000 = 1.0f speed. We do this because a JSlider is an INT slider.
-    speedSlider.setModel(new DefaultBoundedRangeModel(1000, 250, 0, 2000));
-    speedSlider.addChangeListener(e -> {
-
-      final float animSpeed = speedSlider.getValue() / 1000f;
-
-      engineService.enqueue(() -> {
-        animChannel.setSpeed(animSpeed);
-      });
-
-    });
-
-    timeSlider.addChangeListener(e -> {
-
-      final float animTime = timeSlider.getValue() / 1000f;
-
-      engineService.enqueue(() -> {
-        animChannel.setTime(animTime);
-      });
-
-    });
-
-    playButton.addActionListener(e -> {
-
-      // pressing stop sets the animSpeed to zero, so we need to set it to the value of the speed slider
-      // when we press play.
-
-      final LoopMode loopMode = (LoopMode) loopModeComboBox.getSelectedItem();
-      final float animSpeed = speedSlider.getValue() / 1000f;
-
-      engineService.enqueue(() -> {
-
-        animChannel.setSpeed(animSpeed);
-        animChannel.setLoopMode(loopMode);
-
-        animChannel.setTime(0);
-      });
-
-    });
-
-    stopButton.addActionListener(e -> {
-      engineService.enqueue(() -> {
-        // set the speed on the animChannel, but not the slider.
-        animChannel.setSpeed(0);
-      });
-
-    });
-
-    // create a timer that queries the animation channel time so we can update the time slider position.
-    timer = new Timer(10, e -> {
-
-      engineService.enqueue(() -> {
-
-        if (animChannel != null) {
-          final float time = animChannel.getTime();
-
-          SwingUtilities.invokeLater(() -> {
-            timeSlider.setValue((int) (time * 1000));
-          });
-
-        }
-
-      });
-
-    });
-
-    timer.setRepeats(true);
-    timer.start();
-
   }
 
   @Override
@@ -189,6 +59,11 @@ public class AnimControlComponent extends AbstractSDKComponent<AnimControl> {
   public void cleanup() {
     ServiceManager.getService(JmeEngineService.class).enqueue(component::clearChannels);
     timer.stop();
+  }
+
+  @Override
+  protected AnimControl computeValue() {
+    return null;
   }
 
   {
@@ -275,4 +150,87 @@ public class AnimControlComponent extends AbstractSDKComponent<AnimControl> {
   }
 
 
+  private void createUIComponents() {
+    final JmeEngineService engineService = ServiceManager.getService(JmeEngineService.class);
+
+    timeSlider = new JSlider();
+    timeSlider.setModel(animTimelineModel);
+    timeSlider.addChangeListener(e -> {
+      final float animTime = timeSlider.getValue() / 1000f;
+      engineService.enqueue(() -> animChannel.setTime(animTime));
+    });
+
+    loopModeComboBox = new JComboBox();
+    DefaultComboBoxModel<LoopMode> loopModeModel = new DefaultComboBoxModel<>(LoopMode.values());
+    loopModeComboBox.setModel(loopModeModel);
+    loopModeComboBox.setSelectedItem(LoopMode.Loop);
+
+    animationsList = new JList();
+
+    engineService.enqueue(() -> {
+      animChannel = component.createChannel();
+      // fill our list
+      SwingUtilities.invokeLater(() -> {
+        DefaultListModel<String> listModel = new DefaultListModel<>();
+        listModel.addAll(component.getAnimationNames());
+        animationsList.setModel(listModel);
+      });
+    });
+
+    animationsList.addMouseListener(new MouseAdapter() {
+      @Override
+      public void mouseClicked(MouseEvent e) {
+        final String animName = animationsList.getSelectedValue();
+        final LoopMode loopMode = (LoopMode) loopModeComboBox.getSelectedItem();
+
+        if (animName != null) {
+          // set the animation on the JME thread.
+          engineService.enqueue(() -> {
+            animChannel.setAnim(animName);
+            animChannel.setLoopMode(loopMode);
+            // update the slider on the AWT thread.
+            SwingUtilities.invokeLater(
+                () -> animTimelineModel.setMaximum((int) (animChannel.getAnimMaxTime() * 1000)));
+          });
+        }
+      }
+    });
+
+    // the extent is the step, basically. How much it moves when you click either side
+    // of the slider knob.
+    // the speed is multiplied by 1000, so 1000 = 1.0f speed. We do this because a JSlider is an INT slider.
+    speedSlider = new JSlider();
+    speedSlider.setModel(new DefaultBoundedRangeModel(1000, 250, 0, 2000));
+    speedSlider.addChangeListener(
+        e -> engineService.enqueue(() -> animChannel.setSpeed(speedSlider.getValue() / 1000f)));
+
+
+    playButton = new JButton();
+    playButton.addActionListener(e -> {
+      // pressing stop sets the animSpeed to zero, so we need to set it to the value of the speed slider
+      // when we press play.
+      engineService.enqueue(() -> {
+        animChannel.setSpeed(speedSlider.getValue() / 1000f);
+        animChannel.setLoopMode((LoopMode) loopModeComboBox.getSelectedItem());
+        animChannel.setTime(0);
+      });
+    });
+
+
+    stopButton = new JButton();
+    // set the speed on the animChannel, but not the slider.
+    stopButton.addActionListener(e -> engineService.enqueue(() -> animChannel.setSpeed(0)));
+
+
+    // create a timer that queries the animation channel time so we can update the time slider position.
+    timer = new Timer(10, e -> {
+      engineService.enqueue(() -> {
+        if (animChannel != null) {
+          SwingUtilities.invokeLater(() -> timeSlider.setValue((int) (animChannel.getTime() * 1000)));
+        }
+      });
+    });
+    timer.setRepeats(true);
+    timer.start();
+  }
 }
