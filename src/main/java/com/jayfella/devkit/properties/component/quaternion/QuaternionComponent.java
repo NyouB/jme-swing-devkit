@@ -14,6 +14,7 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
+import javax.swing.text.InternationalFormatter;
 
 public class QuaternionComponent extends AbstractSDKComponent<Quaternion> {
 
@@ -25,15 +26,14 @@ public class QuaternionComponent extends AbstractSDKComponent<Quaternion> {
   private JFormattedTextField wTextField;
 
   public QuaternionComponent(Quaternion quaternion) {
-    super(quaternion);
-    $$$setupUI$$$();
-    setComponent(quaternion);
+    this(quaternion, null);
   }
 
   public QuaternionComponent(Quaternion quaternion, String propertyName) {
     super(quaternion, propertyName);
     $$$setupUI$$$();
     setComponent(quaternion);
+    bind();
   }
 
   public void setComponent(Quaternion value) {
@@ -41,14 +41,20 @@ public class QuaternionComponent extends AbstractSDKComponent<Quaternion> {
       value = new Quaternion();
     }
     component = value;
-    this.wTextField.setValue(value.getW());
     this.xTextField.setValue(value.getX());
     this.yTextField.setValue(value.getY());
     this.zTextField.setValue(value.getZ());
+    this.wTextField.setValue(value.getW());
   }
 
   public void bind() {
     PropertyChangeListener propertyChangeListener = evt -> {
+      if (!evt.getPropertyName().equals("value")) {
+        return;
+      }
+      if (evt.getOldValue().equals(evt.getNewValue())) {
+        return;
+      }
       setComponent(computeValue());
       firePropertyChange(propertyName, null, component);
     };
@@ -142,51 +148,11 @@ public class QuaternionComponent extends AbstractSDKComponent<Quaternion> {
 
 
   private void createUIComponents() {
-    wTextField = new JFormattedTextField();
-    xTextField = new JFormattedTextField();
-    yTextField = new JFormattedTextField();
-    zTextField = new JFormattedTextField();
-
     FloatFormatFactory floatFormatFactory = new FloatFormatFactory();
-
-    wTextField.setFormatterFactory(floatFormatFactory);
-    xTextField.setFormatterFactory(floatFormatFactory);
-    yTextField.setFormatterFactory(floatFormatFactory);
-    zTextField.setFormatterFactory(floatFormatFactory);
-
-    bind();
-  }
-
-  public JFormattedTextField getxTextField() {
-    return xTextField;
-  }
-
-  public void setxTextField(JFormattedTextField xTextField) {
-    this.xTextField = xTextField;
-  }
-
-  public JFormattedTextField getyTextField() {
-    return yTextField;
-  }
-
-  public void setyTextField(JFormattedTextField yTextField) {
-    this.yTextField = yTextField;
-  }
-
-  public JFormattedTextField getzTextField() {
-    return zTextField;
-  }
-
-  public void setzTextField(JFormattedTextField zTextField) {
-    this.zTextField = zTextField;
-  }
-
-  public JFormattedTextField getwTextField() {
-    return wTextField;
-  }
-
-  public void setwTextField(JFormattedTextField wTextField) {
-    this.wTextField = wTextField;
+    wTextField = new JFormattedTextField(floatFormatFactory);
+    xTextField = new JFormattedTextField(floatFormatFactory);
+    yTextField = new JFormattedTextField(floatFormatFactory);
+    zTextField = new JFormattedTextField(floatFormatFactory);
   }
 
   @Override
@@ -194,8 +160,4 @@ public class QuaternionComponent extends AbstractSDKComponent<Quaternion> {
     return contentPanel;
   }
 
-  @Override
-  public void cleanup() {
-
-  }
 }

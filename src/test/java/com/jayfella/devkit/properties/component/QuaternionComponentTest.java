@@ -4,7 +4,7 @@ import com.jayfella.devkit.properties.component.quaternion.QuaternionComponent;
 import com.jme3.math.Quaternion;
 import org.junit.jupiter.api.Assertions;
 
-class QuaternionComponentTest extends AbstractJmeDevKitTest{
+class QuaternionComponentTest extends AbstractJmeDevKitTest {
 
   QuaternionComponent quaternionComponent;
 
@@ -17,16 +17,12 @@ class QuaternionComponentTest extends AbstractJmeDevKitTest{
   }
 
   @org.junit.jupiter.api.Test
-  void setValue() {
-    quaternionComponent.setComponent(new Quaternion(1,2,3,4));
-    Assertions.assertEquals(1,((Number)quaternionComponent.getwTextField().getValue()).floatValue());
-    Assertions.assertEquals(2,((Number)quaternionComponent.getxTextField().getValue()).floatValue());
-    Assertions.assertEquals(3,((Number)quaternionComponent.getyTextField().getValue()).floatValue());
-    Assertions.assertEquals(4,((Number)quaternionComponent.getzTextField().getValue()).floatValue());
-  }
-
-  @org.junit.jupiter.api.Test
-  void bind() {
+  void setComponent() {
+    quaternionComponent.setComponent(new Quaternion(1, 2, 3, 4));
+    Assertions.assertEquals(1, quaternionComponent.component.getX());
+    Assertions.assertEquals(2, quaternionComponent.component.getY());
+    Assertions.assertEquals(3, quaternionComponent.component.getZ());
+    Assertions.assertEquals(4, quaternionComponent.component.getW());
   }
 
   @org.junit.jupiter.api.Test

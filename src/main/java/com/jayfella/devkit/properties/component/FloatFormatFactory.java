@@ -1,10 +1,12 @@
 package com.jayfella.devkit.properties.component;
 
 import javax.swing.*;
+import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.InternationalFormatter;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import javax.swing.text.NumberFormatter;
 
 public class FloatFormatFactory extends JFormattedTextField.AbstractFormatterFactory {
 
@@ -22,19 +24,22 @@ public class FloatFormatFactory extends JFormattedTextField.AbstractFormatterFac
 
     @Override
     public JFormattedTextField.AbstractFormatter getFormatter(JFormattedTextField tf) {
-
-        NumberFormat format = DecimalFormat.getInstance();
+        // Define the decimal factory.
+        DecimalFormat format = new DecimalFormat(); // And here..
         format.setMinimumFractionDigits(1);
         format.setMaximumFractionDigits(7);
         format.setGroupingUsed(false);
         format.setRoundingMode(RoundingMode.HALF_UP);
-
         InternationalFormatter formatter = new InternationalFormatter(format);
         formatter.setAllowsInvalid(true);
         formatter.setMinimum(min);
         formatter.setMaximum(max);
+        DefaultFormatterFactory factory2 = new DefaultFormatterFactory(formatter);
 
         return formatter;
     }
+
+
+
 
 }
