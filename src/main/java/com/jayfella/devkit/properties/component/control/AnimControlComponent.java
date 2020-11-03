@@ -63,7 +63,7 @@ public class AnimControlComponent extends AbstractSDKComponent<AnimControl> {
 
   @Override
   protected AnimControl computeValue() {
-    return null;
+    return component;
   }
 
   {

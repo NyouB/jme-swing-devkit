@@ -12,7 +12,6 @@ import com.jme3.anim.tween.action.Action;
 import java.awt.Insets;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Collection;
 import javax.swing.DefaultBoundedRangeModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -27,7 +26,7 @@ import javax.swing.Timer;
 
 public class AnimComposerComponent extends AbstractSDKComponent<AnimComposer> {
 
-  private final Timer timer;
+  private Timer timer;
   private final DefaultBoundedRangeModel animTimelineModel = new DefaultBoundedRangeModel(0, 1, 0,
       1000);
   private JList<AnimClip> animationsList;
@@ -41,106 +40,6 @@ public class AnimComposerComponent extends AbstractSDKComponent<AnimComposer> {
 
   public AnimComposerComponent(AnimComposer animComposer) {
     super(animComposer);
-
-    final JmeEngineService engineService = ServiceManager.getService(JmeEngineService.class);
-
-    timeSlider.setModel(animTimelineModel);
-
-    engineService.enqueue(() -> {
-
-      Collection<AnimClip> animClips = animComposer.getAnimClips();
-
-      // fill our list
-      SwingUtilities.invokeLater(() -> {
-
-        DefaultListModel<AnimClip> listModel = new DefaultListModel<>();
-        for (AnimClip clip : animClips) {
-          listModel.addElement(clip);
-        }
-
-        animationsList.setModel(listModel);
-
-      });
-
-
-    });
-
-    animationsList.addMouseListener(new MouseAdapter() {
-      @Override
-      public void mouseClicked(MouseEvent e) {
-
-        final AnimClip selectedClip = animationsList.getSelectedValue();
-
-        if (selectedClip != null) {
-
-          engineService.enqueue(() -> {
-            animClip = selectedClip;
-
-            // int max = (int) (animClip.getLength() * 1000);
-            final double maxTime = animClip.getLength();
-
-            SwingUtilities.invokeLater(() -> {
-
-              int max = (int) (maxTime * 1000);
-              animTimelineModel.setMaximum(max);
-
-            });
-          });
-        }
-      }
-    });
-
-    speedSlider.setModel(new DefaultBoundedRangeModel(1000, 250, 0, 2000));
-    speedSlider.addChangeListener(e -> {
-
-      final float animSpeed = speedSlider.getValue() / 1000f;
-
-      engineService.enqueue(() -> action.setSpeed(animSpeed));
-
-
-    });
-
-    timeSlider.addChangeListener(e -> {
-
-      final float animTime = timeSlider.getValue() / 1000f;
-
-      if (action != null) {
-        engineService.enqueue(() -> animComposer.setTime(AnimComposer.DEFAULT_LAYER, animTime));
-      }
-
-    });
-
-    playButton.addActionListener(e -> {
-
-      final float animSpeed = speedSlider.getValue() / 1000f;
-
-      engineService.enqueue(() -> {
-        action = animComposer.setCurrentAction(animClip.getName());
-        action.setSpeed(animSpeed);
-      });
-
-    });
-
-    stopButton.addActionListener(e -> engineService.enqueue(() -> action.setSpeed(0)));
-
-    // create a timer that queries the animation channel time so we can update the time slider position.
-    timer = new Timer(10, e -> engineService.enqueue(() -> {
-
-      if (animClip != null) {
-
-        final double time = animComposer.getTime(AnimComposer.DEFAULT_LAYER);
-
-        SwingUtilities.invokeLater(() -> {
-          timeSlider.setValue((int) (time * 1000));
-        });
-
-      }
-
-    }));
-
-    timer.setRepeats(true);
-    timer.start();
-
   }
 
   {
@@ -230,4 +129,74 @@ public class AnimComposerComponent extends AbstractSDKComponent<AnimComposer> {
     timer.stop();
   }
 
+  @Override
+  protected AnimComposer computeValue() {
+    return null;
+  }
+
+  private void createUIComponents() {
+    final JmeEngineService engineService = ServiceManager.getService(JmeEngineService.class);
+    timeSlider = new JSlider();
+    timeSlider.setModel(animTimelineModel);
+
+    engineService.enqueue(() -> {
+      // fill our list
+      SwingUtilities.invokeLater(() -> {
+        DefaultListModel<AnimClip> listModel = new DefaultListModel<>();
+        listModel.addAll(component.getAnimClips());
+        animationsList.setModel(listModel);
+      });
+    });
+
+    animationsList = new JList();
+    animationsList.addMouseListener(new MouseAdapter() {
+      @Override
+      public void mouseClicked(MouseEvent e) {
+
+        final AnimClip selectedClip = animationsList.getSelectedValue();
+
+        if (selectedClip != null) {
+          engineService.enqueue(() -> {
+            animClip = selectedClip;
+            SwingUtilities.invokeLater(() -> animTimelineModel.setMaximum((int) (animClip.getLength() * 1000)));
+          });
+        }
+      }
+    });
+
+
+
+    speedSlider = new JSlider();
+    speedSlider.setModel(new DefaultBoundedRangeModel(1000, 250, 0, 2000));
+    speedSlider.addChangeListener(e -> engineService.enqueue(() -> action.setSpeed(speedSlider.getValue() / 1000f)));
+
+    timeSlider = new JSlider();
+    timeSlider.addChangeListener(e -> {
+      if (action != null) {
+        engineService.enqueue(() -> component.setTime(AnimComposer.DEFAULT_LAYER,  timeSlider.getValue() / 1000f));
+      }
+    });
+
+    playButton = new JButton();
+    playButton.addActionListener(e -> engineService.enqueue(() -> {
+      action = component.setCurrentAction(animClip.getName());
+      action.setSpeed(speedSlider.getValue() / 1000f);
+    }));
+
+    stopButton = new JButton();
+    stopButton.addActionListener(e -> engineService.enqueue(() -> action.setSpeed(0)));
+
+    // create a timer that queries the animation channel time so we can update the time slider position.
+    timer = new Timer(10, e -> engineService.enqueue(() -> {
+      if (animClip != null) {
+        SwingUtilities.invokeLater(() -> {
+          timeSlider.setValue((int) (component.getTime(AnimComposer.DEFAULT_LAYER) * 1000));
+        });
+      }
+    }));
+
+    timer.setRepeats(true);
+    timer.start();
+
+  }
 }

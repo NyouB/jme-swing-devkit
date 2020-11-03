@@ -1,5 +1,6 @@
 package com.jayfella.devkit.properties.component.colorgba;
 
+import com.github.weisj.darklaf.listener.MouseClickListener;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.jayfella.devkit.core.ColorConverter;
@@ -58,9 +59,6 @@ public class ColorRGBAComponent extends AbstractSDKComponent<ColorRGBA> {
     colorPanel.revalidate();
   }
 
-  public void bind() {
-    colorPanel.addPropertyChangeListener(propertyChangeListener);
-  }
 
   @Override
   public void setPropertyName(String propertyName) {
@@ -115,43 +113,21 @@ public class ColorRGBAComponent extends AbstractSDKComponent<ColorRGBA> {
 
   private void createUIComponents() {
 
-    colorPanel.addMouseListener(new MouseListener() {
-      @Override
-      public void mouseClicked(MouseEvent e) {
+    colorPanel.addMouseListener((MouseClickListener) e -> {
 
-        Color color = JColorChooser.showDialog(null,
-            "Color",
-            colorPanel.getBackground());
+      Color color = JColorChooser.showDialog(null,
+          "Color",
+          colorPanel.getBackground());
 
-        if (color == null) {
-          return;
-        }
-        ColorRGBA newValue = ColorConverter.toColorRGBA(color);
-        colorValueLabel.setText(String.format("[ %.2f, %.2f, %.2f, %.2f ]",
-            newValue.r, newValue.g, newValue.b, newValue.a));
-        setComponent(newValue);
+      if (color == null) {
+        return;
       }
-
-      @Override
-      public void mousePressed(MouseEvent e) {
-
-      }
-
-      @Override
-      public void mouseReleased(MouseEvent e) {
-
-      }
-
-      @Override
-      public void mouseEntered(MouseEvent e) {
-
-      }
-
-      @Override
-      public void mouseExited(MouseEvent e) {
-
-      }
+      ColorRGBA newValue = ColorConverter.toColorRGBA(color);
+      colorValueLabel.setText(String.format("[ %.2f, %.2f, %.2f, %.2f ]",
+          newValue.r, newValue.g, newValue.b, newValue.a));
+      setComponent(newValue);
     });
+    colorPanel.addPropertyChangeListener(getPropertyChangeListener("background"));
   }
 
   @Override
