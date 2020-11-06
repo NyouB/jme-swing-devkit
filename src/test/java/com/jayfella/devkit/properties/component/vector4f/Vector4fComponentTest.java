@@ -1,17 +1,16 @@
 package com.jayfella.devkit.properties.component.vector4f;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.jayfella.devkit.properties.component.FloatFormatFactory;
 import com.jayfella.devkit.properties.component.SwingTestCase;
 import com.jme3.math.Vector4f;
 import java.text.ParseException;
 import javax.swing.JFormattedTextField;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class Vector4fComponentTest  extends SwingTestCase {
+
 
   Vector4fComponent vector4fComponent;
 

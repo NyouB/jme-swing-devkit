@@ -7,7 +7,6 @@ import com.jayfella.devkit.properties.component.FloatFormatFactory;
 import com.jme3.math.Vector2f;
 import java.awt.Dimension;
 import java.awt.Insets;
-import java.beans.PropertyChangeListener;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
@@ -16,6 +15,8 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 
 public class Vector2fComponent extends AbstractSDKComponent<Vector2f> {
+
+  public static final String LISTENED_PROPERTY_NAME = "value";
 
   private JPanel contentPanel;
   private JLabel propertyNameLabel;
@@ -39,7 +40,6 @@ public class Vector2fComponent extends AbstractSDKComponent<Vector2f> {
   public Vector2fComponent(Vector2f vector2f, String propertyName) {
     super(vector2f, propertyName);
     $$$setupUI$$$();
-    setComponent(vector2f);
     setPropertyName(propertyName);
   }
 
@@ -54,9 +54,7 @@ public class Vector2fComponent extends AbstractSDKComponent<Vector2f> {
   }
 
   public void bind() {
-    PropertyChangeListener textFieldChangeListener = getPropertyChangeListener();
-    xTextField.addPropertyChangeListener("value", textFieldChangeListener);
-    yTextField.addPropertyChangeListener("value", textFieldChangeListener);
+
   }
 
   @Override
@@ -79,6 +77,7 @@ public class Vector2fComponent extends AbstractSDKComponent<Vector2f> {
    */
   private void $$$setupUI$$$() {
     createUIComponents();
+    contentPanel = new JPanel();
     contentPanel.setLayout(new GridLayoutManager(3, 1, new Insets(0, 0, 0, 0), -1, -1));
     final JSeparator separator1 = new JSeparator();
     contentPanel.add(separator1,
@@ -140,8 +139,8 @@ public class Vector2fComponent extends AbstractSDKComponent<Vector2f> {
 
   private void createUIComponents() {
     FloatFormatFactory floatFormatFactory = new FloatFormatFactory();
-    xTextField = new JFormattedTextField(floatFormatFactory);
-    yTextField = new JFormattedTextField(floatFormatFactory);
+    xTextField = new JFormattedTextField(floatFormatFactory, component.x);
+    yTextField = new JFormattedTextField(floatFormatFactory, component.y);
 
     normalizeButton = new JButton();
 
@@ -151,7 +150,8 @@ public class Vector2fComponent extends AbstractSDKComponent<Vector2f> {
       setComponent(normalized);
     });
 
-    bind();
+    xTextField.addPropertyChangeListener(LISTENED_PROPERTY_NAME, propertyChangeListener);
+    yTextField.addPropertyChangeListener(LISTENED_PROPERTY_NAME, propertyChangeListener);
   }
 
   @Override

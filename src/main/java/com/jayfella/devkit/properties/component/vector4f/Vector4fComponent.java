@@ -8,7 +8,6 @@ import com.jayfella.devkit.properties.component.FloatFormatFactory;
 import com.jme3.math.Vector4f;
 import java.awt.Dimension;
 import java.awt.Insets;
-import java.beans.PropertyChangeListener;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
@@ -16,6 +15,8 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 
 public class Vector4fComponent extends AbstractSDKComponent<Vector4f> {
+
+  public static final String LISTENED_PROPERTY_NAME = "value";
 
   private JPanel contentPanel;
   private JLabel propertyNameLabel;
@@ -146,11 +147,10 @@ public class Vector4fComponent extends AbstractSDKComponent<Vector4f> {
     xTextField = new JFormattedTextField(floatFormatFactory, component.x);
     yTextField = new JFormattedTextField(floatFormatFactory, component.y);
     zTextField = new JFormattedTextField(floatFormatFactory, component.z);
-    PropertyChangeListener textFieldChangeListener = getPropertyChangeListener();
-    wTextField.addPropertyChangeListener("value", textFieldChangeListener);
-    xTextField.addPropertyChangeListener("value", textFieldChangeListener);
-    yTextField.addPropertyChangeListener("value", textFieldChangeListener);
-    zTextField.addPropertyChangeListener("value", textFieldChangeListener);
+    wTextField.addPropertyChangeListener(LISTENED_PROPERTY_NAME, propertyChangeListener);
+    xTextField.addPropertyChangeListener(LISTENED_PROPERTY_NAME, propertyChangeListener);
+    yTextField.addPropertyChangeListener(LISTENED_PROPERTY_NAME, propertyChangeListener);
+    zTextField.addPropertyChangeListener(LISTENED_PROPERTY_NAME, propertyChangeListener);
   }
 
   @Override

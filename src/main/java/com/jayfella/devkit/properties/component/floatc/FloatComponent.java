@@ -7,7 +7,6 @@ import com.jayfella.devkit.properties.component.AbstractSDKComponent;
 import com.jayfella.devkit.properties.component.FloatFormatFactory;
 import java.awt.Dimension;
 import java.awt.Insets;
-import java.beans.PropertyChangeListener;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
@@ -15,6 +14,8 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 
 public class FloatComponent extends AbstractSDKComponent<Float> {
+
+  public static final String LISTENED_PROPERTY_NAME = "value";
 
   private JPanel contentPanel;
   private JFormattedTextField valueTextField;
@@ -36,7 +37,6 @@ public class FloatComponent extends AbstractSDKComponent<Float> {
   public FloatComponent(Float value, String propertyName) {
     super(value, propertyName);
     $$$setupUI$$$();
-    setComponent(value);
     setPropertyName(propertyName);
   }
 
@@ -97,10 +97,9 @@ public class FloatComponent extends AbstractSDKComponent<Float> {
   }
 
   private void createUIComponents() {
-    valueTextField = new JFormattedTextField();
     FloatFormatFactory floatFormatFactory = new FloatFormatFactory();
-    valueTextField.setFormatterFactory(floatFormatFactory);
-    valueTextField.addPropertyChangeListener("value", getPropertyChangeListener());
+    valueTextField = new JFormattedTextField(floatFormatFactory, component);
+    valueTextField.addPropertyChangeListener(LISTENED_PROPERTY_NAME, propertyChangeListener);
   }
 
   @Override

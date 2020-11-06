@@ -8,15 +8,15 @@ import com.jayfella.devkit.properties.component.FloatFormatFactory;
 import com.jme3.math.Quaternion;
 import java.awt.Dimension;
 import java.awt.Insets;
-import java.beans.PropertyChangeListener;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
-import javax.swing.text.InternationalFormatter;
 
 public class QuaternionComponent extends AbstractSDKComponent<Quaternion> {
+
+  public static final String LISTENED_PROPERTY_NAME = "value";
 
   private JPanel contentPanel;
   private JFormattedTextField xTextField;
@@ -25,6 +25,10 @@ public class QuaternionComponent extends AbstractSDKComponent<Quaternion> {
   private JLabel propertyNameLabel;
   private JFormattedTextField wTextField;
 
+  public QuaternionComponent() {
+    this(new Quaternion(), null);
+  }
+
   public QuaternionComponent(Quaternion quaternion) {
     this(quaternion, null);
   }
@@ -32,7 +36,6 @@ public class QuaternionComponent extends AbstractSDKComponent<Quaternion> {
   public QuaternionComponent(Quaternion quaternion, String propertyName) {
     super(quaternion, propertyName);
     $$$setupUI$$$();
-    setComponent(quaternion);
     setPropertyName(propertyName);
   }
 
@@ -45,10 +48,6 @@ public class QuaternionComponent extends AbstractSDKComponent<Quaternion> {
     this.yTextField.setValue(value.getY());
     this.zTextField.setValue(value.getZ());
     this.wTextField.setValue(value.getW());
-  }
-
-  public void bind() {
-
   }
 
   public void setPropertyName(String propertyName) {
@@ -137,15 +136,14 @@ public class QuaternionComponent extends AbstractSDKComponent<Quaternion> {
 
   private void createUIComponents() {
     FloatFormatFactory floatFormatFactory = new FloatFormatFactory();
-    wTextField = new JFormattedTextField(floatFormatFactory);
-    xTextField = new JFormattedTextField(floatFormatFactory);
-    yTextField = new JFormattedTextField(floatFormatFactory);
-    zTextField = new JFormattedTextField(floatFormatFactory);
-    PropertyChangeListener textFieldChangeListener = getPropertyChangeListener();
-    wTextField.addPropertyChangeListener("value", textFieldChangeListener);
-    xTextField.addPropertyChangeListener("value", textFieldChangeListener);
-    yTextField.addPropertyChangeListener("value", textFieldChangeListener);
-    zTextField.addPropertyChangeListener("value", textFieldChangeListener);
+    wTextField = new JFormattedTextField(floatFormatFactory, component.getW());
+    xTextField = new JFormattedTextField(floatFormatFactory, component.getX());
+    yTextField = new JFormattedTextField(floatFormatFactory, component.getY());
+    zTextField = new JFormattedTextField(floatFormatFactory, component.getZ());
+    wTextField.addPropertyChangeListener(LISTENED_PROPERTY_NAME, propertyChangeListener);
+    xTextField.addPropertyChangeListener(LISTENED_PROPERTY_NAME, propertyChangeListener);
+    yTextField.addPropertyChangeListener(LISTENED_PROPERTY_NAME, propertyChangeListener);
+    zTextField.addPropertyChangeListener(LISTENED_PROPERTY_NAME, propertyChangeListener);
   }
 
   @Override

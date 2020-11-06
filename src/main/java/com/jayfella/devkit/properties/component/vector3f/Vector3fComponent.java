@@ -7,7 +7,6 @@ import com.jayfella.devkit.properties.component.FloatFormatFactory;
 import com.jme3.math.Vector3f;
 import java.awt.Dimension;
 import java.awt.Insets;
-import java.beans.PropertyChangeListener;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
@@ -16,6 +15,8 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 
 public class Vector3fComponent extends AbstractSDKComponent<Vector3f> {
+
+  public static final String LISTENED_PROPERTY_NAME = "value";
 
   private JPanel contentPanel;
   private JLabel propertyNameLabel;
@@ -39,7 +40,6 @@ public class Vector3fComponent extends AbstractSDKComponent<Vector3f> {
   public Vector3fComponent(Vector3f vector3f, String propertyName) {
     super(vector3f, propertyName);
     $$$setupUI$$$();
-    setComponent(vector3f);
     setPropertyName(propertyName);
   }
 
@@ -76,6 +76,7 @@ public class Vector3fComponent extends AbstractSDKComponent<Vector3f> {
    */
   private void $$$setupUI$$$() {
     createUIComponents();
+    contentPanel = new JPanel();
     contentPanel.setLayout(new GridLayoutManager(3, 1, new Insets(0, 0, 0, 0), -1, -1));
     final JSeparator separator1 = new JSeparator();
     contentPanel.add(separator1,
@@ -148,9 +149,9 @@ public class Vector3fComponent extends AbstractSDKComponent<Vector3f> {
 
   private void createUIComponents() {
     FloatFormatFactory floatFormatFactory = new FloatFormatFactory();
-    xTextField = new JFormattedTextField(floatFormatFactory);
-    yTextField = new JFormattedTextField(floatFormatFactory);
-    zTextField = new JFormattedTextField(floatFormatFactory);
+    xTextField = new JFormattedTextField(floatFormatFactory, component.x);
+    yTextField = new JFormattedTextField(floatFormatFactory, component.y);
+    zTextField = new JFormattedTextField(floatFormatFactory, component.z);
 
     normalizeButton = new JButton();
 
@@ -160,10 +161,9 @@ public class Vector3fComponent extends AbstractSDKComponent<Vector3f> {
       setComponent(normalized);
     });
 
-    PropertyChangeListener textFieldChangeListener = getPropertyChangeListener();
-    xTextField.addPropertyChangeListener("value", textFieldChangeListener);
-    yTextField.addPropertyChangeListener("value", textFieldChangeListener);
-    zTextField.addPropertyChangeListener("value", textFieldChangeListener);
+    xTextField.addPropertyChangeListener(LISTENED_PROPERTY_NAME, propertyChangeListener);
+    yTextField.addPropertyChangeListener(LISTENED_PROPERTY_NAME, propertyChangeListener);
+    zTextField.addPropertyChangeListener(LISTENED_PROPERTY_NAME, propertyChangeListener);
   }
 
   @Override

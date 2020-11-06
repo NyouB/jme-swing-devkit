@@ -3,9 +3,9 @@ package com.jayfella.devkit.properties.component.integer;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.jayfella.devkit.properties.component.AbstractSDKComponent;
+import com.jayfella.devkit.properties.component.IntegerFormatFactory;
 import java.awt.Dimension;
 import java.awt.Insets;
-import java.beans.PropertyChangeListener;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
@@ -14,9 +14,15 @@ import javax.swing.JSeparator;
 
 public class IntegerComponent extends AbstractSDKComponent<Integer> {
 
+  public static final String LISTENED_PROPERTY_NAME = "value";
+
   private JFormattedTextField valueTextField;
   private JPanel contentPanel;
   private JLabel propertyNameLabel;
+
+  public IntegerComponent() {
+    this(0, null);
+  }
 
   public IntegerComponent(Integer value) {
     this(value, null);
@@ -25,7 +31,6 @@ public class IntegerComponent extends AbstractSDKComponent<Integer> {
   public IntegerComponent(Integer value, String propertyName) {
     super(value, propertyName);
     $$$setupUI$$$();
-    setComponent(value);
   }
 
   @Override
@@ -81,8 +86,8 @@ public class IntegerComponent extends AbstractSDKComponent<Integer> {
   }
 
   private void createUIComponents() {
-    valueTextField = new JFormattedTextField();
-    valueTextField.addPropertyChangeListener("value", getPropertyChangeListener());
+    valueTextField = new JFormattedTextField(new IntegerFormatFactory(), component);
+    valueTextField.addPropertyChangeListener(LISTENED_PROPERTY_NAME, propertyChangeListener);
   }
 
   @Override

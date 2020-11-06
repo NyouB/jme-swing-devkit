@@ -8,7 +8,6 @@ import java.awt.Insets;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.EnumSet;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -28,7 +27,6 @@ public class EnumComponent extends AbstractSDKComponent<Enum> {
   public EnumComponent(Enum value, String propertyName) {
     super(value, propertyName);
     $$$setupUI$$$();
-    setComponent(value);
   }
 
   @Override
@@ -57,6 +55,7 @@ public class EnumComponent extends AbstractSDKComponent<Enum> {
    * @noinspection ALL
    */
   private void $$$setupUI$$$() {
+    createUIComponents();
     contentPanel = new JPanel();
     contentPanel.setLayout(new GridLayoutManager(4, 1, new Insets(0, 0, 0, 0), -1, -1));
     propertyNameLabel = new JLabel();
@@ -69,7 +68,6 @@ public class EnumComponent extends AbstractSDKComponent<Enum> {
     contentPanel.add(spacer1, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER,
         GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0,
         false));
-    valueComboBox = new JComboBox();
     contentPanel.add(valueComboBox, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST,
         GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW,
         GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
@@ -88,8 +86,8 @@ public class EnumComponent extends AbstractSDKComponent<Enum> {
   }
 
   private void createUIComponents() {
-    valueComboBox.setModel(new DefaultComboBoxModel<>(
-        (Enum[]) EnumSet.allOf(component.getClass()).toArray()));
+    valueComboBox = new JComboBox(EnumSet.allOf(component.getClass()).toArray());
+    valueComboBox.setSelectedItem(component);
 
     ItemListener itemListener = evt -> {
       if (ItemEvent.DESELECTED == evt.getStateChange()) {

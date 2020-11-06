@@ -11,8 +11,6 @@ import com.jayfella.devkit.service.ServiceManager;
 import com.jme3.asset.AssetNotFoundException;
 import com.jme3.texture.Texture2D;
 import java.awt.Insets;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -133,12 +131,8 @@ public class Texture2DComponent extends AbstractSDKComponent<Texture2D> {
 
     component = value;
     // if the texture is embedded it won't have a key.
-    if (value.getKey() != null) {
-      texturesList.setSelectedValue(component.getKey().getName(), true);
-    } else {
-      texturesList.setSelectedValue(component.getName(), true);
-    }
-
+    String keyString = value.getKey() != null ? component.getKey().getName() : component.getName();
+    texturesList.setSelectedValue(keyString, true);
     this.imagePanel.setTexture(component);
     contentPanel.revalidate();
     contentPanel.repaint();
@@ -222,38 +216,13 @@ public class Texture2DComponent extends AbstractSDKComponent<Texture2D> {
     return contentPanel;
   }
 
+  public void clearTextureSelection() {
+    texturesList.clearSelection();
+    setComponent(null);
+  }
 
   private void createUIComponents() {
-    clearTextureButton.addActionListener(e -> {
-
-      texturesList.clearSelection();
-
-      imagePanel.setTexture(null);
-
-      contentPanel.revalidate();
-      contentPanel.repaint();
-
-      setComponent(null);
-    });
-
-    texturesList.addMouseListener(new MouseAdapter() {
-      @Override
-      public void mouseClicked(MouseEvent e) {
-
-        String newValue = texturesList.getSelectedValue();
-        if (newValue == null) {
-          return;
-        }
-
-        Texture2D texture2D = (Texture2D) ServiceManager.getService(JmeEngineService.class)
-            .getAssetManager().loadTexture(newValue);
-
-        setComponent(texture2D);
-        imagePanel.setTexture(texture2D);
-        imagePanel.revalidate();
-        imagePanel.repaint();
-      }
-    });
+    clearTextureButton.addActionListener(e -> clearTextureSelection());
 
     ListSelectionListener listSelectionListener = evt -> {
       ListSelectionModel lsm = (ListSelectionModel) evt.getSource();

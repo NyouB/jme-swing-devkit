@@ -5,7 +5,6 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.jayfella.devkit.properties.component.AbstractSDKComponent;
 import java.awt.Dimension;
 import java.awt.Insets;
-import java.beans.PropertyChangeListener;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -18,6 +17,10 @@ public class StringComponent extends AbstractSDKComponent<String> {
   private JLabel propertyNameLabel;
   private JPanel contentPanel;
 
+  public StringComponent() {
+    this("", null);
+  }
+
   public StringComponent(String value) {
     this(value, null);
   }
@@ -25,7 +28,6 @@ public class StringComponent extends AbstractSDKComponent<String> {
   public StringComponent(String value, String propertyName) {
     super(value);
     $$$setupUI$$$();
-    setComponent(value);
     setPropertyName(propertyName);
   }
 
@@ -89,8 +91,7 @@ public class StringComponent extends AbstractSDKComponent<String> {
   }
 
   private void createUIComponents() {
-    valueTextField = new JTextField();
-    PropertyChangeListener textFieldChangeListener = getPropertyChangeListener();
-    valueTextField.addPropertyChangeListener("value", textFieldChangeListener);
+    valueTextField = new JTextField(component);
+    valueTextField.addPropertyChangeListener("value", propertyChangeListener);
   }
 }

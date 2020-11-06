@@ -9,9 +9,6 @@ import com.jme3.math.ColorRGBA;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Insets;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.beans.PropertyChangeListener;
 import javax.swing.BorderFactory;
 import javax.swing.JColorChooser;
 import javax.swing.JComponent;
@@ -21,6 +18,8 @@ import javax.swing.JSeparator;
 import javax.swing.border.TitledBorder;
 
 public class ColorRGBAComponent extends AbstractSDKComponent<ColorRGBA> {
+
+  public static final String LISTENED_PROPERTY_NAME = "background";
 
   private JPanel contentPanel;
   private JLabel propertyNameLabel;
@@ -42,7 +41,6 @@ public class ColorRGBAComponent extends AbstractSDKComponent<ColorRGBA> {
   public ColorRGBAComponent(ColorRGBA colorRGBA, String propertyName) {
     super(colorRGBA, propertyName);
     $$$setupUI$$$();
-    setComponent(colorRGBA);
   }
 
   @Override
@@ -54,7 +52,6 @@ public class ColorRGBAComponent extends AbstractSDKComponent<ColorRGBA> {
     colorPanel.setBackground(ColorConverter.toColor(component));
     colorValueLabel.setText(String.format("[ %.2f, %.2f, %.2f, %.2f ]",
         component.r, component.g, component.b, component.a));
-
     colorPanel.repaint();
     colorPanel.revalidate();
   }
@@ -112,7 +109,8 @@ public class ColorRGBAComponent extends AbstractSDKComponent<ColorRGBA> {
   }
 
   private void createUIComponents() {
-
+    colorPanel = new JPanel();
+    colorPanel.setBackground(ColorConverter.toColor(component));
     colorPanel.addMouseListener((MouseClickListener) e -> {
 
       Color color = JColorChooser.showDialog(null,
@@ -127,7 +125,7 @@ public class ColorRGBAComponent extends AbstractSDKComponent<ColorRGBA> {
           newValue.r, newValue.g, newValue.b, newValue.a));
       setComponent(newValue);
     });
-    colorPanel.addPropertyChangeListener("background", getPropertyChangeListener());
+    colorPanel.addPropertyChangeListener(LISTENED_PROPERTY_NAME, propertyChangeListener);
   }
 
   @Override

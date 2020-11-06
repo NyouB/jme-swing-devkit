@@ -4,13 +4,14 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.jayfella.devkit.properties.component.AbstractSDKComponent;
 import java.awt.Insets;
-import java.beans.PropertyChangeListener;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 
 public class BooleanComponent extends AbstractSDKComponent<Boolean> {
+
+  public static final String LISTENED_PROPERTY_NAME = "selected";
 
   private JCheckBox checkBox;
   private JPanel contentPanel;
@@ -30,7 +31,6 @@ public class BooleanComponent extends AbstractSDKComponent<Boolean> {
   public BooleanComponent(Boolean bool, String propertyName) {
     super(bool != null && bool, propertyName);
     $$$setupUI$$$();
-    setComponent(bool);
     setPropertyName(propertyName);
   }
 
@@ -86,6 +86,7 @@ public class BooleanComponent extends AbstractSDKComponent<Boolean> {
 
   private void createUIComponents() {
     checkBox = new JCheckBox();
-    checkBox.addPropertyChangeListener("selected", getPropertyChangeListener());
+    checkBox.setSelected(component);
+    checkBox.addPropertyChangeListener(LISTENED_PROPERTY_NAME, propertyChangeListener);
   }
 }

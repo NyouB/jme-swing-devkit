@@ -2,8 +2,6 @@ package com.jayfella.devkit.properties.component;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public abstract class AbstractSDKComponent<T> implements SdkComponent {
   /*
@@ -50,19 +48,17 @@ public abstract class AbstractSDKComponent<T> implements SdkComponent {
 
   }
 
-  public PropertyChangeListener getPropertyChangeListener() {
-    return evt -> {
-      if ((evt.getOldValue() !=null && evt.getOldValue().equals(evt.getNewValue()))) {
-        return;
-      }
-      T oldComponent = component;
-      T newComponent = computeValue();
-      if(!oldComponent.equals(newComponent)){
-        setComponent(newComponent);
-        firePropertyChange(propertyName, oldComponent, component);
-      }
-    };
-  }
+  protected PropertyChangeListener propertyChangeListener = evt -> {
+    if ((evt.getOldValue() != null && evt.getOldValue().equals(evt.getNewValue()))) {
+      return;
+    }
+    T oldComponent = component;
+    T newComponent = computeValue();
+    if (!oldComponent.equals(newComponent)) {
+      setComponent(newComponent);
+      firePropertyChange(propertyName, oldComponent, component);
+    }
+  };
 
 
   protected abstract T computeValue();
