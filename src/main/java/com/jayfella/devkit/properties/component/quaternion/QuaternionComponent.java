@@ -141,11 +141,11 @@ public class QuaternionComponent extends AbstractSDKComponent<Quaternion> {
     xTextField = new JFormattedTextField(floatFormatFactory);
     yTextField = new JFormattedTextField(floatFormatFactory);
     zTextField = new JFormattedTextField(floatFormatFactory);
-    PropertyChangeListener textFieldChangeListener = getPropertyChangeListener("value");
-    wTextField.addPropertyChangeListener(textFieldChangeListener);
-    xTextField.addPropertyChangeListener(textFieldChangeListener);
-    yTextField.addPropertyChangeListener(textFieldChangeListener);
-    zTextField.addPropertyChangeListener(textFieldChangeListener);
+    PropertyChangeListener textFieldChangeListener = getPropertyChangeListener();
+    wTextField.addPropertyChangeListener("value", textFieldChangeListener);
+    xTextField.addPropertyChangeListener("value", textFieldChangeListener);
+    yTextField.addPropertyChangeListener("value", textFieldChangeListener);
+    zTextField.addPropertyChangeListener("value", textFieldChangeListener);
   }
 
   @Override

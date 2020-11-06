@@ -19,7 +19,7 @@ public class StringComponent extends AbstractSDKComponent<String> {
   private JPanel contentPanel;
 
   public StringComponent(String value) {
-   this(value ,null);
+    this(value, null);
   }
 
   public StringComponent(String value, String propertyName) {
@@ -52,6 +52,7 @@ public class StringComponent extends AbstractSDKComponent<String> {
    * @noinspection ALL
    */
   private void $$$setupUI$$$() {
+    createUIComponents();
     contentPanel = new JPanel();
     contentPanel.setLayout(new GridLayoutManager(3, 1, new Insets(0, 0, 0, 0), -1, -1));
     propertyNameLabel = new JLabel();
@@ -60,7 +61,6 @@ public class StringComponent extends AbstractSDKComponent<String> {
         new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
             GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0,
             false));
-    valueTextField = new JTextField();
     contentPanel.add(valueTextField, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST,
         GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW,
         GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
@@ -90,7 +90,7 @@ public class StringComponent extends AbstractSDKComponent<String> {
 
   private void createUIComponents() {
     valueTextField = new JTextField();
-    PropertyChangeListener textFieldChangeListener = getPropertyChangeListener("value");
-    valueTextField.addPropertyChangeListener(textFieldChangeListener);
+    PropertyChangeListener textFieldChangeListener = getPropertyChangeListener();
+    valueTextField.addPropertyChangeListener("value", textFieldChangeListener);
   }
 }

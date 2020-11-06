@@ -127,7 +127,7 @@ public class ColorRGBAComponent extends AbstractSDKComponent<ColorRGBA> {
           newValue.r, newValue.g, newValue.b, newValue.a));
       setComponent(newValue);
     });
-    colorPanel.addPropertyChangeListener(getPropertyChangeListener("background"));
+    colorPanel.addPropertyChangeListener("background", getPropertyChangeListener());
   }
 
   @Override

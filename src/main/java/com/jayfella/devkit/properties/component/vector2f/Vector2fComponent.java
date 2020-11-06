@@ -54,9 +54,9 @@ public class Vector2fComponent extends AbstractSDKComponent<Vector2f> {
   }
 
   public void bind() {
-    PropertyChangeListener textFieldChangeListener = getPropertyChangeListener("value");
-    xTextField.addPropertyChangeListener(textFieldChangeListener);
-    yTextField.addPropertyChangeListener(textFieldChangeListener);
+    PropertyChangeListener textFieldChangeListener = getPropertyChangeListener();
+    xTextField.addPropertyChangeListener("value", textFieldChangeListener);
+    yTextField.addPropertyChangeListener("value", textFieldChangeListener);
   }
 
   @Override

@@ -50,9 +50,9 @@ public abstract class AbstractSDKComponent<T> implements SdkComponent {
 
   }
 
-  public PropertyChangeListener getPropertyChangeListener(String propertyName) {
+  public PropertyChangeListener getPropertyChangeListener() {
     return evt -> {
-      if (!evt.getPropertyName().equals(propertyName) || evt.getOldValue().equals(evt.getNewValue())) {
+      if ((evt.getOldValue() !=null && evt.getOldValue().equals(evt.getNewValue()))) {
         return;
       }
       T oldComponent = component;

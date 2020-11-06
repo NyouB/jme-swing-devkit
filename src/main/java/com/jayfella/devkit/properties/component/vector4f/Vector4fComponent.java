@@ -40,7 +40,6 @@ public class Vector4fComponent extends AbstractSDKComponent<Vector4f> {
   public Vector4fComponent(Vector4f vector4f, String propertyName) {
     super(vector4f, propertyName);
     $$$setupUI$$$();
-    setComponent(vector4f);
     setPropertyName(propertyName);
   }
 
@@ -61,7 +60,7 @@ public class Vector4fComponent extends AbstractSDKComponent<Vector4f> {
     float x = ((Number) xTextField.getValue()).floatValue();
     float y = ((Number) yTextField.getValue()).floatValue();
     float z = ((Number) zTextField.getValue()).floatValue();
-    return new Vector4f(w, x, y, z);
+    return new Vector4f(x, y, z, w);
   }
 
   @Override
@@ -143,15 +142,15 @@ public class Vector4fComponent extends AbstractSDKComponent<Vector4f> {
 
   private void createUIComponents() {
     FloatFormatFactory floatFormatFactory = new FloatFormatFactory();
-    wTextField = new JFormattedTextField(floatFormatFactory);
-    xTextField = new JFormattedTextField(floatFormatFactory);
-    yTextField = new JFormattedTextField(floatFormatFactory);
-    zTextField = new JFormattedTextField(floatFormatFactory);
-    PropertyChangeListener textFieldChangeListener = getPropertyChangeListener("value");
-    wTextField.addPropertyChangeListener(textFieldChangeListener);
-    xTextField.addPropertyChangeListener(textFieldChangeListener);
-    yTextField.addPropertyChangeListener(textFieldChangeListener);
-    zTextField.addPropertyChangeListener(textFieldChangeListener);
+    wTextField = new JFormattedTextField(floatFormatFactory, component.w);
+    xTextField = new JFormattedTextField(floatFormatFactory, component.x);
+    yTextField = new JFormattedTextField(floatFormatFactory, component.y);
+    zTextField = new JFormattedTextField(floatFormatFactory, component.z);
+    PropertyChangeListener textFieldChangeListener = getPropertyChangeListener();
+    wTextField.addPropertyChangeListener("value", textFieldChangeListener);
+    xTextField.addPropertyChangeListener("value", textFieldChangeListener);
+    yTextField.addPropertyChangeListener("value", textFieldChangeListener);
+    zTextField.addPropertyChangeListener("value", textFieldChangeListener);
   }
 
   @Override

@@ -56,13 +56,12 @@ public class AnimComposerComponent extends AbstractSDKComponent<AnimComposer> {
    * @noinspection ALL
    */
   private void $$$setupUI$$$() {
+    createUIComponents();
     contentPanel = new JPanel();
     contentPanel.setLayout(new GridLayoutManager(4, 2, new Insets(0, 0, 0, 0), -1, -1));
-    timeSlider = new JSlider();
     contentPanel.add(timeSlider, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_WEST,
         GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW,
         GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-    speedSlider = new JSlider();
     contentPanel.add(speedSlider, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_WEST,
         GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW,
         GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
@@ -85,13 +84,11 @@ public class AnimComposerComponent extends AbstractSDKComponent<AnimComposer> {
             GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
             GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null,
             null, 0, false));
-    playButton = new JButton();
     playButton.setText("Play");
     panel1.add(playButton,
         new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE,
             GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
             GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-    stopButton = new JButton();
     stopButton.setText("Stop");
     panel1.add(stopButton,
         new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE,
@@ -107,7 +104,6 @@ public class AnimComposerComponent extends AbstractSDKComponent<AnimComposer> {
             GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW,
             GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null,
             null, null, 0, false));
-    animationsList = new JList();
     scrollPane1.setViewportView(animationsList);
   }
 
@@ -158,22 +154,23 @@ public class AnimComposerComponent extends AbstractSDKComponent<AnimComposer> {
         if (selectedClip != null) {
           engineService.enqueue(() -> {
             animClip = selectedClip;
-            SwingUtilities.invokeLater(() -> animTimelineModel.setMaximum((int) (animClip.getLength() * 1000)));
+            SwingUtilities.invokeLater(
+                () -> animTimelineModel.setMaximum((int) (animClip.getLength() * 1000)));
           });
         }
       }
     });
 
-
-
     speedSlider = new JSlider();
     speedSlider.setModel(new DefaultBoundedRangeModel(1000, 250, 0, 2000));
-    speedSlider.addChangeListener(e -> engineService.enqueue(() -> action.setSpeed(speedSlider.getValue() / 1000f)));
+    speedSlider.addChangeListener(
+        e -> engineService.enqueue(() -> action.setSpeed(speedSlider.getValue() / 1000f)));
 
     timeSlider = new JSlider();
     timeSlider.addChangeListener(e -> {
       if (action != null) {
-        engineService.enqueue(() -> component.setTime(AnimComposer.DEFAULT_LAYER,  timeSlider.getValue() / 1000f));
+        engineService.enqueue(
+            () -> component.setTime(AnimComposer.DEFAULT_LAYER, timeSlider.getValue() / 1000f));
       }
     });
 

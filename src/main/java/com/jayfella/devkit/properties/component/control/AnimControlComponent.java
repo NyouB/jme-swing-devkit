@@ -80,6 +80,7 @@ public class AnimControlComponent extends AbstractSDKComponent<AnimControl> {
    * @noinspection ALL
    */
   private void $$$setupUI$$$() {
+    createUIComponents();
     contentPanel = new JPanel();
     contentPanel.setLayout(new GridLayoutManager(4, 3, new Insets(0, 0, 0, 0), -1, -1));
     final JPanel panel1 = new JPanel();
@@ -89,7 +90,6 @@ public class AnimControlComponent extends AbstractSDKComponent<AnimControl> {
             GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
             GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null,
             null, 0, false));
-    playButton = new JButton();
     playButton.setText("Play");
     panel1.add(playButton, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER,
         GridConstraints.FILL_HORIZONTAL,
@@ -99,7 +99,6 @@ public class AnimControlComponent extends AbstractSDKComponent<AnimControl> {
     panel1.add(spacer1, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER,
         GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null,
         0, false));
-    stopButton = new JButton();
     stopButton.setText("Stop");
     panel1.add(stopButton, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER,
         GridConstraints.FILL_HORIZONTAL,
@@ -111,7 +110,6 @@ public class AnimControlComponent extends AbstractSDKComponent<AnimControl> {
         new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE,
             GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0,
             false));
-    timeSlider = new JSlider();
     contentPanel.add(timeSlider, new GridConstraints(2, 1, 1, 2, GridConstraints.ANCHOR_WEST,
         GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW,
         GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
@@ -121,11 +119,9 @@ public class AnimControlComponent extends AbstractSDKComponent<AnimControl> {
         new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE,
             GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0,
             false));
-    speedSlider = new JSlider();
     contentPanel.add(speedSlider, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_WEST,
         GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW,
         GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-    loopModeComboBox = new JComboBox();
     contentPanel.add(loopModeComboBox, new GridConstraints(3, 2, 1, 1, GridConstraints.ANCHOR_WEST,
         GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW,
         GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
@@ -138,7 +134,6 @@ public class AnimControlComponent extends AbstractSDKComponent<AnimControl> {
     scrollPane1.setBorder(BorderFactory
         .createTitledBorder(BorderFactory.createLoweredBevelBorder(), null,
             TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-    animationsList = new JList();
     scrollPane1.setViewportView(animationsList);
   }
 
@@ -204,7 +199,6 @@ public class AnimControlComponent extends AbstractSDKComponent<AnimControl> {
     speedSlider.addChangeListener(
         e -> engineService.enqueue(() -> animChannel.setSpeed(speedSlider.getValue() / 1000f)));
 
-
     playButton = new JButton();
     playButton.addActionListener(e -> {
       // pressing stop sets the animSpeed to zero, so we need to set it to the value of the speed slider
@@ -216,17 +210,16 @@ public class AnimControlComponent extends AbstractSDKComponent<AnimControl> {
       });
     });
 
-
     stopButton = new JButton();
     // set the speed on the animChannel, but not the slider.
     stopButton.addActionListener(e -> engineService.enqueue(() -> animChannel.setSpeed(0)));
-
 
     // create a timer that queries the animation channel time so we can update the time slider position.
     timer = new Timer(10, e -> {
       engineService.enqueue(() -> {
         if (animChannel != null) {
-          SwingUtilities.invokeLater(() -> timeSlider.setValue((int) (animChannel.getTime() * 1000)));
+          SwingUtilities
+              .invokeLater(() -> timeSlider.setValue((int) (animChannel.getTime() * 1000)));
         }
       });
     });

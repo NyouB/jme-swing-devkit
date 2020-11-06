@@ -82,7 +82,7 @@ public class IntegerComponent extends AbstractSDKComponent<Integer> {
 
   private void createUIComponents() {
     valueTextField = new JFormattedTextField();
-    valueTextField.addPropertyChangeListener(getPropertyChangeListener("value"));
+    valueTextField.addPropertyChangeListener("value", getPropertyChangeListener());
   }
 
   @Override

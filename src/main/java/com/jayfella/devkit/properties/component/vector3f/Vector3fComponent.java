@@ -160,10 +160,10 @@ public class Vector3fComponent extends AbstractSDKComponent<Vector3f> {
       setComponent(normalized);
     });
 
-    PropertyChangeListener textFieldChangeListener = getPropertyChangeListener("value");
-    xTextField.addPropertyChangeListener(textFieldChangeListener);
-    yTextField.addPropertyChangeListener(textFieldChangeListener);
-    zTextField.addPropertyChangeListener(textFieldChangeListener);
+    PropertyChangeListener textFieldChangeListener = getPropertyChangeListener();
+    xTextField.addPropertyChangeListener("value", textFieldChangeListener);
+    yTextField.addPropertyChangeListener("value", textFieldChangeListener);
+    zTextField.addPropertyChangeListener("value", textFieldChangeListener);
   }
 
   @Override
