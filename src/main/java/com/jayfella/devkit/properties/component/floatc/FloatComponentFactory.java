@@ -7,7 +7,7 @@ import com.jayfella.devkit.properties.component.SDKComponentFactory;
 public class FloatComponentFactory implements SDKComponentFactory<Float> {
 
   @Override
-  public AbstractSDKComponent<Float> create(Float object) {
-    return new FloatComponent(object);
+  public AbstractSDKComponent<Float> create(Float object, String propertyName) {
+    return new FloatComponent(object, propertyName);
   }
 }

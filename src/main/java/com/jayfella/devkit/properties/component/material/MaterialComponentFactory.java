@@ -8,7 +8,7 @@ import com.jme3.material.Material;
 public class MaterialComponentFactory implements SDKComponentFactory<Material> {
 
   @Override
-  public AbstractSDKComponent<Material> create(Material object) {
-    return new MaterialChooserComponent(object);
+  public AbstractSDKComponent<Material> create(Material object, String propertyName) {
+    return new MaterialChooserComponent(object, propertyName);
   }
 }

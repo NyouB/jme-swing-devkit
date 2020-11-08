@@ -6,7 +6,7 @@ import com.jayfella.devkit.properties.component.SDKComponentFactory;
 public class BooleanComponentFactory implements SDKComponentFactory<Boolean> {
 
   @Override
-  public AbstractSDKComponent<Boolean> create(Boolean object) {
-    return new BooleanComponent(object);
+  public AbstractSDKComponent<Boolean> create(Boolean object, String propertyName) {
+    return new BooleanComponent(object, propertyName);
   }
 }

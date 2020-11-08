@@ -1,6 +1,7 @@
 package com.jayfella.devkit.service;
 
 import com.google.common.collect.ImmutableMap;
+import com.jayfella.devkit.config.DevKitConfig;
 import com.jayfella.devkit.properties.builder.MaterialComponentSetFactory;
 import com.jayfella.devkit.properties.builder.PropertySectionBuilderFactory;
 import com.jayfella.devkit.properties.builder.SpatialComponentSetFactory;
@@ -80,7 +81,8 @@ public class RegistrationService implements Service {
     registerComponentFactory(Integer.class, new IntegerComponentFactory());
     registerComponentFactory(Quaternion.class, new QuaternionComponentFactory());
     registerComponentFactory(String.class, new StringComponentFactory());
-    registerComponentFactory(Texture2D.class, new Texture2DComponentFactory());
+    registerComponentFactory(Texture2D.class, new Texture2DComponentFactory(ServiceManager.getService(JmeEngineService.class)
+        .getAssetManager(), DevKitConfig.getInstance().getProjectConfig().getAssetRootDir()));
     registerComponentFactory(Vector2f.class, new Vector2fComponentFactory());
     registerComponentFactory(Vector3f.class, new Vector3fComponentFactory());
     registerComponentFactory(Vector4f.class, new Vector4fComponentFactory());

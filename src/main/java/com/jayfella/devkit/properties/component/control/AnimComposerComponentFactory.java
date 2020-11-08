@@ -7,7 +7,7 @@ import com.jme3.anim.AnimComposer;
 public class AnimComposerComponentFactory implements SDKComponentFactory<AnimComposer> {
 
   @Override
-  public AbstractSDKComponent<AnimComposer> create(AnimComposer object) {
+  public AbstractSDKComponent<AnimComposer> create(AnimComposer object, String propertyName) {
     return new AnimComposerComponent(object);
   }
 }

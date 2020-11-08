@@ -8,7 +8,7 @@ import com.jme3.math.Vector2f;
 public class Vector2fComponentFactory implements SDKComponentFactory<Vector2f> {
 
   @Override
-  public AbstractSDKComponent<Vector2f> create(Vector2f object) {
-    return new Vector2fComponent(object);
+  public AbstractSDKComponent<Vector2f> create(Vector2f object, String propertyName) {
+    return new Vector2fComponent(object, propertyName);
   }
 }

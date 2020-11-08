@@ -7,7 +7,7 @@ import com.jme3.animation.AnimControl;
 public class AnimControlComponentFactory implements SDKComponentFactory<AnimControl> {
 
   @Override
-  public AbstractSDKComponent<AnimControl> create(AnimControl object) {
+  public AbstractSDKComponent<AnimControl> create(AnimControl object, String propertyName) {
     return new AnimControlComponent(object);
   }
 }

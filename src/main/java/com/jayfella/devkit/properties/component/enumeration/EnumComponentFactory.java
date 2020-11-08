@@ -7,7 +7,7 @@ import com.jayfella.devkit.properties.component.SDKComponentFactory;
 public class EnumComponentFactory implements SDKComponentFactory<Enum> {
 
   @Override
-  public AbstractSDKComponent<Enum> create(Enum object) {
-    return new EnumComponent(object);
+  public AbstractSDKComponent<Enum> create(Enum object, String propertyName) {
+    return new EnumComponent(object ,propertyName);
   }
 }

@@ -8,7 +8,7 @@ import com.jme3.math.Quaternion;
 public class QuaternionComponentFactory implements SDKComponentFactory<Quaternion> {
 
   @Override
-  public AbstractSDKComponent<Quaternion> create(Quaternion object) {
-    return new QuaternionComponent(object);
+  public AbstractSDKComponent<Quaternion> create(Quaternion object, String propertyName) {
+    return new QuaternionComponent(object, propertyName);
   }
 }

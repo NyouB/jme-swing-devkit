@@ -22,7 +22,7 @@ public class Texture2DPanel extends JPanel {
 
     public void setTexture(Texture2D texture2D) {
 
-        if (texture2D != null) {
+        if (texture2D != null && texture2D.getImage()!=null) {
 
 
             // this is slow.. but it works.

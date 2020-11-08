@@ -7,6 +7,8 @@ import com.jayfella.devkit.properties.component.SwingTestCase;
 import com.jme3.math.Vector4f;
 import java.text.ParseException;
 import javax.swing.JFormattedTextField;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 import org.junit.jupiter.api.Test;
 
 class Vector4fComponentTest  extends SwingTestCase {
@@ -35,5 +37,19 @@ class Vector4fComponentTest  extends SwingTestCase {
 
     xTextField.setValue(8.f);
     assertEquals("8,0", xTextField.getText());
+  }
+
+
+  public static final void main(String[] args) throws ParseException {
+    JFrame frame = new JFrame("Test");
+    frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+    frame.add(new Vector4fComponent().getJComponent());
+    frame.pack();
+    frame.setVisible(true);
+    SwingUtilities.invokeLater(() ->{
+        frame.add(new Vector4fComponent().getJComponent());
+    frame.pack();
+    frame.setVisible(true);
+    });
   }
 }

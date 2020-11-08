@@ -7,7 +7,7 @@ import com.jme3.math.ColorRGBA;
 public class ColorRGBAComponentFactory implements SDKComponentFactory<ColorRGBA> {
 
   @Override
-  public AbstractSDKComponent<ColorRGBA> create(ColorRGBA object) {
-    return new ColorRGBAComponent(object);
+  public AbstractSDKComponent<ColorRGBA> create(ColorRGBA object, String propertyName) {
+    return new ColorRGBAComponent(object, propertyName);
   }
 }

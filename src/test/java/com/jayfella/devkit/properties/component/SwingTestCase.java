@@ -16,6 +16,7 @@ public abstract class SwingTestCase {
     if (this.testFrame == null) {
       this.testFrame = new JFrame("Test");
     }
+    testFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     return this.testFrame;
   }
 }

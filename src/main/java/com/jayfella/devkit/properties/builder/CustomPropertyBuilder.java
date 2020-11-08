@@ -67,7 +67,7 @@ public class CustomPropertyBuilder extends AbstractPropertySectionBuilder<Object
       throws IllegalAccessException {
     Object fieldObject = field.get(object);
     AbstractSDKComponent component = ServiceManager.getService(RegistrationService.class)
-        .getComponentFactoryFor(fieldObject.getClass()).create(fieldObject);
+        .getComponentFactoryFor(fieldObject.getClass()).create(fieldObject, field.getName());
     if (component != null) {
       bind(field, component);
       component.setPropertyName(field.getName());

@@ -110,7 +110,7 @@ public class PropertyInspectorService implements Service {
           .getService(RegistrationService.class)
           .getControlComponentFactoryFor(control.getClass());
       if (factory != null) {
-        AbstractSDKComponent component = factory.create(object);
+        AbstractSDKComponent component = factory.create(object, null);
         PropertySection propertySection = new PropertySection(control.getClass().getSimpleName(),
             component);
         List<PropertySection> propertySections = new ArrayList<>();
