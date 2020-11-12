@@ -10,3 +10,5 @@ devkit/devkit-config.json
 out/
 
 *.dylib
+
+*.DS_Store

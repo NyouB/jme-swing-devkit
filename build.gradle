@@ -9,7 +9,7 @@ plugins {
 }
 
 group 'com.jayfella'
-version '1.0.18'
+version '1.1.1'
 
 publishing {
     publications {
@@ -34,7 +34,10 @@ java {
 }
 
 
-
+javadoc {
+    source = sourceSets.main.allJava
+    options.tags = [ "noinspection" ]
+}
 
 
 mainClassName = "com.jayfella.devkit.Main"

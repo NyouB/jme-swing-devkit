@@ -77,9 +77,7 @@ public class BooleanComponent extends AbstractSDKComponent<Boolean> {
             null, 0, false));
   }
 
-  /**
-   * @noinspection ALL
-   */
+
   public JComponent $$$getRootComponent$$$() {
     return contentPanel;
   }

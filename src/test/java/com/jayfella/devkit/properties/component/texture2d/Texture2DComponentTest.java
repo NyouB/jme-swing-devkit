@@ -2,6 +2,7 @@ package com.jayfella.devkit.properties.component.texture2d;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.jayfella.devkit.CustomAWTLoader;
 import com.jayfella.devkit.properties.component.vector4f.Vector4fComponent;
 import com.jayfella.devkit.service.JmeEngineService;
 import com.jayfella.devkit.service.ServiceManager;
@@ -44,7 +45,8 @@ class Texture2DComponentTest {
 
   public static final void main(String[] args) throws ParseException {
     DesktopAssetManager assetManager = new DesktopAssetManager();
-    assetManager.registerLoader(AWTLoader.class, "png", "jpg");
+    assetManager.registerLoader(CustomAWTLoader.class, "png", "jpg", "gif", "jpeg");
+    //assetManager.registerLoader(AWTLoader.class, "tiff", "bmp");
     assetManager.registerLocator(TEST_ASSET_ROOT_DIRECTORY, FileLocator.class);
 
     JFrame frame = new JFrame("Test");
@@ -59,21 +61,5 @@ class Texture2DComponentTest {
     });
   }
 
-  public static final String RESOURCES_FOLDER_STRING = "src/test/resources";
 
-  @Test
-  void findTextureFiles() throws IOException {
-    File missingTexture = new File(RESOURCES_FOLDER_STRING+"/assetTest/textures/missing-texture.png");
-    File texture1 = new File(RESOURCES_FOLDER_STRING+"/assetTest/textures/texture1.jpg");
-    File texture2 = new File(RESOURCES_FOLDER_STRING+"/assetTest/textures/texture2.jpg");
-    File texture3 = new File(RESOURCES_FOLDER_STRING+"/assetTest/textures/texture3.jpg");
-
-    List<Path> textureList = Texture2DComponent
-        .findTextureFiles(RESOURCES_FOLDER_STRING+"/assetTest");
-    assertEquals(4, textureList.size());
-    assertTrue(textureList.contains(missingTexture.toPath()));
-    assertTrue(textureList.contains(texture1.toPath()));
-    assertTrue(textureList.contains(texture2.toPath()));
-    assertTrue(textureList.contains(texture3.toPath()));
-  }
 }

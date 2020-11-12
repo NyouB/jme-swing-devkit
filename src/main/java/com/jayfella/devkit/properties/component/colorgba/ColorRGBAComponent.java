@@ -101,9 +101,6 @@ public class ColorRGBAComponent extends AbstractSDKComponent<ColorRGBA> {
             null, 0, false));
   }
 
-  /**
-   * @noinspection ALL
-   */
   public JComponent $$$getRootComponent$$$() {
     return contentPanel;
   }

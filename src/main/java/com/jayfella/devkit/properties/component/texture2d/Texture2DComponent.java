@@ -1,56 +1,57 @@
 package com.jayfella.devkit.properties.component.texture2d;
 
+import com.github.weisj.darklaf.listener.MouseClickListener;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
-import com.jayfella.devkit.config.DevKitConfig;
-import com.jayfella.devkit.jme.TextureImage;
 import com.jayfella.devkit.properties.component.AbstractSDKComponent;
-import com.jayfella.devkit.properties.component.material.MaterialChooserComponent;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.AssetNotFoundException;
+import com.jme3.asset.TextureKey;
 import com.jme3.texture.Texture2D;
+import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Insets;
+import java.awt.RenderingHints;
+import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.stream.Collectors;
-import javax.swing.BorderFactory;
-import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.SwingUtilities;
-import javax.swing.border.TitledBorder;
-import javax.swing.event.ListSelectionListener;
-import org.apache.commons.io.FilenameUtils;
-import org.jdesktop.swingx.JXErrorPane;
-import org.jdesktop.swingx.error.ErrorInfo;
+import javax.swing.filechooser.FileSystemView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.helpers.MessageFormatter;
 
 public class Texture2DComponent extends AbstractSDKComponent<Texture2D> {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(MaterialChooserComponent.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(Texture2DComponent.class);
+  public static final String DEFAULT_ASSET_ROOT_DIRECTORY = ".";
+  public static final int TEXTURE_ICON_WIDTH = 60;
+  public static final int TEXTURE_ICON_HEIGHT = 60;
 
   private JPanel contentPanel;
   private JLabel propertyNameLabel;
   private JButton clearTextureButton;
-  private Texture2DPanel imagePanel;
-  private JList<String> texturesList;
+  private JLabel imageIconLabel;
+  private ImageIcon imageIcon;
+  private JButton textureChooserButton;
   private String assetRootDirectory;
+  private Path assetRootDirectoryPath;
   private AssetManager assetManager;
+  private String currentTexturePath;
+  private JFileChooser fileChooser;
 
   public Texture2DComponent() {
-    this(new Texture2D(), null);
+    this(null, null);
   }
 
   public Texture2DComponent(Texture2D texture2D) {
@@ -58,11 +59,11 @@ public class Texture2DComponent extends AbstractSDKComponent<Texture2D> {
   }
 
   public Texture2DComponent(String propertyName) {
-    this(new Texture2D(), propertyName);
+    this(null, propertyName);
   }
 
   public Texture2DComponent(Texture2D texture2D, String propertyName) {
-    this(texture2D, propertyName, null, null);
+    this(texture2D, propertyName, null, DEFAULT_ASSET_ROOT_DIRECTORY);
   }
 
   public Texture2DComponent(Texture2D texture2D, String propertyName, AssetManager assetManager,
@@ -71,28 +72,13 @@ public class Texture2DComponent extends AbstractSDKComponent<Texture2D> {
     this.assetRootDirectory = assetRootDirectory;
     this.assetManager = assetManager;
     $$$setupUI$$$();
-    updateTextureChooser();
     setComponent(texture2D);
     setPropertyName(propertyName);
   }
 
-  public static List<Path> findTextureFiles(String rootDirectory) throws IOException {
-    // get a list of all textures in the asset root.
-    List<Path> textureFiles = new ArrayList<>();
-    if (rootDirectory == null) {
-      return textureFiles;
-    }
-    textureFiles = Files
-        .walk(new File(rootDirectory).toPath())
-        .filter(
-            p -> TextureImage.imageExtensions.contains(FilenameUtils.getExtension(p.toString())))
-        .collect(Collectors.toList());
-    return textureFiles;
-  }
-
-  private String toAssetManagerFormat(Path filePath) {
-    String relativePath = filePath.toString()
-        .replaceFirst(assetRootDirectory, "");
+  public String toAssetManagerFormat(Path filePath) {
+    //filePath.relativize(assetRootDirectoryPath);
+    String relativePath = assetRootDirectoryPath.relativize(filePath).toString();
 
     // remove any trailing slashes.
     if (relativePath.startsWith("/") || relativePath.startsWith("\\")) {
@@ -101,76 +87,87 @@ public class Texture2DComponent extends AbstractSDKComponent<Texture2D> {
     return relativePath.replace("\\", "/");
   }
 
-  private void updateTextureChooser() {
-    List<Path> texturePathList = null;
-    try {
-      texturePathList = findTextureFiles(assetRootDirectory);
-    } catch (IOException e) {
-      LOGGER.warn(
-          "<< findTextureFiles() an IO exception occured, returning empty list, you might change the asset directory in the preferences");
-      JXErrorPane pane = new JXErrorPane();
-      MessageFormatter.format(
-          "Error while listing textures in the folder {}, you might change the asset directory in the preferences",
-          DevKitConfig.getInstance()
-              .getProjectConfig().getAssetRootDir());
-      pane.setErrorInfo(new ErrorInfo("DevKitError", MessageFormatter.format(
-          "Error while listing textures in the folder {}, you might change the asset directory in the preferences",
-          DevKitConfig.getInstance()
-              .getProjectConfig().getAssetRootDir()).getMessage(), "IOException", e.getMessage(), e,
-          Level.SEVERE, null));
-      JXErrorPane.showDialog(contentPanel, pane);
-    }
-    DefaultListModel<String> model = new DefaultListModel<>();
-
-    for (Path path : texturePathList) {
-      model.addElement(toAssetManagerFormat(path));
-    }
-
-    texturesList.setModel(model);
-  }
 
   @Override
   public void setComponent(Texture2D value) {
     if (value == null) {
       component = null;
-      texturesList.setSelectedIndex(-1);
+      imageIconLabel.setIcon(null);
       return;
     }
-
+    System.out.println("swaping old/new component");
+    Texture2D oldTexture = component;
     component = value;
     // if the texture is embedded it won't have a key.
+    String keyString =
+        value.getKey() != null ? component.getKey().getName() : component.getName();
+    System.out.println("set component before displaying preview");
+    displayPreview(Path.of(assetRootDirectory, keyString));
+    firePropertyChange(propertyName, oldTexture, component);
+
+  }
+
+  public void setTextureFromFile(File file) {
+    if (file == null) {
+      component = null;
+      imageIcon.setImage(null);
+      return;
+    }
+    String newTexturePath = toAssetManagerFormat(file.toPath());
+    if (newTexturePath.equals(currentTexturePath)) {
+      LOGGER.debug(
+          "<< setTextureFromFile() The new selected texture file did not change, keeping the same texture.");
+      return;
+    }
+    currentTexturePath = newTexturePath;
+
+    try {
+      System.out.println("before loading texture");
+      TextureKey key = new TextureKey(currentTexturePath, true);
+      key.setGenerateMips(true);
+      Texture2D texture2D = (Texture2D) assetManager.loadTexture(key);
+      System.out.println("after loading texturex");
+      setComponent(texture2D);
+    } catch (
+        AssetNotFoundException ex) {
+      LOGGER.warn("Texture2D Not Found: {} returning empty Texture", file.toString());
+      LOGGER.debug("Texture2D Not Found: {} returning empty Texture", file.toString(), ex);
+      setComponent(null);
+    }
+  }
+
+  private void displayPreview(File file) {
+    try {
+      System.out.println("loading image");
+      ImageIcon imageIcon = new ImageIcon(Files.readAllBytes(file.toPath()));
+      imageIcon
+          .setImage(getScaledImage(imageIcon.getImage(), TEXTURE_ICON_WIDTH, TEXTURE_ICON_HEIGHT));
+      imageIconLabel.setIcon(imageIcon);
+      System.out.println("image loaded");
+      //displayPreview(previewImage);
+    } catch (IOException ex) {
+      LOGGER.debug("<< displayPreview() Impossible to load image from file {}",
+          file.getAbsolutePath());
+    }
+  }
+
+  private void displayPreview(Path path) {
+    displayPreview(new File(path.toUri()));
+  }
+
+  private void displayPreview(BufferedImage image) {
     SwingUtilities.invokeLater(() -> {
-      System.out.println("getting key");
-          String keyString =
-              value.getKey() != null ? component.getKey().getName() : component.getName();
-          if (0 < texturesList.getModel().getSize()) {
-            texturesList.setSelectedValue(keyString, true);
-          }
-      System.out.println("setting texture ");
-          this.imagePanel.setTexture(component);
+          System.out.println("display begin");
+          this.imageIcon.setImage(image);
           contentPanel.revalidate();
           contentPanel.repaint();
-      System.out.println("repaint end");
+          System.out.println("display end");
         }
     );
   }
 
   public Texture2D computeValue() {
-    String newValue = texturesList.getSelectedValue();
-    if (newValue == null) {
-      return new Texture2D();
-    }
-
-    Texture2D texture2D;
-    try {
-      texture2D = (Texture2D) assetManager.loadTexture(newValue);
-    } catch (
-        AssetNotFoundException ex) {
-      LOGGER.warn("Texture2D Not Found: {} returning empty Texture", newValue);
-      LOGGER.debug("Texture2D Not Found: {} returning empty Texture", newValue, ex);
-      texture2D = new Texture2D();
-    }
-    return texture2D;
+    return component;
   }
 
 
@@ -189,39 +186,39 @@ public class Texture2DComponent extends AbstractSDKComponent<Texture2D> {
   private void $$$setupUI$$$() {
     createUIComponents();
     contentPanel = new JPanel();
-    contentPanel.setLayout(new GridLayoutManager(5, 1, new Insets(0, 0, 0, 0), -1, -1));
+    contentPanel.setLayout(new GridLayoutManager(4, 1, new Insets(0, 0, 0, 0), -1, -1));
     propertyNameLabel = new JLabel();
     propertyNameLabel.setText("Label");
     contentPanel.add(propertyNameLabel,
         new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
             GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0,
             false));
-    imagePanel = new Texture2DPanel();
-    contentPanel.add(imagePanel,
-        new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
-            GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW,
-            GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null,
-            null, null, 0, false));
-    final JScrollPane scrollPane1 = new JScrollPane();
-    contentPanel.add(scrollPane1,
-        new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH,
-            GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW,
-            GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null,
-            null, null, 0, false));
-    scrollPane1.setBorder(BorderFactory
-        .createTitledBorder(BorderFactory.createLoweredBevelBorder(), null,
-            TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-    scrollPane1.setViewportView(texturesList);
-    clearTextureButton.setText("No Texture");
-    contentPanel.add(clearTextureButton,
-        new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
-            GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
-            GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+    contentPanel.add(imageIconLabel,
+        new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE,
+            GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null,
+            new Dimension(60, 60), null, 0, false));
     final JSeparator separator1 = new JSeparator();
     contentPanel.add(separator1,
         new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH,
             GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_WANT_GROW, null, null,
             null, 0, false));
+    final JPanel panel1 = new JPanel();
+    panel1.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
+    contentPanel.add(panel1,
+        new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH,
+            GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+            GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null,
+            null, 0, false));
+    textureChooserButton.setText("Set");
+    panel1.add(textureChooserButton, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER,
+        GridConstraints.FILL_HORIZONTAL,
+        GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+        GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+    clearTextureButton.setText("No Texture");
+    panel1.add(clearTextureButton, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER,
+        GridConstraints.FILL_HORIZONTAL,
+        GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+        GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
   }
 
   /**
@@ -232,32 +229,36 @@ public class Texture2DComponent extends AbstractSDKComponent<Texture2D> {
   }
 
   public void clearTextureSelection() {
-    texturesList.clearSelection();
     setComponent(null);
+
   }
 
   private void createUIComponents() {
     clearTextureButton = new JButton();
     clearTextureButton.addActionListener(e -> clearTextureSelection());
 
-    texturesList = new JList();
-    ListSelectionListener listSelectionListener = evt -> {
-      System.out.println("selection begin");
-      JList lsm = (JList) evt.getSource();
-      if (lsm.isSelectionEmpty()) {
-        return;
+    imageIconLabel = new JLabel(imageIcon);
+
+    textureChooserButton = new JButton();
+    fileChooser = new JFileChooser();
+    fileChooser.setFileFilter(new TextureFilter());
+    updateFileChooserRootDirectory(new File(assetRootDirectory));
+
+    textureChooserButton.addMouseListener(new MouseClickListener() {
+      @Override
+      public void mouseClicked(MouseEvent e) {
+        int returnVal = fileChooser.showOpenDialog(textureChooserButton);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+          File file = fileChooser.getSelectedFile();
+          //This is where a real application would open the file.
+          LOGGER.debug("Opening: {}.", file.getName());
+          setTextureFromFile(file);
+        } else {
+          LOGGER.debug("Open command cancelled by user.");
+        }
       }
-      Texture2D oldTexture = component;
-      System.out.println("before compute");
-      Texture2D newTexture = computeValue();
-      System.out.println("after compute");
-      if (!oldTexture.equals(newTexture)) {
-        setComponent(computeValue());
-        System.out.println("firing event");
-        firePropertyChange(propertyName, oldTexture, component);
-      }
-    };
-    texturesList.addListSelectionListener(listSelectionListener);
+    });
+
   }
 
   @Override
@@ -271,7 +272,16 @@ public class Texture2DComponent extends AbstractSDKComponent<Texture2D> {
 
   public void setAssetRootDirectory(String assetRootDirectory) {
     this.assetRootDirectory = assetRootDirectory;
-    updateTextureChooser();
+    File file = new File(assetRootDirectory);
+    assetRootDirectoryPath = file.toPath().toAbsolutePath();
+    updateFileChooserRootDirectory(file);
+
+  }
+
+  private void updateFileChooserRootDirectory(File rootDirectory) {
+    FileSystemView fsv = new DirectoryRestrictedFileSystemView(rootDirectory);
+    fileChooser.setFileSystemView(fsv);
+    fileChooser.setCurrentDirectory(rootDirectory);
   }
 
 
@@ -281,5 +291,17 @@ public class Texture2DComponent extends AbstractSDKComponent<Texture2D> {
 
   public void setAssetManager(AssetManager assetManager) {
     this.assetManager = assetManager;
+  }
+
+  private Image getScaledImage(Image srcImg, int w, int h) {
+    BufferedImage resizedImg = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+    Graphics2D g2 = resizedImg.createGraphics();
+
+    g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+        RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+    g2.drawImage(srcImg, 0, 0, w, h, null);
+    g2.dispose();
+
+    return resizedImg;
   }
 }

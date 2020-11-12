@@ -47,6 +47,7 @@ public class ReflectedComponentSetBuilder extends AbstractPropertySectionBuilder
 
     for (Field field : fields) {
       try {
+        field.setAccessible(true);
         AbstractSDKComponent newComponent = buildComponentFromField(field);
         if (newComponent == null) {
           continue;

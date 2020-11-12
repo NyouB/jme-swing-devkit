@@ -42,14 +42,9 @@ class Vector4fComponentTest  extends SwingTestCase {
 
   public static final void main(String[] args) throws ParseException {
     JFrame frame = new JFrame("Test");
-    frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     frame.add(new Vector4fComponent().getJComponent());
     frame.pack();
     frame.setVisible(true);
-    SwingUtilities.invokeLater(() ->{
-        frame.add(new Vector4fComponent().getJComponent());
-    frame.pack();
-    frame.setVisible(true);
-    });
   }
 }

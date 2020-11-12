@@ -24,7 +24,7 @@ public class Texture2DPanel extends JPanel {
 
         if (texture2D != null && texture2D.getImage()!=null) {
 
-
+            System.out.println("panel begin set texture");
             // this is slow.. but it works.
 
             int texWidth = texture2D.getImage().getWidth();
@@ -37,7 +37,7 @@ public class Texture2DPanel extends JPanel {
                     BufferedImage.TYPE_INT_ARGB);
 
             WritableRaster writableRaster = img.getRaster();
-
+            System.out.println("rasterize");
             // write the texture to the BufferedImage.
             ImageRaster textureRaster = ImageRaster.create(texture2D.getImage());
 
@@ -72,6 +72,7 @@ public class Texture2DPanel extends JPanel {
             setMinimumSize(dim);
             setMaximumSize(dim);
             setPreferredSize(dim);
+            System.out.println("finishrasterize");
         }
         else {
             img = null;
