@@ -4,6 +4,7 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.jayfella.devkit.config.DevKitConfig;
 import com.jayfella.devkit.registration.spatial.AssetLinkNodeRegistrar;
+import com.jayfella.devkit.registration.spatial.AssetLinkNodeRegistrar.AssetLinkNodeTreeNode;
 import com.jayfella.devkit.service.JmeEngineService;
 import com.jayfella.devkit.service.SceneTreeService;
 import com.jayfella.devkit.service.ServiceManager;
@@ -22,134 +23,143 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class AddLinkedAsset {
-    private JPanel rootPanel;
-    private JList<String> modelsList;
-    private JButton addLinkedAssetButton;
 
-    public AddLinkedAsset(final AssetLinkNodeRegistrar.AssetLinkNodeTreeNode assetLinkNodeTreeNode) {
+  private JPanel rootPanel;
+  private JList<String> modelsList;
+  private JButton addLinkedAssetButton;
 
-        List<Path> modelFiles = null;
+  public AddLinkedAsset(final AssetLinkNodeTreeNode assetLinkNodeTreeNode) {
 
-        try {
-            modelFiles = Files.walk(new File(DevKitConfig.getInstance().getProjectConfig().getAssetRootDir()).toPath())
-                    .filter(p -> p.toString().endsWith(".j3o"))
-                    .collect(Collectors.toList());
+    List<Path> modelFiles = null;
 
-        } catch (IOException e) {
-            e.printStackTrace();
+    try {
+      modelFiles = Files
+          .walk(new File(DevKitConfig.getInstance().getProjectConfig().getAssetRootDir()).toPath())
+          .filter(p -> p.toString().endsWith(".j3o"))
+          .collect(Collectors.toList());
+
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    if (modelFiles != null) {
+
+      DefaultListModel<String> listModel = new DefaultListModel<>();
+
+      for (Path path : modelFiles) {
+
+        String relativePath = path.toString()
+            .replace(DevKitConfig.getInstance().getProjectConfig().getAssetRootDir(), "");
+
+        // remove any trailing slashes.
+        if (relativePath.startsWith("/")) {
+          relativePath = relativePath.substring(1);
         }
 
-        if (modelFiles != null) {
+        listModel.addElement(relativePath);
+      }
 
-            DefaultListModel<String> listModel = new DefaultListModel<>();
+      modelsList.setModel(listModel);
+    }
 
-            for (Path path : modelFiles) {
+    addLinkedAssetButton.addActionListener(e -> {
 
-                String relativePath = path.toString().replace(DevKitConfig.getInstance().getProjectConfig().getAssetRootDir(), "");
+      int[] indices = modelsList.getSelectedIndices();
 
-                // remove any trailing slashes.
-                if (relativePath.startsWith("/")) {
-                    relativePath = relativePath.substring(1);
-                }
+      if (indices != null && indices.length > 0) {
 
-                listModel.addElement(relativePath);
+        // disable the window
+        ComponentUtilities.enableComponents(rootPanel, false);
+
+        // then run this "later" so the GUI can display the "disabled" view now.
+        SwingUtilities.invokeLater(() -> {
+
+          // get the list of models in the AWT thread.
+          final List<String> modelPaths = new ArrayList<>();
+          for (int index : indices) {
+            modelPaths.add(modelsList.getModel().getElementAt(index));
+          }
+
+          JmeEngineService engineService = ServiceManager.getService(JmeEngineService.class);
+
+          engineService.enqueue(() -> {
+
+            AssetLinkNode assetLinkNode = assetLinkNodeTreeNode.getUserObject();
+
+            // add all the assets on the JME thread.
+            for (String assetPath : modelPaths) {
+              assetLinkNode.addLinkedChild(new ModelKey(assetPath));
             }
 
-            modelsList.setModel(listModel);
-        }
+            assetLinkNode.attachLinkedChildren(engineService.getAssetManager());
 
-        addLinkedAssetButton.addActionListener(e -> {
+            // close the window on the AWT thread.
+            SwingUtilities.invokeLater(() -> {
 
-            int[] indices = modelsList.getSelectedIndices();
+              // ServiceManager.getService(SceneTreeService.class).reloadTree();
+              ServiceManager.getService(SceneTreeService.class)
+                  .reloadTreeNode(assetLinkNodeTreeNode);
 
-            if (indices != null && indices.length > 0) {
+              JButton button = (JButton) e.getSource();
+              Window window = SwingUtilities.getWindowAncestor(button);
+              window.dispose();
+            });
 
-                // disable the window
-                ComponentUtilities.enableComponents(rootPanel, false);
+          });
 
-                // then run this "later" so the GUI can display the "disabled" view now.
-                SwingUtilities.invokeLater(() -> {
+          // we need to create a context menu that allows the user to add more linked children.
+          // assetLinkNode.addLinkedChild(new ModelKey(String path));
+          // assetLinkNode.attachLinkedChildren(engineService.getAssetManager());
 
-                    // get the list of models in the AWT thread.
-                    final List<String> modelPaths = new ArrayList<>();
-                    for (int index : indices) {
-                        modelPaths.add(modelsList.getModel().getElementAt(index));
-                    }
-
-                    JmeEngineService engineService = ServiceManager.getService(JmeEngineService.class);
-
-                    engineService.enqueue(() -> {
-
-                        AssetLinkNode assetLinkNode = assetLinkNodeTreeNode.getUserObject();
-
-                        // add all the assets on the JME thread.
-                        for (String assetPath : modelPaths) {
-                            assetLinkNode.addLinkedChild(new ModelKey(assetPath));
-                        }
-
-                        assetLinkNode.attachLinkedChildren(engineService.getAssetManager());
-
-                        // close the window on the AWT thread.
-                        SwingUtilities.invokeLater(() -> {
-
-                            // ServiceManager.getService(SceneTreeService.class).reloadTree();
-                            ServiceManager.getService(SceneTreeService.class).reloadTreeNode(assetLinkNodeTreeNode);
-
-
-                            JButton button = (JButton) e.getSource();
-                            Window window = SwingUtilities.getWindowAncestor(button);
-                            window.dispose();
-                        });
-
-                    });
-
-
-                    // we need to create a context menu that allows the user to add more linked children.
-                    // assetLinkNode.addLinkedChild(new ModelKey(String path));
-                    // assetLinkNode.attachLinkedChildren(engineService.getAssetManager());
-
-                    // we need to override the delete menuItem to remove the linked item.
-                    // assetLinkNode.removeLinkedChild();
-
-
-                });
-
-            }
+          // we need to override the delete menuItem to remove the linked item.
+          // assetLinkNode.removeLinkedChild();
 
         });
 
-    }
+      }
 
-    {
+    });
+
+  }
+
+  {
 // GUI initializer generated by IntelliJ IDEA GUI Designer
 // >>> IMPORTANT!! <<<
 // DO NOT EDIT OR ADD ANY CODE HERE!
-        $$$setupUI$$$();
-    }
+    $$$setupUI$$$();
+  }
 
-    /**
-     * Method generated by IntelliJ IDEA GUI Designer
-     * >>> IMPORTANT!! <<<
-     * DO NOT edit this method OR call it in your code!
-     *
-     * @noinspection ALL
-     */
-    private void $$$setupUI$$$() {
-        rootPanel = new JPanel();
-        rootPanel.setLayout(new GridLayoutManager(2, 1, new Insets(10, 10, 10, 10), -1, -1));
-        final JScrollPane scrollPane1 = new JScrollPane();
-        rootPanel.add(scrollPane1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
-        modelsList = new JList();
-        scrollPane1.setViewportView(modelsList);
-        addLinkedAssetButton = new JButton();
-        addLinkedAssetButton.setText("Add Linked Asset");
-        rootPanel.add(addLinkedAssetButton, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-    }
+  /**
+   * Method generated by IntelliJ IDEA GUI Designer >>> IMPORTANT!! <<< DO NOT edit this method OR
+   * call it in your code!
+   *
+   * @noinspection ALL
+   */
+  private void $$$setupUI$$$() {
+    rootPanel = new JPanel();
+    rootPanel.setLayout(new GridLayoutManager(2, 1, new Insets(10, 10, 10, 10), -1, -1));
+    final JScrollPane scrollPane1 = new JScrollPane();
+    rootPanel.add(scrollPane1,
+        new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH,
+            GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW,
+            GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null,
+            null, null, 0, false));
+    modelsList = new JList();
+    scrollPane1.setViewportView(modelsList);
+    addLinkedAssetButton = new JButton();
+    addLinkedAssetButton.setText("Add Linked Asset");
+    rootPanel.add(addLinkedAssetButton,
+        new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
+            GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+            GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+  }
 
-    /**
-     */
-    public JComponent $$$getRootComponent$$$() {
-        return rootPanel;
-    }
+  /**
+   * @noinspection ALL
+   */
+  public JComponent $$$getRootComponent$$$() {
+    return rootPanel;
+  }
+
 
 }

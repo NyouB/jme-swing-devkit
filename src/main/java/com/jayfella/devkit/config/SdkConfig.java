@@ -1,10 +1,11 @@
 package com.jayfella.devkit.config;
 
 import com.jayfella.devkit.forms.MainPage;
-import com.jayfella.devkit.service.PropertyInspectorService;
 import com.jayfella.devkit.service.SceneTreeService;
-
-import java.awt.*;
+import com.jayfella.devkit.service.inspector.PropertyInspectorService;
+import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.Toolkit;
 import java.beans.Transient;
 import java.util.HashMap;
 

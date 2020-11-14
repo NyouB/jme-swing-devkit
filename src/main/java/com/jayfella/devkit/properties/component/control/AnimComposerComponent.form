@@ -8,13 +8,13 @@
     <properties/>
     <border type="none"/>
     <children>
-      <component id="a394f" class="javax.swing.JSlider" binding="timeSlider">
+      <component id="a394f" class="javax.swing.JSlider" binding="timeSlider" custom-create="true">
         <constraints>
           <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties/>
       </component>
-      <component id="1aeef" class="javax.swing.JSlider" binding="speedSlider">
+      <component id="1aeef" class="javax.swing.JSlider" binding="speedSlider" custom-create="true">
         <constraints>
           <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
@@ -44,7 +44,7 @@
         <properties/>
         <border type="none"/>
         <children>
-          <component id="a11f7" class="javax.swing.JButton" binding="playButton">
+          <component id="a11f7" class="javax.swing.JButton" binding="playButton" custom-create="true">
             <constraints>
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -52,7 +52,7 @@
               <text value="Play"/>
             </properties>
           </component>
-          <component id="9c850" class="javax.swing.JButton" binding="stopButton">
+          <component id="9c850" class="javax.swing.JButton" binding="stopButton" custom-create="true">
             <constraints>
               <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -74,7 +74,7 @@
         <properties/>
         <border type="none"/>
         <children>
-          <component id="307ca" class="javax.swing.JList" binding="animationsList">
+          <component id="307ca" class="javax.swing.JList" binding="animationsList" custom-create="true">
             <constraints/>
             <properties/>
           </component>

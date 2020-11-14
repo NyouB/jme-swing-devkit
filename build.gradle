@@ -9,7 +9,7 @@ plugins {
 }
 
 group 'com.jayfella'
-version '1.0.16'
+version '1.1.2'
 
 publishing {
     publications {
@@ -33,35 +33,11 @@ java {
     withJavadocJar()
 }
 
-bintray {
 
-    user = bintray_user
-    key = bintray_api_key
-
-    publications = ['MyPublication']
-
-    dryRun = false
-    publish = true
-
-    pkg {
-
-        repo = 'com.jayfella'
-        name = 'jme-swing-devkit'
-        userOrg = 'jayfella'
-        licenses = ['BSD']
-        vcsUrl = 'https://github.com/jayfella/jme-swing-devkit'
-
-        version {
-            name = project.version
-            desc = 'A Development Kit for jMonkeyEngine.'
-            released  = new Date()
-            vcsTag = project.version
-        }
-
-    }
-
+javadoc {
+    source = sourceSets.main.allJava
+    options.tags = [ "noinspection" ]
 }
-
 
 
 mainClassName = "com.jayfella.devkit.Main"
@@ -92,6 +68,8 @@ dependencies {
 
     // reflection
     compile "org.reflections:reflections:0.9.11"
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.11'
+    compile group: 'commons-io', name: 'commons-io', version: '2.6'
 
     // logging
     implementation "log4j:log4j:$version_log4j"
@@ -127,5 +105,11 @@ dependencies {
 
     // testing - REMOVE
     //implementation "com.jayfella:TestDevkitPlugin:1.0.0"
+
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.0")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.0")
 }
 
+test {
+    useJUnitPlatform()
+}

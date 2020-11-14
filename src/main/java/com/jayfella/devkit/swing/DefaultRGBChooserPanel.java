@@ -38,62 +38,34 @@ exception statement from your version. */
 
 package com.jayfella.devkit.swing;
 
-import javax.swing.*;
+import java.awt.Color;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import javax.swing.Icon;
+import javax.swing.JColorChooser;
+import javax.swing.JLabel;
+import javax.swing.JSlider;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
 import javax.swing.colorchooser.AbstractColorChooserPanel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import java.awt.*;
 
 /**
- * This is the default RGB panel for the JColorChooser. The color is selected
- * using three sliders that represent the RGB values.
+ * This is the default RGB panel for the JColorChooser. The color is selected using three sliders
+ * that represent the RGB values.
  */
 public class DefaultRGBChooserPanel extends AbstractColorChooserPanel {
-    /**
-     * This class handles the slider value changes for all three sliders.
-     */
-    class SliderHandler implements ChangeListener {
-        /**
-         * This method is called whenever any of the slider values change.
-         *
-         * @param e The ChangeEvent.
-         */
-        public void stateChanged(ChangeEvent e) {
-            if (updateChange)
-                return;
-
-            int color = R.getValue() << 16 | G.getValue() << 8 | B.getValue();
-
-            sliderChange = true;
-            getColorSelectionModel().setSelectedColor(new Color(color));
-            sliderChange = false;
-        }
-    }
 
     /**
-     * This class handles the Spinner values changing.
+     * The slider that handles the red values.
      */
-    class SpinnerHandler implements ChangeListener {
-        /**
-         * This method is called whenever any of the JSpinners change values.
-         *
-         * @param e The ChangeEvent.
-         */
-        public void stateChanged(ChangeEvent e) {
-            if (updateChange)
-                return;
-
-            int red = ((Number) RSpinner.getValue()).intValue();
-            int green = ((Number) GSpinner.getValue()).intValue();
-            int blue = ((Number) BSpinner.getValue()).intValue();
-
-            int color = red << 16 | green << 8 | blue;
-
-            spinnerChange = true;
-            getColorSelectionModel().setSelectedColor(new Color(color));
-            spinnerChange = false;
-        }
-    }
+    private transient JSlider redValueSlider;
+    /**
+     * The slider that handles the green values.
+     */
+    private transient JSlider greenValueSlider;
 
     /**
      * Whether the color change was initiated by the spinners.
@@ -120,66 +92,28 @@ public class DefaultRGBChooserPanel extends AbstractColorChooserPanel {
      * The ChangeListener for the spinners.
      */
     private transient ChangeListener spinnerHandler;
-
-    /**
-     * The slider that handles the red values.
-     */
-    private transient JSlider R;
-
-    /**
-     * The slider that handles the green values.
-     */
-    private transient JSlider G;
-
     /**
      * The slider that handles the blue values.
      */
-    private transient JSlider B;
-
-    /**
-     * The label for the red slider.
-     */
-    private transient JLabel RLabel;
-
-    /**
-     * The label for the green slider.
-     */
-    private transient JLabel GLabel;
-
-    /**
-     * The label for the blue slider.
-     */
-    private transient JLabel BLabel;
-
+    private transient JSlider blueValueSlider;
     /**
      * The spinner that handles the red values.
      */
-    private transient JSpinner RSpinner;
-
+    private transient JSpinner redValueSpinner;
     /**
      * The spinner that handles the green values.
      */
-    private transient JSpinner GSpinner;
-
+    private transient JSpinner greenValueSpinner;
     /**
      * The spinner that handles the blue values.
      */
-    private transient JSpinner BSpinner;
+    private transient JSpinner blueValueSpinner;
 
     /**
      * Creates a new DefaultRGBChooserPanel object.
      */
     public DefaultRGBChooserPanel() {
         super();
-    }
-
-    /**
-     * This method returns the name displayed in the JTabbedPane.
-     *
-     * @return The name displayed in the JTabbedPane.
-     */
-    public String getDisplayName() {
-        return "RGB";
     }
 
     /**
@@ -197,20 +131,26 @@ public class DefaultRGBChooserPanel extends AbstractColorChooserPanel {
         updateChange = true;
 
         if (!sliderChange) {
-            if (R != null)
-                R.setValue(red);
-            if (G != null)
-                G.setValue(green);
-            if (B != null)
-                B.setValue(blue);
+            if (redValueSlider != null) {
+                redValueSlider.setValue(red);
+            }
+            if (greenValueSlider != null) {
+                greenValueSlider.setValue(green);
+            }
+            if (blueValueSlider != null) {
+                blueValueSlider.setValue(blue);
+            }
         }
         if (!spinnerChange) {
-            if (GSpinner != null)
-                GSpinner.setValue(new Integer(green));
-            if (RSpinner != null)
-                RSpinner.setValue(new Integer(red));
-            if (BSpinner != null)
-                BSpinner.setValue(new Integer(blue));
+            if (greenValueSpinner != null) {
+                greenValueSpinner.setValue(green);
+            }
+            if (redValueSpinner != null) {
+                redValueSpinner.setValue(red);
+            }
+            if (blueValueSpinner != null) {
+                blueValueSpinner.setValue(blue);
+            }
         }
 
         updateChange = false;
@@ -225,52 +165,52 @@ public class DefaultRGBChooserPanel extends AbstractColorChooserPanel {
     protected void buildChooser() {
         setLayout(new GridBagLayout());
 
-        RLabel = new JLabel("Red");
+        JLabel RLabel = new JLabel("Red");
         RLabel.setDisplayedMnemonic('d');
-        GLabel = new JLabel("Green");
+        JLabel GLabel = new JLabel("Green");
         GLabel.setDisplayedMnemonic('n');
-        BLabel = new JLabel("Blue");
+        JLabel BLabel = new JLabel("Blue");
         BLabel.setDisplayedMnemonic('B');
 
-        R = new JSlider(SwingConstants.HORIZONTAL, 0, 255, 255);
-        G = new JSlider(SwingConstants.HORIZONTAL, 0, 255, 255);
-        B = new JSlider(SwingConstants.HORIZONTAL, 0, 255, 255);
+        redValueSlider = new JSlider(SwingConstants.HORIZONTAL, 0, 255, 255);
+        greenValueSlider = new JSlider(SwingConstants.HORIZONTAL, 0, 255, 255);
+        blueValueSlider = new JSlider(SwingConstants.HORIZONTAL, 0, 255, 255);
 
-        R.setPaintTicks(true);
-        R.setSnapToTicks(false);
-        G.setPaintTicks(true);
-        G.setSnapToTicks(false);
-        B.setPaintTicks(true);
-        B.setSnapToTicks(false);
+        redValueSlider.setPaintTicks(true);
+        redValueSlider.setSnapToTicks(false);
+        greenValueSlider.setPaintTicks(true);
+        greenValueSlider.setSnapToTicks(false);
+        blueValueSlider.setPaintTicks(true);
+        blueValueSlider.setSnapToTicks(false);
 
-        R.setLabelTable(R.createStandardLabels(85));
-        R.setPaintLabels(true);
-        G.setLabelTable(G.createStandardLabels(85));
-        G.setPaintLabels(true);
-        B.setLabelTable(B.createStandardLabels(85));
-        B.setPaintLabels(true);
+        redValueSlider.setLabelTable(redValueSlider.createStandardLabels(85));
+        redValueSlider.setPaintLabels(true);
+        greenValueSlider.setLabelTable(greenValueSlider.createStandardLabels(85));
+        greenValueSlider.setPaintLabels(true);
+        blueValueSlider.setLabelTable(blueValueSlider.createStandardLabels(85));
+        blueValueSlider.setPaintLabels(true);
 
-        R.setMajorTickSpacing(85);
-        G.setMajorTickSpacing(85);
-        B.setMajorTickSpacing(85);
+        redValueSlider.setMajorTickSpacing(85);
+        greenValueSlider.setMajorTickSpacing(85);
+        blueValueSlider.setMajorTickSpacing(85);
 
-        R.setMinorTickSpacing(17);
-        G.setMinorTickSpacing(17);
-        B.setMinorTickSpacing(17);
+        redValueSlider.setMinorTickSpacing(17);
+        greenValueSlider.setMinorTickSpacing(17);
+        blueValueSlider.setMinorTickSpacing(17);
 
-        RSpinner = new JSpinner(new SpinnerNumberModel(R.getValue(),
-                R.getMinimum(),
-                R.getMaximum(), 1));
-        GSpinner = new JSpinner(new SpinnerNumberModel(G.getValue(),
-                G.getMinimum(),
-                G.getMaximum(), 1));
-        BSpinner = new JSpinner(new SpinnerNumberModel(B.getValue(),
-                B.getMinimum(),
-                B.getMaximum(), 1));
+        redValueSpinner = new JSpinner(new SpinnerNumberModel(redValueSlider.getValue(),
+            redValueSlider.getMinimum(),
+            redValueSlider.getMaximum(), 1));
+        greenValueSpinner = new JSpinner(new SpinnerNumberModel(greenValueSlider.getValue(),
+            greenValueSlider.getMinimum(),
+            greenValueSlider.getMaximum(), 1));
+        blueValueSpinner = new JSpinner(new SpinnerNumberModel(blueValueSlider.getValue(),
+            blueValueSlider.getMinimum(),
+            blueValueSlider.getMaximum(), 1));
 
-        RLabel.setLabelFor(R);
-        GLabel.setLabelFor(G);
-        BLabel.setLabelFor(B);
+        RLabel.setLabelFor(redValueSlider);
+        GLabel.setLabelFor(greenValueSlider);
+        BLabel.setLabelFor(blueValueSlider);
 
         GridBagConstraints bag = new GridBagConstraints();
         bag.fill = GridBagConstraints.VERTICAL;
@@ -280,32 +220,41 @@ public class DefaultRGBChooserPanel extends AbstractColorChooserPanel {
         add(RLabel, bag);
 
         bag.gridx = 1;
-        add(R, bag);
+        add(redValueSlider, bag);
 
         bag.gridx = 2;
-        add(RSpinner, bag);
+        add(redValueSpinner, bag);
 
         bag.gridx = 0;
         bag.gridy = 1;
         add(GLabel, bag);
 
         bag.gridx = 1;
-        add(G, bag);
+        add(greenValueSlider, bag);
 
         bag.gridx = 2;
-        add(GSpinner, bag);
+        add(greenValueSpinner, bag);
 
         bag.gridx = 0;
         bag.gridy = 2;
         add(BLabel, bag);
 
         bag.gridx = 1;
-        add(B, bag);
+        add(blueValueSlider, bag);
 
         bag.gridx = 2;
-        add(BSpinner, bag);
+        add(blueValueSpinner, bag);
 
         installListeners();
+    }
+
+    /**
+     * This method returns the name displayed in the JTabbedPane.
+     *
+     * @return The name displayed in the JTabbedPane.
+     */
+    public String getDisplayName() {
+        return "RGB";
     }
 
     /**
@@ -313,17 +262,18 @@ public class DefaultRGBChooserPanel extends AbstractColorChooserPanel {
      *
      * @param chooser The JColorChooser to remove this chooser panel from.
      */
+    @Override
     public void uninstallChooserPanel(JColorChooser chooser) {
         uninstallListeners();
         removeAll();
 
-        R = null;
-        G = null;
-        B = null;
+        redValueSlider = null;
+        greenValueSlider = null;
+        blueValueSlider = null;
 
-        RSpinner = null;
-        GSpinner = null;
-        BSpinner = null;
+        redValueSpinner = null;
+        greenValueSpinner = null;
+        blueValueSpinner = null;
 
         super.uninstallChooserPanel(chooser);
     }
@@ -333,15 +283,15 @@ public class DefaultRGBChooserPanel extends AbstractColorChooserPanel {
      * panel.
      */
     private void uninstallListeners() {
-        R.removeChangeListener(colorChanger);
-        G.removeChangeListener(colorChanger);
-        B.removeChangeListener(colorChanger);
+        redValueSlider.removeChangeListener(colorChanger);
+        greenValueSlider.removeChangeListener(colorChanger);
+        blueValueSlider.removeChangeListener(colorChanger);
 
         colorChanger = null;
 
-        RSpinner.removeChangeListener(spinnerHandler);
-        GSpinner.removeChangeListener(spinnerHandler);
-        BSpinner.removeChangeListener(spinnerHandler);
+        redValueSpinner.removeChangeListener(spinnerHandler);
+        greenValueSpinner.removeChangeListener(spinnerHandler);
+        blueValueSpinner.removeChangeListener(spinnerHandler);
 
         spinnerHandler = null;
     }
@@ -353,15 +303,67 @@ public class DefaultRGBChooserPanel extends AbstractColorChooserPanel {
     private void installListeners() {
         colorChanger = new SliderHandler();
 
-        R.addChangeListener(colorChanger);
-        G.addChangeListener(colorChanger);
-        B.addChangeListener(colorChanger);
+        redValueSlider.addChangeListener(colorChanger);
+        greenValueSlider.addChangeListener(colorChanger);
+        blueValueSlider.addChangeListener(colorChanger);
 
         spinnerHandler = new SpinnerHandler();
 
-        RSpinner.addChangeListener(spinnerHandler);
-        GSpinner.addChangeListener(spinnerHandler);
-        BSpinner.addChangeListener(spinnerHandler);
+        redValueSpinner.addChangeListener(spinnerHandler);
+        greenValueSpinner.addChangeListener(spinnerHandler);
+        blueValueSpinner.addChangeListener(spinnerHandler);
+    }
+
+    /**
+     * This class handles the slider value changes for all three sliders.
+     */
+    class SliderHandler implements ChangeListener {
+
+        /**
+         * This method is called whenever any of the slider values change.
+         *
+         * @param e The ChangeEvent.
+         */
+        public void stateChanged(ChangeEvent e) {
+            if (updateChange) {
+                return;
+            }
+
+            int color =
+                redValueSlider.getValue() << 16 | greenValueSlider.getValue() << 8 | blueValueSlider
+                    .getValue();
+
+            sliderChange = true;
+            getColorSelectionModel().setSelectedColor(new Color(color));
+            sliderChange = false;
+        }
+    }
+
+    /**
+     * This class handles the Spinner values changing.
+     */
+    class SpinnerHandler implements ChangeListener {
+
+        /**
+         * This method is called whenever any of the JSpinners change values.
+         *
+         * @param e The ChangeEvent.
+         */
+        public void stateChanged(ChangeEvent e) {
+            if (updateChange) {
+                return;
+            }
+
+            int red = ((Number) redValueSpinner.getValue()).intValue();
+            int green = ((Number) greenValueSpinner.getValue()).intValue();
+            int blue = ((Number) blueValueSpinner.getValue()).intValue();
+
+            int color = red << 16 | green << 8 | blue;
+
+            spinnerChange = true;
+            getColorSelectionModel().setSelectedColor(new Color(color));
+            spinnerChange = false;
+        }
     }
 
     /**
@@ -382,12 +384,4 @@ public class DefaultRGBChooserPanel extends AbstractColorChooserPanel {
         return null;
     }
 
-    /**
-     * This method paints the default RGB chooser panel.
-     *
-     * @param g The Graphics object to paint with.
-     */
-    public void paint(Graphics g) {
-        super.paint(g);
-    }
 }

@@ -1,0 +1,307 @@
+package com.jayfella.devkit.properties.component.texture2d;
+
+import com.github.weisj.darklaf.listener.MouseClickListener;
+import com.intellij.uiDesigner.core.GridConstraints;
+import com.intellij.uiDesigner.core.GridLayoutManager;
+import com.jayfella.devkit.properties.component.AbstractSDKComponent;
+import com.jme3.asset.AssetManager;
+import com.jme3.asset.AssetNotFoundException;
+import com.jme3.asset.TextureKey;
+import com.jme3.texture.Texture2D;
+import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Insets;
+import java.awt.RenderingHints;
+import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSeparator;
+import javax.swing.SwingUtilities;
+import javax.swing.filechooser.FileSystemView;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class Texture2DComponent extends AbstractSDKComponent<Texture2D> {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(Texture2DComponent.class);
+  public static final String DEFAULT_ASSET_ROOT_DIRECTORY = ".";
+  public static final int TEXTURE_ICON_WIDTH = 60;
+  public static final int TEXTURE_ICON_HEIGHT = 60;
+
+  private JPanel contentPanel;
+  private JLabel propertyNameLabel;
+  private JButton clearTextureButton;
+  private JLabel imageIconLabel;
+  private ImageIcon imageIcon;
+  private JButton textureChooserButton;
+  private String assetRootDirectory;
+  private Path assetRootDirectoryPath;
+  private AssetManager assetManager;
+  private String currentTexturePath;
+  private JFileChooser fileChooser;
+
+  public Texture2DComponent() {
+    this(null, null);
+  }
+
+  public Texture2DComponent(Texture2D texture2D) {
+    this(texture2D, null);
+  }
+
+  public Texture2DComponent(String propertyName) {
+    this(null, propertyName);
+  }
+
+  public Texture2DComponent(Texture2D texture2D, String propertyName) {
+    this(texture2D, propertyName, null, DEFAULT_ASSET_ROOT_DIRECTORY);
+  }
+
+  public Texture2DComponent(Texture2D texture2D, String propertyName, AssetManager assetManager,
+      String assetRootDirectory) {
+    super(texture2D);
+    this.assetRootDirectory = assetRootDirectory;
+    this.assetManager = assetManager;
+    $$$setupUI$$$();
+    setComponent(texture2D);
+    setPropertyName(propertyName);
+  }
+
+  public String toAssetManagerFormat(Path filePath) {
+    //filePath.relativize(assetRootDirectoryPath);
+    String relativePath = assetRootDirectoryPath.relativize(filePath).toString();
+
+    // remove any trailing slashes.
+    if (relativePath.startsWith("/") || relativePath.startsWith("\\")) {
+      relativePath = relativePath.substring(1);
+    }
+    return relativePath.replace("\\", "/");
+  }
+
+
+  @Override
+  public void setComponent(Texture2D value) {
+    if (value == null) {
+      component = null;
+      imageIconLabel.setIcon(null);
+      return;
+    }
+    System.out.println("swaping old/new component");
+    Texture2D oldTexture = component;
+    component = value;
+    // if the texture is embedded it won't have a key.
+    String keyString =
+        value.getKey() != null ? component.getKey().getName() : component.getName();
+    System.out.println("set component before displaying preview");
+    displayPreview(Path.of(assetRootDirectory, keyString));
+    firePropertyChange(propertyName, oldTexture, component);
+
+  }
+
+  public void setTextureFromFile(File file) {
+    if (file == null) {
+      component = null;
+      imageIcon.setImage(null);
+      return;
+    }
+    String newTexturePath = toAssetManagerFormat(file.toPath());
+    if (newTexturePath.equals(currentTexturePath)) {
+      LOGGER.debug(
+          "<< setTextureFromFile() The new selected texture file did not change, keeping the same texture.");
+      return;
+    }
+    currentTexturePath = newTexturePath;
+
+    try {
+      System.out.println("before loading texture");
+      TextureKey key = new TextureKey(currentTexturePath, true);
+      key.setGenerateMips(true);
+      Texture2D texture2D = (Texture2D) assetManager.loadTexture(key);
+      System.out.println("after loading texturex");
+      setComponent(texture2D);
+    } catch (
+        AssetNotFoundException ex) {
+      LOGGER.warn("Texture2D Not Found: {} returning empty Texture", file.toString());
+      LOGGER.debug("Texture2D Not Found: {} returning empty Texture", file.toString(), ex);
+      setComponent(null);
+    }
+  }
+
+  private void displayPreview(File file) {
+    try {
+      System.out.println("loading image");
+      ImageIcon imageIcon = new ImageIcon(Files.readAllBytes(file.toPath()));
+      imageIcon
+          .setImage(getScaledImage(imageIcon.getImage(), TEXTURE_ICON_WIDTH, TEXTURE_ICON_HEIGHT));
+      imageIconLabel.setIcon(imageIcon);
+      System.out.println("image loaded");
+      //displayPreview(previewImage);
+    } catch (IOException ex) {
+      LOGGER.debug("<< displayPreview() Impossible to load image from file {}",
+          file.getAbsolutePath());
+    }
+  }
+
+  private void displayPreview(Path path) {
+    displayPreview(new File(path.toUri()));
+  }
+
+  private void displayPreview(BufferedImage image) {
+    SwingUtilities.invokeLater(() -> {
+          System.out.println("display begin");
+          this.imageIcon.setImage(image);
+          contentPanel.revalidate();
+          contentPanel.repaint();
+          System.out.println("display end");
+        }
+    );
+  }
+
+  public Texture2D computeValue() {
+    return component;
+  }
+
+
+  @Override
+  public void setPropertyName(String propertyName) {
+    super.setPropertyName(propertyName);
+    propertyNameLabel.setText("Texture2D: " + propertyName);
+  }
+
+  /**
+   * Method generated by IntelliJ IDEA GUI Designer >>> IMPORTANT!! <<< DO NOT edit this method OR
+   * call it in your code!
+   *
+   * @noinspection ALL
+   */
+  private void $$$setupUI$$$() {
+    createUIComponents();
+    contentPanel = new JPanel();
+    contentPanel.setLayout(new GridLayoutManager(4, 1, new Insets(0, 0, 0, 0), -1, -1));
+    propertyNameLabel = new JLabel();
+    propertyNameLabel.setText("Label");
+    contentPanel.add(propertyNameLabel,
+        new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
+            GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0,
+            false));
+    contentPanel.add(imageIconLabel,
+        new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE,
+            GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null,
+            new Dimension(60, 60), null, 0, false));
+    final JSeparator separator1 = new JSeparator();
+    contentPanel.add(separator1,
+        new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH,
+            GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_WANT_GROW, null, null,
+            null, 0, false));
+    final JPanel panel1 = new JPanel();
+    panel1.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
+    contentPanel.add(panel1,
+        new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH,
+            GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+            GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null,
+            null, 0, false));
+    textureChooserButton.setText("Set");
+    panel1.add(textureChooserButton, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER,
+        GridConstraints.FILL_HORIZONTAL,
+        GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+        GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+    clearTextureButton.setText("No Texture");
+    panel1.add(clearTextureButton, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER,
+        GridConstraints.FILL_HORIZONTAL,
+        GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+        GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+  }
+
+  /**
+   * @noinspection ALL
+   */
+  public JComponent $$$getRootComponent$$$() {
+    return contentPanel;
+  }
+
+  public void clearTextureSelection() {
+    setComponent(null);
+
+  }
+
+  private void createUIComponents() {
+    clearTextureButton = new JButton();
+    clearTextureButton.addActionListener(e -> clearTextureSelection());
+
+    imageIconLabel = new JLabel(imageIcon);
+
+    textureChooserButton = new JButton();
+    fileChooser = new JFileChooser();
+    fileChooser.setFileFilter(new TextureFilter());
+    updateFileChooserRootDirectory(new File(assetRootDirectory));
+
+    textureChooserButton.addMouseListener(new MouseClickListener() {
+      @Override
+      public void mouseClicked(MouseEvent e) {
+        int returnVal = fileChooser.showOpenDialog(textureChooserButton);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+          File file = fileChooser.getSelectedFile();
+          //This is where a real application would open the file.
+          LOGGER.debug("Opening: {}.", file.getName());
+          setTextureFromFile(file);
+        } else {
+          LOGGER.debug("Open command cancelled by user.");
+        }
+      }
+    });
+
+  }
+
+  @Override
+  public JComponent getJComponent() {
+    return contentPanel;
+  }
+
+  public String getAssetRootDirectory() {
+    return assetRootDirectory;
+  }
+
+  public void setAssetRootDirectory(String assetRootDirectory) {
+    this.assetRootDirectory = assetRootDirectory;
+    File file = new File(assetRootDirectory);
+    assetRootDirectoryPath = file.toPath().toAbsolutePath();
+    updateFileChooserRootDirectory(file);
+
+  }
+
+  private void updateFileChooserRootDirectory(File rootDirectory) {
+    FileSystemView fsv = new DirectoryRestrictedFileSystemView(rootDirectory);
+    fileChooser.setFileSystemView(fsv);
+    fileChooser.setCurrentDirectory(rootDirectory);
+  }
+
+
+  public AssetManager getAssetManager() {
+    return assetManager;
+  }
+
+  public void setAssetManager(AssetManager assetManager) {
+    this.assetManager = assetManager;
+  }
+
+  private Image getScaledImage(Image srcImg, int w, int h) {
+    BufferedImage resizedImg = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+    Graphics2D g2 = resizedImg.createGraphics();
+
+    g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+        RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+    g2.drawImage(srcImg, 0, 0, w, h, null);
+    g2.dispose();
+
+    return resizedImg;
+  }
+}
