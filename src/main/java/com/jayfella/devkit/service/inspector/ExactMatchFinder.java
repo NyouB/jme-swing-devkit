@@ -20,6 +20,7 @@ public class ExactMatchFinder extends PropertySectionListBuilder {
     PropertySectionBuilderFactory factory = registrationService
         .getPropertySectionBuilderFactoryFor(object.getClass());
     if (factory != null) {
+      LOGGER.debug("-- find() Factory {} found for class {}", factory.getClass().getCanonicalName(), object.getClass().getCanonicalName());
       AbstractPropertySectionBuilder<?> builder = factory.create(object);
       return builder.build();
     }

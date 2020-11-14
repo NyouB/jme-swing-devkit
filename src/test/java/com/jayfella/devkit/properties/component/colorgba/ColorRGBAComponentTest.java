@@ -21,6 +21,12 @@ class ColorRGBAComponentTest {
     assertEquals(new ColorRGBA(0.3f, 0.1f, 0.5f, 0.1f), colorRGBAComponent.getComponent());
   }
 
+  @Test
+  void init() {
+    this.colorRGBAComponent = new ColorRGBAComponent(null, null);
+    assertEquals(new ColorRGBA(1,1,1,1), colorRGBAComponent.getComponent());
+  }
+
   public static final void main(String[] args) throws ParseException {
     JFrame frame = new JFrame("Test");
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

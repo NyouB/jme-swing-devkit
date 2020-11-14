@@ -40,6 +40,9 @@ public class ColorRGBAComponent extends AbstractSDKComponent<ColorRGBA> {
 
   public ColorRGBAComponent(ColorRGBA colorRGBA, String propertyName) {
     super(colorRGBA, propertyName);
+    if (colorRGBA == null) {
+      component = new ColorRGBA();
+    }
     $$$setupUI$$$();
   }
 

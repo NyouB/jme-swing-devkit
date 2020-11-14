@@ -3,8 +3,14 @@ package com.jayfella.devkit.properties.builder;
 import com.jayfella.devkit.properties.PropertySection;
 import com.jayfella.devkit.properties.component.AbstractSDKComponent;
 import com.jayfella.devkit.properties.component.SDKComponentFactory;
+import com.jayfella.devkit.properties.component.SdkComponent;
 import com.jayfella.devkit.service.RegistrationService;
 import com.jayfella.devkit.service.ServiceManager;
+import com.jayfella.devkit.service.inspector.ControlFinder;
+import com.jayfella.devkit.service.inspector.DefaultMatchFinder;
+import com.jayfella.devkit.service.inspector.ExactMatchFinder;
+import com.jayfella.devkit.service.inspector.InheritedMatchFinder;
+import com.jayfella.devkit.service.inspector.PropertySectionListBuilder;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,14 +24,17 @@ public class ReflectedPropertySectionBuilder extends AbstractPropertySectionBuil
       .getLogger(ReflectedPropertySectionBuilder.class);
 
   private final List<Field> fields;
-
   private final String name;
+  private final PropertySectionListBuilder propertySectionListBuilder;
 
   public ReflectedPropertySectionBuilder(String name, Object object, Field... ignoredFieldsArray) {
     super(object, ignoredFieldsArray);
     fields = FieldUtils.getAllFieldsList(object.getClass());
     fields.removeAll(ignoredFields);
     this.name = name;
+    propertySectionListBuilder = new ControlFinder();
+    propertySectionListBuilder.chainWith(new ExactMatchFinder())
+        .chainWith(new InheritedMatchFinder());
   }
 
   public ReflectedPropertySectionBuilder(Object object, Field... ignoredFieldsArray) {
@@ -50,22 +59,15 @@ public class ReflectedPropertySectionBuilder extends AbstractPropertySectionBuil
       try {
         field.setAccessible(true);
         Object fieldObject = field.get(object);
-        SDKComponentFactory sdkComponentFactory = ServiceManager
-            .getService(RegistrationService.class)
-            .getComponentFactoryFor(fieldObject.getClass());
-        if (sdkComponentFactory != null) {
-          AbstractSDKComponent newComponent = buildComponentFromField(sdkComponentFactory, field,
-              fieldObject);
-          result.add(new PropertySection(field.getName(), newComponent));
-        } else {
-          PropertySectionBuilderFactory propertyBuilderFactory = ServiceManager
-              .getService(RegistrationService.class)
-              .getPropertySectionBuilderFactoryFor(fieldObject.getClass());
-          if (propertyBuilderFactory != null) {
-            AbstractPropertySectionBuilder<List<PropertySection>> builder = propertyBuilderFactory
-                .create(fieldObject);
-            List<PropertySection> propertySectionList = builder.build();
-            result.addAll(propertySectionList);
+        result = propertySectionListBuilder.find(fieldObject);
+        for(PropertySection propertySection : result){
+          SdkComponent[] components = propertySection
+              .getComponents();
+          for(SdkComponent component : components){
+            if(component instanceof AbstractSDKComponent){
+              bind(field, (AbstractSDKComponent)component);
+              ((AbstractSDKComponent)component).setPropertyName(field.getName());
+            }
           }
         }
       } catch (IllegalAccessException e) {

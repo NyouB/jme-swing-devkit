@@ -21,6 +21,8 @@ public class ControlFinder extends PropertySectionListBuilder {
         .getService(RegistrationService.class)
         .getComponentFactoryFor(object.getClass());
     if (factory != null) {
+      LOGGER.debug("-- find() Factory {} found for class {}", factory.getClass().getCanonicalName(),
+          object.getClass().getCanonicalName());
       AbstractSDKComponent component = factory.create(object, null);
       PropertySection propertySection = new PropertySection(object.getClass().getSimpleName(),
           component);
@@ -30,4 +32,5 @@ public class ControlFinder extends PropertySectionListBuilder {
     }
     return findNext(object);
   }
+
 }

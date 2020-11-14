@@ -34,7 +34,7 @@ public class PropertyInspectorService implements Service {
     clearInspector();
     propertySectionListBuilder = new ControlFinder();
     propertySectionListBuilder.chainWith(new ExactMatchFinder())
-        .chainWith(new IneritedMatchFinder())
+        .chainWith(new InheritedMatchFinder())
         .chainWith(new DefaultMatchFinder());
 
   }

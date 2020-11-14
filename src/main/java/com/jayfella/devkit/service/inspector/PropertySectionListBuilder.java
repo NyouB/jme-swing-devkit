@@ -1,6 +1,7 @@
 package com.jayfella.devkit.service.inspector;
 
 import com.jayfella.devkit.properties.PropertySection;
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class PropertySectionListBuilder {
@@ -18,7 +19,7 @@ public abstract class PropertySectionListBuilder {
    */
   protected List<PropertySection> findNext(Object object) {
     if (next == null) {
-      return null;
+      return new ArrayList<>();
     }
     return next.find(object);
   }
