@@ -39,7 +39,6 @@ import com.jme3.math.Vector4f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.BillboardControl;
-import com.jme3.scene.control.Control;
 import com.jme3.texture.Texture2D;
 import java.util.HashMap;
 import java.util.Map;
@@ -55,9 +54,6 @@ public class RegistrationService implements Service {
 
   // a single object that returns multiple components. For example a spatial or a material.
   private final Map<Class<?>, PropertySectionBuilderFactory> componentBuilderClasses = new HashMap<>();
-
-  // a control that returns a single component.
-  private final Map<Class<? extends Control>, SDKComponentFactory> controlComponentClasses = new HashMap<>();
 
   private final Registrar<NodeRegistrar> nodeRegistration = new Registrar<>(NodeRegistrar.class);
   private final Registrar<GeometryRegistrar> geometryRegistration = new Registrar<>(
@@ -81,17 +77,17 @@ public class RegistrationService implements Service {
     registerComponentFactory(Integer.class, new IntegerComponentFactory());
     registerComponentFactory(Quaternion.class, new QuaternionComponentFactory());
     registerComponentFactory(String.class, new StringComponentFactory());
-    registerComponentFactory(Texture2D.class, new Texture2DComponentFactory(ServiceManager.getService(JmeEngineService.class)
-        .getAssetManager(), DevKitConfig.getInstance().getProjectConfig().getAssetRootDir()));
+    registerComponentFactory(Texture2D.class,
+        new Texture2DComponentFactory(ServiceManager.getService(JmeEngineService.class)
+            .getAssetManager(), DevKitConfig.getInstance().getProjectConfig().getAssetRootDir()));
     registerComponentFactory(Vector2f.class, new Vector2fComponentFactory());
     registerComponentFactory(Vector3f.class, new Vector3fComponentFactory());
     registerComponentFactory(Vector4f.class, new Vector4fComponentFactory());
+    registerComponentFactory(AnimControl.class, new AnimControlComponentFactory());
+    registerComponentFactory(AnimComposer.class, new AnimComposerComponentFactory());
 
     registerPropertySectionBuilderFactory(Spatial.class, new SpatialComponentSetFactory());
     registerPropertySectionBuilderFactory(Material.class, new MaterialComponentSetFactory());
-
-    registerControlComponentFactory(AnimControl.class, new AnimControlComponentFactory());
-    registerControlComponentFactory(AnimComposer.class, new AnimComposerComponentFactory());
 
     nodeRegistration.register(new NoArgsSpatialRegistrar(Node.class));
     nodeRegistration.register(new AssetLinkNodeRegistrar());
@@ -156,27 +152,6 @@ public class RegistrationService implements Service {
   public <T> PropertySectionBuilderFactory<T> getPropertySectionBuilderFactoryFor(Class<T> clazz) {
     return componentBuilderClasses.get(clazz);
   }
-
-  /**
-   * Registers a Control with a component.
-   *
-   * @param clazz the control to map.
-   * @param factory the factory that allow to create component for the mapped class.
-   */
-  public <T extends Control> void registerControlComponentFactory(Class<T> clazz,
-      SDKComponentFactory<T> factory) {
-    controlComponentClasses.put(clazz, factory);
-  }
-
-  public Map<Class<?>, SDKComponentFactory> getControlComponentFactoryMap() {
-    return ImmutableMap.copyOf(controlComponentClasses);
-  }
-
-  public <T extends Control> SDKComponentFactory<T> getControlComponentFactoryFor(
-      Class<T> controlClass) {
-    return controlComponentClasses.get(controlClass);
-  }
-
 
   public void registerNode(NodeRegistrar registrar) {
     nodeRegistration.register(registrar);

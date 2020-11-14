@@ -1,5 +1,8 @@
 package com.jayfella.devkit.service;
 
+import static com.jayfella.devkit.tree.TreeConstants.TREE_ROOT;
+import static com.jayfella.devkit.tree.TreeConstants.UNDELETABLE_FLAG;
+
 import com.jayfella.devkit.event.EventHandler;
 import com.jayfella.devkit.event.EventListener;
 import com.jayfella.devkit.jme.SceneObjectHighlighterState;
@@ -13,31 +16,42 @@ import com.jayfella.devkit.properties.component.events.SpatialRemovedEvent;
 import com.jayfella.devkit.registration.Registrar;
 import com.jayfella.devkit.registration.spatial.GeometryRegistrar;
 import com.jayfella.devkit.registration.spatial.NodeRegistrar;
+import com.jayfella.devkit.service.inspector.PropertyInspectorService;
 import com.jayfella.devkit.tree.JmeTreeNode;
 import com.jayfella.devkit.tree.SceneTreeMouseListener;
 import com.jayfella.devkit.tree.control.ControlTreeNode;
 import com.jayfella.devkit.tree.event.SceneTreeItemChangedEvent;
-import com.jayfella.devkit.tree.light.*;
+import com.jayfella.devkit.tree.light.AmbientLightTreeNode;
+import com.jayfella.devkit.tree.light.DirectionalLightTreeNode;
+import com.jayfella.devkit.tree.light.LightProbeTreeNode;
+import com.jayfella.devkit.tree.light.LightTreeNode;
+import com.jayfella.devkit.tree.light.PointLightTreeNode;
 import com.jayfella.devkit.tree.spatial.GeometryTreeNode;
 import com.jayfella.devkit.tree.spatial.MeshTreeNode;
 import com.jayfella.devkit.tree.spatial.NodeTreeNode;
 import com.jayfella.devkit.tree.spatial.SpatialTreeNode;
-import com.jme3.light.*;
+import com.jme3.light.AmbientLight;
+import com.jme3.light.DirectionalLight;
+import com.jme3.light.Light;
+import com.jme3.light.LightList;
+import com.jme3.light.LightProbe;
+import com.jme3.light.PointLight;
 import com.jme3.material.Material;
-import com.jme3.scene.*;
+import com.jme3.scene.Geometry;
+import com.jme3.scene.Mesh;
+import com.jme3.scene.Node;
+import com.jme3.scene.SceneGraphVisitorAdapter;
+import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
 import com.jme3.scene.instancing.InstancedNode;
 import com.jme3.shader.VarType;
-
-import javax.swing.*;
+import java.util.logging.Logger;
+import javax.swing.JTree;
+import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
-import java.util.logging.Logger;
-
-import static com.jayfella.devkit.tree.TreeConstants.TREE_ROOT;
-import static com.jayfella.devkit.tree.TreeConstants.UNDELETABLE_FLAG;
 
 /**
  * Provides a jMonkey Scene Tree visualised in a Swing JTree.

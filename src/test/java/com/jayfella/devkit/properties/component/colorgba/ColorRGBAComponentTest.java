@@ -2,7 +2,6 @@ package com.jayfella.devkit.properties.component.colorgba;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.jayfella.devkit.properties.component.vector4f.Vector4fComponent;
 import com.jme3.math.ColorRGBA;
 import java.text.ParseException;
 import javax.swing.JFrame;
@@ -18,8 +17,8 @@ class ColorRGBAComponentTest {
     assertEquals(new ColorRGBA(), colorRGBAComponent.getComponent());
     colorRGBAComponent.setComponent(null);
     assertEquals(new ColorRGBA(), colorRGBAComponent.getComponent());
-    colorRGBAComponent.setComponent(new ColorRGBA(1, 2, 3, 4));
-    assertEquals(new ColorRGBA(1, 2, 3, 4), colorRGBAComponent.getComponent());
+    colorRGBAComponent.setComponent(new ColorRGBA(0.3f, 0.1f, 0.5f, 0.1f));
+    assertEquals(new ColorRGBA(0.3f, 0.1f, 0.5f, 0.1f), colorRGBAComponent.getComponent());
   }
 
   public static final void main(String[] args) throws ParseException {

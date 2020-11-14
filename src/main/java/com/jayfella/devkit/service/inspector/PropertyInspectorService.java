@@ -1,17 +1,9 @@
-package com.jayfella.devkit.service;
+package com.jayfella.devkit.service.inspector;
 
 import com.jayfella.devkit.properties.PropertySection;
-import com.jayfella.devkit.properties.builder.AbstractPropertySectionBuilder;
-import com.jayfella.devkit.properties.builder.PropertySectionBuilderFactory;
-import com.jayfella.devkit.properties.builder.ReflectedComponentSetBuilder;
-import com.jayfella.devkit.properties.builder.SpatialPropertySectionBuilder;
-import com.jayfella.devkit.properties.component.AbstractSDKComponent;
-import com.jayfella.devkit.properties.component.SDKComponentFactory;
 import com.jayfella.devkit.properties.component.SdkComponent;
-import com.jme3.scene.Spatial;
-import com.jme3.scene.control.Control;
+import com.jayfella.devkit.service.Service;
 import java.awt.BorderLayout;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import javax.swing.JLabel;
@@ -19,8 +11,12 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.border.EmptyBorder;
 import org.jdesktop.swingx.VerticalLayout;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PropertyInspectorService implements Service {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(PropertyInspectorService.class);
 
   public static final String WINDOW_ID = "Property Inspector";
 
@@ -30,12 +26,17 @@ public class PropertyInspectorService implements Service {
   private final JLabel nothingSelectedLabel = new JLabel("Nothing To Inspect.");
   private final long threadId;
   private List<PropertySection> displayedSections;
+  private PropertySectionListBuilder propertySectionListBuilder;
 
   public PropertyInspectorService(JPanel rootPanel) {
     threadId = Thread.currentThread().getId();
-
     this.rootPanel = rootPanel;
     clearInspector();
+    propertySectionListBuilder = new ControlFinder();
+    propertySectionListBuilder.chainWith(new ExactMatchFinder())
+        .chainWith(new IneritedMatchFinder())
+        .chainWith(new DefaultMatchFinder());
+
   }
 
   /**
@@ -94,77 +95,9 @@ public class PropertyInspectorService implements Service {
    * @param object the object to inspect.
    */
   public void inspect(final Object object) {
-
     cleanup();
-
-    // check controls
-    // check componentBuilders
-
-    boolean found = false;
-
-    if (object instanceof Control) {
-
-      Control control = (Control) object;
-
-      SDKComponentFactory factory = ServiceManager
-          .getService(RegistrationService.class)
-          .getControlComponentFactoryFor(control.getClass());
-      if (factory != null) {
-        AbstractSDKComponent component = factory.create(object, null);
-        PropertySection propertySection = new PropertySection(control.getClass().getSimpleName(),
-            component);
-        List<PropertySection> propertySections = new ArrayList<>();
-        propertySections.add(propertySection);
-        displaySections(propertySections);
-
-        found = true;
-      }
-
-    } else {
-
-      PropertySectionBuilderFactory factory = ServiceManager
-          .getService(RegistrationService.class)
-          .getPropertySectionBuilderFactoryFor(object.getClass());
-
-      if (factory != null) {
-        AbstractPropertySectionBuilder<?> propertySectionBuilder = factory.create(object);
-        List<PropertySection> sections = propertySectionBuilder.build();
-        displaySections(sections);
-
-        found = true;
-      }
-
-    }
-
-    if (!found) {
-
-      // we display the spatial component builder last to give everything else a chance to find something.
-      // Our last effort is to display the "generic" spatial componentBuilder.
-      // This is actually most likely the case for 90% of spatial(s), but for things like ParticleEmitters
-      // they need the opportunity to find their own custom builder.
-      if (object instanceof Spatial) {
-
-        Spatial spatial = (Spatial) object;
-        SpatialPropertySectionBuilder componentSetBuilder = new SpatialPropertySectionBuilder(
-            spatial);
-
-        List<PropertySection> propertySections = componentSetBuilder.build();
-        displaySections(propertySections);
-
-      } else {
-
-        // we don't know what it is, so all we can do is display reflected properties.
-
-        ReflectedComponentSetBuilder componentSetBuilder = new ReflectedComponentSetBuilder(
-            object.getClass().getSimpleName(), object);
-
-        List<PropertySection> propertySections = componentSetBuilder.build();
-        displaySections(propertySections);
-
-      }
-
-    }
-
+    List<PropertySection> propertySectionList = propertySectionListBuilder.find(object);
+    displaySections(propertySectionList);
   }
 
   /**
@@ -227,4 +160,12 @@ public class PropertyInspectorService implements Service {
     throw new UnsupportedOperationException("This method shouldn't be called");
   }
 
+  public PropertySectionListBuilder getPropertySectionListBuilder() {
+    return propertySectionListBuilder;
+  }
+
+  public void setPropertySectionListBuilder(
+      PropertySectionListBuilder propertySectionListBuilder) {
+    this.propertySectionListBuilder = propertySectionListBuilder;
+  }
 }
