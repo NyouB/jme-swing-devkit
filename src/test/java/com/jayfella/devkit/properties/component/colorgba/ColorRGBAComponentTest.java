@@ -9,29 +9,29 @@ import org.junit.jupiter.api.Test;
 
 class ColorRGBAComponentTest {
 
-  ColorRGBAComponent colorRGBAComponent;
-
-  @Test
-  void setComponent() {
-    this.colorRGBAComponent = new ColorRGBAComponent();
-    assertEquals(new ColorRGBA(), colorRGBAComponent.getComponent());
-    colorRGBAComponent.setComponent(null);
-    assertEquals(new ColorRGBA(), colorRGBAComponent.getComponent());
-    colorRGBAComponent.setComponent(new ColorRGBA(0.3f, 0.1f, 0.5f, 0.1f));
-    assertEquals(new ColorRGBA(0.3f, 0.1f, 0.5f, 0.1f), colorRGBAComponent.getComponent());
-  }
-
-  @Test
-  void init() {
-    this.colorRGBAComponent = new ColorRGBAComponent(null, null);
-    assertEquals(new ColorRGBA(1,1,1,1), colorRGBAComponent.getComponent());
-  }
+  ColorRGBAEditor colorRGBAComponent;
 
   public static final void main(String[] args) throws ParseException {
     JFrame frame = new JFrame("Test");
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    frame.add(new ColorRGBAComponent().getJComponent());
+    frame.add(new ColorRGBAEditor().getCustomEditor());
     frame.pack();
     frame.setVisible(true);
+  }
+
+  @Test
+  void setComponent() {
+    this.colorRGBAComponent = new ColorRGBAEditor();
+    assertEquals(new ColorRGBA(), colorRGBAComponent.getValue());
+    colorRGBAComponent.setTypedValue(null);
+    assertEquals(new ColorRGBA(), colorRGBAComponent.getValue());
+    colorRGBAComponent.setTypedValue(new ColorRGBA(0.3f, 0.1f, 0.5f, 0.1f));
+    assertEquals(new ColorRGBA(0.3f, 0.1f, 0.5f, 0.1f), colorRGBAComponent.getValue());
+  }
+
+  @Test
+  void init() {
+    this.colorRGBAComponent = new ColorRGBAEditor(null);
+    assertEquals(new ColorRGBA(1, 1, 1, 1), colorRGBAComponent.getValue());
   }
 }

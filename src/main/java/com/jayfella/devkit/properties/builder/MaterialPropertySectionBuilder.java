@@ -2,14 +2,14 @@ package com.jayfella.devkit.properties.builder;
 
 import com.jayfella.devkit.jme.IgnoredProperties;
 import com.jayfella.devkit.properties.PropertySection;
-import com.jayfella.devkit.properties.component.AbstractSDKComponent;
-import com.jayfella.devkit.properties.component.bool.BooleanComponent;
-import com.jayfella.devkit.properties.component.colorgba.ColorRGBAComponent;
-import com.jayfella.devkit.properties.component.floatc.FloatComponent;
-import com.jayfella.devkit.properties.component.texture2d.Texture2DComponent;
-import com.jayfella.devkit.properties.component.vector2f.Vector2fComponent;
-import com.jayfella.devkit.properties.component.vector3f.Vector3fComponent;
-import com.jayfella.devkit.properties.component.vector4f.Vector4fComponent;
+import com.jayfella.devkit.properties.component.AbstractPropertyEditor;
+import com.jayfella.devkit.properties.component.bool.BooleanEditor;
+import com.jayfella.devkit.properties.component.colorgba.ColorRGBAEditor;
+import com.jayfella.devkit.properties.component.floatc.FloatEditor;
+import com.jayfella.devkit.properties.component.texture2d.Texture2DEditor;
+import com.jayfella.devkit.properties.component.vector2f.Vector2fEditor;
+import com.jayfella.devkit.properties.component.vector3f.Vector3fEditor;
+import com.jayfella.devkit.properties.component.vector4f.Vector4fEditor;
 import com.jme3.material.MatParam;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
@@ -52,7 +52,7 @@ public class MaterialPropertySectionBuilder extends AbstractPropertySectionBuild
 
   private PropertySection createMaterialPropertySection() {
 
-    List<AbstractSDKComponent<?>> components = new ArrayList<>();
+    PropertySection materialSection = new PropertySection("Material");
 
     // a list of all possible params
     Collection<MatParam> params = object.getMaterialDef().getMaterialParams();
@@ -79,15 +79,15 @@ public class MaterialPropertySectionBuilder extends AbstractPropertySectionBuild
         continue;
       }
 
-      AbstractSDKComponent sdkComponent = componentFromVarType(matParam.getVarType(),
+      AbstractPropertyEditor propertyEditor = componentFromVarType(matParam.getVarType(),
           matParam.getName(), object.getParamValue(matParam.getName()));
-      if (sdkComponent == null) {
-        continue;
+      if (propertyEditor != null) {
+        materialSection.addProperty(matParam.getName(), propertyEditor.getCustomEditor());
       }
-      components.add(sdkComponent);
+
     }
 
-    return new PropertySection("Material", components.toArray(new AbstractSDKComponent[0]));
+    return materialSection;
   }
 
 
@@ -101,10 +101,10 @@ public class MaterialPropertySectionBuilder extends AbstractPropertySectionBuild
 
   }
 
-  private AbstractSDKComponent componentFromVarType(VarType varType, String name, Object value) {
+  private AbstractPropertyEditor componentFromVarType(VarType varType, String name, Object value) {
     switch (varType) {
       case Float:
-        FloatComponent floatComponent = new FloatComponent((Float) value, name);
+        FloatEditor floatComponent = new FloatEditor((Float) value);
 
         floatComponent.addPropertyChangeListener(event -> {
           Float newValue = (Float) event.getNewValue();
@@ -117,7 +117,7 @@ public class MaterialPropertySectionBuilder extends AbstractPropertySectionBuild
 
         return floatComponent;
       case Vector2:
-        Vector2fComponent vector2fComponent = new Vector2fComponent((Vector2f) value, name);
+        Vector2fEditor vector2fComponent = new Vector2fEditor((Vector2f) value);
         // set the value of the component if one is found.
 
         vector2fComponent.addPropertyChangeListener(event -> {
@@ -131,7 +131,7 @@ public class MaterialPropertySectionBuilder extends AbstractPropertySectionBuild
         });
         return vector2fComponent;
       case Vector3:
-        Vector3fComponent vector3fComponent = new Vector3fComponent((Vector3f) value, name);
+        Vector3fEditor vector3fComponent = new Vector3fEditor((Vector3f) value);
         vector3fComponent.addPropertyChangeListener(event -> {
           Vector3f newValue = (Vector3f) event.getNewValue();
           if (newValue != null) {
@@ -145,10 +145,10 @@ public class MaterialPropertySectionBuilder extends AbstractPropertySectionBuild
       case Vector4:
         // a vector4 could also be a ColorRGBA.
 
-        AbstractSDKComponent vector4fComponent;
+        AbstractPropertyEditor vector4fComponent;
 
         if (value instanceof Vector4f) {
-          vector4fComponent = new Vector4fComponent((Vector4f) value, name);
+          vector4fComponent = new Vector4fEditor((Vector4f) value);
           vector4fComponent.addPropertyChangeListener(event -> {
             if (event.getNewValue() == null) {
               object.clearParam(name);
@@ -158,7 +158,7 @@ public class MaterialPropertySectionBuilder extends AbstractPropertySectionBuild
           });
 
         } else {
-          vector4fComponent = new ColorRGBAComponent((ColorRGBA) value, name);
+          vector4fComponent = new ColorRGBAEditor((ColorRGBA) value);
           vector4fComponent.addPropertyChangeListener(event -> {
 
             if (event.getNewValue() == null) {
@@ -172,7 +172,7 @@ public class MaterialPropertySectionBuilder extends AbstractPropertySectionBuild
 
         return vector4fComponent;
       case Boolean:
-        BooleanComponent booleanComponent = new BooleanComponent((Boolean) value, name);
+        BooleanEditor booleanComponent = new BooleanEditor((Boolean) value);
 
         booleanComponent.addPropertyChangeListener(event -> {
           if (event.getNewValue() != null) {
@@ -184,7 +184,7 @@ public class MaterialPropertySectionBuilder extends AbstractPropertySectionBuild
         return booleanComponent;
 
       case Texture2D:
-        Texture2DComponent texture2DComponent = new Texture2DComponent((Texture2D) value, name);
+        Texture2DEditor texture2DComponent = new Texture2DEditor((Texture2D) value);
 
         texture2DComponent.addPropertyChangeListener(event -> {
 

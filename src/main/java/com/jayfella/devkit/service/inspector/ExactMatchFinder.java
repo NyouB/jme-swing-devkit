@@ -2,7 +2,6 @@ package com.jayfella.devkit.service.inspector;
 
 import com.jayfella.devkit.properties.PropertySection;
 import com.jayfella.devkit.properties.builder.AbstractPropertySectionBuilder;
-import com.jayfella.devkit.properties.builder.PropertySectionBuilderFactory;
 import com.jayfella.devkit.service.RegistrationService;
 import com.jayfella.devkit.service.ServiceManager;
 import java.util.List;
@@ -14,17 +13,18 @@ public class ExactMatchFinder extends PropertySectionListBuilder {
   private static final Logger LOGGER = LoggerFactory.getLogger(ExactMatchFinder.class);
 
   @Override
-  public List<PropertySection> find(Object object) {
+  public List<PropertySection> find(Class<?> clazz, Object object, String propertyName) {
     RegistrationService registrationService = ServiceManager
         .getService(RegistrationService.class);
     PropertySectionBuilderFactory factory = registrationService
         .getPropertySectionBuilderFactoryFor(object.getClass());
     if (factory != null) {
-      LOGGER.debug("-- find() Factory {} found for class {}", factory.getClass().getCanonicalName(), object.getClass().getCanonicalName());
+      LOGGER.debug("-- find() Factory {} found for class {}", factory.getClass().getCanonicalName(),
+          object.getClass().getCanonicalName());
       AbstractPropertySectionBuilder<?> builder = factory.create(object);
       return builder.build();
     }
-    return findNext(object);
+    return findNext(clazz, object, propertyName);
   }
 
 }

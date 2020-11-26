@@ -1,29 +1,21 @@
 package com.jayfella.devkit.properties.builder;
 
 import com.jayfella.devkit.properties.PropertySection;
-import com.jayfella.devkit.properties.component.bool.BooleanComponent;
-import com.jayfella.devkit.properties.component.enumeration.EnumComponent;
+import com.jayfella.devkit.properties.component.enumeration.EnumEditor;
 import com.jayfella.devkit.properties.component.events.SpatialNameChangedEvent;
-import com.jayfella.devkit.properties.component.integer.IntegerComponent;
-import com.jayfella.devkit.properties.component.material.MaterialChooserComponent;
-import com.jayfella.devkit.properties.component.quaternion.QuaternionComponent;
-import com.jayfella.devkit.properties.component.string.StringComponent;
-import com.jayfella.devkit.properties.component.vector3f.Vector3fComponent;
+import com.jayfella.devkit.properties.component.quaternion.QuaternionEditor;
+import com.jayfella.devkit.properties.component.string.StringEditor;
+import com.jayfella.devkit.properties.component.vector3f.Vector3fEditor;
 import com.jayfella.devkit.service.EventService;
 import com.jayfella.devkit.service.JmeEngineService;
 import com.jayfella.devkit.service.ServiceManager;
-import com.jayfella.devkit.service.inspector.PropertyInspectorService;
-import com.jme3.material.Material;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
-import com.jme3.scene.Geometry;
-import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.Spatial.BatchHint;
 import com.jme3.scene.Spatial.CullHint;
-import java.beans.PropertyChangeListener;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,127 +45,64 @@ public class SpatialPropertySectionBuilder extends AbstractPropertySectionBuilde
 
     List<PropertySection> propertySections = new ArrayList<>();
 
+    PropertySection transformSection = new PropertySection("Transform");
     // Transform : location, rotation, scale
 
-    Vector3fComponent localTranslation = new Vector3fComponent(object.getLocalTranslation(), LOCAL_TRANSLATION);
+    Vector3fEditor localTranslation = new Vector3fEditor(object.getLocalTranslation());
     localTranslation.addPropertyChangeListener(
         value -> ServiceManager.getService(JmeEngineService.class)
             .enqueue(() -> object.setLocalTranslation((Vector3f) value.getNewValue())));
+    transformSection.addProperty(LOCAL_TRANSLATION, localTranslation.getCustomEditor());
 
-    QuaternionComponent localRotation = new QuaternionComponent(object.getLocalRotation(), LOCAL_ROTATION);
+    QuaternionEditor localRotation = new QuaternionEditor(object.getLocalRotation());
     localRotation.addPropertyChangeListener(
         value -> ServiceManager.getService(JmeEngineService.class)
             .enqueue(() -> object.setLocalRotation((Quaternion) value.getNewValue())));
+    transformSection.addProperty(LOCAL_ROTATION, localRotation.getCustomEditor());
 
-    Vector3fComponent localScale = new Vector3fComponent(object.getLocalScale(), LOCAL_SCALE);
+    Vector3fEditor localScale = new Vector3fEditor(object.getLocalScale());
     localScale.addPropertyChangeListener(value -> ServiceManager.getService(JmeEngineService.class)
         .enqueue(() -> object.setLocalScale((Vector3f) value.getNewValue())));
+    transformSection.addProperty(LOCAL_SCALE, localScale.getCustomEditor());
 
-    PropertySection transformSection = new PropertySection("Transform", localTranslation,
-        localRotation, localScale);
     propertySections.add(transformSection);
 
+    PropertySection spatialSection = new PropertySection("Spatial");
     // Spatial: name, cullHint, lastFrustumIntersection, shadowMode, QueueBucket, BatchHint
     // fire an event that the spatial name changed.
     // the scene tree needs to know when this happened so it can change the name visually.
-    StringComponent name = new StringComponent(object.getName(), NAME);
+    StringEditor name = new StringEditor(object.getName());
     name.addPropertyChangeListener(evt -> ServiceManager.getService(EventService.class)
         .fireEvent(new SpatialNameChangedEvent(object)));
     name.addPropertyChangeListener(value -> ServiceManager.getService(JmeEngineService.class)
         .enqueue(() -> object.setName((String) value.getNewValue())));
+    spatialSection.addProperty(NAME, name.getCustomEditor());
 
-    EnumComponent cullHint = new EnumComponent(object.getCullHint(), CULL_HINT);
+    EnumEditor cullHint = new EnumEditor(object.getCullHint());
     cullHint.addPropertyChangeListener(
         value -> ServiceManager.getService(JmeEngineService.class).enqueue(() -> object.setCullHint(
             (CullHint) value.getNewValue())));
+    spatialSection.addProperty(CULL_HINT, cullHint.getCustomEditor());
 
-    EnumComponent shadowMode = new EnumComponent(object.getShadowMode(), SHADOW_MODE);
+    EnumEditor shadowMode = new EnumEditor(object.getShadowMode());
     shadowMode.addPropertyChangeListener(value -> ServiceManager.getService(JmeEngineService.class)
         .enqueue(() -> object.setShadowMode(
             (ShadowMode) value.getNewValue())));
+    spatialSection.addProperty(SHADOW_MODE, shadowMode.getCustomEditor());
 
-    EnumComponent queueBucket = new EnumComponent(object.getQueueBucket(), QUEUE_BUCKET);
+    EnumEditor queueBucket = new EnumEditor(object.getQueueBucket());
     queueBucket.addPropertyChangeListener(value -> ServiceManager.getService(JmeEngineService.class)
         .enqueue(() -> object.setQueueBucket(
             (Bucket) value.getNewValue())));
+    spatialSection.addProperty(QUEUE_BUCKET, queueBucket.getCustomEditor());
 
-    EnumComponent batchHint = new EnumComponent(object.getBatchHint(), BATCH_HINT);
+    EnumEditor batchHint = new EnumEditor(object.getBatchHint());
     batchHint.addPropertyChangeListener(value -> ServiceManager.getService(JmeEngineService.class)
         .enqueue(() -> object.setBatchHint(
             (BatchHint) value.getNewValue())));
+    spatialSection.addProperty(BATCH_HINT, batchHint.getCustomEditor());
 
-    PropertySection spatialSection = new PropertySection("Spatial", name, cullHint, shadowMode,
-        queueBucket, batchHint);
     propertySections.add(spatialSection);
-
-    if (object instanceof Node) {
-      // Node doesn't have any properties we want.
-      // Leave the comment here so we're aware that we know.
-    } else if (object instanceof Geometry) {
-      // Geometry-specific data
-
-      BooleanComponent ignoreTransform = new BooleanComponent(
-          ((Geometry) object).isIgnoreTransform(), IGNORE_TRANSFORM);
-      ignoreTransform.addPropertyChangeListener(
-          value -> ServiceManager.getService(JmeEngineService.class)
-              .enqueue(() -> ((Geometry) object).setIgnoreTransform(
-                  (Boolean) value.getNewValue())));
-
-      boolean isLODSet = ((Geometry) object).getMesh().getNumLodLevels() == 0;
-      IntegerComponent lodLevel = new IntegerComponent(((Geometry) object).getLodLevel());
-      lodLevel.setPropertyName(LOD_LEVEL + " THE LOD LEVEL ARE NOT SET");
-      if (isLODSet) {
-        lodLevel.setPropertyName(LOD_LEVEL + " THE LOD LEVEL ARE SET");
-        lodLevel.addPropertyChangeListener(
-            value -> ServiceManager.getService(JmeEngineService.class).enqueue(() ->
-                object.setLodLevel(
-                    (Integer) value.getNewValue())));
-      }
-
-      // Material chooser.
-      MaterialChooserComponent materialChooser = new MaterialChooserComponent(
-          ((Geometry) object).getMaterial());
-
-      // This listener trigger the update of material detail on material selection
-      PropertyChangeListener materialChangeListener = evt -> {
-        Material material = (Material) evt.getNewValue();
-        List<PropertySection> sections = buildMaterialSection(material);
-        if (!sections.isEmpty()) {
-          ServiceManager.getService(PropertyInspectorService.class)
-              .updateSections(sections);
-        }
-      };
-
-      materialChooser.addPropertyChangeListener(materialChangeListener);
-      //this listener juste propagate the material change to the jmeEngine
-      materialChooser.addPropertyChangeListener(
-          value -> ServiceManager.getService(JmeEngineService.class)
-              .enqueue(() -> object.setMaterial(
-                  (Material) value.getNewValue())));
-
-      PropertySection geometrySection = new PropertySection(GEOMETRY, ignoreTransform,
-          materialChooser /*, lodLevel */);
-      propertySections.add(geometrySection);
-
-      // Material
-      Material material = ((Geometry) object).getMaterial();
-      List<PropertySection> sections = buildMaterialSection(material);
-      if (!sections.isEmpty()) {
-        propertySections.addAll(sections);
-      }
-
-    }
-
     return propertySections;
-  }
-
-  public List<PropertySection> buildMaterialSection(Material material) {
-    List<PropertySection> sections = new ArrayList<>();
-    if (material != null) {
-      MaterialPropertySectionBuilder materialComponentSetBuilder = new MaterialPropertySectionBuilder(
-          material);
-      sections = materialComponentSetBuilder.build();
-    }
-    return sections;
   }
 }

@@ -1,19 +1,29 @@
 package com.jayfella.devkit.properties;
 
-import com.jayfella.devkit.properties.component.SdkComponent;
+import java.awt.Component;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.Icon;
 
 public class PropertySection {
 
   private final String title;
   private final Icon icon;
-  private final SdkComponent[] components;
+  private final Map<String, Component> components;
 
-  public PropertySection(String title, SdkComponent... components) {
+  public PropertySection(String title) {
+    this(title, null, new HashMap<>());
+  }
+
+  public PropertySection(String title, Icon icon) {
+    this(title, icon, new HashMap<>());
+  }
+
+  public PropertySection(String title, Map<String, Component> components) {
     this(title, null, components);
   }
 
-  public PropertySection(String title, Icon icon, SdkComponent... components) {
+  public PropertySection(String title, Icon icon, Map<String, Component> components) {
     this.title = title;
     this.icon = icon;
     this.components = components;
@@ -27,8 +37,8 @@ public class PropertySection {
     return icon;
   }
 
-  public SdkComponent[] getComponents() {
-    return components;
+  public void addProperty(String propertyName, Component component) {
+    components.put(propertyName, component);
   }
 
 }

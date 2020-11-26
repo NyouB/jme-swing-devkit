@@ -1,24 +1,20 @@
 package com.jayfella.devkit.service;
 
 import com.google.common.collect.ImmutableMap;
-import com.jayfella.devkit.config.DevKitConfig;
-import com.jayfella.devkit.properties.builder.MaterialComponentSetFactory;
-import com.jayfella.devkit.properties.builder.PropertySectionBuilderFactory;
-import com.jayfella.devkit.properties.builder.SpatialComponentSetFactory;
 import com.jayfella.devkit.properties.component.SDKComponentFactory;
-import com.jayfella.devkit.properties.component.bool.BooleanComponentFactory;
-import com.jayfella.devkit.properties.component.colorgba.ColorRGBAComponentFactory;
-import com.jayfella.devkit.properties.component.control.AnimComposerComponentFactory;
-import com.jayfella.devkit.properties.component.control.AnimControlComponentFactory;
-import com.jayfella.devkit.properties.component.enumeration.EnumComponentFactory;
-import com.jayfella.devkit.properties.component.floatc.FloatComponentFactory;
-import com.jayfella.devkit.properties.component.integer.IntegerComponentFactory;
-import com.jayfella.devkit.properties.component.quaternion.QuaternionComponentFactory;
-import com.jayfella.devkit.properties.component.string.StringComponentFactory;
-import com.jayfella.devkit.properties.component.texture2d.Texture2DComponentFactory;
-import com.jayfella.devkit.properties.component.vector2f.Vector2fComponentFactory;
-import com.jayfella.devkit.properties.component.vector3f.Vector3fComponentFactory;
-import com.jayfella.devkit.properties.component.vector4f.Vector4fComponentFactory;
+import com.jayfella.devkit.properties.component.bool.BooleanEditor;
+import com.jayfella.devkit.properties.component.colorgba.ColorRGBAEditor;
+import com.jayfella.devkit.properties.component.control.AnimComposerEditor;
+import com.jayfella.devkit.properties.component.control.AnimControlEditor;
+import com.jayfella.devkit.properties.component.enumeration.EnumEditor;
+import com.jayfella.devkit.properties.component.floatc.FloatEditor;
+import com.jayfella.devkit.properties.component.integer.IntegerEditor;
+import com.jayfella.devkit.properties.component.quaternion.QuaternionEditor;
+import com.jayfella.devkit.properties.component.string.StringEditor;
+import com.jayfella.devkit.properties.component.texture2d.Texture2DEditor;
+import com.jayfella.devkit.properties.component.vector2f.Vector2fEditor;
+import com.jayfella.devkit.properties.component.vector3f.Vector3fEditor;
+import com.jayfella.devkit.properties.component.vector4f.Vector4fEditor;
 import com.jayfella.devkit.registration.Registrar;
 import com.jayfella.devkit.registration.control.ControlRegistrar;
 import com.jayfella.devkit.registration.control.NoArgsControlRegistrar;
@@ -28,18 +24,12 @@ import com.jayfella.devkit.registration.spatial.GeometryRegistrar;
 import com.jayfella.devkit.registration.spatial.InstancedNodeSpatialRegistrar;
 import com.jayfella.devkit.registration.spatial.NoArgsSpatialRegistrar;
 import com.jayfella.devkit.registration.spatial.NodeRegistrar;
-import com.jme3.anim.AnimComposer;
-import com.jme3.animation.AnimControl;
 import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
-import com.jme3.math.Quaternion;
-import com.jme3.math.Vector2f;
-import com.jme3.math.Vector3f;
-import com.jme3.math.Vector4f;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.BillboardControl;
-import com.jme3.texture.Texture2D;
+import java.beans.PropertyEditorManager;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,9 +41,6 @@ public class RegistrationService implements Service {
 
   // a single object that returns a single component. For example a vector3f or a float.
   private final Map<Class<?>, SDKComponentFactory> componentClasses = new HashMap<>();
-
-  // a single object that returns multiple components. For example a spatial or a material.
-  private final Map<Class<?>, PropertySectionBuilderFactory> componentBuilderClasses = new HashMap<>();
 
   private final Registrar<NodeRegistrar> nodeRegistration = new Registrar<>(NodeRegistrar.class);
   private final Registrar<GeometryRegistrar> geometryRegistration = new Registrar<>(
@@ -68,25 +55,22 @@ public class RegistrationService implements Service {
   public RegistrationService() {
 
     threadId = Thread.currentThread().getId();
-
-    // register all the built-in components.
-    registerComponentFactory(Boolean.class, new BooleanComponentFactory());
-    registerComponentFactory(ColorRGBA.class, new ColorRGBAComponentFactory());
-    registerComponentFactory(Enum.class, new EnumComponentFactory());
-    registerComponentFactory(Float.class, new FloatComponentFactory());
-    registerComponentFactory(Integer.class, new IntegerComponentFactory());
-    registerComponentFactory(Quaternion.class, new QuaternionComponentFactory());
-    registerComponentFactory(String.class, new StringComponentFactory());
-    registerComponentFactory(Texture2D.class,
-        new Texture2DComponentFactory(ServiceManager.getService(JmeEngineService.class)
-            .getAssetManager(), DevKitConfig.getInstance().getProjectConfig().getAssetRootDir()));
-    registerComponentFactory(Vector2f.class, new Vector2fComponentFactory());
-    registerComponentFactory(Vector3f.class, new Vector3fComponentFactory());
-    registerComponentFactory(Vector4f.class, new Vector4fComponentFactory());
-    registerComponentFactory(AnimControl.class, new AnimControlComponentFactory());
-    registerComponentFactory(AnimComposer.class, new AnimComposerComponentFactory());
+    PropertyEditorManager.registerEditor(Boolean.class, BooleanEditor.class);
+    PropertyEditorManager.registerEditor(Boolean.class, ColorRGBAEditor.class);
+    PropertyEditorManager.registerEditor(Boolean.class, EnumEditor.class);
+    PropertyEditorManager.registerEditor(Boolean.class, FloatEditor.class);
+    PropertyEditorManager.registerEditor(Boolean.class, IntegerEditor.class);
+    PropertyEditorManager.registerEditor(Boolean.class, QuaternionEditor.class);
+    PropertyEditorManager.registerEditor(Boolean.class, StringEditor.class);
+    PropertyEditorManager.registerEditor(Boolean.class, Texture2DEditor.class);
+    PropertyEditorManager.registerEditor(Boolean.class, Vector2fEditor.class);
+    PropertyEditorManager.registerEditor(Boolean.class, Vector3fEditor.class);
+    PropertyEditorManager.registerEditor(Boolean.class, Vector4fEditor.class);
+    PropertyEditorManager.registerEditor(Boolean.class, AnimControlEditor.class);
+    PropertyEditorManager.registerEditor(Boolean.class, AnimComposerEditor.class);
 
     registerPropertySectionBuilderFactory(Spatial.class, new SpatialComponentSetFactory());
+    registerPropertySectionBuilderFactory(Geometry.class, new GeometryComponentSetFactory());
     registerPropertySectionBuilderFactory(Material.class, new MaterialComponentSetFactory());
 
     nodeRegistration.register(new NoArgsSpatialRegistrar(Node.class));
@@ -118,7 +102,7 @@ public class RegistrationService implements Service {
    * @param clazz the class to map.
    * @param componentClass the component to create for the mapped class.
    */
-  public <T> void registerComponentFactory(Class<T> clazz, SDKComponentFactory<T> componentClass) {
+  public <T> void registerEditor(Class<T> clazz, SDKComponentFactory<T> componentClass) {
     componentClasses.put(clazz, componentClass);
   }
 
@@ -130,28 +114,6 @@ public class RegistrationService implements Service {
     return componentClasses.get(clazz);
   }
 
-  /**
-   * Registers a class with a componentBuilder. For example, the built-in componentBuilders are: -
-   * Material.class, MaterialComponetSetBuilder.class - Spatial.class,
-   * SpatialComponentSetBuilder.class
-   *
-   * All classes that are not registered are processed using the ReflectedComponentSetBuilder.
-   *
-   * @param clazz the class to map
-   * @param componentBuilderClass the componentBuilder to create for the mapped class.
-   */
-  public void registerPropertySectionBuilderFactory(Class<?> clazz,
-      PropertySectionBuilderFactory componentBuilderClass) {
-    componentBuilderClasses.put(clazz, componentBuilderClass);
-  }
-
-  public Map<Class<?>, PropertySectionBuilderFactory> getPropertySectionBuilderFactoryMap() {
-    return ImmutableMap.copyOf(componentBuilderClasses);
-  }
-
-  public <T> PropertySectionBuilderFactory<T> getPropertySectionBuilderFactoryFor(Class<T> clazz) {
-    return componentBuilderClasses.get(clazz);
-  }
 
   public void registerNode(NodeRegistrar registrar) {
     nodeRegistration.register(registrar);

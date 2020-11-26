@@ -17,13 +17,13 @@ public abstract class PropertySectionListBuilder {
   /**
    * Runs check on the next object in chain or ends traversing if we're in last object in chain.
    */
-  protected List<PropertySection> findNext(Object object) {
+  protected List<PropertySection> findNext(Class<?> clazz, Object object, String propertyName) {
     if (next == null) {
       return new ArrayList<>();
     }
-    return next.find(object);
+    return next.find(clazz, object, propertyName);
   }
 
-  public abstract List<PropertySection> find(Object object);
+  public abstract List<PropertySection> find(Class<?> clazz, Object object, String propertyName);
 
 }

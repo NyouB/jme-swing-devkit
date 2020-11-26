@@ -4,11 +4,11 @@ import com.jayfella.devkit.properties.PropertySection;
 import com.jayfella.devkit.properties.component.SdkComponent;
 import com.jayfella.devkit.service.Service;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.util.Collection;
 import java.util.List;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
 import javax.swing.border.EmptyBorder;
 import org.jdesktop.swingx.VerticalLayout;
 import org.slf4j.Logger;
@@ -21,7 +21,7 @@ public class PropertyInspectorService implements Service {
   public static final String WINDOW_ID = "Property Inspector";
 
   private final JPanel rootPanel;
-  private final JTabbedPane tabbedPane = new JTabbedPane();
+  private final JPanel sectionPanel;
 
   private final JLabel nothingSelectedLabel = new JLabel("Nothing To Inspect.");
   private final long threadId;
@@ -31,6 +31,9 @@ public class PropertyInspectorService implements Service {
   public PropertyInspectorService(JPanel rootPanel) {
     threadId = Thread.currentThread().getId();
     this.rootPanel = rootPanel;
+    sectionPanel = new JPanel(new VerticalLayout());
+    rootPanel.add(sectionPanel);
+    sectionPanel.setBorder(new EmptyBorder(10, 0, 0, 0));
     clearInspector();
     propertySectionListBuilder = new ControlFinder();
     propertySectionListBuilder.chainWith(new ExactMatchFinder())
@@ -43,9 +46,9 @@ public class PropertyInspectorService implements Service {
    * Removes all inspection properties of the object being inspected.
    */
   public void clearInspector() {
-    rootPanel.remove(tabbedPane);
-    rootPanel.add(nothingSelectedLabel, BorderLayout.CENTER);
-    rootPanel.repaint();
+    sectionPanel.removeAll();
+    sectionPanel.add(nothingSelectedLabel, BorderLayout.CENTER);
+    sectionPanel.repaint();
   }
 
   /**
@@ -59,34 +62,29 @@ public class PropertyInspectorService implements Service {
     displayedSections = propertySections;
 
     if (propertySections != null) {
-      rootPanel.remove(nothingSelectedLabel);
-      rootPanel.add(tabbedPane);
-      tabbedPane.removeAll();
+      sectionPanel.remove(nothingSelectedLabel);
 
       for (PropertySection section : propertySections) {
-        addTab(section);
+        addSection(section);
       }
 
     } else {
       clearInspector();
     }
 
-    rootPanel.revalidate();
-    rootPanel.repaint();
+    sectionPanel.revalidate();
+    sectionPanel.repaint();
   }
 
-  private void addTab(PropertySection section) {
-    addTab(section, tabbedPane.getTabCount());
-  }
-
-  private void addTab(PropertySection section, int index) {
-    JPanel panel = new JPanel(new VerticalLayout(5));
-    panel.setBorder(new EmptyBorder(10, 0, 0, 0));
-
+  private void addSection(PropertySection section) {
+    JLabel sectionTitle = new JLabel(section.getTitle());
+    sectionTitle.setIcon(section.getIcon());
+    sectionTitle.setBackground(new Color(90, 90, 90));
+    sectionTitle.setOpaque(true);
+    sectionPanel.add(sectionTitle);
     for (SdkComponent component : section.getComponents()) {
-      panel.add(component.getJComponent());
+      sectionPanel.add(component.getJComponent());
     }
-    tabbedPane.insertTab(section.getTitle(), section.getIcon(), panel, null, index);
   }
 
   /**
@@ -96,7 +94,9 @@ public class PropertyInspectorService implements Service {
    */
   public void inspect(final Object object) {
     cleanup();
-    List<PropertySection> propertySectionList = propertySectionListBuilder.find(object);
+    List<PropertySection> propertySectionList = propertySectionListBuilder
+        .find(object.getClass(), object,
+            object.getClass().toString());
     displaySections(propertySectionList);
   }
 
@@ -122,8 +122,7 @@ public class PropertyInspectorService implements Service {
 
       if (index > -1) {
         displayedSections.set(index, updatedSection);
-        tabbedPane.remove(index);
-        addTab(updatedSection, index);
+        addSection(updatedSection);
       }
 
     }
@@ -131,12 +130,12 @@ public class PropertyInspectorService implements Service {
   }
 
   private void cleanup() {
-
+    sectionPanel.removeAll();
     if (displayedSections != null) {
 
       for (PropertySection section : displayedSections) {
 
-        SdkComponent[] components = section.getComponents();
+        List<SdkComponent> components = section.getComponents();
 
         if (components != null) {
           for (SdkComponent component : components) {

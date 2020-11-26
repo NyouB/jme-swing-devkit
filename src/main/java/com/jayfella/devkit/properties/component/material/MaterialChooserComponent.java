@@ -3,12 +3,13 @@ package com.jayfella.devkit.properties.component.material;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
-import com.jayfella.devkit.properties.component.AbstractSDKComponent;
+import com.jayfella.devkit.properties.component.AbstractPropertyEditor;
 import com.jayfella.devkit.service.JmeEngineService;
 import com.jayfella.devkit.service.ServiceManager;
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
 import com.jme3.util.MaterialDebugAppState;
+import java.awt.Component;
 import java.awt.Insets;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -25,7 +26,7 @@ import org.reflections.scanners.ResourcesScanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MaterialChooserComponent extends AbstractSDKComponent<Material> {
+public class MaterialChooserComponent extends AbstractPropertyEditor<Material> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MaterialChooserComponent.class);
 
@@ -33,22 +34,16 @@ public class MaterialChooserComponent extends AbstractSDKComponent<Material> {
   private JPanel contentPanel;
   private JButton reloadMaterialButton;
 
-
   public MaterialChooserComponent(Material value) {
-    this(value, null);
-  }
-
-  public MaterialChooserComponent(Material value, String propertyName) {
-    super(value, propertyName);
+    super(value);
     $$$setupUI$$$();
-    setComponent(value);
-    setPropertyName(propertyName);
+    setTypedValue(value);
   }
 
   @Override
-  public void setComponent(Material value) {
-    component = value;
-    materialsComboBox.setSelectedItem(component.getMaterialDef().getAssetName());
+  public void setTypedValue(Material newValue) {
+    materialsComboBox.setSelectedItem(newValue.getMaterialDef().getAssetName());
+    super.setTypedValue(newValue);
   }
 
   @Override
@@ -71,6 +66,11 @@ public class MaterialChooserComponent extends AbstractSDKComponent<Material> {
       LOGGER.warn("The specified material is NULL. This is probably not intended!");
     }
     return material;
+  }
+
+  @Override
+  public Component getCustomEditor() {
+    return contentPanel;
   }
 
   /**
@@ -134,9 +134,8 @@ public class MaterialChooserComponent extends AbstractSDKComponent<Material> {
 
     ItemListener itemListener = evt -> {
       if (evt.getStateChange() == ItemEvent.SELECTED) {
-        Material oldMaterial = component;
-        setComponent(computeValue());
-        firePropertyChange(propertyName, oldMaterial, component);
+        setTypedValue(computeValue());
+        firePropertyChange();
       }
     };
     materialsComboBox.addItemListener(itemListener);
@@ -144,20 +143,16 @@ public class MaterialChooserComponent extends AbstractSDKComponent<Material> {
     reloadMaterialButton = new JButton();
     reloadMaterialButton.addActionListener(e -> {
 
-      if (component != null) {
+      if (value != null) {
         JmeEngineService engineService = ServiceManager.getService(JmeEngineService.class);
         engineService.enqueue(() -> engineService
             .getStateManager()
             .getState(MaterialDebugAppState.class)
-            .reloadMaterial(component));
+            .reloadMaterial(value));
       }
 
     });
 
   }
 
-  @Override
-  public JComponent getJComponent() {
-    return contentPanel;
-  }
 }

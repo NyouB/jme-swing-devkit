@@ -1,7 +1,7 @@
 package com.jayfella.devkit.properties.builder;
 
 import com.jayfella.devkit.properties.PropertySection;
-import com.jayfella.devkit.properties.component.AbstractSDKComponent;
+import com.jayfella.devkit.properties.component.AbstractPropertyEditor;
 import com.jayfella.devkit.service.RegistrationService;
 import com.jayfella.devkit.service.ServiceManager;
 import java.lang.reflect.Field;
@@ -36,11 +36,11 @@ public class CustomPropertyBuilder extends AbstractPropertySectionBuilder<Object
   @Override
   public List<PropertySection> build() {
 
-    List<AbstractSDKComponent> components = new ArrayList<>();
+    List<AbstractPropertyEditor> components = new ArrayList<>();
 
     for (Field field : fields) {
       try {
-        AbstractSDKComponent newComponent = buildComponentFromField(field);
+        AbstractPropertyEditor newComponent = buildComponentFromField(field);
         if (newComponent == null) {
           continue;
         }
@@ -55,7 +55,7 @@ public class CustomPropertyBuilder extends AbstractPropertySectionBuilder<Object
     fields.removeAll(ignoredFields);
 
     PropertySection propertySection = new PropertySection(object.getClass().getSimpleName(),
-        components.toArray(new AbstractSDKComponent[components.size()]));
+        components.toArray(new AbstractPropertyEditor[components.size()]));
 
     List<PropertySection> sections = new ArrayList<>();
     sections.add(propertySection);
@@ -63,10 +63,10 @@ public class CustomPropertyBuilder extends AbstractPropertySectionBuilder<Object
     return sections;
   }
 
-  public AbstractSDKComponent buildComponentFromField(Field field)
+  public AbstractPropertyEditor buildComponentFromField(Field field)
       throws IllegalAccessException {
     Object fieldObject = field.get(object);
-    AbstractSDKComponent component = ServiceManager.getService(RegistrationService.class)
+    AbstractPropertyEditor component = ServiceManager.getService(RegistrationService.class)
         .getComponentFactoryFor(fieldObject.getClass()).create(fieldObject, field.getName());
     if (component != null) {
       bind(field, component);

@@ -1,7 +1,7 @@
 package com.jayfella.devkit.properties.builder;
 
 import com.jayfella.devkit.properties.PropertySection;
-import com.jayfella.devkit.properties.component.AbstractSDKComponent;
+import com.jayfella.devkit.properties.component.AbstractPropertyEditor;
 import com.jayfella.devkit.service.JmeEngineService;
 import com.jayfella.devkit.service.ServiceManager;
 import java.lang.reflect.Field;
@@ -19,7 +19,7 @@ public abstract class AbstractPropertySectionBuilder<T> implements Builder<List<
     this.ignoredFields = Arrays.asList(ignoredFieldsArray.clone());
   }
 
-  public void bind(Field field, AbstractSDKComponent component) {
+  public void bind(Field field, AbstractPropertyEditor component) {
     component.addPropertyChangeListener(
         value -> ServiceManager.getService(JmeEngineService.class).enqueue(() -> {
           try {
@@ -30,7 +30,4 @@ public abstract class AbstractPropertySectionBuilder<T> implements Builder<List<
         }));
   }
 
-  public void cleanup() {
-
-  }
 }

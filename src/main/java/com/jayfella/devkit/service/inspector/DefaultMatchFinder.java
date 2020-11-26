@@ -12,10 +12,10 @@ public class DefaultMatchFinder extends PropertySectionListBuilder {
 
 
   @Override
-  public List<PropertySection> find(Object object) {
+  public List<PropertySection> find(Class<?> clazz, Object object, String propertyName) {
     // we don't know what it is, so all we can do is display reflected properties.
     ReflectedPropertySectionBuilder componentSetBuilder = new ReflectedPropertySectionBuilder(
-        object.getClass().getSimpleName(), object);
+        propertyName, object);
     return componentSetBuilder.build();
   }
 
