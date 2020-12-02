@@ -1,7 +1,9 @@
 package com.jayfella.devkit.service;
 
-import com.google.common.collect.ImmutableMap;
-import com.jayfella.devkit.properties.component.SDKComponentFactory;
+import com.jayfella.devkit.properties.builder.AbstractPropertySectionBuilder;
+import com.jayfella.devkit.properties.builder.GeometryPropertySectionBuilder;
+import com.jayfella.devkit.properties.builder.MaterialPropertySectionBuilder;
+import com.jayfella.devkit.properties.builder.SpatialPropertySectionBuilder;
 import com.jayfella.devkit.properties.component.bool.BooleanEditor;
 import com.jayfella.devkit.properties.component.colorgba.ColorRGBAEditor;
 import com.jayfella.devkit.properties.component.control.AnimComposerEditor;
@@ -39,8 +41,7 @@ import java.util.Map;
  */
 public class RegistrationService implements Service {
 
-  // a single object that returns a single component. For example a vector3f or a float.
-  private final Map<Class<?>, SDKComponentFactory> componentClasses = new HashMap<>();
+  private final Map<Class<?>, Class<? extends AbstractPropertySectionBuilder>> propertySectionBuilders = new HashMap<>();
 
   private final Registrar<NodeRegistrar> nodeRegistration = new Registrar<>(NodeRegistrar.class);
   private final Registrar<GeometryRegistrar> geometryRegistration = new Registrar<>(
@@ -69,9 +70,9 @@ public class RegistrationService implements Service {
     PropertyEditorManager.registerEditor(Boolean.class, AnimControlEditor.class);
     PropertyEditorManager.registerEditor(Boolean.class, AnimComposerEditor.class);
 
-    registerPropertySectionBuilderFactory(Spatial.class, new SpatialComponentSetFactory());
-    registerPropertySectionBuilderFactory(Geometry.class, new GeometryComponentSetFactory());
-    registerPropertySectionBuilderFactory(Material.class, new MaterialComponentSetFactory());
+    registerPropertySectionBuilder(Spatial.class, SpatialPropertySectionBuilder.class);
+    registerPropertySectionBuilder(Geometry.class, GeometryPropertySectionBuilder.class);
+    registerPropertySectionBuilder(Material.class, MaterialPropertySectionBuilder.class);
 
     nodeRegistration.register(new NoArgsSpatialRegistrar(Node.class));
     nodeRegistration.register(new AssetLinkNodeRegistrar());
@@ -102,18 +103,12 @@ public class RegistrationService implements Service {
    * @param clazz the class to map.
    * @param componentClass the component to create for the mapped class.
    */
-  public <T> void registerEditor(Class<T> clazz, SDKComponentFactory<T> componentClass) {
-    componentClasses.put(clazz, componentClass);
+  public <T> void registerPropertySectionBuilder(Class<T> clazz, Class<? extends AbstractPropertySectionBuilder> componentClass) {
+    propertySectionBuilders.put(clazz, componentClass);
   }
-
-  public Map<Class<?>, SDKComponentFactory> getComponentFactoryMap() {
-    return ImmutableMap.copyOf(componentClasses);
+  public Class<? extends AbstractPropertySectionBuilder> getPropertySectionBuilder(Class clazz) {
+    return propertySectionBuilders.get(clazz);
   }
-
-  public SDKComponentFactory getComponentFactoryFor(Class<?> clazz) {
-    return componentClasses.get(clazz);
-  }
-
 
   public void registerNode(NodeRegistrar registrar) {
     nodeRegistration.register(registrar);

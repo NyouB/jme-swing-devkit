@@ -35,6 +35,7 @@ public class QuaternionEditor extends AbstractPropertyEditor<Quaternion> {
     $$$setupUI$$$();
   }
 
+  @Override
   public void setTypedValue(Quaternion newValue) {
     if (newValue == null) {
       newValue = new Quaternion();

@@ -13,6 +13,8 @@ import com.jayfella.devkit.service.inspector.PropertySectionListBuilder;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.beans.PropertyEditor;
+import java.beans.PropertyEditorManager;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -86,88 +88,12 @@ public class ReflectedPropertySectionBuilder extends AbstractPropertySectionBuil
     for (Class classLevel : groupedDescriptors.keySet()) {
       PropertySection propertySection = new PropertySection(classLevel.getSimpleName());
       for (PropertyDescriptor descriptor : groupedDescriptors.get(classLevel)) {
-        RegistrationService registrationService = ServiceManager
-            .getService(RegistrationService.class);
-        AbstractPropertyEditor editor = registrationService
-            .getEditorFor(descriptor.getPropertyType());
-      }
-    }
-    for (ClassProperties classProperty : classPropertiesList) {
-      PropertySection propertySection = new PropertySection(classProperty.clazz.getSimpleName());
-      Map<String, Object> propertiesMap = classProperty.properties;
-      for (Entry<String, Object> entry : propertiesMap.entrySet()) {
-        List<PropertySection> propertySectionList = propertySectionListBuilder
-            .find(entry.getValue().getClass(), entry.getValue(), entry.getKey());
-
-        for (PropertySection ps : propertySectionList) {
-          List<SdkComponent> components = ps
-              .getComponents();
-          for (SdkComponent component : components) {
-            if (component instanceof AbstractPropertyEditor) {
-              Field entryField = FieldUtils.getField(object.getClass(), entry.getKey());
-              bind(entryField, (AbstractPropertyEditor) component);
-            }
-            propertySection.addProperty(component);
-          }
-        }
+        PropertyEditor editor = PropertyEditorManager.findEditor(descriptor.getPropertyType());
+        propertySection.addProperty(descriptor.getDisplayName(), editor.getCustomEditor());
       }
       result.add(propertySection);
     }
-
     return result;
-  }
-
-  public AbstractPropertyEditor buildComponentFromField(SDKComponentFactory factory, Field field,
-      Object fieldObject) {
-
-    AbstractPropertyEditor component = factory.create(fieldObject, field.getName());
-    bind(field, component);
-    component.setPropertyName(field.getName());
-    return component;
-  }
-
-  public static class ClassProperties {
-
-    private Class clazz;
-    private Map<String, Object> properties;
-
-    public ClassProperties(Class clazz, Map<String, Object> properties) {
-      this.clazz = clazz;
-      this.properties = properties;
-    }
-
-    public ClassProperties(Class clazz) {
-      this();
-      this.clazz = clazz;
-    }
-
-    public ClassProperties() {
-      properties = new HashMap<>();
-    }
-
-    public void addProperty(String name, Object object) {
-      properties.put(name, object);
-    }
-
-    public void remove(String name) {
-      properties.remove(name);
-    }
-
-    public Class getClazz() {
-      return clazz;
-    }
-
-    public void setClazz(Class clazz) {
-      this.clazz = clazz;
-    }
-
-    public Map<String, Object> getProperties() {
-      return properties;
-    }
-
-    public void setProperties(Map<String, Object> properties) {
-      this.properties = properties;
-    }
   }
 
 }
