@@ -9,34 +9,38 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class InheritedMatchFinder extends PropertySectionListBuilder {
+public class InheritedMatchFinder extends PropertySectionListFinder {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(InheritedMatchFinder.class);
 
   @Override
-  public List<PropertySection> find(Class<?> clazz, Object object, String propertyName) {
-    PropertySectionBuilderFactory factory = findParentClassFactory(object);
-    if (factory != null) {
-      LOGGER.debug("-- find() Factory {} found for class {}", factory.getClass().getCanonicalName(),
+  public List<PropertySection> find(Object object, String propertyName) {
+    Class<? extends AbstractPropertySectionBuilder> sectionBuilderClass = findSectionBuilderForParentClass(
+        object);
+    if (sectionBuilderClass != null) {
+      LOGGER.debug("-- find() No builder found for class {}",
           object.getClass().getCanonicalName());
-      AbstractPropertySectionBuilder<?> builder = factory.create(object);
-      return builder.build();
+      try {
+        AbstractPropertySectionBuilder<?> builder = sectionBuilderClass.getConstructor().newInstance(object);
+        return builder.build();
+      } catch (Exception e) {
+        LOGGER.warn("-- find() Error while instanciating builder {}", sectionBuilderClass.getSimpleName(), e);
+      }
+
     }
-    return findNext(clazz, object, propertyName);
+    return findNext(object, propertyName);
   }
 
-  public PropertySectionBuilderFactory findParentClassFactory(Object object) {
+  public Class<? extends AbstractPropertySectionBuilder> findSectionBuilderForParentClass(Object object) {
     RegistrationService registrationService = ServiceManager
         .getService(RegistrationService.class);
-    Set<Class<?>> keySet = registrationService.getPropertySectionBuilderFactoryMap()
-        .keySet();
+    Set<Class<?>> keySet = registrationService.getRegisteredClasses();
     for (Class clazz : keySet) {
       if (clazz.isInstance(object)) {
         LOGGER.warn(
-            "-- inspect() A parent class's factory {} has been found for class {} instead of exact one. Some fields representation may miss",
+            "-- findSectionBuilderForParentClass() A parent class's factory {} has been found for class {} instead of exact one. Some fields representation may miss",
             clazz.getCanonicalName(), object.getClass().getCanonicalName());
-        return registrationService
-            .getPropertySectionBuilderFactoryFor(clazz);
+        return registrationService.getPropertySectionBuilder(clazz);
       }
     }
     return null;

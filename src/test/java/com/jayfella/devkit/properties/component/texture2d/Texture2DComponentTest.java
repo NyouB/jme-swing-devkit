@@ -28,7 +28,7 @@ class Texture2DComponentTest {
     texture2DComponent.setAssetRootDirectory(TEST_ASSET_ROOT_DIRECTORY);
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     SwingUtilities.invokeLater(() -> {
-      frame.add(texture2DComponent.getJComponent());
+      frame.add(texture2DComponent.getCustomEditor());
       frame.pack();
       frame.setVisible(true);
     });

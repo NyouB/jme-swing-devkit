@@ -1,19 +1,25 @@
 package com.jayfella.devkit.properties.builder;
 
+import com.jayfella.devkit.properties.PropertySection;
+import com.jayfella.devkit.properties.component.AbstractJmeDevKitTest;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.Mesh;
+import java.awt.Component;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class ReflectedPropertySectionBuilderTest {
+class ReflectedPropertySectionBuilderTest extends AbstractJmeDevKitTest {
 
   @Test
   void descriptorsArrayToMapTest() throws IntrospectionException {
@@ -40,4 +46,26 @@ class ReflectedPropertySectionBuilderTest {
     Assertions.assertEquals(classPropertiesMap, map);
   }
 
+
+  @Test
+  void build() {
+    Mesh myTestMesh = new Mesh();
+    Geometry myTestGeometry = new Geometry("testGeometry", myTestMesh);
+    ReflectedPropertySectionBuilder reflectedPropertySectionBuilder = new ReflectedPropertySectionBuilder(
+        myTestGeometry);
+    List<PropertySection> propertySectionsResult = reflectedPropertySectionBuilder
+        .build();
+    Assertions.assertNotNull(propertySectionsResult);
+    for (PropertySection propertySection : propertySectionsResult) {
+      Map<String, Component> components = propertySection.getComponents();
+      for (Entry<String, Component> entry : components.entrySet()) {
+        System.out.println(entry.getKey());
+        if(entry.getValue() == null){
+          System.out.println("null");
+        }
+        Assertions.assertNotNull(entry.getValue());
+      }
+    }
+
+  }
 }

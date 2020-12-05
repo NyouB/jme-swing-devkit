@@ -14,7 +14,7 @@ class Vector2fComponentTest {
   public static final void main(String[] args) throws ParseException {
     JFrame frame = new JFrame("Test");
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    frame.add(new Vector2fEditor().getJComponent());
+    frame.add(new Vector2fEditor().getCustomEditor());
     frame.pack();
     frame.setVisible(true);
   }

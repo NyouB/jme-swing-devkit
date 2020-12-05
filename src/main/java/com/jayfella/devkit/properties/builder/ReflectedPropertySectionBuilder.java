@@ -1,15 +1,11 @@
 package com.jayfella.devkit.properties.builder;
 
 import com.jayfella.devkit.properties.PropertySection;
-import com.jayfella.devkit.properties.component.AbstractPropertyEditor;
-import com.jayfella.devkit.properties.component.SDKComponentFactory;
-import com.jayfella.devkit.properties.component.SdkComponent;
-import com.jayfella.devkit.service.RegistrationService;
-import com.jayfella.devkit.service.ServiceManager;
-import com.jayfella.devkit.service.inspector.ControlFinder;
+import com.jayfella.devkit.properties.component.enumeration.EnumEditor;
 import com.jayfella.devkit.service.inspector.ExactMatchFinder;
 import com.jayfella.devkit.service.inspector.InheritedMatchFinder;
-import com.jayfella.devkit.service.inspector.PropertySectionListBuilder;
+import com.jayfella.devkit.service.inspector.PropertySectionListFinder;
+import java.beans.IndexedPropertyDescriptor;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
@@ -20,10 +16,8 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.reflect.FieldUtils;
@@ -37,18 +31,15 @@ public class ReflectedPropertySectionBuilder extends AbstractPropertySectionBuil
 
   private static final Field classRefField = FieldUtils
       .getField(PropertyDescriptor.class, "classRef", true);
-  private final String name;
-  private final PropertySectionListBuilder propertySectionListBuilder;
+  private final PropertySectionListFinder propertySectionListFinder;
   private final Map<Class<?>, Set<PropertyDescriptor>> groupedDescriptors;
 
-  public ReflectedPropertySectionBuilder(String name, Object object,
+  public ReflectedPropertySectionBuilder(Object object,
       Field... ignoredFieldsArray) {
     super(object, ignoredFieldsArray);
     groupedDescriptors = getPropertyDescriptorGroupByClass(object);
-    this.name = name;
-    propertySectionListBuilder = new ControlFinder();
-    propertySectionListBuilder.chainWith(new ExactMatchFinder())
-        .chainWith(new InheritedMatchFinder());
+    propertySectionListFinder = new ExactMatchFinder();
+    propertySectionListFinder.chainWith(new InheritedMatchFinder());
   }
 
   public static Map<Class<?>, Set<PropertyDescriptor>> getPropertyDescriptorGroupByClass(
@@ -88,7 +79,24 @@ public class ReflectedPropertySectionBuilder extends AbstractPropertySectionBuil
     for (Class classLevel : groupedDescriptors.keySet()) {
       PropertySection propertySection = new PropertySection(classLevel.getSimpleName());
       for (PropertyDescriptor descriptor : groupedDescriptors.get(classLevel)) {
-        PropertyEditor editor = PropertyEditorManager.findEditor(descriptor.getPropertyType());
+        Class propertyType = descriptor instanceof IndexedPropertyDescriptor
+            ? ((IndexedPropertyDescriptor) descriptor).getIndexedPropertyType()
+            : descriptor.getPropertyType();
+
+        PropertyEditor editor = propertyType.isEnum()? new EnumEditor(propertyType) : PropertyEditorManager.findEditor(propertyType);
+        if (editor == null) {
+          LOGGER.debug("-- build() No editor found for class {}, trying another finding strategy",
+              descriptor.getPropertyType());
+          continue;
+        }
+        try {
+          editor.setValue(descriptor.getReadMethod().invoke(object));
+        } catch (Exception e) {
+          LOGGER.debug(
+              "-- build() An error happened trying to read the field value of type {} and named {}, ignoring the field.",
+              descriptor.getPropertyType(), descriptor.getName(), e);
+          continue;
+        }
         propertySection.addProperty(descriptor.getDisplayName(), editor.getCustomEditor());
       }
       result.add(propertySection);

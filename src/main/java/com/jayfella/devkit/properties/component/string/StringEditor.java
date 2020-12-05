@@ -44,14 +44,8 @@ public class StringEditor extends AbstractPropertyEditor<String> {
   private void $$$setupUI$$$() {
     createUIComponents();
     contentPanel = new JPanel();
-    contentPanel.setLayout(new GridLayoutManager(3, 1, new Insets(0, 0, 0, 0), -1, -1));
-    propertyNameLabel = new JLabel();
-    propertyNameLabel.setText("String");
-    contentPanel.add(propertyNameLabel,
-        new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
-            GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0,
-            false));
-    contentPanel.add(valueTextField, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST,
+    contentPanel.setLayout(new GridLayoutManager(2, 1, new Insets(0, 0, 0, 0), -1, -1));
+    contentPanel.add(valueTextField, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST,
         GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW,
         GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
     final JSeparator separator1 = new JSeparator();

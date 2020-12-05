@@ -8,23 +8,22 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ExactMatchFinder extends PropertySectionListBuilder {
+public class ExactMatchFinder extends PropertySectionListFinder {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ExactMatchFinder.class);
 
   @Override
-  public List<PropertySection> find(Class<?> clazz, Object object, String propertyName) {
+  public List<PropertySection> find(Object object, String propertyName) {
     RegistrationService registrationService = ServiceManager
         .getService(RegistrationService.class);
-    PropertySectionBuilderFactory factory = registrationService
-        .getPropertySectionBuilderFactoryFor(object.getClass());
-    if (factory != null) {
-      LOGGER.debug("-- find() Factory {} found for class {}", factory.getClass().getCanonicalName(),
+    AbstractPropertySectionBuilder<?> propertySectionBuilder = registrationService
+        .getPropertySectionBuilderInstance(object.getClass(), object);
+    if (propertySectionBuilder != null) {
+      LOGGER.debug("-- find() Factory {} found for class {}", propertySectionBuilder.getClass().getCanonicalName(),
           object.getClass().getCanonicalName());
-      AbstractPropertySectionBuilder<?> builder = factory.create(object);
-      return builder.build();
+      return propertySectionBuilder.build();
     }
-    return findNext(clazz, object, propertyName);
+    return findNext(object, propertyName);
   }
 
 }

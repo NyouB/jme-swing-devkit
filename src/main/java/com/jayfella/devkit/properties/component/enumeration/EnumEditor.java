@@ -19,9 +19,16 @@ public class EnumEditor extends AbstractPropertyEditor<Enum> {
 
   private JPanel contentPanel;
   private JComboBox<Enum> valueComboBox;
+  private Class<? extends Enum> clazz;
+
+  public EnumEditor(Class<Enum> clazz) {
+    super(null);
+    this.clazz = clazz;
+  }
 
   public EnumEditor(Enum value) {
     super(value);
+    this.clazz = value.getClass();
     $$$setupUI$$$();
   }
 
@@ -52,18 +59,12 @@ public class EnumEditor extends AbstractPropertyEditor<Enum> {
   private void $$$setupUI$$$() {
     createUIComponents();
     contentPanel = new JPanel();
-    contentPanel.setLayout(new GridLayoutManager(4, 1, new Insets(0, 0, 0, 0), -1, -1));
-    propertyNameLabel = new JLabel();
-    propertyNameLabel.setText("Enum");
-    contentPanel.add(propertyNameLabel,
-        new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
-            GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0,
-            false));
+    contentPanel.setLayout(new GridLayoutManager(3, 1, new Insets(0, 0, 0, 0), -1, -1));
     final Spacer spacer1 = new Spacer();
-    contentPanel.add(spacer1, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER,
+    contentPanel.add(spacer1, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER,
         GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0,
         false));
-    contentPanel.add(valueComboBox, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST,
+    contentPanel.add(valueComboBox, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST,
         GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW,
         GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     final JSeparator separator1 = new JSeparator();
@@ -81,8 +82,12 @@ public class EnumEditor extends AbstractPropertyEditor<Enum> {
   }
 
   private void createUIComponents() {
-    valueComboBox = new JComboBox(EnumSet.allOf(value.getClass()).toArray());
-    valueComboBox.setSelectedItem(value);
+    valueComboBox = new JComboBox(EnumSet.allOf(clazz).toArray());
+    if (value == null) {
+      valueComboBox.setSelectedIndex(0);
+    } else {
+      valueComboBox.setSelectedItem(value);
+    }
 
     ItemListener itemListener = evt -> {
       if (ItemEvent.DESELECTED == evt.getStateChange()) {

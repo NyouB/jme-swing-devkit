@@ -1,12 +1,16 @@
 package com.jayfella.devkit.service.inspector;
 
+import com.intellij.uiDesigner.core.GridConstraints;
+import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.jayfella.devkit.properties.PropertySection;
-import com.jayfella.devkit.properties.component.SdkComponent;
 import com.jayfella.devkit.service.Service;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Insets;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map.Entry;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -26,7 +30,7 @@ public class PropertyInspectorService implements Service {
   private final JLabel nothingSelectedLabel = new JLabel("Nothing To Inspect.");
   private final long threadId;
   private List<PropertySection> displayedSections;
-  private PropertySectionListBuilder propertySectionListBuilder;
+  private PropertySectionListFinder propertySectionListBuilder;
 
   public PropertyInspectorService(JPanel rootPanel) {
     threadId = Thread.currentThread().getId();
@@ -35,9 +39,8 @@ public class PropertyInspectorService implements Service {
     rootPanel.add(sectionPanel);
     sectionPanel.setBorder(new EmptyBorder(10, 0, 0, 0));
     clearInspector();
-    propertySectionListBuilder = new ControlFinder();
-    propertySectionListBuilder.chainWith(new ExactMatchFinder())
-        .chainWith(new InheritedMatchFinder())
+    propertySectionListBuilder = new ExactMatchFinder();
+    propertySectionListBuilder.chainWith(new InheritedMatchFinder())
         .chainWith(new DefaultMatchFinder());
 
   }
@@ -82,8 +85,22 @@ public class PropertyInspectorService implements Service {
     sectionTitle.setBackground(new Color(90, 90, 90));
     sectionTitle.setOpaque(true);
     sectionPanel.add(sectionTitle);
-    for (SdkComponent component : section.getComponents()) {
-      sectionPanel.add(component.getJComponent());
+    sectionPanel.setLayout(
+        new GridLayoutManager(section.getComponents().entrySet().size(), 2, new Insets(0, 0, 0, 0),
+            -1, -1));
+    int i = 0;
+    for (Entry<String, Component> entry : section.getComponents().entrySet()) {
+      sectionPanel
+          .add(new JLabel(entry.getKey()), new GridConstraints(i, 0, 1, 2, GridConstraints.ANCHOR_CENTER,
+              GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null,
+              null, 0,
+              false));
+      sectionPanel
+          .add(entry.getValue(), new GridConstraints(i, 1, 1, 2, GridConstraints.ANCHOR_CENTER,
+              GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null,
+              null, 0,
+              false));
+      i++;
     }
   }
 
@@ -95,7 +112,7 @@ public class PropertyInspectorService implements Service {
   public void inspect(final Object object) {
     cleanup();
     List<PropertySection> propertySectionList = propertySectionListBuilder
-        .find(object.getClass(), object,
+        .find(object,
             object.getClass().toString());
     displaySections(propertySectionList);
   }
@@ -132,18 +149,6 @@ public class PropertyInspectorService implements Service {
   private void cleanup() {
     sectionPanel.removeAll();
     if (displayedSections != null) {
-
-      for (PropertySection section : displayedSections) {
-
-        List<SdkComponent> components = section.getComponents();
-
-        if (components != null) {
-          for (SdkComponent component : components) {
-            component.cleanup();
-          }
-        }
-      }
-
       displayedSections = null;
     }
 
@@ -159,12 +164,12 @@ public class PropertyInspectorService implements Service {
     throw new UnsupportedOperationException("This method shouldn't be called");
   }
 
-  public PropertySectionListBuilder getPropertySectionListBuilder() {
+  public PropertySectionListFinder getPropertySectionListBuilder() {
     return propertySectionListBuilder;
   }
 
   public void setPropertySectionListBuilder(
-      PropertySectionListBuilder propertySectionListBuilder) {
+      PropertySectionListFinder propertySectionListBuilder) {
     this.propertySectionListBuilder = propertySectionListBuilder;
   }
 }
