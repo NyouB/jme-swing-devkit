@@ -21,17 +21,20 @@ public class InheritedMatchFinder extends PropertySectionListFinder {
       LOGGER.debug("-- find() No builder found for class {}",
           object.getClass().getCanonicalName());
       try {
-        AbstractPropertySectionBuilder<?> builder = sectionBuilderClass.getConstructor().newInstance(object);
+        AbstractPropertySectionBuilder<?> builder = sectionBuilderClass.getConstructor()
+            .newInstance(object);
         return builder.build();
       } catch (Exception e) {
-        LOGGER.warn("-- find() Error while instanciating builder {}", sectionBuilderClass.getSimpleName(), e);
+        LOGGER.warn("-- find() Error while instanciating builder {}",
+            sectionBuilderClass.getSimpleName(), e);
       }
 
     }
     return findNext(object, propertyName);
   }
 
-  public Class<? extends AbstractPropertySectionBuilder> findSectionBuilderForParentClass(Object object) {
+  public Class<? extends AbstractPropertySectionBuilder> findSectionBuilderForParentClass(
+      Object object) {
     RegistrationService registrationService = ServiceManager
         .getService(RegistrationService.class);
     Set<Class<?>> keySet = registrationService.getRegisteredClasses();

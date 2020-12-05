@@ -9,7 +9,6 @@ import java.awt.Dimension;
 import java.awt.Insets;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 

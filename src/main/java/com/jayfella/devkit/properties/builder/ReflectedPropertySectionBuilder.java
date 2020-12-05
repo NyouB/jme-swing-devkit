@@ -83,7 +83,8 @@ public class ReflectedPropertySectionBuilder extends AbstractPropertySectionBuil
             ? ((IndexedPropertyDescriptor) descriptor).getIndexedPropertyType()
             : descriptor.getPropertyType();
 
-        PropertyEditor editor = propertyType.isEnum()? new EnumEditor(propertyType) : PropertyEditorManager.findEditor(propertyType);
+        PropertyEditor editor = propertyType.isEnum() ? new EnumEditor(propertyType)
+            : PropertyEditorManager.findEditor(propertyType);
         if (editor == null) {
           LOGGER.debug("-- build() No editor found for class {}, trying another finding strategy",
               descriptor.getPropertyType());

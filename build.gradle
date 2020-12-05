@@ -36,7 +36,7 @@ java {
 
 javadoc {
     source = sourceSets.main.allJava
-    options.tags = [ "noinspection" ]
+    options.tags = ["noinspection"]
 }
 
 
@@ -85,7 +85,7 @@ dependencies {
     implementation "org.jmonkeyengine:jme3-effects:$version_jme"
 
     // GLTF model importer
-    implementation ("com.simsilica:jmec:1.1.1") {
+    implementation("com.simsilica:jmec:1.1.1") {
         exclude group: "org.jmonkeyengine"
     }
 

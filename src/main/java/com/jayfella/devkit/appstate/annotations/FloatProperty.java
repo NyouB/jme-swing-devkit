@@ -9,11 +9,14 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface FloatProperty {
 
-    float min() default Integer.MIN_VALUE;
-    float max() default Integer.MAX_VALUE;
-    float step() default 1;
-    boolean editable() default false;
+  float min() default Integer.MIN_VALUE;
 
-    String tab() default "";
+  float max() default Integer.MAX_VALUE;
+
+  float step() default 1;
+
+  boolean editable() default false;
+
+  String tab() default "";
 
 }

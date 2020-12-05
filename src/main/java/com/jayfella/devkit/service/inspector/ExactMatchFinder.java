@@ -19,7 +19,8 @@ public class ExactMatchFinder extends PropertySectionListFinder {
     AbstractPropertySectionBuilder<?> propertySectionBuilder = registrationService
         .getPropertySectionBuilderInstance(object.getClass(), object);
     if (propertySectionBuilder != null) {
-      LOGGER.debug("-- find() Factory {} found for class {}", propertySectionBuilder.getClass().getCanonicalName(),
+      LOGGER.debug("-- find() Factory {} found for class {}",
+          propertySectionBuilder.getClass().getCanonicalName(),
           object.getClass().getCanonicalName());
       return propertySectionBuilder.build();
     }

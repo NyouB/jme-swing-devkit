@@ -1,6 +1,13 @@
 package com.jayfella.devkit.forms;
 
-import com.github.weisj.darklaf.theme.*;
+import com.github.weisj.darklaf.theme.DarculaTheme;
+import com.github.weisj.darklaf.theme.HighContrastDarkTheme;
+import com.github.weisj.darklaf.theme.HighContrastLightTheme;
+import com.github.weisj.darklaf.theme.IntelliJTheme;
+import com.github.weisj.darklaf.theme.OneDarkTheme;
+import com.github.weisj.darklaf.theme.SolarizedDarkTheme;
+import com.github.weisj.darklaf.theme.SolarizedLightTheme;
+import com.github.weisj.darklaf.theme.Theme;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
@@ -15,16 +22,31 @@ import com.jayfella.devkit.swing.ThemeComboBoxCellRenderer;
 import com.jme3.asset.plugins.FileLocator;
 import com.jme3.material.Materials;
 import com.jme3.math.Vector3f;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Insets;
+import java.awt.Window;
 import java.io.File;
 import java.util.logging.Logger;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
+import javax.swing.JColorChooser;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JFileChooser;
+import javax.swing.JFormattedTextField;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
 public class Configuration {
 
   public static final String WINDOW_ID = "Configuration";
-
+  private static final Logger log = Logger.getLogger(Configuration.class.getName());
   private JButton viewPortColorChooseButton;
   private JFormattedTextField fieldOfViewTextField;
   private JFormattedTextField frustumNearTextField;
@@ -44,8 +66,6 @@ public class Configuration {
   private JTextField assetRootTextField;
   private JComboBox<Class<? extends Theme>> themeComboBox;
   private JComboBox<String> defaultMaterialComboBox;
-
-  private static final Logger log = Logger.getLogger(Configuration.class.getName());
 
   public Configuration() {
 

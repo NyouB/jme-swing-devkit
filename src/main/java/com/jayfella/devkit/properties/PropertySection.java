@@ -9,11 +9,6 @@ public class PropertySection {
 
   private final String title;
   private final Icon icon;
-
-  public Map<String, Component> getComponents() {
-    return components;
-  }
-
   private final Map<String, Component> components;
 
   public PropertySection(String title) {
@@ -32,6 +27,10 @@ public class PropertySection {
     this.title = title;
     this.icon = icon;
     this.components = components;
+  }
+
+  public Map<String, Component> getComponents() {
+    return components;
   }
 
   public String getTitle() {

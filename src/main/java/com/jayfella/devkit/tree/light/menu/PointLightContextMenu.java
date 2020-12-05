@@ -4,8 +4,8 @@ import com.jayfella.devkit.tree.light.PointLightTreeNode;
 
 public class PointLightContextMenu extends LightContextMenu {
 
-    public PointLightContextMenu(PointLightTreeNode lightTreeNode) {
-        super(lightTreeNode);
-    }
+  public PointLightContextMenu(PointLightTreeNode lightTreeNode) {
+    super(lightTreeNode);
+  }
 
 }

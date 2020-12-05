@@ -2,20 +2,20 @@ package com.jayfella.devkit.registration;
 
 public abstract class AbstractClassRegistrar<T> implements ClassRegistrar<T> {
 
-    private Class<? extends T> registeredClass;
+  private Class<? extends T> registeredClass;
 
-    public AbstractClassRegistrar() {
+  public AbstractClassRegistrar() {
 
-    }
+  }
 
-    @Override
-    public void setRegisteredClass(Class<? extends T> classToRegister) {
-        this.registeredClass = classToRegister;
-    }
+  @Override
+  public Class<? extends T> getRegisteredClass() {
+    return registeredClass;
+  }
 
-    @Override
-    public Class<? extends T> getRegisteredClass() {
-        return registeredClass;
-    }
+  @Override
+  public void setRegisteredClass(Class<? extends T> classToRegister) {
+    this.registeredClass = classToRegister;
+  }
 
 }

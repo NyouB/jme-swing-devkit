@@ -3,15 +3,15 @@ package com.jayfella.devkit.tree.spatial.menu;
 import com.jayfella.devkit.service.MenuService;
 import com.jayfella.devkit.service.ServiceManager;
 import com.jayfella.devkit.tree.spatial.GeometryTreeNode;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.HeadlessException;
 import java.util.List;
+import javax.swing.JMenuItem;
+import javax.swing.JSeparator;
 
 public class GeometryContextMenu extends SpatialContextMenu {
 
-    public GeometryContextMenu(GeometryTreeNode geometryTreeNode) throws HeadlessException {
-        super(geometryTreeNode);
+  public GeometryContextMenu(GeometryTreeNode geometryTreeNode) throws HeadlessException {
+    super(geometryTreeNode);
 
 //        // Determine if the geometry of this mesh is a child of an InstancedNode
 //        // If it is, give the user the option to create an instance based on this mesh.
@@ -62,20 +62,20 @@ public class GeometryContextMenu extends SpatialContextMenu {
 //
 //        });
 
-        // Allow users to also add their options....
-        List<JMenuItem> customItems = ServiceManager.getService(MenuService.class)
-                .getCustomMenuItems(GeometryTreeNode.class);
+    // Allow users to also add their options....
+    List<JMenuItem> customItems = ServiceManager.getService(MenuService.class)
+        .getCustomMenuItems(GeometryTreeNode.class);
 
-        if (customItems != null && !customItems.isEmpty()) {
+    if (customItems != null && !customItems.isEmpty()) {
 
-            // add a separator for clarity.
-            add(new JSeparator());
+      // add a separator for clarity.
+      add(new JSeparator());
 
-            for (JMenuItem customItem : customItems) {
-                add(customItem);
-            }
-        }
-
+      for (JMenuItem customItem : customItems) {
+        add(customItem);
+      }
     }
+
+  }
 
 }

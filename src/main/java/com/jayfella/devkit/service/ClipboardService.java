@@ -7,34 +7,34 @@ import com.jayfella.devkit.clipboard.SpatialClipboardItem;
  */
 public class ClipboardService implements Service {
 
-    private final long threadId;
-    private SpatialClipboardItem spatialClipboardItem;
+  private final long threadId;
+  private SpatialClipboardItem spatialClipboardItem;
 
-    public ClipboardService() {
-        threadId = Thread.currentThread().getId();
-    }
+  public ClipboardService() {
+    threadId = Thread.currentThread().getId();
+  }
 
-    public SpatialClipboardItem getSpatialClipboardItem() {
-        return spatialClipboardItem;
-    }
+  public SpatialClipboardItem getSpatialClipboardItem() {
+    return spatialClipboardItem;
+  }
 
-    public void setSpatialClipboardItem(SpatialClipboardItem spatialClipboardItem) {
-        this.spatialClipboardItem = spatialClipboardItem;
-    }
+  public void setSpatialClipboardItem(SpatialClipboardItem spatialClipboardItem) {
+    this.spatialClipboardItem = spatialClipboardItem;
+  }
 
-    public boolean hasSpatialClipboardItem() {
-        return spatialClipboardItem != null;
-    }
+  public boolean hasSpatialClipboardItem() {
+    return spatialClipboardItem != null;
+  }
 
-    @Override
-    public long getThreadId() {
-        return threadId;
-    }
+  @Override
+  public long getThreadId() {
+    return threadId;
+  }
 
-    @Override
-    public void stop() {
-        // just remove the references to the objects.
-        spatialClipboardItem = null;
-    }
+  @Override
+  public void stop() {
+    // just remove the references to the objects.
+    spatialClipboardItem = null;
+  }
 
 }

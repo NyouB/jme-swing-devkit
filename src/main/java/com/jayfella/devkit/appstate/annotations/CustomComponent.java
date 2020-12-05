@@ -8,6 +8,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface CustomComponent {
-    boolean showLabel() default false;
-    String tab() default "";
+
+  boolean showLabel() default false;
+
+  String tab() default "";
 }

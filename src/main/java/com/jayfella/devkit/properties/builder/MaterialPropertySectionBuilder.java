@@ -92,7 +92,8 @@ public class MaterialPropertySectionBuilder extends AbstractPropertySectionBuild
 
 
   private List<PropertySection> createAdditionalRenderStateSection() {
-    ReflectedPropertySectionBuilder renderStateBuilder = new ReflectedPropertySectionBuilder(object.getAdditionalRenderState());
+    ReflectedPropertySectionBuilder renderStateBuilder = new ReflectedPropertySectionBuilder(
+        object.getAdditionalRenderState());
     return renderStateBuilder.build();
   }
 

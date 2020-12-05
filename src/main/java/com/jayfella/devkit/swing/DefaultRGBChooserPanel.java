@@ -58,330 +58,326 @@ import javax.swing.event.ChangeListener;
  */
 public class DefaultRGBChooserPanel extends AbstractColorChooserPanel {
 
-    /**
-     * The slider that handles the red values.
-     */
-    private transient JSlider redValueSlider;
-    /**
-     * The slider that handles the green values.
-     */
-    private transient JSlider greenValueSlider;
+  /**
+   * The slider that handles the red values.
+   */
+  private transient JSlider redValueSlider;
+  /**
+   * The slider that handles the green values.
+   */
+  private transient JSlider greenValueSlider;
 
-    /**
-     * Whether the color change was initiated by the spinners.
-     */
-    private transient boolean spinnerChange = false;
+  /**
+   * Whether the color change was initiated by the spinners.
+   */
+  private transient boolean spinnerChange = false;
 
-    /**
-     * Whether the color change was initiated by the sliders.
-     */
-    private transient boolean sliderChange = false;
+  /**
+   * Whether the color change was initiated by the sliders.
+   */
+  private transient boolean sliderChange = false;
 
-    /**
-     * Whether the change was forced by the chooser (meaning the color has
-     * already been changed).
-     */
-    private transient boolean updateChange = false;
+  /**
+   * Whether the change was forced by the chooser (meaning the color has already been changed).
+   */
+  private transient boolean updateChange = false;
 
-    /**
-     * The ChangeListener for the sliders.
-     */
-    private transient ChangeListener colorChanger;
+  /**
+   * The ChangeListener for the sliders.
+   */
+  private transient ChangeListener colorChanger;
 
-    /**
-     * The ChangeListener for the spinners.
-     */
-    private transient ChangeListener spinnerHandler;
-    /**
-     * The slider that handles the blue values.
-     */
-    private transient JSlider blueValueSlider;
-    /**
-     * The spinner that handles the red values.
-     */
-    private transient JSpinner redValueSpinner;
-    /**
-     * The spinner that handles the green values.
-     */
-    private transient JSpinner greenValueSpinner;
-    /**
-     * The spinner that handles the blue values.
-     */
-    private transient JSpinner blueValueSpinner;
+  /**
+   * The ChangeListener for the spinners.
+   */
+  private transient ChangeListener spinnerHandler;
+  /**
+   * The slider that handles the blue values.
+   */
+  private transient JSlider blueValueSlider;
+  /**
+   * The spinner that handles the red values.
+   */
+  private transient JSpinner redValueSpinner;
+  /**
+   * The spinner that handles the green values.
+   */
+  private transient JSpinner greenValueSpinner;
+  /**
+   * The spinner that handles the blue values.
+   */
+  private transient JSpinner blueValueSpinner;
 
-    /**
-     * Creates a new DefaultRGBChooserPanel object.
-     */
-    public DefaultRGBChooserPanel() {
-        super();
+  /**
+   * Creates a new DefaultRGBChooserPanel object.
+   */
+  public DefaultRGBChooserPanel() {
+    super();
+  }
+
+  /**
+   * This method updates the chooser panel with the new color chosen in the JColorChooser.
+   */
+  public void updateChooser() {
+    Color c = getColorFromModel();
+    int rgb = c.getRGB();
+
+    int red = rgb >> 16 & 0xff;
+    int green = rgb >> 8 & 0xff;
+    int blue = rgb & 0xff;
+
+    updateChange = true;
+
+    if (!sliderChange) {
+      if (redValueSlider != null) {
+        redValueSlider.setValue(red);
+      }
+      if (greenValueSlider != null) {
+        greenValueSlider.setValue(green);
+      }
+      if (blueValueSlider != null) {
+        blueValueSlider.setValue(blue);
+      }
+    }
+    if (!spinnerChange) {
+      if (greenValueSpinner != null) {
+        greenValueSpinner.setValue(green);
+      }
+      if (redValueSpinner != null) {
+        redValueSpinner.setValue(red);
+      }
+      if (blueValueSpinner != null) {
+        blueValueSpinner.setValue(blue);
+      }
     }
 
+    updateChange = false;
+
+    revalidate();
+    repaint();
+  }
+
+  /**
+   * This method builds the chooser panel.
+   */
+  protected void buildChooser() {
+    setLayout(new GridBagLayout());
+
+    JLabel RLabel = new JLabel("Red");
+    RLabel.setDisplayedMnemonic('d');
+    JLabel GLabel = new JLabel("Green");
+    GLabel.setDisplayedMnemonic('n');
+    JLabel BLabel = new JLabel("Blue");
+    BLabel.setDisplayedMnemonic('B');
+
+    redValueSlider = new JSlider(SwingConstants.HORIZONTAL, 0, 255, 255);
+    greenValueSlider = new JSlider(SwingConstants.HORIZONTAL, 0, 255, 255);
+    blueValueSlider = new JSlider(SwingConstants.HORIZONTAL, 0, 255, 255);
+
+    redValueSlider.setPaintTicks(true);
+    redValueSlider.setSnapToTicks(false);
+    greenValueSlider.setPaintTicks(true);
+    greenValueSlider.setSnapToTicks(false);
+    blueValueSlider.setPaintTicks(true);
+    blueValueSlider.setSnapToTicks(false);
+
+    redValueSlider.setLabelTable(redValueSlider.createStandardLabels(85));
+    redValueSlider.setPaintLabels(true);
+    greenValueSlider.setLabelTable(greenValueSlider.createStandardLabels(85));
+    greenValueSlider.setPaintLabels(true);
+    blueValueSlider.setLabelTable(blueValueSlider.createStandardLabels(85));
+    blueValueSlider.setPaintLabels(true);
+
+    redValueSlider.setMajorTickSpacing(85);
+    greenValueSlider.setMajorTickSpacing(85);
+    blueValueSlider.setMajorTickSpacing(85);
+
+    redValueSlider.setMinorTickSpacing(17);
+    greenValueSlider.setMinorTickSpacing(17);
+    blueValueSlider.setMinorTickSpacing(17);
+
+    redValueSpinner = new JSpinner(new SpinnerNumberModel(redValueSlider.getValue(),
+        redValueSlider.getMinimum(),
+        redValueSlider.getMaximum(), 1));
+    greenValueSpinner = new JSpinner(new SpinnerNumberModel(greenValueSlider.getValue(),
+        greenValueSlider.getMinimum(),
+        greenValueSlider.getMaximum(), 1));
+    blueValueSpinner = new JSpinner(new SpinnerNumberModel(blueValueSlider.getValue(),
+        blueValueSlider.getMinimum(),
+        blueValueSlider.getMaximum(), 1));
+
+    RLabel.setLabelFor(redValueSlider);
+    GLabel.setLabelFor(greenValueSlider);
+    BLabel.setLabelFor(blueValueSlider);
+
+    GridBagConstraints bag = new GridBagConstraints();
+    bag.fill = GridBagConstraints.VERTICAL;
+
+    bag.gridx = 0;
+    bag.gridy = 0;
+    add(RLabel, bag);
+
+    bag.gridx = 1;
+    add(redValueSlider, bag);
+
+    bag.gridx = 2;
+    add(redValueSpinner, bag);
+
+    bag.gridx = 0;
+    bag.gridy = 1;
+    add(GLabel, bag);
+
+    bag.gridx = 1;
+    add(greenValueSlider, bag);
+
+    bag.gridx = 2;
+    add(greenValueSpinner, bag);
+
+    bag.gridx = 0;
+    bag.gridy = 2;
+    add(BLabel, bag);
+
+    bag.gridx = 1;
+    add(blueValueSlider, bag);
+
+    bag.gridx = 2;
+    add(blueValueSpinner, bag);
+
+    installListeners();
+  }
+
+  /**
+   * This method returns the name displayed in the JTabbedPane.
+   *
+   * @return The name displayed in the JTabbedPane.
+   */
+  public String getDisplayName() {
+    return "RGB";
+  }
+
+  /**
+   * This method uninstalls the chooser panel from the JColorChooser.
+   *
+   * @param chooser The JColorChooser to remove this chooser panel from.
+   */
+  @Override
+  public void uninstallChooserPanel(JColorChooser chooser) {
+    uninstallListeners();
+    removeAll();
+
+    redValueSlider = null;
+    greenValueSlider = null;
+    blueValueSlider = null;
+
+    redValueSpinner = null;
+    greenValueSpinner = null;
+    blueValueSpinner = null;
+
+    super.uninstallChooserPanel(chooser);
+  }
+
+  /**
+   * This method uninstalls any listeners that were added by the chooser panel.
+   */
+  private void uninstallListeners() {
+    redValueSlider.removeChangeListener(colorChanger);
+    greenValueSlider.removeChangeListener(colorChanger);
+    blueValueSlider.removeChangeListener(colorChanger);
+
+    colorChanger = null;
+
+    redValueSpinner.removeChangeListener(spinnerHandler);
+    greenValueSpinner.removeChangeListener(spinnerHandler);
+    blueValueSpinner.removeChangeListener(spinnerHandler);
+
+    spinnerHandler = null;
+  }
+
+  /**
+   * This method installs any listeners that the chooser panel needs to operate.
+   */
+  private void installListeners() {
+    colorChanger = new SliderHandler();
+
+    redValueSlider.addChangeListener(colorChanger);
+    greenValueSlider.addChangeListener(colorChanger);
+    blueValueSlider.addChangeListener(colorChanger);
+
+    spinnerHandler = new SpinnerHandler();
+
+    redValueSpinner.addChangeListener(spinnerHandler);
+    greenValueSpinner.addChangeListener(spinnerHandler);
+    blueValueSpinner.addChangeListener(spinnerHandler);
+  }
+
+  /**
+   * This method returns the small display icon.
+   *
+   * @return The small display icon.
+   */
+  public Icon getSmallDisplayIcon() {
+    return null;
+  }
+
+  /**
+   * This method returns the large display icon.
+   *
+   * @return The large display icon.
+   */
+  public Icon getLargeDisplayIcon() {
+    return null;
+  }
+
+  /**
+   * This class handles the slider value changes for all three sliders.
+   */
+  class SliderHandler implements ChangeListener {
+
     /**
-     * This method updates the chooser panel with the new color chosen in the
-     * JColorChooser.
-     */
-    public void updateChooser() {
-        Color c = getColorFromModel();
-        int rgb = c.getRGB();
-
-        int red = rgb >> 16 & 0xff;
-        int green = rgb >> 8 & 0xff;
-        int blue = rgb & 0xff;
-
-        updateChange = true;
-
-        if (!sliderChange) {
-            if (redValueSlider != null) {
-                redValueSlider.setValue(red);
-            }
-            if (greenValueSlider != null) {
-                greenValueSlider.setValue(green);
-            }
-            if (blueValueSlider != null) {
-                blueValueSlider.setValue(blue);
-            }
-        }
-        if (!spinnerChange) {
-            if (greenValueSpinner != null) {
-                greenValueSpinner.setValue(green);
-            }
-            if (redValueSpinner != null) {
-                redValueSpinner.setValue(red);
-            }
-            if (blueValueSpinner != null) {
-                blueValueSpinner.setValue(blue);
-            }
-        }
-
-        updateChange = false;
-
-        revalidate();
-        repaint();
-    }
-
-    /**
-     * This method builds the chooser panel.
-     */
-    protected void buildChooser() {
-        setLayout(new GridBagLayout());
-
-        JLabel RLabel = new JLabel("Red");
-        RLabel.setDisplayedMnemonic('d');
-        JLabel GLabel = new JLabel("Green");
-        GLabel.setDisplayedMnemonic('n');
-        JLabel BLabel = new JLabel("Blue");
-        BLabel.setDisplayedMnemonic('B');
-
-        redValueSlider = new JSlider(SwingConstants.HORIZONTAL, 0, 255, 255);
-        greenValueSlider = new JSlider(SwingConstants.HORIZONTAL, 0, 255, 255);
-        blueValueSlider = new JSlider(SwingConstants.HORIZONTAL, 0, 255, 255);
-
-        redValueSlider.setPaintTicks(true);
-        redValueSlider.setSnapToTicks(false);
-        greenValueSlider.setPaintTicks(true);
-        greenValueSlider.setSnapToTicks(false);
-        blueValueSlider.setPaintTicks(true);
-        blueValueSlider.setSnapToTicks(false);
-
-        redValueSlider.setLabelTable(redValueSlider.createStandardLabels(85));
-        redValueSlider.setPaintLabels(true);
-        greenValueSlider.setLabelTable(greenValueSlider.createStandardLabels(85));
-        greenValueSlider.setPaintLabels(true);
-        blueValueSlider.setLabelTable(blueValueSlider.createStandardLabels(85));
-        blueValueSlider.setPaintLabels(true);
-
-        redValueSlider.setMajorTickSpacing(85);
-        greenValueSlider.setMajorTickSpacing(85);
-        blueValueSlider.setMajorTickSpacing(85);
-
-        redValueSlider.setMinorTickSpacing(17);
-        greenValueSlider.setMinorTickSpacing(17);
-        blueValueSlider.setMinorTickSpacing(17);
-
-        redValueSpinner = new JSpinner(new SpinnerNumberModel(redValueSlider.getValue(),
-            redValueSlider.getMinimum(),
-            redValueSlider.getMaximum(), 1));
-        greenValueSpinner = new JSpinner(new SpinnerNumberModel(greenValueSlider.getValue(),
-            greenValueSlider.getMinimum(),
-            greenValueSlider.getMaximum(), 1));
-        blueValueSpinner = new JSpinner(new SpinnerNumberModel(blueValueSlider.getValue(),
-            blueValueSlider.getMinimum(),
-            blueValueSlider.getMaximum(), 1));
-
-        RLabel.setLabelFor(redValueSlider);
-        GLabel.setLabelFor(greenValueSlider);
-        BLabel.setLabelFor(blueValueSlider);
-
-        GridBagConstraints bag = new GridBagConstraints();
-        bag.fill = GridBagConstraints.VERTICAL;
-
-        bag.gridx = 0;
-        bag.gridy = 0;
-        add(RLabel, bag);
-
-        bag.gridx = 1;
-        add(redValueSlider, bag);
-
-        bag.gridx = 2;
-        add(redValueSpinner, bag);
-
-        bag.gridx = 0;
-        bag.gridy = 1;
-        add(GLabel, bag);
-
-        bag.gridx = 1;
-        add(greenValueSlider, bag);
-
-        bag.gridx = 2;
-        add(greenValueSpinner, bag);
-
-        bag.gridx = 0;
-        bag.gridy = 2;
-        add(BLabel, bag);
-
-        bag.gridx = 1;
-        add(blueValueSlider, bag);
-
-        bag.gridx = 2;
-        add(blueValueSpinner, bag);
-
-        installListeners();
-    }
-
-    /**
-     * This method returns the name displayed in the JTabbedPane.
+     * This method is called whenever any of the slider values change.
      *
-     * @return The name displayed in the JTabbedPane.
+     * @param e The ChangeEvent.
      */
-    public String getDisplayName() {
-        return "RGB";
+    public void stateChanged(ChangeEvent e) {
+      if (updateChange) {
+        return;
+      }
+
+      int color =
+          redValueSlider.getValue() << 16 | greenValueSlider.getValue() << 8 | blueValueSlider
+              .getValue();
+
+      sliderChange = true;
+      getColorSelectionModel().setSelectedColor(new Color(color));
+      sliderChange = false;
     }
+  }
+
+  /**
+   * This class handles the Spinner values changing.
+   */
+  class SpinnerHandler implements ChangeListener {
 
     /**
-     * This method uninstalls the chooser panel from the JColorChooser.
+     * This method is called whenever any of the JSpinners change values.
      *
-     * @param chooser The JColorChooser to remove this chooser panel from.
+     * @param e The ChangeEvent.
      */
-    @Override
-    public void uninstallChooserPanel(JColorChooser chooser) {
-        uninstallListeners();
-        removeAll();
+    public void stateChanged(ChangeEvent e) {
+      if (updateChange) {
+        return;
+      }
 
-        redValueSlider = null;
-        greenValueSlider = null;
-        blueValueSlider = null;
+      int red = ((Number) redValueSpinner.getValue()).intValue();
+      int green = ((Number) greenValueSpinner.getValue()).intValue();
+      int blue = ((Number) blueValueSpinner.getValue()).intValue();
 
-        redValueSpinner = null;
-        greenValueSpinner = null;
-        blueValueSpinner = null;
+      int color = red << 16 | green << 8 | blue;
 
-        super.uninstallChooserPanel(chooser);
+      spinnerChange = true;
+      getColorSelectionModel().setSelectedColor(new Color(color));
+      spinnerChange = false;
     }
-
-    /**
-     * This method uninstalls any listeners that were added by the chooser
-     * panel.
-     */
-    private void uninstallListeners() {
-        redValueSlider.removeChangeListener(colorChanger);
-        greenValueSlider.removeChangeListener(colorChanger);
-        blueValueSlider.removeChangeListener(colorChanger);
-
-        colorChanger = null;
-
-        redValueSpinner.removeChangeListener(spinnerHandler);
-        greenValueSpinner.removeChangeListener(spinnerHandler);
-        blueValueSpinner.removeChangeListener(spinnerHandler);
-
-        spinnerHandler = null;
-    }
-
-    /**
-     * This method installs any listeners that the chooser panel needs to
-     * operate.
-     */
-    private void installListeners() {
-        colorChanger = new SliderHandler();
-
-        redValueSlider.addChangeListener(colorChanger);
-        greenValueSlider.addChangeListener(colorChanger);
-        blueValueSlider.addChangeListener(colorChanger);
-
-        spinnerHandler = new SpinnerHandler();
-
-        redValueSpinner.addChangeListener(spinnerHandler);
-        greenValueSpinner.addChangeListener(spinnerHandler);
-        blueValueSpinner.addChangeListener(spinnerHandler);
-    }
-
-    /**
-     * This class handles the slider value changes for all three sliders.
-     */
-    class SliderHandler implements ChangeListener {
-
-        /**
-         * This method is called whenever any of the slider values change.
-         *
-         * @param e The ChangeEvent.
-         */
-        public void stateChanged(ChangeEvent e) {
-            if (updateChange) {
-                return;
-            }
-
-            int color =
-                redValueSlider.getValue() << 16 | greenValueSlider.getValue() << 8 | blueValueSlider
-                    .getValue();
-
-            sliderChange = true;
-            getColorSelectionModel().setSelectedColor(new Color(color));
-            sliderChange = false;
-        }
-    }
-
-    /**
-     * This class handles the Spinner values changing.
-     */
-    class SpinnerHandler implements ChangeListener {
-
-        /**
-         * This method is called whenever any of the JSpinners change values.
-         *
-         * @param e The ChangeEvent.
-         */
-        public void stateChanged(ChangeEvent e) {
-            if (updateChange) {
-                return;
-            }
-
-            int red = ((Number) redValueSpinner.getValue()).intValue();
-            int green = ((Number) greenValueSpinner.getValue()).intValue();
-            int blue = ((Number) blueValueSpinner.getValue()).intValue();
-
-            int color = red << 16 | green << 8 | blue;
-
-            spinnerChange = true;
-            getColorSelectionModel().setSelectedColor(new Color(color));
-            spinnerChange = false;
-        }
-    }
-
-    /**
-     * This method returns the small display icon.
-     *
-     * @return The small display icon.
-     */
-    public Icon getSmallDisplayIcon() {
-        return null;
-    }
-
-    /**
-     * This method returns the large display icon.
-     *
-     * @return The large display icon.
-     */
-    public Icon getLargeDisplayIcon() {
-        return null;
-    }
+  }
 
 }

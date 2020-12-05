@@ -60,7 +60,7 @@ class ReflectedPropertySectionBuilderTest extends AbstractJmeDevKitTest {
       Map<String, Component> components = propertySection.getComponents();
       for (Entry<String, Component> entry : components.entrySet()) {
         System.out.println(entry.getKey());
-        if(entry.getValue() == null){
+        if (entry.getValue() == null) {
           System.out.println("null");
         }
         Assertions.assertNotNull(entry.getValue());

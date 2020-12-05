@@ -3,7 +3,6 @@ package com.jayfella.devkit.service;
 import com.jayfella.devkit.properties.builder.AbstractPropertySectionBuilder;
 import com.jayfella.devkit.properties.builder.GeometryPropertySectionBuilder;
 import com.jayfella.devkit.properties.builder.MaterialPropertySectionBuilder;
-import com.jayfella.devkit.properties.builder.ReflectedPropertySectionBuilder;
 import com.jayfella.devkit.properties.builder.SpatialPropertySectionBuilder;
 import com.jayfella.devkit.properties.component.bool.BooleanEditor;
 import com.jayfella.devkit.properties.component.colorgba.ColorRGBAEditor;

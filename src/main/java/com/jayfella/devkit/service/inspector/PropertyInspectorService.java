@@ -20,10 +20,8 @@ import org.slf4j.LoggerFactory;
 
 public class PropertyInspectorService implements Service {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(PropertyInspectorService.class);
-
   public static final String WINDOW_ID = "Property Inspector";
-
+  private static final Logger LOGGER = LoggerFactory.getLogger(PropertyInspectorService.class);
   private final JPanel rootPanel;
   private final JPanel sectionPanel;
 
@@ -91,10 +89,12 @@ public class PropertyInspectorService implements Service {
     int i = 0;
     for (Entry<String, Component> entry : section.getComponents().entrySet()) {
       sectionPanel
-          .add(new JLabel(entry.getKey()), new GridConstraints(i, 0, 1, 2, GridConstraints.ANCHOR_CENTER,
-              GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null,
-              null, 0,
-              false));
+          .add(new JLabel(entry.getKey()),
+              new GridConstraints(i, 0, 1, 2, GridConstraints.ANCHOR_CENTER,
+                  GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null,
+                  null,
+                  null, 0,
+                  false));
       sectionPanel
           .add(entry.getValue(), new GridConstraints(i, 1, 1, 2, GridConstraints.ANCHOR_CENTER,
               GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null,

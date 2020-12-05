@@ -34,11 +34,10 @@ import org.slf4j.LoggerFactory;
 
 public class Texture2DEditor extends AbstractPropertyEditor<Texture2D> {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(Texture2DEditor.class);
   public static final String DEFAULT_ASSET_ROOT_DIRECTORY = ".";
   public static final int TEXTURE_ICON_WIDTH = 60;
   public static final int TEXTURE_ICON_HEIGHT = 60;
-
+  private static final Logger LOGGER = LoggerFactory.getLogger(Texture2DEditor.class);
   private JPanel contentPanel;
   private JButton clearTextureButton;
   private JLabel imageIconLabel;

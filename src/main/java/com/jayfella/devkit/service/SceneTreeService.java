@@ -54,29 +54,24 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 /**
- * Provides a jMonkey Scene Tree visualised in a Swing JTree.
- * This implementation does not reflect any changes made by outside sources.
+ * Provides a jMonkey Scene Tree visualised in a Swing JTree. This implementation does not reflect
+ * any changes made by outside sources.
  */
 public class SceneTreeService implements Service, EventListener {
 
-    private static final Logger log = Logger.getLogger(SceneTreeService.class.getName());
-
     public static final String WINDOW_ID = "scene tree";
-
+    private static final Logger log = Logger.getLogger(SceneTreeService.class.getName());
     private final JTree tree;
-
+    private final long threadId;
     // These are "fake" nodes. They are added to their counterparts so we don't see things like "statsappstate".
     // These nodes are created, queried and modified on the JME thread ONLY.
     private Node guiNode;
     private Node rootNode;
-
     // Our "root" nodes. These nodes are not deletable.
     private NodeTreeNode guiNodeTreeNode;
-    private NodeTreeNode rootNodeTreeNode;
 
     // private final SceneObjectHighlighter sceneObjectHighlighter = new SceneObjectHighlighter();
-
-    private final long threadId;
+    private NodeTreeNode rootNodeTreeNode;
 
     public SceneTreeService(JTree tree) {
 
@@ -127,11 +122,11 @@ public class SceneTreeService implements Service, EventListener {
 
         });
 
-
         tree.getSelectionModel().addTreeSelectionListener(e -> {
 
             TreePath[] paths = tree.getSelectionPaths();
-            SceneObjectHighlighterState highlighterState = engineService.getStateManager().getState(SceneObjectHighlighterState.class);
+            SceneObjectHighlighterState highlighterState = engineService.getStateManager()
+                .getState(SceneObjectHighlighterState.class);
 
             // highlighting
             // remove and rebuild all highlights.
@@ -143,34 +138,40 @@ public class SceneTreeService implements Service, EventListener {
 
                 // Property Inspector.
                 // We can only inspect one thing at a time, so choose the last selected object.
-                DefaultMutableTreeNode lastSelectedTreeNode = (DefaultMutableTreeNode) paths[paths.length - 1].getLastPathComponent();
+                DefaultMutableTreeNode lastSelectedTreeNode = (DefaultMutableTreeNode) paths[
+                    paths.length
+                        - 1].getLastPathComponent();
 
-                ServiceManager.getService(PropertyInspectorService.class).inspect(lastSelectedTreeNode.getUserObject());
+                ServiceManager.getService(PropertyInspectorService.class)
+                    .inspect(lastSelectedTreeNode.getUserObject());
 
                 // highlighting
                 for (TreePath path : paths) {
-                    DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) path.getLastPathComponent();
+                    DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) path
+                        .getLastPathComponent();
 
                     if (treeNode != null) {
 
                         if (treeNode.getUserObject() instanceof Spatial) {
 
-                            engineService.enqueue(() -> highlighterState.highlight((Spatial) treeNode.getUserObject()));
+                            engineService
+                                .enqueue(() -> highlighterState
+                                    .highlight((Spatial) treeNode.getUserObject()));
 
                         } else if (treeNode.getUserObject() instanceof Mesh) {
 
                             GeometryTreeNode parent = (GeometryTreeNode) treeNode.getParent();
-                            engineService.enqueue(() -> highlighterState.highlightMesh(parent.getUserObject()));
+                            engineService.enqueue(
+                                () -> highlighterState.highlightMesh(parent.getUserObject()));
 
 
-                        }
-                        else if (treeNode.getUserObject() instanceof LightProbe) {
+                        } else if (treeNode.getUserObject() instanceof LightProbe) {
 
-                            engineService.enqueue(() -> highlighterState.highlight((Light) treeNode.getUserObject()));
+                            engineService
+                                .enqueue(() -> highlighterState
+                                    .highlight((Light) treeNode.getUserObject()));
 
-                        }
-
-                        else {
+                        } else {
                             highlighterState.removeAllHighlights();
                         }
                     } else {
@@ -181,7 +182,9 @@ public class SceneTreeService implements Service, EventListener {
 
                 // fire an event that the scene tree item has changed.
                 if (lastSelectedTreeNode instanceof JmeTreeNode) {
-                    ServiceManager.getService(EventService.class).fireEvent(new SceneTreeItemChangedEvent((JmeTreeNode) lastSelectedTreeNode));
+                    ServiceManager.getService(EventService.class)
+                        .fireEvent(
+                            new SceneTreeItemChangedEvent((JmeTreeNode) lastSelectedTreeNode));
                 }
             }
 
@@ -192,8 +195,8 @@ public class SceneTreeService implements Service, EventListener {
     }
 
     /**
-     * Returns the "fake" RootNode as opposed to the "real" rootNode.
-     * Note that this node is attached to the JME scene and should be inspected or modified on the JME thread.
+     * Returns the "fake" RootNode as opposed to the "real" rootNode. Note that this node is attached
+     * to the JME scene and should be inspected or modified on the JME thread.
      *
      * @return the Scene Tree RootNode
      */
@@ -203,6 +206,7 @@ public class SceneTreeService implements Service, EventListener {
 
     /**
      * Returns the root node tree element.
+     *
      * @return the root node tree element.
      */
     public NodeTreeNode getRootNodeTreeNode() {
@@ -210,8 +214,8 @@ public class SceneTreeService implements Service, EventListener {
     }
 
     /**
-     * Returns the "fake" GuiNode as opposed to the "real" guiNode.
-     * Note that this node is attached to the JME scene and should be inspected or modified on the JME thread.
+     * Returns the "fake" GuiNode as opposed to the "real" guiNode. Note that this node is attached to
+     * the JME scene and should be inspected or modified on the JME thread.
      *
      * @return the Scene Tree GuiNode
      */
@@ -221,6 +225,7 @@ public class SceneTreeService implements Service, EventListener {
 
     /**
      * Returns the gui node tree element.
+     *
      * @return the gui node tree element.
      */
     public NodeTreeNode getGuiNodeTreeNode() {
@@ -229,6 +234,7 @@ public class SceneTreeService implements Service, EventListener {
 
     /**
      * Returns the currently selected TreeNode in the scene tree.
+     *
      * @return the currently selected TreeNode in the scene tree.
      */
     public JmeTreeNode getSelectedTreeNode() {
@@ -237,7 +243,9 @@ public class SceneTreeService implements Service, EventListener {
         if (paths != null) {
 
             // We can only inspect one thing at a time, so choose the last selected object.
-            DefaultMutableTreeNode lastSelectedTreeNode = (DefaultMutableTreeNode) paths[paths.length - 1].getLastPathComponent();
+            DefaultMutableTreeNode lastSelectedTreeNode = (DefaultMutableTreeNode) paths[
+                paths.length - 1]
+                .getLastPathComponent();
 
             if (lastSelectedTreeNode instanceof JmeTreeNode) {
                 return (JmeTreeNode) lastSelectedTreeNode;
@@ -248,13 +256,12 @@ public class SceneTreeService implements Service, EventListener {
     }
 
     /**
-     * Adds a spatial to the tree and scene. All spatials should be added to the scene using this method.
-     * This should only be called from the AWT thread. The spatial should not be added to the scene yet.
-     * Fire a @see SpatialCreatedEvent on creation.
+     * Adds a spatial to the tree and scene. All spatials should be added to the scene using this
+     * method. This should only be called from the AWT thread. The spatial should not be added to the
+     * scene yet. Fire a @see SpatialCreatedEvent on creation.
      *
-     * @param spatial    the spatial to add.
+     * @param spatial the spatial to add.
      * @param parentNode the treeNode to add the spatial.
-     *
      * @return the created SpatialTreeNode
      */
     public SpatialTreeNode addSpatial(Spatial spatial, NodeTreeNode parentNode) {
@@ -297,7 +304,8 @@ public class SceneTreeService implements Service, EventListener {
                         public void visit(Geometry geom) {
 
                             Material material = geom.getMaterial();
-                            material.getMaterialDef().addMaterialParam(VarType.Boolean, "UseInstancing", true);
+                            material.getMaterialDef()
+                                .addMaterialParam(VarType.Boolean, "UseInstancing", true);
                             material.setBoolean("UseInstancing", true);
 
                         }
@@ -323,9 +331,8 @@ public class SceneTreeService implements Service, EventListener {
      * This should only be called from the AWT thread. The light should not be added to the scene yet.
      * Fire a @see LightCreatedEvent on creation.
      *
-     * @param light      the light to add.
+     * @param light the light to add.
      * @param parentNode the treeNode to add the spatial.
-     *
      * @return the created LightTreeNode
      */
     public LightTreeNode addLight(Light light, SpatialTreeNode parentNode) {
@@ -363,13 +370,12 @@ public class SceneTreeService implements Service, EventListener {
     }
 
     /**
-     * Adds a control to the tree and scene. All controls should be added to the scene using this method.
-     * This should only be called from the AWT thread. The control should not be added to the scene yet.
-     * Fire a @see ControlCreatedEvent on creation.
+     * Adds a control to the tree and scene. All controls should be added to the scene using this
+     * method. This should only be called from the AWT thread. The control should not be added to the
+     * scene yet. Fire a @see ControlCreatedEvent on creation.
      *
-     * @param control    the control to add.
+     * @param control the control to add.
      * @param parentNode the treeNode to add the control.
-     *
      * @return the created ControlTreeNode
      */
     public ControlTreeNode addControl(Control control, SpatialTreeNode parentNode) {
@@ -397,9 +403,8 @@ public class SceneTreeService implements Service, EventListener {
     }
 
     /**
-     * Removes the selected scene spatial from the tree and scene.
-     * This method **must** be called from the AWT thread.
-     * Fire a @see SpatialRemovedEvent on creation.
+     * Removes the selected scene spatial from the tree and scene. This method **must** be called from
+     * the AWT thread. Fire a @see SpatialRemovedEvent on creation.
      *
      * @param spatialTreeNode the treeNode to remove.
      */
@@ -424,12 +429,11 @@ public class SceneTreeService implements Service, EventListener {
     }
 
     /**
-     * Removes the selected scene light from the tree and scene.
-     * This method **must** be called from the AWT thread.
-     * Fire a @see LightRemovedEvent on creation.
+     * Removes the selected scene light from the tree and scene. This method **must** be called from
+     * the AWT thread. Fire a @see LightRemovedEvent on creation.
      *
      * @param lightTreeNode The lightTreeNode to remove
-     * @param parent        The SpatialTreeNode that holds the light.
+     * @param parent The SpatialTreeNode that holds the light.
      */
     public void removeTreeNode(LightTreeNode lightTreeNode, SpatialTreeNode parent) {
 
@@ -452,12 +456,11 @@ public class SceneTreeService implements Service, EventListener {
     }
 
     /**
-     * Removes the selected control from the tree and scene.
-     * This method **must** be called from the AWT thread.
-     * Fire a @see ControlRemovedEvent on creation.
+     * Removes the selected control from the tree and scene. This method **must** be called from the
+     * AWT thread. Fire a @see ControlRemovedEvent on creation.
      *
      * @param controlTreeNode The ControlTreeNode to remove
-     * @param parent        The SpatialTreeNode that holds the light.
+     * @param parent The SpatialTreeNode that holds the light.
      */
     public void removeTreeNode(ControlTreeNode controlTreeNode, SpatialTreeNode parent) {
 
@@ -480,7 +483,8 @@ public class SceneTreeService implements Service, EventListener {
     }
 
     /**
-     * Walks through the given treeNode and queries the UserObject (a SceneNode) to add any children recursively.
+     * Walks through the given treeNode and queries the UserObject (a SceneNode) to add any children
+     * recursively.
      *
      * @param treeNode the parent TreeNode to query.
      */
@@ -502,10 +506,10 @@ public class SceneTreeService implements Service, EventListener {
                 }
 
             }
-        }
-        else if (treeNode.getUserObject() instanceof Geometry) {
+        } else if (treeNode.getUserObject() instanceof Geometry) {
 
-            MeshTreeNode childTreeNode = new MeshTreeNode(((Geometry) treeNode.getUserObject()).getMesh());
+            MeshTreeNode childTreeNode = new MeshTreeNode(
+                ((Geometry) treeNode.getUserObject()).getMesh());
             treeNode.add(childTreeNode);
 
         }
@@ -535,7 +539,8 @@ public class SceneTreeService implements Service, EventListener {
      */
     private SpatialTreeNode createSpatialTreeNodeFrom(Spatial spatial) {
 
-        RegistrationService registrationService = ServiceManager.getService(RegistrationService.class);
+        RegistrationService registrationService = ServiceManager
+            .getService(RegistrationService.class);
         JmeEngineService engineService = ServiceManager.getService(JmeEngineService.class);
 
         SpatialTreeNode treeNode = null;
@@ -553,25 +558,27 @@ public class SceneTreeService implements Service, EventListener {
             }
 
             if (treeNode == null) {
-                log.fine("No TreeNode associated with object: " + spatial.getClass() + ", using default NodeTreeNode.");
+                log.fine("No TreeNode associated with object: " + spatial.getClass()
+                    + ", using default NodeTreeNode.");
                 treeNode = new NodeTreeNode(node);
             }
-        }
-
-        else if (spatial instanceof Geometry) {
+        } else if (spatial instanceof Geometry) {
 
             Geometry geometry = (Geometry) spatial;
-            Registrar<GeometryRegistrar> geometryRegistrar = registrationService.getGeometryRegistration();
+            Registrar<GeometryRegistrar> geometryRegistrar = registrationService
+                .getGeometryRegistration();
 
             for (GeometryRegistrar registrar : geometryRegistrar.getRegistrations()) {
                 if (registrar.getRegisteredClass().equals(geometry.getClass())) {
-                    treeNode = (SpatialTreeNode) registrar.createSceneTreeNode(geometry, engineService);
+                    treeNode = (SpatialTreeNode) registrar
+                        .createSceneTreeNode(geometry, engineService);
                     break;
                 }
             }
 
             if (treeNode == null) {
-                log.fine("No TreeNode associated with object: " + spatial.getClass() + ", using default GeometryTreeNode.");
+                log.fine("No TreeNode associated with object: " + spatial.getClass()
+                    + ", using default GeometryTreeNode.");
                 treeNode = new GeometryTreeNode(geometry);
             }
 
@@ -610,14 +617,11 @@ public class SceneTreeService implements Service, EventListener {
 
         if (light instanceof AmbientLight) {
             return new AmbientLightTreeNode((AmbientLight) light);
-        }
-        else if (light instanceof DirectionalLight) {
+        } else if (light instanceof DirectionalLight) {
             return new DirectionalLightTreeNode((DirectionalLight) light);
-        }
-        else if (light instanceof LightProbe) {
+        } else if (light instanceof LightProbe) {
             return new LightProbeTreeNode((LightProbe) light);
-        }
-        else if (light instanceof PointLight) {
+        } else if (light instanceof PointLight) {
             return new PointLightTreeNode((PointLight) light);
         }
 
@@ -657,6 +661,7 @@ public class SceneTreeService implements Service, EventListener {
 
     /**
      * Called whenever a spatial name changed, so the visual text can be updated.
+     *
      * @param event the event fired.
      */
     @EventHandler

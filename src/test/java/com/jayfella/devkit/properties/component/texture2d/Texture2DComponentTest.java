@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 class Texture2DComponentTest {
 
 
+  public static final String TEST_ASSET_ROOT_DIRECTORY = "src/test/resources/assetTest";
 
   public static final void main(String[] args) throws ParseException {
     DesktopAssetManager assetManager = new DesktopAssetManager();
@@ -33,8 +34,6 @@ class Texture2DComponentTest {
       frame.setVisible(true);
     });
   }
-
-  public static final String TEST_ASSET_ROOT_DIRECTORY = "src/test/resources/assetTest";
 
   @Test
   void setComponent() {

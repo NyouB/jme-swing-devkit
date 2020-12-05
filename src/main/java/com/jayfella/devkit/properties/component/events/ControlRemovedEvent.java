@@ -5,14 +5,14 @@ import com.jme3.scene.control.Control;
 
 public class ControlRemovedEvent extends Event {
 
-    private final Control control;
+  private final Control control;
 
-    public ControlRemovedEvent(Control control) {
-        this.control = control;
-    }
+  public ControlRemovedEvent(Control control) {
+    this.control = control;
+  }
 
-    public Control getControl() {
-        return control;
-    }
+  public Control getControl() {
+    return control;
+  }
 
 }

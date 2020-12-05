@@ -31,20 +31,20 @@ import java.util.List;
  */
 public class CyclicGraphException extends RuntimeException {
 
-    private static final long serialVersionUID = -8398890567263627095L;
+  private static final long serialVersionUID = -8398890567263627095L;
 
-    private final List<DirectedGraph.DataNode<?>[]> cycles;
+  private final List<DirectedGraph.DataNode<?>[]> cycles;
 
-    public CyclicGraphException(List<DirectedGraph.DataNode<?>[]> cycles, String msg) {
-        super(msg);
-        this.cycles = cycles;
-    }
+  public CyclicGraphException(List<DirectedGraph.DataNode<?>[]> cycles, String msg) {
+    super(msg);
+    this.cycles = cycles;
+  }
 
-    /**
-     * Gets a list of all cycles found in the graph.
-     */
-    public List<DirectedGraph.DataNode<?>[]> getCycles() {
-        return this.cycles;
-    }
+  /**
+   * Gets a list of all cycles found in the graph.
+   */
+  public List<DirectedGraph.DataNode<?>[]> getCycles() {
+    return this.cycles;
+  }
 
 }

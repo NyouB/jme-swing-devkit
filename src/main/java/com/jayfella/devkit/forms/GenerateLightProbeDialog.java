@@ -18,11 +18,21 @@ import com.jme3.light.LightProbe.AreaType;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-
-import javax.swing.*;
+import java.awt.Dimension;
+import java.awt.Insets;
+import java.awt.Window;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JFormattedTextField;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTree;
+import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import java.awt.*;
 
 /**
  * Generates a LightProbe from a user-selected Node as an environment map. Note: LightProbeFactory

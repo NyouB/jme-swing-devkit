@@ -5,14 +5,14 @@ import com.jme3.scene.Spatial;
 
 public class SpatialNameChangedEvent extends Event {
 
-    private final Spatial spatial;
+  private final Spatial spatial;
 
-    public SpatialNameChangedEvent(Spatial spatial) {
-        this.spatial = spatial;
-    }
+  public SpatialNameChangedEvent(Spatial spatial) {
+    this.spatial = spatial;
+  }
 
-    public Spatial getSpatial() {
-        return spatial;
-    }
+  public Spatial getSpatial() {
+    return spatial;
+  }
 
 }

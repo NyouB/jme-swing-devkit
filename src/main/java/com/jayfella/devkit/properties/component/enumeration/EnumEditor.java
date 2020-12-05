@@ -11,7 +11,6 @@ import java.awt.event.ItemListener;
 import java.util.EnumSet;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 
@@ -19,7 +18,7 @@ public class EnumEditor extends AbstractPropertyEditor<Enum> {
 
   private JPanel contentPanel;
   private JComboBox<Enum> valueComboBox;
-  private Class<? extends Enum> clazz;
+  private final Class<? extends Enum> clazz;
 
   public EnumEditor(Class<Enum> clazz) {
     super(null);

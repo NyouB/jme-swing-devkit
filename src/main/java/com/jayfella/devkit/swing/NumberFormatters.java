@@ -1,39 +1,39 @@
 package com.jayfella.devkit.swing;
 
-import javax.swing.text.NumberFormatter;
 import java.text.NumberFormat;
+import javax.swing.text.NumberFormatter;
 
 public class NumberFormatters {
 
-    public static NumberFormatter createFloatFormatter(float min, float max) {
+  public static NumberFormatter createFloatFormatter(float min, float max) {
 
-        NumberFormat numberFormat = NumberFormat.getInstance();
-        numberFormat.setGroupingUsed(false);
-        numberFormat.setMinimumFractionDigits(2);
-        numberFormat.setMaximumFractionDigits(2);
+    NumberFormat numberFormat = NumberFormat.getInstance();
+    numberFormat.setGroupingUsed(false);
+    numberFormat.setMinimumFractionDigits(2);
+    numberFormat.setMaximumFractionDigits(2);
 
-        NumberFormatter floatFormatter = new NumberFormatter(numberFormat);
-        floatFormatter.setMinimum(min);
-        floatFormatter.setMaximum(max);
-        floatFormatter.setAllowsInvalid(true);
-        floatFormatter.setCommitsOnValidEdit(true);
+    NumberFormatter floatFormatter = new NumberFormatter(numberFormat);
+    floatFormatter.setMinimum(min);
+    floatFormatter.setMaximum(max);
+    floatFormatter.setAllowsInvalid(true);
+    floatFormatter.setCommitsOnValidEdit(true);
 
-        return floatFormatter;
-    }
+    return floatFormatter;
+  }
 
-    public static NumberFormatter createIntegerFormatter(int min, int max) {
+  public static NumberFormatter createIntegerFormatter(int min, int max) {
 
-        NumberFormat numberFormat = NumberFormat.getInstance();
-        numberFormat.setGroupingUsed(false);
-        numberFormat.setParseIntegerOnly(true);
+    NumberFormat numberFormat = NumberFormat.getInstance();
+    numberFormat.setGroupingUsed(false);
+    numberFormat.setParseIntegerOnly(true);
 
-        NumberFormatter intFormatter = new NumberFormatter(numberFormat);
-        intFormatter.setMinimum(min);
-        intFormatter.setMaximum(max);
-        intFormatter.setAllowsInvalid(true);
-        intFormatter.setCommitsOnValidEdit(false);
+    NumberFormatter intFormatter = new NumberFormatter(numberFormat);
+    intFormatter.setMinimum(min);
+    intFormatter.setMaximum(max);
+    intFormatter.setAllowsInvalid(true);
+    intFormatter.setCommitsOnValidEdit(false);
 
-        return intFormatter;
-    }
+    return intFormatter;
+  }
 
 }

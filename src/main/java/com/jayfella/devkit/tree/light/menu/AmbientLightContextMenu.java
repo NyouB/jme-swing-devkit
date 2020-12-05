@@ -4,8 +4,8 @@ import com.jayfella.devkit.tree.light.LightTreeNode;
 
 public class AmbientLightContextMenu extends LightContextMenu {
 
-    public AmbientLightContextMenu(LightTreeNode lightTreeNode) {
-        super(lightTreeNode);
-    }
+  public AmbientLightContextMenu(LightTreeNode lightTreeNode) {
+    super(lightTreeNode);
+  }
 
 }

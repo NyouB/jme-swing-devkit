@@ -26,42 +26,41 @@ package com.jayfella.devkit.plugin.sorter;
 
 import com.jayfella.devkit.plugin.DevKitPlugin;
 import com.jayfella.devkit.plugin.sorter.DirectedGraph.DataNode;
-
 import java.util.List;
 
 public final class PluginSorter {
 
-    private PluginSorter() {
+  private PluginSorter() {
+  }
+
+  public static List<DevKitPlugin> sort(Iterable<DevKitPlugin> candidates) {
+    DirectedGraph<DevKitPlugin> graph = new DirectedGraph<>();
+
+    for (DevKitPlugin candidate : candidates) {
+      graph.add(candidate);
+      for (DevKitPlugin dependency : candidate.getDependencies()) {
+        graph.addEdge(candidate, dependency);
+      }
     }
 
-    public static List<DevKitPlugin> sort(Iterable<DevKitPlugin> candidates) {
-        DirectedGraph<DevKitPlugin> graph = new DirectedGraph<>();
-
-        for (DevKitPlugin candidate : candidates) {
-            graph.add(candidate);
-            for (DevKitPlugin dependency : candidate.getDependencies()) {
-                graph.addEdge(candidate, dependency);
-            }
+    try {
+      return TopologicalOrder.createOrderedLoad(graph);
+    } catch (CyclicGraphException e) {
+      StringBuilder msg = new StringBuilder();
+      msg.append("\nPlugin dependencies are cyclical!\n");
+      msg.append("Dependency loops are:\n");
+      for (DataNode<?>[] cycle : e.getCycles()) {
+        msg.append("[");
+        for (DataNode<?> node : cycle) {
+          msg.append(node.getData().toString()).append(" ");
         }
+        msg.append("]\n");
+      }
 
-        try {
-            return TopologicalOrder.createOrderedLoad(graph);
-        } catch (CyclicGraphException e) {
-            StringBuilder msg = new StringBuilder();
-            msg.append("\nPlugin dependencies are cyclical!\n");
-            msg.append("Dependency loops are:\n");
-            for (DataNode<?>[] cycle : e.getCycles()) {
-                msg.append("[");
-                for (DataNode<?> node : cycle) {
-                    msg.append(node.getData().toString()).append(" ");
-                }
-                msg.append("]\n");
-            }
+      // throw new DependencyNotFoundException(msg.toString());
+      throw new RuntimeException(msg.toString());
 
-            // throw new DependencyNotFoundException(msg.toString());
-            throw new RuntimeException(msg.toString());
-
-        }
     }
+  }
 
 }

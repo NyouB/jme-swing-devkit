@@ -2,41 +2,40 @@ package com.jayfella.devkit.swing;
 
 import com.github.weisj.darklaf.LafManager;
 import com.github.weisj.darklaf.theme.Theme;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 public class SwingTheme {
 
-    public static void setTheme(String className) {
+  public static void setTheme(String className) {
 
-        try {
+    try {
 
-            @SuppressWarnings("unchecked")
-            Class<? extends Theme> themeClass = (Class<? extends Theme>) Class.forName(className);
+      @SuppressWarnings("unchecked")
+      Class<? extends Theme> themeClass = (Class<? extends Theme>) Class.forName(className);
 
-            setTheme(themeClass);
+      setTheme(themeClass);
 
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
+    } catch (ClassNotFoundException e) {
+      e.printStackTrace();
     }
 
-    public static void setTheme(Class<? extends Theme> themeClass) {
+  }
 
-        try {
+  public static void setTheme(Class<? extends Theme> themeClass) {
 
-            Constructor<? extends Theme> constructor = themeClass.getConstructor();
-            Theme theme = constructor.newInstance();
+    try {
 
-            LafManager.setTheme(theme);
-            LafManager.install();
+      Constructor<? extends Theme> constructor = themeClass.getConstructor();
+      Theme theme = constructor.newInstance();
 
-        } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
-            e.printStackTrace();
-        }
+      LafManager.setTheme(theme);
+      LafManager.install();
 
+    } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
+      e.printStackTrace();
     }
+
+  }
 
 }

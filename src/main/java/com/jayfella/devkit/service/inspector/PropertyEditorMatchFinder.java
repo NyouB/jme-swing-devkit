@@ -14,7 +14,8 @@ public class PropertyEditorMatchFinder extends PropertySectionListFinder {
   @Override
   public List<PropertySection> find(Object object, String propertyName) {
     // we don't know what it is, so all we can do is display reflected properties.
-    ReflectedPropertySectionBuilder componentSetBuilder = new ReflectedPropertySectionBuilder(object);
+    ReflectedPropertySectionBuilder componentSetBuilder = new ReflectedPropertySectionBuilder(
+        object);
     return componentSetBuilder.build();
   }
 

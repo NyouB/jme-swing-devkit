@@ -9,8 +9,9 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface ListProperty {
 
-    String accessorName();
-    ListType listType() default ListType.List;
+  String accessorName();
 
-    String tab() default "";
+  ListType listType() default ListType.List;
+
+  String tab() default "";
 }

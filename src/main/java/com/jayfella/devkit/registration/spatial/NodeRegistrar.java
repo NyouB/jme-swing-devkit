@@ -5,7 +5,7 @@ import com.jme3.scene.Node;
 
 public abstract class NodeRegistrar extends AbstractClassRegistrar<Node> {
 
-    public NodeRegistrar(Class<? extends Node> clazz) {
-        setRegisteredClass(clazz);
-    }
+  public NodeRegistrar(Class<? extends Node> clazz) {
+    setRegisteredClass(clazz);
+  }
 }

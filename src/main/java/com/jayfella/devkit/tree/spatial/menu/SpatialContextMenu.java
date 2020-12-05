@@ -5,7 +5,12 @@ import com.jayfella.devkit.forms.GenerateLightProbeDialog;
 import com.jayfella.devkit.forms.SaveSpatial;
 import com.jayfella.devkit.jme.EditorCameraState;
 import com.jayfella.devkit.registration.control.ControlRegistrar;
-import com.jayfella.devkit.service.*;
+import com.jayfella.devkit.service.ClipboardService;
+import com.jayfella.devkit.service.JmeEngineService;
+import com.jayfella.devkit.service.MenuService;
+import com.jayfella.devkit.service.RegistrationService;
+import com.jayfella.devkit.service.SceneTreeService;
+import com.jayfella.devkit.service.ServiceManager;
 import com.jayfella.devkit.tree.TreeConstants;
 import com.jayfella.devkit.tree.spatial.SpatialTreeNode;
 import com.jme3.light.AmbientLight;
@@ -14,15 +19,22 @@ import com.jme3.light.PointLight;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
-
-import javax.swing.*;
 import java.util.List;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
+import javax.swing.JSeparator;
+import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 
 public class SpatialContextMenu extends JPopupMenu {
 
     private final Spatial spatial;
-    SpatialTreeNode spatialTreeNode;
     private final JMenu addMenu;
+    SpatialTreeNode spatialTreeNode;
 
     public SpatialContextMenu(final SpatialTreeNode spatialTreeNode) {
         super();
@@ -33,7 +45,8 @@ public class SpatialContextMenu extends JPopupMenu {
         JMenuItem lookAtItem = add(new JMenuItem("Look at Spatial"));
         lookAtItem.addActionListener(e -> {
             JmeEngineService engineService = ServiceManager.getService(JmeEngineService.class);
-            engineService.getStateManager().getState(EditorCameraState.class).lookAt(spatial.getWorldTranslation(), Vector3f.UNIT_Y);
+            engineService.getStateManager().getState(EditorCameraState.class)
+                .lookAt(spatial.getWorldTranslation(), Vector3f.UNIT_Y);
         });
 
         addMenu = createAddMenu();
@@ -47,9 +60,9 @@ public class SpatialContextMenu extends JPopupMenu {
             if (spatial.getUserData(TreeConstants.TREE_ROOT) != null) {
 
                 JOptionPane.showMessageDialog(null,
-                        "You cannot cut a root tree element.",
-                        "Action Denied",
-                        JOptionPane.ERROR_MESSAGE);
+                    "You cannot cut a root tree element.",
+                    "Action Denied",
+                    JOptionPane.ERROR_MESSAGE);
 
                 return;
             }
@@ -63,8 +76,10 @@ public class SpatialContextMenu extends JPopupMenu {
                 // Remove the treeItem on the AWT thread.
                 SwingUtilities.invokeLater(() ->
 
-                        ServiceManager.getService(SceneTreeService.class).removeTreeNode(spatialTreeNode));
-                        ServiceManager.getService(ClipboardService.class).setSpatialClipboardItem(spatialClipboardItem);
+                    ServiceManager.getService(SceneTreeService.class)
+                        .removeTreeNode(spatialTreeNode));
+                ServiceManager.getService(ClipboardService.class)
+                    .setSpatialClipboardItem(spatialClipboardItem);
 
             });
 
@@ -79,7 +94,8 @@ public class SpatialContextMenu extends JPopupMenu {
 
             SaveSpatial saveSpatial = new SaveSpatial(spatial);
 
-            JFrame mainWindow = (JFrame) SwingUtilities.getWindowAncestor(ServiceManager.getService(JmeEngineService.class).getCanvas());
+            JFrame mainWindow = (JFrame) SwingUtilities
+                .getWindowAncestor(ServiceManager.getService(JmeEngineService.class).getCanvas());
 
             JDialog dialog = new JDialog(mainWindow, "Save Spatial", true);
             dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -106,12 +122,13 @@ public class SpatialContextMenu extends JPopupMenu {
                 SwingUtilities.invokeLater(() -> {
 
                     if (undeletable == null) {
-                        ServiceManager.getService(SceneTreeService.class).removeTreeNode(spatialTreeNode);
+                        ServiceManager.getService(SceneTreeService.class)
+                            .removeTreeNode(spatialTreeNode);
                     } else {
                         JOptionPane.showMessageDialog(null,
-                                "You are not allowed to delete this spatial.",
-                                "Delete Rejected",
-                                JOptionPane.ERROR_MESSAGE);
+                            "You are not allowed to delete this spatial.",
+                            "Delete Rejected",
+                            JOptionPane.ERROR_MESSAGE);
                     }
 
                 });
@@ -123,16 +140,21 @@ public class SpatialContextMenu extends JPopupMenu {
         deleteItem.setMnemonic('D');
 
         // Add -> Registered Spatials
-        RegistrationService registrationService = ServiceManager.getService(RegistrationService.class);
+        RegistrationService registrationService = ServiceManager
+            .getService(RegistrationService.class);
 
-        for (ControlRegistrar registrar : registrationService.getControlRegistration().getRegistrations()) {
+        for (ControlRegistrar registrar : registrationService.getControlRegistration()
+            .getRegistrations()) {
 
-            JMenuItem menuItem = getAddMenu().add(new JMenuItem(registrar.getRegisteredClass().getSimpleName()));
+            JMenuItem menuItem = getAddMenu()
+                .add(new JMenuItem(registrar.getRegisteredClass().getSimpleName()));
 
             menuItem.addActionListener(e -> {
 
-                Control control = registrar.createInstance(ServiceManager.getService(JmeEngineService.class));
-                ServiceManager.getService(SceneTreeService.class).addControl(control, spatialTreeNode);
+                Control control = registrar
+                    .createInstance(ServiceManager.getService(JmeEngineService.class));
+                ServiceManager.getService(SceneTreeService.class)
+                    .addControl(control, spatialTreeNode);
 
             });
 
@@ -140,7 +162,7 @@ public class SpatialContextMenu extends JPopupMenu {
 
         // Allow users to also add their options....
         List<JMenuItem> customItems = ServiceManager.getService(MenuService.class)
-                .getCustomMenuItems(SpatialTreeNode.class);
+            .getCustomMenuItems(SpatialTreeNode.class);
 
         if (customItems != null && !customItems.isEmpty()) {
 
@@ -176,13 +198,16 @@ public class SpatialContextMenu extends JPopupMenu {
 
         JMenuItem ambLight = menu.add(new JMenuItem("Ambient"));
         ambLight.addActionListener(e -> {
-            ServiceManager.getService(SceneTreeService.class).addLight(new AmbientLight(), spatialTreeNode);
+            ServiceManager.getService(SceneTreeService.class)
+                .addLight(new AmbientLight(), spatialTreeNode);
         });
 
         JMenuItem dirLight = menu.add(new JMenuItem("Directional"));
         dirLight.addActionListener(e -> {
-            DirectionalLight directionalLight = new DirectionalLight(new Vector3f(-1, -1, -1).normalizeLocal());
-            ServiceManager.getService(SceneTreeService.class).addLight(directionalLight, spatialTreeNode);
+            DirectionalLight directionalLight = new DirectionalLight(
+                new Vector3f(-1, -1, -1).normalizeLocal());
+            ServiceManager.getService(SceneTreeService.class)
+                .addLight(directionalLight, spatialTreeNode);
         });
 
         JMenuItem pointLight = menu.add(new JMenuItem("Point"));
@@ -199,9 +224,11 @@ public class SpatialContextMenu extends JPopupMenu {
         JMenuItem probeLight = menu.add(new JMenuItem("Generate LightProbe..."));
         probeLight.addActionListener(e -> {
 
-            GenerateLightProbeDialog generateLightProbeDialog = new GenerateLightProbeDialog(spatialTreeNode);
+            GenerateLightProbeDialog generateLightProbeDialog = new GenerateLightProbeDialog(
+                spatialTreeNode);
 
-            JFrame mainWindow = (JFrame) SwingUtilities.getWindowAncestor(ServiceManager.getService(JmeEngineService.class).getCanvas());
+            JFrame mainWindow = (JFrame) SwingUtilities
+                .getWindowAncestor(ServiceManager.getService(JmeEngineService.class).getCanvas());
 
             JDialog dialog = new JDialog(mainWindow, "Generate LightProbe", true);
             dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -226,13 +253,14 @@ public class SpatialContextMenu extends JPopupMenu {
         // clone (same mesh, new material)
         // clone (same mesh, same material)
 
-
         JMenuItem cloneWithNewMaterial = menu.add(new JMenuItem("New Mesh(es), New Material(s)"));
         cloneWithNewMaterial.addActionListener(e -> {
 
             ServiceManager.getService(JmeEngineService.class).enqueue(() -> {
-                SpatialClipboardItem spatialClipboardItem = new SpatialClipboardItem(spatial, true, true);
-                SwingUtilities.invokeLater(() -> ServiceManager.getService(ClipboardService.class).setSpatialClipboardItem(spatialClipboardItem));
+                SpatialClipboardItem spatialClipboardItem = new SpatialClipboardItem(spatial, true,
+                    true);
+                SwingUtilities.invokeLater(() -> ServiceManager.getService(ClipboardService.class)
+                    .setSpatialClipboardItem(spatialClipboardItem));
             });
 
         });
@@ -241,25 +269,33 @@ public class SpatialContextMenu extends JPopupMenu {
         cloneWithSameMaterial.addActionListener(e -> {
 
             ServiceManager.getService(JmeEngineService.class).enqueue(() -> {
-                SpatialClipboardItem spatialClipboardItem = new SpatialClipboardItem(spatial, false, true);
-                SwingUtilities.invokeLater(() -> ServiceManager.getService(ClipboardService.class).setSpatialClipboardItem(spatialClipboardItem));
+                SpatialClipboardItem spatialClipboardItem = new SpatialClipboardItem(spatial, false,
+                    true);
+                SwingUtilities.invokeLater(() -> ServiceManager.getService(ClipboardService.class)
+                    .setSpatialClipboardItem(spatialClipboardItem));
             });
 
         });
 
-        JMenuItem cloneWithSameMeshNewMaterial = menu.add(new JMenuItem("Same Mesh(es), New Material(s)"));
+        JMenuItem cloneWithSameMeshNewMaterial = menu
+            .add(new JMenuItem("Same Mesh(es), New Material(s)"));
         cloneWithSameMeshNewMaterial.addActionListener(e -> {
 
-            SpatialClipboardItem spatialClipboardItem = new SpatialClipboardItem(spatial, true, false);
-            SwingUtilities.invokeLater(() -> ServiceManager.getService(ClipboardService.class).setSpatialClipboardItem(spatialClipboardItem));
+            SpatialClipboardItem spatialClipboardItem = new SpatialClipboardItem(spatial, true,
+                false);
+            SwingUtilities.invokeLater(() -> ServiceManager.getService(ClipboardService.class)
+                .setSpatialClipboardItem(spatialClipboardItem));
 
         });
 
-        JMenuItem cloneWithSameMeshSameMaterial = menu.add(new JMenuItem("Same Mesh(es), Same Material(s)"));
+        JMenuItem cloneWithSameMeshSameMaterial = menu
+            .add(new JMenuItem("Same Mesh(es), Same Material(s)"));
         cloneWithSameMeshSameMaterial.addActionListener(e -> {
 
-            SpatialClipboardItem spatialClipboardItem = new SpatialClipboardItem(spatial, false, false);
-            SwingUtilities.invokeLater(() -> ServiceManager.getService(ClipboardService.class).setSpatialClipboardItem(spatialClipboardItem));
+            SpatialClipboardItem spatialClipboardItem = new SpatialClipboardItem(spatial, false,
+                false);
+            SwingUtilities.invokeLater(() -> ServiceManager.getService(ClipboardService.class)
+                .setSpatialClipboardItem(spatialClipboardItem));
 
         });
 

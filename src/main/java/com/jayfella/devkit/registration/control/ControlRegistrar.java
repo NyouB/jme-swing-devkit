@@ -6,5 +6,4 @@ import com.jme3.scene.control.Control;
 public abstract class ControlRegistrar extends AbstractClassRegistrar<Control> {
 
 
-
 }

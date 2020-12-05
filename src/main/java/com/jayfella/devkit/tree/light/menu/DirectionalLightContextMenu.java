@@ -4,8 +4,8 @@ import com.jayfella.devkit.tree.light.DirectionalLightTreeNode;
 
 public class DirectionalLightContextMenu extends LightContextMenu {
 
-    public DirectionalLightContextMenu(DirectionalLightTreeNode lightTreeNode) {
-        super(lightTreeNode);
-    }
+  public DirectionalLightContextMenu(DirectionalLightTreeNode lightTreeNode) {
+    super(lightTreeNode);
+  }
 
 }

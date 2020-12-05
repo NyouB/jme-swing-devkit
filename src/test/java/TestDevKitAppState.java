@@ -1,89 +1,94 @@
-import com.jayfella.devkit.appstate.annotations.*;
-
-import javax.swing.*;
+import com.jayfella.devkit.appstate.annotations.BooleanProperty;
+import com.jayfella.devkit.appstate.annotations.CustomComponent;
+import com.jayfella.devkit.appstate.annotations.DevKitAppState;
+import com.jayfella.devkit.appstate.annotations.EnumProperty;
+import com.jayfella.devkit.appstate.annotations.FloatProperty;
+import com.jayfella.devkit.appstate.annotations.IntegerProperty;
+import com.jayfella.devkit.appstate.annotations.ListProperty;
+import com.jayfella.devkit.appstate.annotations.ListType;
+import javax.swing.JButton;
+import javax.swing.JComponent;
 
 // Add the DevKit annotation so the DevKit will add it to the list of available AppStates to run.
-@DevKitAppState(tabs = { "Tab 1", "Tab 2", "Tab 3" })
+@DevKitAppState(tabs = {"Tab 1", "Tab 2", "Tab 3"})
 public class TestDevKitAppState {
 
-    public enum TestEnum { Value_1, Value_2, Value_3 }
+  private final String[] customList = {"String 1", "String 2", "String 3", "String 4"};
+  private float myFloatValue = 20.0f;
+  private int myIntValue = 5;
+  private TestEnum myTestEnum = TestEnum.Value_2;
+  private int customListIndex = 2;
+  private boolean myBooleanValue = false;
 
-    private float myFloatValue = 20.0f;
-    private int myIntValue = 5;
-    private TestEnum myTestEnum = TestEnum.Value_2;
+  // required: no-args constructor
+  public TestDevKitAppState() {
 
-    private String[] customList = { "String 1", "String 2", "String 3", "String 4" };
-    private int customListIndex = 2;
+  }
 
-    private boolean myBooleanValue = false;
+  // Creates a slider with the specified ranges.
+  @FloatProperty(min = 4.0f, max = 100.0f, step = 2.0f)
+  public float getMyFloatValue() {
+    return myFloatValue;
+  }
 
-    // required: no-args constructor
-    public TestDevKitAppState() {
+  public void setMyFloatValue(float myFloatValue) {
+    this.myFloatValue = myFloatValue;
+  }
 
-    }
+  // Creates a slider with the specified ranges.
+  @IntegerProperty(min = -10, max = 135, step = 5, tab = "Tab 1")
+  public int getMyIntValue() {
+    return myIntValue;
+  }
 
-    // Creates a slider with the specified ranges.
-    @FloatProperty(min = 4.0f, max = 100.0f, step = 2.0f)
-    public float getMyFloatValue() {
-        return myFloatValue;
-    }
+  public void setMyIntValue(int myIntValue) {
+    this.myIntValue = myIntValue;
+  }
 
-    public void setMyFloatValue(float myFloatValue) {
-        this.myFloatValue = myFloatValue;
-    }
+  // Creates a combobox.
+  @EnumProperty(tab = "Tab 2")
+  public TestEnum getMyTestEnum() {
+    return myTestEnum;
+  }
 
-    // Creates a slider with the specified ranges.
-    @IntegerProperty(min = -10, max = 135, step = 5, tab = "Tab 1")
-    public int getMyIntValue() {
-        return myIntValue;
-    }
+  public void setMyTestEnum(TestEnum myTestEnum) {
+    this.myTestEnum = myTestEnum;
+  }
 
-    public void setMyIntValue(int myIntValue) {
-        this.myIntValue = myIntValue;
-    }
+  // Creates a list or combobox from the given array.
+  @ListProperty(accessorName = "CustomListIndex", listType = ListType.ComboBox, tab = "Tab 3")
+  public String[] getMyCustomListValues() {
+    return customList;
+  }
 
-    // Creates a combobox.
-    @EnumProperty(tab = "Tab 2")
-    public TestEnum getMyTestEnum() {
-        return myTestEnum;
-    }
+  public String[] getCustomList() {
+    return customList;
+  }
 
-    public void setMyTestEnum(TestEnum myTestEnum) {
-        this.myTestEnum = myTestEnum;
-    }
+  public int getCustomListIndex() {
+    return customListIndex;
+  }
 
-    // Creates a list or combobox from the given array.
-    @ListProperty(accessorName = "CustomListIndex", listType = ListType.ComboBox, tab = "Tab 3")
-    public String[] getMyCustomListValues() {
-        return customList;
-    }
+  public void setCustomListIndex(int customListIndex) {
+    this.customListIndex = customListIndex;
+  }
 
-    public String[] getCustomList() {
-        return customList;
-    }
+  // Adds the custom component to the GUI.
+  @CustomComponent
+  public JComponent getCustomComponent() {
+    return new JButton("Custom Buttom");
+  }
 
-    public int getCustomListIndex() {
-        return customListIndex;
-    }
+  @BooleanProperty
+  public boolean isMyBooleanValue() {
+    return myBooleanValue;
+  }
 
-    public void setCustomListIndex(int customListIndex) {
-        this.customListIndex = customListIndex;
-    }
+  // Adds a checkbox
 
-    // Adds the custom component to the GUI.
-    @CustomComponent
-    public JComponent getCustomComponent() {
-        return new JButton("Custom Buttom");
-    }
+  public void setMyBooleanValue(boolean myBooleanValue) {
+    this.myBooleanValue = myBooleanValue;
+  }
 
-    // Adds a checkbox
-
-    @BooleanProperty
-    public boolean isMyBooleanValue() {
-        return myBooleanValue;
-    }
-
-    public void setMyBooleanValue(boolean myBooleanValue) {
-        this.myBooleanValue = myBooleanValue;
-    }
+  public enum TestEnum {Value_1, Value_2, Value_3}
 }

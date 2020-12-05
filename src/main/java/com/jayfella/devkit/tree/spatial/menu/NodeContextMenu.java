@@ -5,7 +5,12 @@ import com.jayfella.devkit.forms.AddModels;
 import com.jayfella.devkit.forms.CreateSkyBoxDialog;
 import com.jayfella.devkit.registration.spatial.GeometryRegistrar;
 import com.jayfella.devkit.registration.spatial.NodeRegistrar;
-import com.jayfella.devkit.service.*;
+import com.jayfella.devkit.service.ClipboardService;
+import com.jayfella.devkit.service.JmeEngineService;
+import com.jayfella.devkit.service.MenuService;
+import com.jayfella.devkit.service.RegistrationService;
+import com.jayfella.devkit.service.SceneTreeService;
+import com.jayfella.devkit.service.ServiceManager;
 import com.jayfella.devkit.tree.spatial.NodeTreeNode;
 import com.jme3.material.Material;
 import com.jme3.scene.Geometry;
@@ -16,175 +21,190 @@ import com.jme3.scene.shape.Cylinder;
 import com.jme3.scene.shape.Dome;
 import com.jme3.scene.shape.Quad;
 import com.jme3.scene.shape.Sphere;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.HeadlessException;
 import java.util.List;
 import java.util.Set;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JSeparator;
+import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 
 
 public class NodeContextMenu extends SpatialContextMenu {
 
-    private final NodeTreeNode nodeTreeNode;
+  private final NodeTreeNode nodeTreeNode;
 
-    public NodeContextMenu(NodeTreeNode nodeTreeNode) throws HeadlessException {
-        super(nodeTreeNode);
+  public NodeContextMenu(NodeTreeNode nodeTreeNode) throws HeadlessException {
+    super(nodeTreeNode);
 
-        this.nodeTreeNode = nodeTreeNode;
+    this.nodeTreeNode = nodeTreeNode;
 
-        // Add -> Shape
-        JMenu addShapeMenu = (JMenu) getAddMenu().add(new JMenu("Shape..."));
-        addShapes(addShapeMenu);
-        addShapeMenu.setMnemonic('S');
+    // Add -> Shape
+    JMenu addShapeMenu = (JMenu) getAddMenu().add(new JMenu("Shape..."));
+    addShapes(addShapeMenu);
+    addShapeMenu.setMnemonic('S');
 
-        // Add -> Model(s)...
-        JMenuItem addModelsItem = getAddMenu().add(new JMenuItem("Model(s)..."));
-        addModelsItem.addActionListener(e -> {
+    // Add -> Model(s)...
+    JMenuItem addModelsItem = getAddMenu().add(new JMenuItem("Model(s)..."));
+    addModelsItem.addActionListener(e -> {
 
-            AddModels addModels = new AddModels(nodeTreeNode);
+      AddModels addModels = new AddModels(nodeTreeNode);
 
-            JFrame mainWindow = (JFrame) SwingUtilities.getWindowAncestor(ServiceManager.getService(JmeEngineService.class).getCanvas());
+      JFrame mainWindow = (JFrame) SwingUtilities
+          .getWindowAncestor(ServiceManager.getService(JmeEngineService.class).getCanvas());
 
-            JDialog dialog = new JDialog(mainWindow, "Add Model(s)", true);
-            dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-            dialog.setContentPane(addModels.$$$getRootComponent$$$());
-            dialog.pack();
-            dialog.setLocationRelativeTo(mainWindow);
-            dialog.setVisible(true);
+      JDialog dialog = new JDialog(mainWindow, "Add Model(s)", true);
+      dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+      dialog.setContentPane(addModels.$$$getRootComponent$$$());
+      dialog.pack();
+      dialog.setLocationRelativeTo(mainWindow);
+      dialog.setVisible(true);
 
-        });
-        addModelsItem.setMnemonic('M');
+    });
+    addModelsItem.setMnemonic('M');
 
-        // Add -> SkyBox...
-        JMenuItem genSkyBoxItem = getAddMenu().add(new JMenuItem("SkyBox..."));
-        genSkyBoxItem.addActionListener(e -> {
+    // Add -> SkyBox...
+    JMenuItem genSkyBoxItem = getAddMenu().add(new JMenuItem("SkyBox..."));
+    genSkyBoxItem.addActionListener(e -> {
 
-            CreateSkyBoxDialog createSkyBoxDialog = new CreateSkyBoxDialog(nodeTreeNode);
+      CreateSkyBoxDialog createSkyBoxDialog = new CreateSkyBoxDialog(nodeTreeNode);
 
-            JFrame mainWindow = (JFrame) SwingUtilities.getWindowAncestor(ServiceManager.getService(JmeEngineService.class).getCanvas());
+      JFrame mainWindow = (JFrame) SwingUtilities
+          .getWindowAncestor(ServiceManager.getService(JmeEngineService.class).getCanvas());
 
-            JDialog dialog = new JDialog(mainWindow, "Create SkyBox", true);
-            dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-            dialog.setContentPane(createSkyBoxDialog.$$$getRootComponent$$$());
-            dialog.pack();
-            dialog.setLocationRelativeTo(mainWindow);
-            dialog.setVisible(true);
+      JDialog dialog = new JDialog(mainWindow, "Create SkyBox", true);
+      dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+      dialog.setContentPane(createSkyBoxDialog.$$$getRootComponent$$$());
+      dialog.pack();
+      dialog.setLocationRelativeTo(mainWindow);
+      dialog.setVisible(true);
 
-        });
-        genSkyBoxItem.setMnemonic('K');
+    });
+    genSkyBoxItem.setMnemonic('K');
 
-        // Add -> Registered Spatials
-        RegistrationService registrationService = ServiceManager.getService(RegistrationService.class);
-        Set<NodeRegistrar> nodeRegistrars = registrationService.getNodeRegistration().getRegistrations();
+    // Add -> Registered Spatials
+    RegistrationService registrationService = ServiceManager.getService(RegistrationService.class);
+    Set<NodeRegistrar> nodeRegistrars = registrationService.getNodeRegistration()
+        .getRegistrations();
 
-        if (!nodeRegistrars.isEmpty()) {
+    if (!nodeRegistrars.isEmpty()) {
 
-            getAddMenu().add(new JSeparator());
+      getAddMenu().add(new JSeparator());
 
-            for (NodeRegistrar registrar : nodeRegistrars) {
+      for (NodeRegistrar registrar : nodeRegistrars) {
 
-                JMenuItem menuItem = getAddMenu().add(new JMenuItem(registrar.getRegisteredClass().getSimpleName()));
+        JMenuItem menuItem = getAddMenu()
+            .add(new JMenuItem(registrar.getRegisteredClass().getSimpleName()));
 
-                menuItem.addActionListener(e -> {
+        menuItem.addActionListener(e -> {
 
-                    Node node = registrar.createInstance(ServiceManager.getService(JmeEngineService.class));
-                    ServiceManager.getService(SceneTreeService.class).addSpatial(node, nodeTreeNode);
-
-                });
-
-            }
-        }
-
-        Set<GeometryRegistrar> geometryRegistrars = registrationService.getGeometryRegistration().getRegistrations();
-        if (!geometryRegistrars.isEmpty()) {
-
-            getAddMenu().add(new JSeparator());
-
-            for (GeometryRegistrar registrar : geometryRegistrars) {
-
-                JMenuItem menuItem = getAddMenu().add(new JMenuItem(registrar.getRegisteredClass().getSimpleName()));
-
-                menuItem.addActionListener(e -> {
-
-                    Geometry geometry = registrar.createInstance(ServiceManager.getService(JmeEngineService.class));
-                    ServiceManager.getService(SceneTreeService.class).addSpatial(geometry, nodeTreeNode);
-
-                });
-
-            }
-
-        }
-
-        add(new JSeparator());
-
-        JMenuItem pasteItem = add(new JMenuItem("Paste"));
-        pasteItem.setEnabled(ServiceManager.getService(ClipboardService.class).hasSpatialClipboardItem());
-        pasteItem.addActionListener(e -> {
-
-            Spatial clonedSpatial = ServiceManager.getService(ClipboardService.class).getSpatialClipboardItem().getClonedCopy();
-            ServiceManager.getService(SceneTreeService.class).addSpatial(clonedSpatial, nodeTreeNode);
+          Node node = registrar.createInstance(ServiceManager.getService(JmeEngineService.class));
+          ServiceManager.getService(SceneTreeService.class).addSpatial(node, nodeTreeNode);
 
         });
 
-        // Allow users to also add their options....
-        List<JMenuItem> customItems = ServiceManager.getService(MenuService.class)
-                .getCustomMenuItems(NodeTreeNode.class);
-
-        if (customItems != null && !customItems.isEmpty()) {
-
-            // add a separator for clarity.
-            add(new JSeparator());
-
-            for (JMenuItem customItem : customItems) {
-                add(customItem);
-            }
-        }
+      }
     }
 
-    private void addShapes(JMenu parent) {
+    Set<GeometryRegistrar> geometryRegistrars = registrationService.getGeometryRegistration()
+        .getRegistrations();
+    if (!geometryRegistrars.isEmpty()) {
 
-        JMenuItem cubeItem = parent.add(new JMenuItem("Cube"));
-        cubeItem.addActionListener(e -> {
-            ServiceManager.getService(SceneTreeService.class).addSpatial(
-                    createShape(new com.jme3.scene.shape.Box(1, 1, 1), "Cube"), nodeTreeNode);
+      getAddMenu().add(new JSeparator());
+
+      for (GeometryRegistrar registrar : geometryRegistrars) {
+
+        JMenuItem menuItem = getAddMenu()
+            .add(new JMenuItem(registrar.getRegisteredClass().getSimpleName()));
+
+        menuItem.addActionListener(e -> {
+
+          Geometry geometry = registrar
+              .createInstance(ServiceManager.getService(JmeEngineService.class));
+          ServiceManager.getService(SceneTreeService.class).addSpatial(geometry, nodeTreeNode);
+
         });
 
-        JMenuItem cylinderItem = parent.add(new JMenuItem("Cylinder"));
-        cylinderItem.addActionListener(e -> {
-            ServiceManager.getService(SceneTreeService.class).addSpatial(
-                    createShape(new Cylinder(32, 32, 1.0f, 1.0f, true), "Cylinder"), nodeTreeNode);
-        });
-
-        JMenuItem domeItem = parent.add(new JMenuItem("Dome"));
-        domeItem.addActionListener(e -> {
-            ServiceManager.getService(SceneTreeService.class).addSpatial(
-                    createShape(new Dome(32, 32, 1.0f), "Dome"), nodeTreeNode);
-        });
-
-        JMenuItem quadItem = parent.add(new JMenuItem("Quad"));
-        quadItem.addActionListener(e -> {
-            ServiceManager.getService(SceneTreeService.class).addSpatial(
-                    createShape(new Quad(1.0f, 1.0f), "Quad"), nodeTreeNode);
-        });
-
-        JMenuItem sphereItem = parent.add(new JMenuItem("Sphere"));
-        sphereItem.addActionListener(e -> {
-            ServiceManager.getService(SceneTreeService.class).addSpatial(
-                    createShape(new Sphere(32, 32, 1.0f), "Sphere"), nodeTreeNode);
-        });
+      }
 
     }
 
-    private Geometry createShape(Mesh mesh, String name) {
+    add(new JSeparator());
 
-        JmeEngineService engineService = ServiceManager.getService(JmeEngineService.class);
+    JMenuItem pasteItem = add(new JMenuItem("Paste"));
+    pasteItem
+        .setEnabled(ServiceManager.getService(ClipboardService.class).hasSpatialClipboardItem());
+    pasteItem.addActionListener(e -> {
 
-        Geometry geometry = new Geometry(name, mesh);
+      Spatial clonedSpatial = ServiceManager.getService(ClipboardService.class)
+          .getSpatialClipboardItem().getClonedCopy();
+      ServiceManager.getService(SceneTreeService.class).addSpatial(clonedSpatial, nodeTreeNode);
 
-        Material material = new Material(engineService.getAssetManager(), DevKitConfig.getInstance().getSdkConfig().getDefaultMaterial());
-        geometry.setMaterial(material);
+    });
 
-        return geometry;
+    // Allow users to also add their options....
+    List<JMenuItem> customItems = ServiceManager.getService(MenuService.class)
+        .getCustomMenuItems(NodeTreeNode.class);
+
+    if (customItems != null && !customItems.isEmpty()) {
+
+      // add a separator for clarity.
+      add(new JSeparator());
+
+      for (JMenuItem customItem : customItems) {
+        add(customItem);
+      }
     }
+  }
+
+  private void addShapes(JMenu parent) {
+
+    JMenuItem cubeItem = parent.add(new JMenuItem("Cube"));
+    cubeItem.addActionListener(e -> {
+      ServiceManager.getService(SceneTreeService.class).addSpatial(
+          createShape(new com.jme3.scene.shape.Box(1, 1, 1), "Cube"), nodeTreeNode);
+    });
+
+    JMenuItem cylinderItem = parent.add(new JMenuItem("Cylinder"));
+    cylinderItem.addActionListener(e -> {
+      ServiceManager.getService(SceneTreeService.class).addSpatial(
+          createShape(new Cylinder(32, 32, 1.0f, 1.0f, true), "Cylinder"), nodeTreeNode);
+    });
+
+    JMenuItem domeItem = parent.add(new JMenuItem("Dome"));
+    domeItem.addActionListener(e -> {
+      ServiceManager.getService(SceneTreeService.class).addSpatial(
+          createShape(new Dome(32, 32, 1.0f), "Dome"), nodeTreeNode);
+    });
+
+    JMenuItem quadItem = parent.add(new JMenuItem("Quad"));
+    quadItem.addActionListener(e -> {
+      ServiceManager.getService(SceneTreeService.class).addSpatial(
+          createShape(new Quad(1.0f, 1.0f), "Quad"), nodeTreeNode);
+    });
+
+    JMenuItem sphereItem = parent.add(new JMenuItem("Sphere"));
+    sphereItem.addActionListener(e -> {
+      ServiceManager.getService(SceneTreeService.class).addSpatial(
+          createShape(new Sphere(32, 32, 1.0f), "Sphere"), nodeTreeNode);
+    });
+
+  }
+
+  private Geometry createShape(Mesh mesh, String name) {
+
+    JmeEngineService engineService = ServiceManager.getService(JmeEngineService.class);
+
+    Geometry geometry = new Geometry(name, mesh);
+
+    Material material = new Material(engineService.getAssetManager(),
+        DevKitConfig.getInstance().getSdkConfig().getDefaultMaterial());
+    geometry.setMaterial(material);
+
+    return geometry;
+  }
 
 }
