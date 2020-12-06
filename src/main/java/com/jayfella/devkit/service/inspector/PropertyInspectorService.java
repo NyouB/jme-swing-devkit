@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map.Entry;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -107,6 +109,13 @@ public class PropertyInspectorService implements Service {
       gridBagConstraints.gridy = row++;
       gridBagConstraints.gridwidth = 1;
       sectionPanel.add(entry.getValue(), gridBagConstraints);
+      gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
+      gridBagConstraints.anchor = GridBagConstraints.LINE_START;
+      gridBagConstraints.weightx = 1f;
+      gridBagConstraints.gridx = 0;
+      gridBagConstraints.gridy = row++;
+      gridBagConstraints.gridwidth = 2;
+      sectionPanel.add(new JSeparator(SwingConstants.HORIZONTAL), gridBagConstraints);
     }
   }
 
