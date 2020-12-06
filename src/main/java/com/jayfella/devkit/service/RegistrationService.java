@@ -133,6 +133,9 @@ public class RegistrationService implements Service {
       Object object) {
     Class<? extends AbstractPropertySectionBuilder> builderClass = propertySectionBuilders
         .get(clazz);
+    if (builderClass == null) {
+      return null;
+    }
     AbstractPropertySectionBuilder<?> builder = null;
     try {
       builder = builderClass.getConstructor().newInstance(object);
