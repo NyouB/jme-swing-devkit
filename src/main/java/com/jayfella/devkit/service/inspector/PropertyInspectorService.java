@@ -86,17 +86,23 @@ public class PropertyInspectorService implements Service {
     sectionTitle.setOpaque(true);
     GridBagConstraints gridBagConstraints = new GridBagConstraints();
     gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
+    gridBagConstraints.anchor = GridBagConstraints.LINE_START;
+    gridBagConstraints.weightx = 1;
     gridBagConstraints.gridx = 0;
     gridBagConstraints.gridy = row++;
     gridBagConstraints.gridwidth = 2;
     sectionPanel.add(sectionTitle, gridBagConstraints);
     for (Entry<String, Component> entry : section.getComponents().entrySet()) {
       gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
+      gridBagConstraints.anchor = GridBagConstraints.LINE_START;
+      gridBagConstraints.weightx = 0.1f;
       gridBagConstraints.gridx = 0;
       gridBagConstraints.gridy = row;
       gridBagConstraints.gridwidth = 1;
       sectionPanel.add(new JLabel(entry.getKey()), gridBagConstraints);
       gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
+      gridBagConstraints.anchor = GridBagConstraints.LINE_START;
+      gridBagConstraints.weightx = 0.1f;
       gridBagConstraints.gridx = 1;
       gridBagConstraints.gridy = row++;
       gridBagConstraints.gridwidth = 1;
