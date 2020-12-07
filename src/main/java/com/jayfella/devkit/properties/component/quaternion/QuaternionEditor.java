@@ -2,7 +2,6 @@ package com.jayfella.devkit.properties.component.quaternion;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
-import com.intellij.uiDesigner.core.Spacer;
 import com.jayfella.devkit.properties.component.AbstractPropertyEditor;
 import com.jayfella.devkit.properties.component.FloatFormatFactory;
 import com.jme3.math.Quaternion;
@@ -13,7 +12,6 @@ import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSeparator;
 
 public class QuaternionEditor extends AbstractPropertyEditor<Quaternion> {
 
@@ -74,50 +72,41 @@ public class QuaternionEditor extends AbstractPropertyEditor<Quaternion> {
   private void $$$setupUI$$$() {
     createUIComponents();
     contentPanel = new JPanel();
-    contentPanel.setLayout(new GridLayoutManager(6, 2, new Insets(0, 0, 0, 0), -1, -1));
-    final Spacer spacer1 = new Spacer();
-    contentPanel.add(spacer1, new GridConstraints(5, 0, 1, 2, GridConstraints.ANCHOR_CENTER,
-        GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0,
-        false));
+    contentPanel.setLayout(new GridLayoutManager(4, 2, new Insets(0, 0, 0, 0), -1, -1));
     final JLabel label1 = new JLabel();
     label1.setText("x");
     contentPanel.add(label1,
-        new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE,
+        new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE,
             GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0,
             false));
     final JLabel label2 = new JLabel();
     label2.setText("y");
     contentPanel.add(label2,
-        new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE,
+        new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE,
             GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0,
             false));
     final JLabel label3 = new JLabel();
     label3.setText("z");
     contentPanel.add(label3,
-        new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE,
+        new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE,
             GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0,
             false));
-    contentPanel.add(xTextField, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_WEST,
+    contentPanel.add(xTextField, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_WEST,
         GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW,
         GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-    contentPanel.add(yTextField, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_WEST,
+    contentPanel.add(yTextField, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_WEST,
         GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW,
         GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-    contentPanel.add(zTextField, new GridConstraints(4, 1, 1, 1, GridConstraints.ANCHOR_WEST,
+    contentPanel.add(zTextField, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_WEST,
         GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW,
         GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
-    final JSeparator separator1 = new JSeparator();
-    contentPanel.add(separator1,
-        new GridConstraints(0, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH,
-            GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_WANT_GROW, null, null,
-            null, 0, false));
     final JLabel label4 = new JLabel();
     label4.setText("w");
     contentPanel.add(label4,
-        new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE,
+        new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE,
             GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0,
             false));
-    contentPanel.add(wTextField, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_WEST,
+    contentPanel.add(wTextField, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST,
         GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW,
         GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
   }

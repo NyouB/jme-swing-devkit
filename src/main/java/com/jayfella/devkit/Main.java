@@ -1,7 +1,6 @@
 package com.jayfella.devkit;
 
 import com.jayfella.devkit.config.DevKitConfig;
-import com.jayfella.devkit.core.LogUtil;
 import com.jayfella.devkit.forms.Configuration;
 import com.jayfella.devkit.forms.DebugLights;
 import com.jayfella.devkit.forms.ImportModel;
@@ -39,8 +38,6 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.logging.Logger;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -56,13 +53,13 @@ import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
-import org.apache.log4j.Level;
-import org.apache.log4j.LogManager;
 import org.jdesktop.swingx.VerticalLayout;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Main {
 
-  private static final Logger log = Logger.getLogger(Main.class.getName());
+  private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
   private JFrame frame;
 
@@ -92,29 +89,15 @@ public class Main {
       // start the canvas as early as possible.
       engineService.startCanvas();
     } else {
-      log.severe("Unable to create instance of JmeEngineService. Exiting.");
+      LOGGER.warn("Unable to create instance of JmeEngineService. Exiting.");
       System.exit(-1);
     }
   }
 
   public static void main(String[] args) {
 
-    LogUtil.initializeLogger(Level.INFO, true);
-
-    Arrays.stream(new String[]{
-        "com.jme3.audio.openal.ALAudioRenderer",
-        "com.jme3.asset.AssetConfig",
-        "com.jme3.material.plugins.J3MLoader",
-
-        // startup information
-        "com.jme3.system.JmeSystem",
-        "com.jme3.system.lwjgl.LwjglContext",
-        "org.reflections"
-        // "com.jme3.renderer.opengl.GLRenderer"
-    }).forEach(p -> LogManager.getLogger(p).setLevel(Level.ERROR));
-
-    log.info("Engine Version: " + JmeSystem.getFullName());
-    log.info(
+    LOGGER.info("Engine Version: " + JmeSystem.getFullName());
+    LOGGER.info(
         "Operating System: " + System.getProperty("os.name") + " " + System.getProperty("os.arch"));
 
     Main main = new Main();
@@ -563,7 +546,7 @@ public class Main {
       String assetRoot = DevKitConfig.getInstance().getProjectConfig().getAssetRootDir();
 
       assetManager.registerLocator(assetRoot, FileLocator.class);
-      log.info("Registered Asset Root Directory: " + assetRoot);
+      LOGGER.info("Registered Asset Root Directory: " + assetRoot);
 
     }
 

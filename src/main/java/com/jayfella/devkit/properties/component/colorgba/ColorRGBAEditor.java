@@ -15,7 +15,6 @@ import javax.swing.JColorChooser;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSeparator;
 import javax.swing.border.TitledBorder;
 
 public class ColorRGBAEditor extends AbstractPropertyEditor<ColorRGBA> {
@@ -69,23 +68,18 @@ public class ColorRGBAEditor extends AbstractPropertyEditor<ColorRGBA> {
   private void $$$setupUI$$$() {
     createUIComponents();
     contentPanel = new JPanel();
-    contentPanel.setLayout(new GridLayoutManager(2, 3, new Insets(0, 0, 0, 0), -1, -1));
+    contentPanel.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
     contentPanel.add(colorPanel,
-        new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH,
+        new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH,
             GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED,
             new Dimension(24, 24), new Dimension(24, 24), new Dimension(24, 24), 0, false));
     colorPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), null,
         TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
     colorValueLabel = new JLabel();
     colorValueLabel.setText("Label");
-    contentPanel.add(colorValueLabel, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_CENTER,
+    contentPanel.add(colorValueLabel, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER,
         GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW,
         GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-    final JSeparator separator1 = new JSeparator();
-    contentPanel.add(separator1,
-        new GridConstraints(0, 0, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH,
-            GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_WANT_GROW, null, null,
-            null, 0, false));
   }
 
   /**

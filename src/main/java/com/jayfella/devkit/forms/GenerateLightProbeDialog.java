@@ -21,6 +21,7 @@ import com.jme3.scene.Spatial;
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.Window;
+import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -166,7 +167,7 @@ public class GenerateLightProbeDialog {
       engineService.enqueue(() -> {
 
         Node node = (Node) spatialTreeNode.getUserObject();
-        java.util.List<Spatial> children = node.getChildren();
+        List<Spatial> children = node.getChildren();
 
         for (Spatial child : children) {
 

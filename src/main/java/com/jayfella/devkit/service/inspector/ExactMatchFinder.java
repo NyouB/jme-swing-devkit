@@ -13,7 +13,7 @@ public class ExactMatchFinder extends PropertySectionListFinder {
   private static final Logger LOGGER = LoggerFactory.getLogger(ExactMatchFinder.class);
 
   @Override
-  public List<PropertySection> find(Object object, String propertyName) {
+  public List<PropertySection> find(Object object) {
     RegistrationService registrationService = ServiceManager
         .getService(RegistrationService.class);
     AbstractPropertySectionBuilder<?> propertySectionBuilder = registrationService
@@ -24,7 +24,7 @@ public class ExactMatchFinder extends PropertySectionListFinder {
           object.getClass().getCanonicalName());
       return propertySectionBuilder.build();
     }
-    return findNext(object, propertyName);
+    return findNext(object);
   }
 
 }

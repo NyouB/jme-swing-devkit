@@ -26,15 +26,15 @@ import org.reflections.scanners.ResourcesScanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MaterialChooserComponent extends AbstractPropertyEditor<Material> {
+public class MaterialChooserEditor extends AbstractPropertyEditor<Material> {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(MaterialChooserComponent.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(MaterialChooserEditor.class);
 
   private JComboBox<String> materialsComboBox;
   private JPanel contentPanel;
   private JButton reloadMaterialButton;
 
-  public MaterialChooserComponent(Material value) {
+  public MaterialChooserEditor(Material value) {
     super(value);
     $$$setupUI$$$();
     setTypedValue(value);
@@ -42,6 +42,9 @@ public class MaterialChooserComponent extends AbstractPropertyEditor<Material> {
 
   @Override
   public void setTypedValue(Material newValue) {
+    if (newValue == null) {
+      return;
+    }
     materialsComboBox.setSelectedItem(newValue.getMaterialDef().getAssetName());
     super.setTypedValue(newValue);
   }

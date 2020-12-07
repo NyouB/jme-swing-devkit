@@ -2,7 +2,6 @@ package com.jayfella.devkit.properties.component.enumeration;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
-import com.intellij.uiDesigner.core.Spacer;
 import com.jayfella.devkit.properties.component.AbstractPropertyEditor;
 import java.awt.Component;
 import java.awt.Insets;
@@ -12,7 +11,6 @@ import java.util.EnumSet;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
-import javax.swing.JSeparator;
 
 public class EnumEditor extends AbstractPropertyEditor<Enum> {
 
@@ -23,6 +21,7 @@ public class EnumEditor extends AbstractPropertyEditor<Enum> {
   public EnumEditor(Class<Enum> clazz) {
     super(null);
     this.clazz = clazz;
+    $$$setupUI$$$();
   }
 
   public EnumEditor(Enum value) {
@@ -36,7 +35,7 @@ public class EnumEditor extends AbstractPropertyEditor<Enum> {
     if (newValue == null) {
       newValue = valueComboBox.getItemAt(0);
     }
-    valueComboBox.setSelectedItem(value);
+    valueComboBox.setSelectedItem(newValue);
     super.setTypedValue(newValue);
   }
 
@@ -58,19 +57,10 @@ public class EnumEditor extends AbstractPropertyEditor<Enum> {
   private void $$$setupUI$$$() {
     createUIComponents();
     contentPanel = new JPanel();
-    contentPanel.setLayout(new GridLayoutManager(3, 1, new Insets(0, 0, 0, 0), -1, -1));
-    final Spacer spacer1 = new Spacer();
-    contentPanel.add(spacer1, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER,
-        GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0,
-        false));
-    contentPanel.add(valueComboBox, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST,
+    contentPanel.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+    contentPanel.add(valueComboBox, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST,
         GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW,
         GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-    final JSeparator separator1 = new JSeparator();
-    contentPanel.add(separator1,
-        new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH,
-            GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_WANT_GROW, null, null,
-            null, 0, false));
   }
 
   /**

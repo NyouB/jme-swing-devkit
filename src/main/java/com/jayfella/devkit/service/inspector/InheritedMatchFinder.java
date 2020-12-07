@@ -14,39 +14,51 @@ public class InheritedMatchFinder extends PropertySectionListFinder {
   private static final Logger LOGGER = LoggerFactory.getLogger(InheritedMatchFinder.class);
 
   @Override
-  public List<PropertySection> find(Object object, String propertyName) {
-    Class<? extends AbstractPropertySectionBuilder> sectionBuilderClass = findSectionBuilderForParentClass(
+  public List<PropertySection> find(Object object) {
+
+    Class<?> registeredParentClass = findRegisteredParentClass(
         object);
+    RegistrationService registrationService = ServiceManager
+        .getService(RegistrationService.class);
+    Class<? extends AbstractPropertySectionBuilder> sectionBuilderClass = registrationService
+        .getPropertySectionBuilder(registeredParentClass);
     if (sectionBuilderClass != null) {
-      LOGGER.debug("-- find() No builder found for class {}",
-          object.getClass().getCanonicalName());
+      LOGGER.debug("-- find() builder found for parent class {}, initial object class {}",
+          registeredParentClass.getCanonicalName(), object.getClass().getCanonicalName());
       try {
-        AbstractPropertySectionBuilder<?> builder = sectionBuilderClass.getConstructor()
+        AbstractPropertySectionBuilder<?> builder = sectionBuilderClass
+            .getConstructor(registeredParentClass)
             .newInstance(object);
         return builder.build();
       } catch (Exception e) {
         LOGGER.warn("-- find() Error while instanciating builder {}",
             sectionBuilderClass.getSimpleName(), e);
       }
-
     }
-    return findNext(object, propertyName);
+    LOGGER.debug("-- find() No builder found for class {}",
+        object.getClass().getCanonicalName());
+    return findNext(object);
   }
 
-  public Class<? extends AbstractPropertySectionBuilder> findSectionBuilderForParentClass(
+  public Class<?> findRegisteredParentClass(
       Object object) {
     RegistrationService registrationService = ServiceManager
         .getService(RegistrationService.class);
     Set<Class<?>> keySet = registrationService.getRegisteredClasses();
-    for (Class clazz : keySet) {
-      if (clazz.isInstance(object)) {
-        LOGGER.warn(
-            "-- findSectionBuilderForParentClass() A parent class's factory {} has been found for class {} instead of exact one. Some fields representation may miss",
-            clazz.getCanonicalName(), object.getClass().getCanonicalName());
-        return registrationService.getPropertySectionBuilder(clazz);
-      }
+    return findClosestRegisteredParentClass(object.getClass(), keySet);
+  }
+
+  public Class findClosestRegisteredParentClass(Class clazz, Set<Class<?>> keySet) {
+    if (Object.class == clazz) {
+      return null;
     }
-    return null;
+    if (keySet.contains(clazz)) {
+      LOGGER.warn(
+          "-- findClosestRegisteredParentClass() A registered parent class {} has been found instead of exact one. Some fields representation may miss",
+          clazz.getCanonicalName());
+      return clazz;
+    }
+    return findClosestRegisteredParentClass(clazz.getSuperclass(), keySet);
   }
 
 }

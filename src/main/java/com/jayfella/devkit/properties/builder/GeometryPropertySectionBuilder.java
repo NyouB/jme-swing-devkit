@@ -3,14 +3,13 @@ package com.jayfella.devkit.properties.builder;
 import com.jayfella.devkit.properties.PropertySection;
 import com.jayfella.devkit.properties.component.bool.BooleanEditor;
 import com.jayfella.devkit.properties.component.integer.IntegerEditor;
-import com.jayfella.devkit.properties.component.material.MaterialChooserComponent;
+import com.jayfella.devkit.properties.component.material.MaterialChooserEditor;
 import com.jayfella.devkit.service.JmeEngineService;
 import com.jayfella.devkit.service.ServiceManager;
 import com.jayfella.devkit.service.inspector.PropertyInspectorService;
 import com.jme3.material.Material;
 import com.jme3.scene.Geometry;
 import java.beans.PropertyChangeListener;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,10 +23,9 @@ public class GeometryPropertySectionBuilder extends AbstractPropertySectionBuild
   public static final String MATERIAL = "Material";
   SpatialPropertySectionBuilder spatialPropertySectionBuilder;
 
-
-  public GeometryPropertySectionBuilder(Geometry object, Field... ignoredProperties) {
-    super(object, ignoredProperties);
-    spatialPropertySectionBuilder = new SpatialPropertySectionBuilder(object, ignoredProperties);
+  public GeometryPropertySectionBuilder(Geometry object) {
+    super(object);
+    spatialPropertySectionBuilder = new SpatialPropertySectionBuilder(object);
   }
 
   @Override
@@ -56,7 +54,7 @@ public class GeometryPropertySectionBuilder extends AbstractPropertySectionBuild
     geometrySection.addProperty(lodLevelpropertyName, lodLevel.getCustomEditor());
 
     // Material chooser.
-    MaterialChooserComponent materialChooser = new MaterialChooserComponent(
+    MaterialChooserEditor materialChooser = new MaterialChooserEditor(
         object.getMaterial());
 
     // This listener trigger the update of material detail on material selection

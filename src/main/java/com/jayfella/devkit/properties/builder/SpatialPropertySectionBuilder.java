@@ -16,7 +16,6 @@ import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.Spatial.BatchHint;
 import com.jme3.scene.Spatial.CullHint;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,8 +35,8 @@ public class SpatialPropertySectionBuilder extends AbstractPropertySectionBuilde
   public static final String GEOMETRY = "Geometry";
 
 
-  public SpatialPropertySectionBuilder(Spatial object, Field... ignoredProperties) {
-    super(object, ignoredProperties);
+  public SpatialPropertySectionBuilder(Spatial object) {
+    super(object);
   }
 
   @Override

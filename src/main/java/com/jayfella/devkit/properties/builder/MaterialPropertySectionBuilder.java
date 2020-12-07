@@ -37,7 +37,7 @@ public class MaterialPropertySectionBuilder extends AbstractPropertySectionBuild
   private static final Logger LOGGER = LoggerFactory
       .getLogger(MaterialPropertySectionBuilder.class);
 
-  public MaterialPropertySectionBuilder(Material object, String... ignoredProperties) {
+  public MaterialPropertySectionBuilder(Material object) {
     super(object);
   }
 

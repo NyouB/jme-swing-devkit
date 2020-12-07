@@ -11,6 +11,7 @@ import com.jayfella.devkit.properties.component.control.AnimControlEditor;
 import com.jayfella.devkit.properties.component.enumeration.EnumEditor;
 import com.jayfella.devkit.properties.component.floatc.FloatEditor;
 import com.jayfella.devkit.properties.component.integer.IntegerEditor;
+import com.jayfella.devkit.properties.component.material.MaterialChooserEditor;
 import com.jayfella.devkit.properties.component.quaternion.QuaternionEditor;
 import com.jayfella.devkit.properties.component.string.StringEditor;
 import com.jayfella.devkit.properties.component.texture2d.Texture2DEditor;
@@ -86,6 +87,7 @@ public class RegistrationService implements Service {
     PropertyEditorManager.registerEditor(Vector4f.class, Vector4fEditor.class);
     PropertyEditorManager.registerEditor(AnimControl.class, AnimControlEditor.class);
     PropertyEditorManager.registerEditor(AnimComposer.class, AnimComposerEditor.class);
+    PropertyEditorManager.registerEditor(Material.class, MaterialChooserEditor.class);
 
     registerPropertySectionBuilder(Spatial.class, SpatialPropertySectionBuilder.class);
     registerPropertySectionBuilder(Geometry.class, GeometryPropertySectionBuilder.class);

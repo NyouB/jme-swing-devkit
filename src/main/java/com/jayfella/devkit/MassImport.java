@@ -3,7 +3,6 @@ package com.jayfella.devkit;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 import com.jayfella.devkit.config.DevKitConfig;
-import com.jayfella.devkit.core.LogUtil;
 import com.simsilica.jmec.Convert;
 import java.io.File;
 import java.io.IOException;
@@ -11,17 +10,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import org.apache.log4j.Level;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MassImport {
 
-  private static final Logger log = Logger.getLogger(MassImport.class.getName());
+  private static final Logger log = LoggerFactory.getLogger(MassImport.class);
 
   public static void main(String... args) {
-
-    LogUtil.initializeLogger(Level.INFO, true);
 
     String assetRoot = DevKitConfig.getInstance().getProjectConfig().getAssetRootDir();
 

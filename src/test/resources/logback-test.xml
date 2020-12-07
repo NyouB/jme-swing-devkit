@@ -1,0 +1,44 @@
+<configuration name="MyApp" packages="" status="warn">
+
+  <appender class="ch.qos.logback.core.ConsoleAppender" name="STDOUT">
+    <encoder>
+      <pattern>%d{HH:mm:ss.SSS} %-5p [%c{1}] %m%n</pattern>
+    </encoder>
+  </appender>
+
+  <logger level="debug" name="com.simsilica">
+    <appender-ref ref="STDOUT"/>
+  </logger>
+
+  <logger level="error" name="com.jme3.audio.openal.ALAudioRenderer">
+    <appender-ref ref="STDOUT"/>
+  </logger>
+
+  <logger level="error" name="com.jme3.asset.AssetConfig">
+    <appender-ref ref="STDOUT"/>
+  </logger>
+  <logger level="error" name="com.jme3.material.plugins.J3MLoader">
+    <appender-ref ref="STDOUT"/>
+  </logger>
+
+  <logger level="error" name="com.jme3.system.JmeSystem">
+    <appender-ref ref="STDOUT"/>
+  </logger>
+
+  <logger level="error" name="com.jme3.system.lwjgl.LwjglContext">
+    <appender-ref ref="STDOUT"/>
+  </logger>
+  <logger level="error" name="org.reflections">
+    <appender-ref ref="STDOUT"/>
+  </logger>
+
+  <logger level="error" name="com.jme3.renderer.opengl.GLRenderer">
+    <appender-ref ref="STDOUT"/>
+  </logger>
+
+  <!-- <Logger name="com.simsilica.lemur.input.InputMapper" level="TRACE"/> -->
+  <!-- <Logger name="com.simsilica.lemur.CallMethodAction" level="TRACE"/> -->
+  <root level="TRACE">
+    <appender-ref ref="STDOUT"/>
+  </root>
+</configuration>

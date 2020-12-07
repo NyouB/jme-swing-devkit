@@ -127,8 +127,7 @@ public class PropertyInspectorService implements Service {
   public void inspect(final Object object) {
     cleanup();
     List<PropertySection> propertySectionList = propertySectionListBuilder
-        .find(object,
-            object.getClass().toString());
+        .find(object);
     displaySections(propertySectionList);
   }
 

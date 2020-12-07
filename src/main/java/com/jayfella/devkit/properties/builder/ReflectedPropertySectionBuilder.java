@@ -34,9 +34,8 @@ public class ReflectedPropertySectionBuilder extends AbstractPropertySectionBuil
   private final PropertySectionListFinder propertySectionListFinder;
   private final Map<Class<?>, Set<PropertyDescriptor>> groupedDescriptors;
 
-  public ReflectedPropertySectionBuilder(Object object,
-      Field... ignoredFieldsArray) {
-    super(object, ignoredFieldsArray);
+  public ReflectedPropertySectionBuilder(Object object) {
+    super(object);
     groupedDescriptors = getPropertyDescriptorGroupByClass(object);
     propertySectionListFinder = new ExactMatchFinder();
     propertySectionListFinder.chainWith(new InheritedMatchFinder());
