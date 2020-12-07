@@ -140,7 +140,7 @@ public class RegistrationService implements Service {
     }
     AbstractPropertySectionBuilder<?> builder = null;
     try {
-      builder = builderClass.getConstructor().newInstance(object);
+      builder = builderClass.getConstructor(clazz).newInstance(object);
     } catch (Exception e) {
       LOGGER.warn("-- find() Error while instanciating builder {}",
           builderClass.getSimpleName(), e);

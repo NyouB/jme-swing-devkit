@@ -84,7 +84,7 @@ public class EnumEditor extends AbstractPropertyEditor<Enum> {
       }
       Enum oldComponent = value;
       Enum<?> newComponent = computeValue();
-      if (!oldComponent.equals(newComponent)) {
+      if (oldComponent == null || !oldComponent.equals(newComponent)) {
         setTypedValue(newComponent);
       }
     };
