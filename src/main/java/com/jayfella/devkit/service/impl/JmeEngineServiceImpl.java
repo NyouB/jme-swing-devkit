@@ -10,11 +10,12 @@ import com.jme3.post.filters.TranslucentBucketFilter;
 import com.jme3.system.JmeCanvasContext;
 import com.jme3.util.MaterialDebugAppState;
 import java.awt.Canvas;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class JmeEngineServiceImpl extends JmeEngineService {
 
-  private static final Logger log = Logger.getLogger(JmeEngineServiceImpl.class.getName());
+  private static final Logger log = LoggerFactory.getLogger(JmeEngineServiceImpl.class);
   // let this service be accessed by any thread (so we can use .enqueue anywhere).
   private final long threadId = -1;
   private volatile boolean started = false;
@@ -55,11 +56,10 @@ public class JmeEngineServiceImpl extends JmeEngineService {
     MaterialDebugAppState materialDebugAppState = new MaterialDebugAppState();
     stateManager.attach(materialDebugAppState);
 
-    viewPort.setBackgroundColor(DevKitConfig.getInstance().getCameraConfig().getViewportColor());
     applyCameraFrustumSizes();
+    viewPort.setBackgroundColor(DevKitConfig.getInstance().getCameraConfig().getViewportColor());
 
     canvas = createAwtCanvas();
-
     FilterPostProcessor fpp = new FilterPostProcessor(assetManager);
     fpp.addFilter(new TranslucentBucketFilter());
 
@@ -98,7 +98,6 @@ public class JmeEngineServiceImpl extends JmeEngineService {
 
     JmeCanvasContext context = (JmeCanvasContext) getContext();
     Canvas canvas = context.getCanvas();
-
     return canvas;
   }
 

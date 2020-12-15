@@ -33,14 +33,19 @@ import java.awt.Point;
 import java.awt.Window;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -49,6 +54,7 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
+import javax.swing.JTabbedPane;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
@@ -82,23 +88,23 @@ public class Main {
         try {
           Thread.sleep(100);
         } catch (InterruptedException e) {
-          e.printStackTrace();
+          LOGGER.error("-- Main() Unexpected error occured", e);
         }
       }
 
       // start the canvas as early as possible.
-      engineService.startCanvas();
+      engineService.startCanvas(true);
     } else {
-      LOGGER.warn("Unable to create instance of JmeEngineService. Exiting.");
+      LOGGER.info("Unable to create instance of JmeEngineService. Exiting.");
       System.exit(-1);
     }
   }
 
   public static void main(String[] args) {
 
-    LOGGER.info("Engine Version: " + JmeSystem.getFullName());
+    LOGGER.info("Engine Version: {}", JmeSystem.getFullName());
     LOGGER.info(
-        "Operating System: " + System.getProperty("os.name") + " " + System.getProperty("os.arch"));
+        "Operating System: {} {}", System.getProperty("os.name"), System.getProperty("os.arch"));
 
     Main main = new Main();
     main.start();
@@ -143,13 +149,13 @@ public class Main {
           .getWindowDimensions(MainPage.WINDOW_ID);
       Point location = DevKitConfig.getInstance().getSdkConfig()
           .getWindowLocation(MainPage.WINDOW_ID);
-
       ServiceManager.getService(JmeEngineService.class).getCanvas().setSize(dimension);
-
+      JTabbedPane tabbedPane = new JTabbedPane();
       frame.addComponentListener(new ComponentListener() {
         @Override
         public void componentResized(ComponentEvent e) {
 
+/*
           JmeEngineService engineService = ServiceManager.getService(JmeEngineService.class);
           engineService.getCanvas().setSize(e.getComponent().getSize());
 
@@ -161,6 +167,9 @@ public class Main {
           DevKitConfig.getInstance().getSdkConfig()
               .setWindowDimensions(MainPage.WINDOW_ID, newSize);
           DevKitConfig.getInstance().save();
+          */
+          System.out
+              .println(ServiceManager.getService(JmeEngineService.class).getCanvas().getLocation());
         }
 
         @Override
@@ -186,12 +195,30 @@ public class Main {
       } else {
         frame.setLocation(location);
       }
-
+      BorderLayout mainBorderLayout = new BorderLayout();
+      frame.setLayout(mainBorderLayout);
+      JPanel northArea = new JPanel();
+      northArea.setLayout(new BoxLayout(northArea, BoxLayout.X_AXIS));
+      northArea.add(new JButton("toolbarButton"));
+      northArea.add(new JLabel("NORTH"));
+      northArea.setMinimumSize(new Dimension(-1, 100));
+      frame.add(new JButton("toolbarButton"), BorderLayout.NORTH);
+      frame.add(new JLabel("SOUTH"), BorderLayout.SOUTH);
+      frame.add(new JLabel("EAST"), BorderLayout.EAST);
+      frame.add(new JLabel("WEST"), BorderLayout.WEST);
       // add the canvas AFTER we set the window size because the camera.getWidth and .getHeight values will change.
       // whilst it's easy to understand once you know, it can be confusing to figure this out.
-      frame.add(ServiceManager.getService(JmeEngineService.class).getCanvas(), BorderLayout.CENTER);
-      frame.pack();
 
+      ImageIcon icon = new ImageIcon("images/middle.gif");
+
+      tabbedPane
+          .addTab("Tab 1", icon, ServiceManager.getService(JmeEngineService.class).getCanvas(),
+              "Does nothing");
+      tabbedPane.setMnemonicAt(0, KeyEvent.VK_1);
+      frame.add(tabbedPane, BorderLayout.CENTER);
+      frame.pack();
+      System.out
+          .println(ServiceManager.getService(JmeEngineService.class).getCanvas().getLocation());
       // save any changes of movement and size to the configuration.
       // frame.addComponentListener(new WindowSizeAndLocationSaver(MainPage.WINDOW_ID));
       frame.addComponentListener(new WindowLocationSaver(MainPage.WINDOW_ID));
@@ -199,7 +226,6 @@ public class Main {
 
       // show the window.
       frame.setVisible(true);
-
       // verify that the asset root directory has been set properly.
       checkAssetRootDir();
 
