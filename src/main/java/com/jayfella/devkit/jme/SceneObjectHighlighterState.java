@@ -50,7 +50,7 @@ public class SceneObjectHighlighterState extends BaseAppState {
   protected void initialize(Application app) {
 
     //highlighterNode.setQueueBucket(RenderQueue.Bucket.Transparent);
-    highlightMaterial = ServiceManager.getService(JmeEngineService.class).getAssetManager()
+    highlightMaterial = getApplication().getAssetManager()
         .loadMaterial("Materials/HighlightMaterial.j3m");
     ((SimpleApplication) app).getRootNode().attachChild(highlighterNode);
 

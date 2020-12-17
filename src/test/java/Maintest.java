@@ -1,3 +1,4 @@
+import com.jayfella.devkit.service.impl.JmeEngineServiceImpl;
 import com.jme3.app.SimpleApplication;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
@@ -22,13 +23,13 @@ import javax.swing.SwingUtilities;
 public class Maintest extends SimpleApplication {
 
   public static void main(String[] args) {
-    Maintest maintest = new Maintest();
+    JmeEngineServiceImpl maintest = new JmeEngineServiceImpl();
     maintest.setShowSettings(false);
     AppSettings settings = new AppSettings(true);
     settings.setCustomRenderer(AwtPanelsContext.class);
     maintest.setSettings(settings);
     maintest.start(true);
-    while (maintest.getViewPort() == null) {
+    while (maintest.isInitialised() == false) {
 
       try {
         Thread.sleep(100);
@@ -42,7 +43,7 @@ public class Maintest extends SimpleApplication {
     SwingUtilities.invokeLater(() -> {
       JFrame frame = new JFrame("myframe");
       frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-      maintest.viewPort.setBackgroundColor(ColorRGBA.Red);
+      maintest.getViewPort().setBackgroundColor(ColorRGBA.Red);
       Container rootpane = frame.getContentPane();
       // position and size the main window...
       AwtPanelsContext ctx = (AwtPanelsContext) maintest.getContext();

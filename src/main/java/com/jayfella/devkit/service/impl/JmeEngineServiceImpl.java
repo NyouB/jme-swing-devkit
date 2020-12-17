@@ -7,9 +7,10 @@ import com.jayfella.devkit.jme.DebugGridState;
 import com.jayfella.devkit.service.JmeEngineService;
 import com.jme3.post.FilterPostProcessor;
 import com.jme3.post.filters.TranslucentBucketFilter;
-import com.jme3.system.JmeCanvasContext;
+import com.jme3.system.awt.AwtPanel;
+import com.jme3.system.awt.AwtPanelsContext;
+import com.jme3.system.awt.PaintMode;
 import com.jme3.util.MaterialDebugAppState;
-import java.awt.Canvas;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,9 +19,9 @@ public class JmeEngineServiceImpl extends JmeEngineService {
   private static final Logger log = LoggerFactory.getLogger(JmeEngineServiceImpl.class);
   // let this service be accessed by any thread (so we can use .enqueue anywhere).
   private final long threadId = -1;
-  private volatile boolean started = false;
-  private Canvas canvas;
   private FilterPostProcessor fpp;
+  private AwtPanel jmePanel;
+  private boolean initialised;
 
   @Override
   public FilterPostProcessor getFilterPostProcessor() {
@@ -57,15 +58,16 @@ public class JmeEngineServiceImpl extends JmeEngineService {
     stateManager.attach(materialDebugAppState);
 
     applyCameraFrustumSizes();
-    viewPort.setBackgroundColor(DevKitConfig.getInstance().getCameraConfig().getViewportColor());
 
-    canvas = createAwtCanvas();
     FilterPostProcessor fpp = new FilterPostProcessor(assetManager);
     fpp.addFilter(new TranslucentBucketFilter());
 
     setFilterPostProcessor(fpp);
+    AwtPanelsContext ctx = (AwtPanelsContext) getContext();
+    jmePanel = ctx.createPanel(PaintMode.Accelerated);
+    ctx.setInputSource(jmePanel);
+    initialised = true;
 
-    started = true;
   }
 
   /**
@@ -78,9 +80,9 @@ public class JmeEngineServiceImpl extends JmeEngineService {
 
     float width, height;
 
-    if (getCanvas() != null) {
-      width = getCanvas().getWidth();
-      height = getCanvas().getHeight();
+    if (jmePanel != null) {
+      width = jmePanel.getWidth();
+      height = jmePanel.getHeight();
     } else {
       width = viewPort.getCamera().getWidth();
       height = viewPort.getCamera().getHeight();
@@ -94,26 +96,18 @@ public class JmeEngineServiceImpl extends JmeEngineService {
 
   }
 
-  private Canvas createAwtCanvas() {
-
-    JmeCanvasContext context = (JmeCanvasContext) getContext();
-    Canvas canvas = context.getCanvas();
-    return canvas;
-  }
-
   @Override
-  public synchronized boolean isStarted() {
-    return started;
-  }
-
-  @Override
-  public Canvas getCanvas() {
-    return canvas;
+  public AwtPanel getAWTPanel() {
+    return jmePanel;
   }
 
   @Override
   public long getThreadId() {
     return threadId;
+  }
+
+  public boolean isInitialised() {
+    return initialised;
   }
 
 }

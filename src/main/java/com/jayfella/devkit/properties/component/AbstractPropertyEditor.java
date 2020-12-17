@@ -19,7 +19,6 @@ public abstract class AbstractPropertyEditor<T> implements PropertyEditor {
     T newComponent = computeValue();
     if (!oldComponent.equals(newComponent)) {
       setTypedValue(newComponent);
-      firePropertyChange();
     }
   };
 

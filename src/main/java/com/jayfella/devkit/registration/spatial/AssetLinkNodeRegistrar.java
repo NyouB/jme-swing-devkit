@@ -67,7 +67,7 @@ public class AssetLinkNodeRegistrar extends NodeRegistrar {
         AddLinkedAsset addLinkedAsset = new AddLinkedAsset(assetLinkNodeTreeNode);
 
         JFrame mainWindow = (JFrame) SwingUtilities
-            .getWindowAncestor(ServiceManager.getService(JmeEngineService.class).getCanvas());
+            .getWindowAncestor(ServiceManager.getService(JmeEngineService.class).getAWTPanel());
 
         JDialog dialog = new JDialog(mainWindow, "Add Linked Asset", true);
         dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -84,7 +84,7 @@ public class AssetLinkNodeRegistrar extends NodeRegistrar {
         RemoveLinkedAsset addLinkedAsset = new RemoveLinkedAsset(assetLinkNodeTreeNode);
 
         JFrame mainWindow = (JFrame) SwingUtilities
-            .getWindowAncestor(ServiceManager.getService(JmeEngineService.class).getCanvas());
+            .getWindowAncestor(ServiceManager.getService(JmeEngineService.class).getAWTPanel());
 
         JDialog dialog = new JDialog(mainWindow, "Remove Linked Asset", true);
         dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);

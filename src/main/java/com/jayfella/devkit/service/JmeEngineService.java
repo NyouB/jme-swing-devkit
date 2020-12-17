@@ -6,8 +6,7 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.audio.AudioListenerState;
 import com.jme3.environment.EnvironmentCamera;
 import com.jme3.post.FilterPostProcessor;
-import com.jme3.system.AppSettings;
-import java.awt.Canvas;
+import com.jme3.system.awt.AwtPanel;
 
 public abstract class JmeEngineService extends SimpleApplication implements Service {
 
@@ -17,15 +16,6 @@ public abstract class JmeEngineService extends SimpleApplication implements Serv
         new EditorCameraState(),
         new SceneObjectHighlighterState()
     );
-
-    AppSettings settings = new AppSettings(true);
-    settings.setAudioRenderer(null);
-
-    setPauseOnLostFocus(false);
-    setSettings(settings);
-    createCanvas();
-    startCanvas();
-
   }
 
   /**
@@ -45,18 +35,10 @@ public abstract class JmeEngineService extends SimpleApplication implements Serv
   public abstract void applyCameraFrustumSizes();
 
   /**
-   * Determines whether or not the engine has completed its initialization phase and is ready to
-   * use.
-   *
-   * @return whether or not the engine is ready to use.
-   */
-  public abstract boolean isStarted();
-
-  /**
    * Returns the AWT canvas.
    *
    * @return the AWT canvas.
    */
-  public abstract Canvas getCanvas();
+  public abstract AwtPanel getAWTPanel();
 
 }

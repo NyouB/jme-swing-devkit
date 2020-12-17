@@ -68,4 +68,5 @@ class ReflectedPropertySectionBuilderTest extends AbstractJmeDevKitTest {
     }
 
   }
+
 }

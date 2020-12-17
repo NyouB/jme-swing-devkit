@@ -84,11 +84,9 @@ public class Texture2DEditor extends AbstractPropertyEditor<Texture2D> {
       imageIconLabel.setIcon(null);
       return;
     }
-    System.out.println("swaping old/new component");
     // if the texture is embedded it won't have a key.
     String keyString =
-        newValue.getKey() != null ? value.getKey().getName() : value.getName();
-    System.out.println("set component before displaying preview");
+        newValue.getKey() != null ? newValue.getKey().getName() : newValue.getName();
     displayPreview(Path.of(assetRootDirectory, keyString));
     super.setTypedValue(newValue);
 
@@ -109,11 +107,9 @@ public class Texture2DEditor extends AbstractPropertyEditor<Texture2D> {
     currentTexturePath = newTexturePath;
 
     try {
-      System.out.println("before loading texture");
       TextureKey key = new TextureKey(currentTexturePath, true);
       key.setGenerateMips(true);
       Texture2D texture2D = (Texture2D) assetManager.loadTexture(key);
-      System.out.println("after loading texturex");
       setTypedValue(texture2D);
     } catch (
         AssetNotFoundException ex) {
@@ -125,12 +121,10 @@ public class Texture2DEditor extends AbstractPropertyEditor<Texture2D> {
 
   private void displayPreview(File file) {
     try {
-      System.out.println("loading image");
       ImageIcon imageIcon = new ImageIcon(Files.readAllBytes(file.toPath()));
       imageIcon
           .setImage(getScaledImage(imageIcon.getImage(), TEXTURE_ICON_WIDTH, TEXTURE_ICON_HEIGHT));
       imageIconLabel.setIcon(imageIcon);
-      System.out.println("image loaded");
       //displayPreview(previewImage);
     } catch (IOException ex) {
       LOGGER.debug("<< displayPreview() Impossible to load image from file {}",
@@ -144,11 +138,9 @@ public class Texture2DEditor extends AbstractPropertyEditor<Texture2D> {
 
   private void displayPreview(BufferedImage image) {
     SwingUtilities.invokeLater(() -> {
-          System.out.println("display begin");
           this.imageIcon.setImage(image);
           contentPanel.revalidate();
           contentPanel.repaint();
-          System.out.println("display end");
         }
     );
   }

@@ -2,6 +2,8 @@ package com.jayfella.devkit.properties.builder;
 
 import com.jayfella.devkit.properties.PropertySection;
 import com.jayfella.devkit.properties.component.enumeration.EnumEditor;
+import com.jayfella.devkit.service.JmeEngineService;
+import com.jayfella.devkit.service.ServiceManager;
 import com.jayfella.devkit.service.inspector.ExactMatchFinder;
 import com.jayfella.devkit.service.inspector.InheritedMatchFinder;
 import com.jayfella.devkit.service.inspector.PropertySectionListFinder;
@@ -97,6 +99,16 @@ public class ReflectedPropertySectionBuilder extends AbstractPropertySectionBuil
               descriptor.getPropertyType(), descriptor.getName(), e);
           continue;
         }
+        editor.addPropertyChangeListener(evt -> ServiceManager.getService(JmeEngineService.class)
+            .enqueue(() -> {
+              try {
+                descriptor.getWriteMethod().invoke(object, evt.getNewValue());
+              } catch (Exception e) {
+                LOGGER.debug(
+                    "-- build() An error happened trying to set the field value of type {} and named {}, ignoring the field.",
+                    descriptor.getPropertyType(), descriptor.getName(), e);
+              }
+            }));
         propertySection.addProperty(descriptor.getDisplayName(), editor.getCustomEditor());
       }
       result.add(propertySection);

@@ -54,7 +54,7 @@ public class NodeContextMenu extends SpatialContextMenu {
       AddModels addModels = new AddModels(nodeTreeNode);
 
       JFrame mainWindow = (JFrame) SwingUtilities
-          .getWindowAncestor(ServiceManager.getService(JmeEngineService.class).getCanvas());
+          .getWindowAncestor(ServiceManager.getService(JmeEngineService.class).getAWTPanel());
 
       JDialog dialog = new JDialog(mainWindow, "Add Model(s)", true);
       dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -73,7 +73,7 @@ public class NodeContextMenu extends SpatialContextMenu {
       CreateSkyBoxDialog createSkyBoxDialog = new CreateSkyBoxDialog(nodeTreeNode);
 
       JFrame mainWindow = (JFrame) SwingUtilities
-          .getWindowAncestor(ServiceManager.getService(JmeEngineService.class).getCanvas());
+          .getWindowAncestor(ServiceManager.getService(JmeEngineService.class).getAWTPanel());
 
       JDialog dialog = new JDialog(mainWindow, "Create SkyBox", true);
       dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);

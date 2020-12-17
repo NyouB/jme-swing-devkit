@@ -95,7 +95,7 @@ public class SpatialContextMenu extends JPopupMenu {
             SaveSpatial saveSpatial = new SaveSpatial(spatial);
 
             JFrame mainWindow = (JFrame) SwingUtilities
-                .getWindowAncestor(ServiceManager.getService(JmeEngineService.class).getCanvas());
+                .getWindowAncestor(ServiceManager.getService(JmeEngineService.class).getAWTPanel());
 
             JDialog dialog = new JDialog(mainWindow, "Save Spatial", true);
             dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -228,7 +228,7 @@ public class SpatialContextMenu extends JPopupMenu {
                 spatialTreeNode);
 
             JFrame mainWindow = (JFrame) SwingUtilities
-                .getWindowAncestor(ServiceManager.getService(JmeEngineService.class).getCanvas());
+                .getWindowAncestor(ServiceManager.getService(JmeEngineService.class).getAWTPanel());
 
             JDialog dialog = new JDialog(mainWindow, "Generate LightProbe", true);
             dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
