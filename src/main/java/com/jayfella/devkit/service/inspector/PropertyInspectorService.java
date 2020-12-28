@@ -4,6 +4,7 @@ import com.jayfella.devkit.properties.PropertySection;
 import com.jayfella.devkit.service.Service;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.Collection;
@@ -21,7 +22,6 @@ public class PropertyInspectorService implements Service {
 
   public static final String WINDOW_ID = "Property Inspector";
   private static final Logger LOGGER = LoggerFactory.getLogger(PropertyInspectorService.class);
-  private final JPanel rootPanel;
   private final JPanel sectionPanel;
 
   private final JLabel nothingSelectedLabel = new JLabel("Nothing To Inspect.");
@@ -30,12 +30,13 @@ public class PropertyInspectorService implements Service {
   private PropertySectionListFinder propertySectionListBuilder;
   private int row = 0;
 
-  public PropertyInspectorService(JPanel rootPanel) {
+  public PropertyInspectorService(
+  ) {
     threadId = Thread.currentThread().getId();
-    this.rootPanel = rootPanel;
     sectionPanel = new JPanel(new GridBagLayout());
-    rootPanel.add(sectionPanel);
     sectionPanel.setBorder(new EmptyBorder(10, 0, 0, 0));
+    sectionPanel.setMinimumSize(new Dimension(100, 500));
+    sectionPanel.setPreferredSize(new Dimension(200, 500));
     clearInspector();
     propertySectionListBuilder = new ExactMatchFinder();
     propertySectionListBuilder.chainWith(new InheritedMatchFinder())
@@ -50,7 +51,9 @@ public class PropertyInspectorService implements Service {
     sectionPanel.removeAll();
     sectionPanel.setLayout(
         new GridBagLayout());
-    sectionPanel.add(nothingSelectedLabel, new GridBagConstraints());
+    GridBagConstraints gridBagConstraints = new GridBagConstraints();
+    gridBagConstraints.anchor = GridBagConstraints.WEST;
+    sectionPanel.add(nothingSelectedLabel, gridBagConstraints);
     sectionPanel.repaint();
   }
 
@@ -65,6 +68,8 @@ public class PropertyInspectorService implements Service {
     displayedSections = propertySections;
 
     if (propertySections != null) {
+      GridBagConstraints gridBagConstraints = new GridBagConstraints();
+      gridBagConstraints.anchor = GridBagConstraints.LINE_START;
       sectionPanel.remove(nothingSelectedLabel);
       sectionPanel.setLayout(
           new GridBagLayout());
@@ -185,5 +190,9 @@ public class PropertyInspectorService implements Service {
   public void setPropertySectionListBuilder(
       PropertySectionListFinder propertySectionListBuilder) {
     this.propertySectionListBuilder = propertySectionListBuilder;
+  }
+
+  public JPanel getSectionPanel() {
+    return sectionPanel;
   }
 }

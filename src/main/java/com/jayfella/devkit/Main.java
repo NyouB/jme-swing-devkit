@@ -13,10 +13,8 @@ import com.jayfella.devkit.service.ServiceManager;
 import com.jayfella.devkit.service.WindowService;
 import com.jayfella.devkit.service.impl.JmeEngineServiceImpl;
 import com.jayfella.devkit.service.inspector.PropertyInspectorService;
-import com.jayfella.devkit.swing.InspectorService;
 import com.jayfella.devkit.swing.MainMenu;
 import com.jayfella.devkit.swing.SwingTheme;
-import com.jayfella.devkit.swing.TreeView;
 import com.jayfella.devkit.swing.WindowLocationSaver;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.plugins.FileLocator;
@@ -25,9 +23,12 @@ import com.jme3.system.JmeSystem;
 import com.jme3.system.awt.AwtPanel;
 import com.jme3.system.awt.AwtPanelsContext;
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.Point;
+import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
@@ -45,9 +46,12 @@ import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -117,24 +121,14 @@ public class Main {
 
       // initialize tree view
       JTree tree = new JTree();
+      DefaultTreeCellRenderer renderer =
+          new DefaultTreeCellRenderer();
+      renderer.setLayout(new FlowLayout(FlowLayout.LEFT));
+      tree.setCellRenderer(renderer);
 
-      TreeView treeView = new TreeView(frame, tree);
-
-      ServiceManager.getService(WindowService.class)
-          .positionWindowFromSavedPosition(treeView, SceneTreeService.WINDOW_ID);
-      ServiceManager.getService(WindowService.class)
-          .sizeWindowFromSavedSize(treeView, SceneTreeService.WINDOW_ID);
-
+      JScrollPane treeViewPane = new JScrollPane(tree);
+      treeViewPane.setMinimumSize(new Dimension(100, 500));
       ServiceManager.registerService(SceneTreeService.class, tree);
-
-      //Initialmize inspector service
-      InspectorService inspectorService = new InspectorService(frame);
-      ServiceManager.getService(WindowService.class)
-          .positionWindowFromSavedPosition(inspectorService, PropertyInspectorService.WINDOW_ID);
-      ServiceManager.getService(WindowService.class)
-          .sizeWindowFromSavedSize(inspectorService, PropertyInspectorService.WINDOW_ID);
-      ServiceManager
-          .registerService(PropertyInspectorService.class, inspectorService.getPanelRoot());
 
       JMenuBar menu = new MainMenu(frame);
       frame.setJMenuBar(menu);
@@ -150,7 +144,7 @@ public class Main {
       jmePanel.setSize(dimension);
       jmePanel.attachTo(true, ServiceManager.getService(JmeEngineService.class).getViewPort());
       jmePanel.attachTo(true, ServiceManager.getService(JmeEngineService.class).getGuiViewPort());
-      JTabbedPane tabbedPane = new JTabbedPane();
+
       frame.addComponentListener(new ComponentListener() {
         @Override
         public void componentResized(ComponentEvent e) {
@@ -197,20 +191,59 @@ public class Main {
       northArea.add(new JButton("toolbarButton"));
       northArea.add(new JLabel("NORTH"));
       northArea.setMinimumSize(new Dimension(-1, 100));
+
+      JPanel leftSide = new JPanel(new FlowLayout(FlowLayout.LEFT));
+      JPanel centerPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+      JPanel rightSide = new JPanel(new FlowLayout(FlowLayout.LEFT));
+      JSplitPane rightSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+          centerPanel, rightSide);
+      rightSplitPane.setAlignmentX(Component.LEFT_ALIGNMENT);
+      rightSplitPane.setOneTouchExpandable(true);
+      rightSplitPane.setContinuousLayout(true);
+
+      JSplitPane leftSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+          leftSide, rightSplitPane);
+      leftSplitPane.setAlignmentX(Component.LEFT_ALIGNMENT);
+      leftSplitPane.setOneTouchExpandable(true);
+      leftSplitPane.setContinuousLayout(true);
+
+      rightSide.setMinimumSize(new Dimension(100, 50));
+      rightSide.setPreferredSize(new Dimension(200, 500));
+      PropertyInspectorService propertyInspectorService = new PropertyInspectorService();
+      ServiceManager
+          .registerService(PropertyInspectorService.class, propertyInspectorService);
+      leftSide.setMinimumSize(new Dimension(100, 500));
+      leftSide.setPreferredSize(new Dimension(200, 500));
+      leftSide.add(treeViewPane);
+      rightSide.add(propertyInspectorService.getSectionPanel());
+      centerPanel.setPreferredSize(new Dimension(100, 500));
+      centerPanel.setPreferredSize(new Dimension(200, 500));
+
       frame.getContentPane().add(new JButton("toolbarButton"), BorderLayout.NORTH);
       frame.getContentPane().add(new JLabel("SOUTH"), BorderLayout.SOUTH);
       frame.getContentPane().add(new JLabel("EAST"), BorderLayout.EAST);
       frame.getContentPane().add(new JLabel("WEST"), BorderLayout.WEST);
       // add the canvas AFTER we set the window size because the camera.getWidth and .getHeight values will change.
       // whilst it's easy to understand once you know, it can be confusing to figure this out.
-
       ImageIcon icon = new ImageIcon("images/middle.gif");
+      JTabbedPane tabbedPane = new JTabbedPane();
+      tabbedPane.setMinimumSize(new Dimension(100, 500));
+      centerPanel.add(tabbedPane);
+      AwtPanel awtPanel = ServiceManager.getService(JmeEngineService.class).getAWTPanel();
+      awtPanel.setMinimumSize(new Dimension(100, 500));
+      centerPanel.addComponentListener(new ComponentAdapter() {
+        @Override
+        public void componentResized(ComponentEvent e) {
+          frame.revalidate();
 
+        }
+      });
+      //awtPanel.setPreferredSize(new Dimension(200, 500));
       tabbedPane
-          .addTab("Tab 1", icon, ServiceManager.getService(JmeEngineService.class).getAWTPanel(),
+          .addTab("Tab 1", icon, awtPanel,
               "Does nothing");
       tabbedPane.setMnemonicAt(0, KeyEvent.VK_1);
-      frame.add(tabbedPane, BorderLayout.CENTER);
+      frame.add(leftSplitPane, BorderLayout.CENTER);
       frame.pack();
       // save any changes of movement and size to the configuration.
       // frame.addComponentListener(new WindowSizeAndLocationSaver(MainPage.WINDOW_ID));
