@@ -111,7 +111,7 @@ public class RegistrationService implements Service {
 
   @Override
   public void stop() {
-    throw new UnsupportedOperationException("THis method shouldn't be called");
+    //throw new UnsupportedOperationException("THis method shouldn't be called");
   }
 
   /**

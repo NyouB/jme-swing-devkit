@@ -4,6 +4,7 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.jayfella.devkit.properties.component.AbstractPropertyEditor;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -60,7 +61,8 @@ public class EnumEditor extends AbstractPropertyEditor<Enum> {
     contentPanel.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
     contentPanel.add(valueComboBox, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST,
         GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW,
-        GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        GridConstraints.SIZEPOLICY_FIXED, new Dimension(20, -1), new Dimension(80, -1), null, 0,
+        false));
   }
 
   /**

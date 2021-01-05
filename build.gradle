@@ -101,7 +101,7 @@ dependencies {
     implementation "it.unimi.dsi:fastutil:8.4.2"
 
     // MigLayout
-    implementation "com.miglayout:miglayout:3.7.4"
+    compile group: 'com.miglayout', name: 'miglayout-swing', version: '5.2'
 
     // testing - REMOVE
     //implementation "com.jayfella:TestDevkitPlugin:1.0.0"

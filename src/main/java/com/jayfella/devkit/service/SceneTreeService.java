@@ -45,10 +45,16 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
 import com.jme3.scene.instancing.InstancedNode;
 import com.jme3.shader.VarType;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
@@ -73,11 +79,19 @@ public class SceneTreeService implements Service, EventListener {
     // private final SceneObjectHighlighter sceneObjectHighlighter = new SceneObjectHighlighter();
     private NodeTreeNode rootNodeTreeNode;
 
-    public SceneTreeService(JTree tree) {
+    private final Component rootComponent;
+
+    public SceneTreeService() {
 
         threadId = Thread.currentThread().getId();
 
-        this.tree = tree;
+        this.tree = new JTree();
+        rootComponent = new JScrollPane(tree);
+        rootComponent.setMinimumSize(new Dimension(100, 500));
+        DefaultTreeCellRenderer renderer =
+            new DefaultTreeCellRenderer();
+        renderer.setLayout(new FlowLayout(FlowLayout.LEFT));
+        tree.setCellRenderer(renderer);
 
         // The tree root is never visible.
         DefaultMutableTreeNode treeRoot = new DefaultMutableTreeNode("Root");
@@ -636,6 +650,8 @@ public class SceneTreeService implements Service, EventListener {
     public void reloadTree() {
         DefaultTreeModel treeModel = (DefaultTreeModel) tree.getModel();
         treeModel.reload();
+        JFrame topFrame = (JFrame) SwingUtilities.getWindowAncestor(rootComponent);
+        topFrame.revalidate();
     }
 
     public void reloadTreeNode(TreeNode treeNode) {
@@ -673,4 +689,11 @@ public class SceneTreeService implements Service, EventListener {
 
     }
 
+    public JTree getTree() {
+        return tree;
+    }
+
+    public Component getRootComponent() {
+        return rootComponent;
+    }
 }

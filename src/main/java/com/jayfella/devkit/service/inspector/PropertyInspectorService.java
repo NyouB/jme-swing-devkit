@@ -4,9 +4,6 @@ import com.jayfella.devkit.properties.PropertySection;
 import com.jayfella.devkit.service.Service;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
@@ -15,6 +12,7 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
+import net.miginfocom.swing.MigLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,15 +26,12 @@ public class PropertyInspectorService implements Service {
   private final long threadId;
   private List<PropertySection> displayedSections;
   private PropertySectionListFinder propertySectionListBuilder;
-  private int row = 0;
 
   public PropertyInspectorService(
   ) {
     threadId = Thread.currentThread().getId();
-    sectionPanel = new JPanel(new GridBagLayout());
-    sectionPanel.setBorder(new EmptyBorder(10, 0, 0, 0));
-    sectionPanel.setMinimumSize(new Dimension(100, 500));
-    sectionPanel.setPreferredSize(new Dimension(200, 500));
+    sectionPanel = new JPanel(new MigLayout("", "[][grow, fill]"));
+    sectionPanel.setBorder(new EmptyBorder(10, 4, 0, 0));
     clearInspector();
     propertySectionListBuilder = new ExactMatchFinder();
     propertySectionListBuilder.chainWith(new InheritedMatchFinder())
@@ -49,11 +44,7 @@ public class PropertyInspectorService implements Service {
    */
   public void clearInspector() {
     sectionPanel.removeAll();
-    sectionPanel.setLayout(
-        new GridBagLayout());
-    GridBagConstraints gridBagConstraints = new GridBagConstraints();
-    gridBagConstraints.anchor = GridBagConstraints.WEST;
-    sectionPanel.add(nothingSelectedLabel, gridBagConstraints);
+    sectionPanel.add(nothingSelectedLabel, "growx");
     sectionPanel.repaint();
   }
 
@@ -68,12 +59,7 @@ public class PropertyInspectorService implements Service {
     displayedSections = propertySections;
 
     if (propertySections != null) {
-      GridBagConstraints gridBagConstraints = new GridBagConstraints();
-      gridBagConstraints.anchor = GridBagConstraints.LINE_START;
       sectionPanel.remove(nothingSelectedLabel);
-      sectionPanel.setLayout(
-          new GridBagLayout());
-      row = 0;
       for (PropertySection section : propertySections) {
         addSection(section);
       }
@@ -91,36 +77,11 @@ public class PropertyInspectorService implements Service {
     sectionTitle.setIcon(section.getIcon());
     sectionTitle.setBackground(new Color(90, 90, 90));
     sectionTitle.setOpaque(true);
-    GridBagConstraints gridBagConstraints = new GridBagConstraints();
-    gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
-    gridBagConstraints.anchor = GridBagConstraints.LINE_START;
-    gridBagConstraints.weightx = 1;
-    gridBagConstraints.gridx = 0;
-    gridBagConstraints.gridy = row++;
-    gridBagConstraints.gridwidth = 2;
-    sectionPanel.add(sectionTitle, gridBagConstraints);
+    sectionPanel.add(sectionTitle, "growx, span 2, wrap");
     for (Entry<String, Component> entry : section.getComponents().entrySet()) {
-      gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
-      gridBagConstraints.anchor = GridBagConstraints.LINE_START;
-      gridBagConstraints.weightx = 0.1f;
-      gridBagConstraints.gridx = 0;
-      gridBagConstraints.gridy = row;
-      gridBagConstraints.gridwidth = 1;
-      sectionPanel.add(new JLabel(entry.getKey()), gridBagConstraints);
-      gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
-      gridBagConstraints.anchor = GridBagConstraints.LINE_START;
-      gridBagConstraints.weightx = 0.1f;
-      gridBagConstraints.gridx = 1;
-      gridBagConstraints.gridy = row++;
-      gridBagConstraints.gridwidth = 1;
-      sectionPanel.add(entry.getValue(), gridBagConstraints);
-      gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
-      gridBagConstraints.anchor = GridBagConstraints.LINE_START;
-      gridBagConstraints.weightx = 1f;
-      gridBagConstraints.gridx = 0;
-      gridBagConstraints.gridy = row++;
-      gridBagConstraints.gridwidth = 2;
-      sectionPanel.add(new JSeparator(SwingConstants.HORIZONTAL), gridBagConstraints);
+      sectionPanel.add(new JLabel(entry.getKey()));
+      sectionPanel.add(entry.getValue(), "growx, wrap");
+      sectionPanel.add(new JSeparator(SwingConstants.HORIZONTAL), "growx, span 2, wrap");
     }
   }
 
@@ -180,7 +141,7 @@ public class PropertyInspectorService implements Service {
 
   @Override
   public void stop() {
-    throw new UnsupportedOperationException("This method shouldn't be called");
+    //throw new UnsupportedOperationException("This method shouldn't be called");
   }
 
   public PropertySectionListFinder getPropertySectionListBuilder() {

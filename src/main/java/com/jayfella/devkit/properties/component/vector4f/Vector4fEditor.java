@@ -63,7 +63,7 @@ public class Vector4fEditor extends AbstractPropertyEditor<Vector4f> {
   private void $$$setupUI$$$() {
     createUIComponents();
     contentPanel = new JPanel();
-    contentPanel.setLayout(new GridLayoutManager(1, 8, new Insets(0, 0, 0, 0), -1, -1));
+    contentPanel.setLayout(new GridLayoutManager(4, 2, new Insets(0, 0, 0, 0), -1, -1));
     final JLabel label1 = new JLabel();
     label1.setForeground(new Color(-4515818));
     label1.setHorizontalAlignment(0);
@@ -74,40 +74,40 @@ public class Vector4fEditor extends AbstractPropertyEditor<Vector4f> {
             false));
     contentPanel.add(xTextField, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST,
         GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW,
-        GridConstraints.SIZEPOLICY_FIXED, new Dimension(70, -1), new Dimension(80, -1), null, 0,
+        GridConstraints.SIZEPOLICY_FIXED, new Dimension(20, -1), new Dimension(80, -1), null, 0,
         false));
     final JLabel label2 = new JLabel();
     label2.setForeground(new Color(-14697686));
     label2.setText("y");
     contentPanel.add(label2,
-        new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
+        new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE,
             GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0,
             false));
-    contentPanel.add(yTextField, new GridConstraints(0, 3, 1, 1, GridConstraints.ANCHOR_WEST,
+    contentPanel.add(yTextField, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_WEST,
         GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW,
-        GridConstraints.SIZEPOLICY_FIXED, new Dimension(70, -1), new Dimension(80, -1), null, 0,
+        GridConstraints.SIZEPOLICY_FIXED, new Dimension(20, -1), new Dimension(80, -1), null, 0,
         false));
     final JLabel label3 = new JLabel();
     label3.setForeground(new Color(-13522757));
     label3.setText("z");
     contentPanel.add(label3,
-        new GridConstraints(0, 4, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
+        new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE,
             GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0,
             false));
-    contentPanel.add(zTextField, new GridConstraints(0, 5, 1, 1, GridConstraints.ANCHOR_WEST,
+    contentPanel.add(zTextField, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_WEST,
         GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW,
-        GridConstraints.SIZEPOLICY_FIXED, new Dimension(70, -1), new Dimension(80, -1), null, 0,
+        GridConstraints.SIZEPOLICY_FIXED, new Dimension(20, -1), new Dimension(80, -1), null, 0,
         false));
     final JLabel label4 = new JLabel();
     label4.setText("w");
     contentPanel.add(label4,
-        new GridConstraints(0, 6, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
+        new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE,
             GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0,
             false));
     wTextField.setText("");
-    contentPanel.add(wTextField, new GridConstraints(0, 7, 1, 1, GridConstraints.ANCHOR_WEST,
+    contentPanel.add(wTextField, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_WEST,
         GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW,
-        GridConstraints.SIZEPOLICY_FIXED, new Dimension(70, -1), new Dimension(80, -1), null, 0,
+        GridConstraints.SIZEPOLICY_FIXED, new Dimension(20, -1), new Dimension(80, -1), null, 0,
         false));
   }
 
