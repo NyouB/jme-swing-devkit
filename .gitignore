@@ -12,3 +12,4 @@ out/
 *.dylib
 
 *.DS_Store
+*.log

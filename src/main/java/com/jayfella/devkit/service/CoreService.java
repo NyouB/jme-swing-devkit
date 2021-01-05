@@ -173,7 +173,6 @@ public class CoreService implements Service {
     addTabToLeftPane(treeViewTabTitle, sceneTreeService.getRootComponent());
     leftSide.add(leftTabPane);
     ScrollPane scrollPane = new ScrollPane();
-    //propertyInspectorService.getSectionPanel().setBackground(Color.BLUE);
     scrollPane.add(propertyInspectorService.getSectionPanel());
     rightSide.add(scrollPane, BorderLayout.CENTER);
     centerPanel.setPreferredSize(new Dimension(100, 500));
