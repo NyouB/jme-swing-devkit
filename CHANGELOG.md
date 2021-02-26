@@ -2,6 +2,9 @@ Changelog
 ---
 
 #### 1.1.5
+- fix the project version misconfigured on bintray
+
+#### 1.1.5
 
 - update gradle configuration for publishing on bintray
 - refactor package name
