@@ -1,11 +1,11 @@
-import com.jayfella.devkit.appstate.annotations.BooleanProperty;
-import com.jayfella.devkit.appstate.annotations.CustomComponent;
-import com.jayfella.devkit.appstate.annotations.DevKitAppState;
-import com.jayfella.devkit.appstate.annotations.EnumProperty;
-import com.jayfella.devkit.appstate.annotations.FloatProperty;
-import com.jayfella.devkit.appstate.annotations.IntegerProperty;
-import com.jayfella.devkit.appstate.annotations.ListProperty;
-import com.jayfella.devkit.appstate.annotations.ListType;
+import fr.exratio.devkit.appstate.annotations.BooleanProperty;
+import fr.exratio.devkit.appstate.annotations.CustomComponent;
+import fr.exratio.devkit.appstate.annotations.DevKitAppState;
+import fr.exratio.devkit.appstate.annotations.EnumProperty;
+import fr.exratio.devkit.appstate.annotations.FloatProperty;
+import fr.exratio.devkit.appstate.annotations.IntegerProperty;
+import fr.exratio.devkit.appstate.annotations.ListProperty;
+import fr.exratio.devkit.appstate.annotations.ListType;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 

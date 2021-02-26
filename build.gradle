@@ -8,17 +8,17 @@ plugins {
     id "com.jfrog.bintray" version "1.8.5"
 }
 
-group 'com.jayfella'
-version '1.1.4'
+group 'fr.exratio'
+version '1.1.5'
 
 publishing {
     publications {
 
-        MyPublication(MavenPublication) {
+        mavenPublication(MavenPublication) {
             from components.java
-            groupId 'com.jayfella'
+            groupId group
             artifactId 'jme-swing-devkit'
-            version project.version
+            version version
         }
 
         mavenJava(MavenPublication) {
@@ -26,6 +26,28 @@ publishing {
         }
 
     }
+}
+
+bintray {
+    //defined in  .gradle/gradle.properties
+    user = mavenUser
+    key = mavenPassword
+    publications = ['mavenPublication']
+    publish = true //[Default: false] Whether version should be auto published after an upload
+    override = true
+    pkg {
+        userOrg = 'exratio'
+        repo = 'fr.exratio'
+        name = 'jme-swing-devkit'
+        licenses = "MIT"
+        vcsUrl = "https://github.com/NyouB/jme-swing-devkit"
+        version {
+            name = version
+            vcsTag = version
+            released  = new Date()
+        }
+    }
+
 }
 
 java {
@@ -36,11 +58,10 @@ java {
 
 javadoc {
     source = sourceSets.main.allJava
-    options.tags = ["noinspection"]
 }
 
 
-mainClassName = "com.jayfella.devkit.Main"
+mainClassName = "fr.exratio.devkit.Main"
 
 repositories {
     jcenter()
@@ -101,7 +122,7 @@ dependencies {
     implementation "it.unimi.dsi:fastutil:8.4.2"
 
     // MigLayout
-    implementation "com.miglayout:miglayout:3.7.4"
+    compile group: 'com.miglayout', name: 'miglayout-swing', version: '5.2'
 
     // testing - REMOVE
     //implementation "com.jayfella:TestDevkitPlugin:1.0.0"
