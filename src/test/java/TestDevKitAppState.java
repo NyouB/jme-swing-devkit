@@ -1,11 +1,11 @@
-import fr.exratio.devkit.appstate.annotations.BooleanProperty;
-import fr.exratio.devkit.appstate.annotations.CustomComponent;
-import fr.exratio.devkit.appstate.annotations.DevKitAppState;
-import fr.exratio.devkit.appstate.annotations.EnumProperty;
-import fr.exratio.devkit.appstate.annotations.FloatProperty;
-import fr.exratio.devkit.appstate.annotations.IntegerProperty;
-import fr.exratio.devkit.appstate.annotations.ListProperty;
-import fr.exratio.devkit.appstate.annotations.ListType;
+import fr.exratio.jme.devkit.appstate.annotations.BooleanProperty;
+import fr.exratio.jme.devkit.appstate.annotations.CustomComponent;
+import fr.exratio.jme.devkit.appstate.annotations.DevKitAppState;
+import fr.exratio.jme.devkit.appstate.annotations.EnumProperty;
+import fr.exratio.jme.devkit.appstate.annotations.FloatProperty;
+import fr.exratio.jme.devkit.appstate.annotations.IntegerProperty;
+import fr.exratio.jme.devkit.appstate.annotations.ListProperty;
+import fr.exratio.jme.devkit.appstate.annotations.ListType;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 

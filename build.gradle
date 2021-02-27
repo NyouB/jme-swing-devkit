@@ -16,8 +16,8 @@ publishing {
 
         mavenPublication(MavenPublication) {
             from components.java
-            groupId group
-            artifactId 'jme-swing-devkit'
+            groupId project.group
+            artifactId rootProject.name
             version project.version
         }
 
@@ -37,8 +37,8 @@ bintray {
     override = true
     pkg {
         userOrg = 'exratio'
-        repo = 'fr.exratio'
-        name = 'jme-swing-devkit'
+        repo = 'jme-tool'
+        name = rootProject.name
         licenses = "MIT"
         vcsUrl = "https://github.com/NyouB/jme-swing-devkit"
         version {

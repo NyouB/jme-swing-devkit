@@ -4,9 +4,25 @@ jMonkeyEngine Devkit Fork
 A Software Development Kit created using a Java Swing UI with support for plugins and running AppStates from within
 the DevKit.
 
+### MAVEN/GRADLE
+
+Add this repository : https://dl.bintray.com/exratio/jme-tool
+
+Maven:
+```xml
+<dependency>
+  <groupId>fr.exratio</groupId>
+  <artifactId>jme-swing-devkit</artifactId>
+  <version>1.1.6</version>
+  <type>pom</type>
+</dependency>
+```
+Gradle
+> implementation 'fr.exratio:jme-swing-devkit:1.1.6'
+
 ### Latest Versions
 - Latest Gradle Plugin Version: `0.0.21`
-- Latest DevKit Version: `1.0.9`
+- Latest DevKit Version: `1.1.6`
 
 ### Features
 - Import Models (glTF using JMEC)
