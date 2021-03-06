@@ -867,9 +867,7 @@ public class RunAppStateWindow {
         GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
   }
 
-  /**
-   * @noinspection ALL
-   */
+
   public JComponent $$$getRootComponent$$$() {
     return rootPane;
   }

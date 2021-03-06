@@ -60,9 +60,7 @@ public class EnumEditor extends AbstractPropertyEditor<Enum> {
         false));
   }
 
-  /**
-   * @noinspection ALL
-   */
+
   public JComponent $$$getRootComponent$$$() {
     return contentPanel;
   }

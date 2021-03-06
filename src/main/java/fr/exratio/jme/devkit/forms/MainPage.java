@@ -107,9 +107,7 @@ public class MainPage {
     botPanel.add(botTabbedPane, BorderLayout.CENTER);
   }
 
-  /**
-   * @noinspection ALL
-   */
+
   public JComponent $$$getRootComponent$$$() {
     return rootPanel;
   }

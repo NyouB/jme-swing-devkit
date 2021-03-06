@@ -110,9 +110,7 @@ public class Vector3fEditor extends AbstractPropertyEditor<Vector3f> {
         GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
   }
 
-  /**
-   * @noinspection ALL
-   */
+
   public JComponent $$$getRootComponent$$$() {
     return contentPanel;
   }

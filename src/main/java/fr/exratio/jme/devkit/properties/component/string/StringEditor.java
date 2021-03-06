@@ -47,9 +47,7 @@ public class StringEditor extends AbstractPropertyEditor<String> {
         GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
   }
 
-  /**
-   * @noinspection ALL
-   */
+
   public JComponent $$$getRootComponent$$$() {
     return contentPanel;
   }

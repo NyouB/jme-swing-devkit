@@ -108,9 +108,7 @@ public class QuaternionEditor extends AbstractPropertyEditor<Quaternion> {
         false));
   }
 
-  /**
-   * @noinspection ALL
-   */
+
   public JComponent $$$getRootComponent$$$() {
     return contentPanel;
   }
