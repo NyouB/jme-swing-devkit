@@ -13,16 +13,16 @@ Maven:
 <dependency>
   <groupId>fr.exratio</groupId>
   <artifactId>jme-swing-devkit</artifactId>
-  <version>1.1.6</version>
+  <version>1.2.0</version>
   <type>pom</type>
 </dependency>
 ```
 Gradle
-> implementation 'fr.exratio:jme-swing-devkit:1.1.6'
+> implementation 'fr.exratio:jme-swing-devkit:1.2.0'
 
 ### Latest Versions
 - Latest Gradle Plugin Version: `0.0.21`
-- Latest DevKit Version: `1.1.6`
+- Latest DevKit Version: `1.2.0`
 
 ### Features
 - Import Models (glTF using JMEC)
