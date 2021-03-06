@@ -53,7 +53,7 @@
                 </properties>
                 <border type="none"/>
                 <children>
-                  <grid id="82ab4" binding="eastPanel" layout-manager="BorderLayout" hgap="0" vgap="0">
+                  <grid id="82ab4" binding="rightPanel" layout-manager="BorderLayout" hgap="0" vgap="0">
                     <constraints>
                       <splitpane position="right"/>
                     </constraints>
@@ -63,7 +63,7 @@
                     </properties>
                     <border type="none"/>
                     <children>
-                      <scrollpane id="5b8ff" binding="eastArea">
+                      <scrollpane id="5b8ff" binding="rightArea">
                         <constraints border-constraint="Center"/>
                         <properties>
                           <maximumSize width="-1" height="-1"/>
@@ -94,7 +94,7 @@
                   </grid>
                 </children>
               </splitpane>
-              <grid id="29230" binding="westPanel" layout-manager="BorderLayout" hgap="0" vgap="0">
+              <grid id="29230" binding="leftPanel" layout-manager="BorderLayout" hgap="0" vgap="0">
                 <constraints>
                   <splitpane position="left"/>
                 </constraints>
@@ -104,7 +104,7 @@
                 </properties>
                 <border type="none"/>
                 <children>
-                  <tabbedpane id="2d687" binding="westTabbedPane">
+                  <tabbedpane id="2d687" binding="leftTabbedPane">
                     <constraints border-constraint="Center"/>
                     <properties>
                       <minimumSize width="200" height="300"/>
@@ -118,7 +118,7 @@
               </grid>
             </children>
           </splitpane>
-          <grid id="ff27e" binding="southPanel" layout-manager="BorderLayout" hgap="0" vgap="0">
+          <grid id="ff27e" binding="botPanel" layout-manager="BorderLayout" hgap="0" vgap="0">
             <constraints>
               <splitpane position="right"/>
             </constraints>
@@ -128,7 +128,7 @@
             </properties>
             <border type="none"/>
             <children>
-              <tabbedpane id="3469a" binding="southTabbedPane">
+              <tabbedpane id="3469a" binding="botTabbedPane">
                 <constraints border-constraint="Center"/>
                 <properties/>
                 <border type="none"/>

@@ -9,7 +9,7 @@ plugins {
 }
 
 group 'fr.exratio'
-version '1.1.6'
+version '1.2.0'
 
 publishing {
     publications {
@@ -81,7 +81,7 @@ dependencies {
 
     // darcula LAF
     // https://github.com/weisJ/darklaf
-    implementation "com.github.weisj:darklaf-core:2.4.7"
+    implementation("com.github.weisj:darklaf-core:2.5.5")
 
     // swing form building
     implementation 'com.intellij:forms_rt:7.0.3'

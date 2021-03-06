@@ -5,6 +5,7 @@ import com.jme3.asset.plugins.FileLocator;
 import com.jme3.system.awt.AwtPanel;
 import fr.exratio.jme.devkit.config.DevKitConfig;
 import fr.exratio.jme.devkit.forms.MainPage;
+import fr.exratio.jme.devkit.forms.MainPage.Zone;
 import fr.exratio.jme.devkit.service.inspector.PropertyInspectorService;
 import fr.exratio.jme.devkit.swing.MainMenu;
 import fr.exratio.jme.devkit.swing.WindowLocationSaver;
@@ -99,15 +100,15 @@ public class CoreService implements Service {
         .getAWTPanel();
     jmePanel.setSize(DevKitConfig.getInstance().getCameraConfig().getCameraDimension());
     ImageIcon icon = new ImageIcon("images/middle.gif");
-    mainPage.addTabToCenterPane("Canvas", jmePanel, icon);
+    mainPage.addTab("Canvas", jmePanel, icon, Zone.CENTER);
 
     PropertyInspectorService propertyInspectorService = ServiceManager
         .registerService(PropertyInspectorService.class);
 
     SceneTreeService sceneTreeService = ServiceManager.registerService(SceneTreeService.class);
     String treeViewTabTitle = "TreeView";
-    mainPage.addTabToWestPane(treeViewTabTitle, sceneTreeService.getRootComponent());
-    mainPage.setEastArea(propertyInspectorService.getSectionPanel());
+    mainPage.addTab(treeViewTabTitle, sceneTreeService.getRootComponent(), null, Zone.LEFT_TOP);
+    mainPage.setRightArea(propertyInspectorService.getSectionPanel());
 
     // add the canvas AFTER we set the window size because the camera.getWidth and .getHeight values will change.
     // whilst it's easy to understand once you know, it can be confusing to figure this out.

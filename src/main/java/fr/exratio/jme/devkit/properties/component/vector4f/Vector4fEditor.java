@@ -62,7 +62,6 @@ public class Vector4fEditor extends AbstractPropertyEditor<Vector4f> {
    */
   private void $$$setupUI$$$() {
     createUIComponents();
-    contentPanel = new JPanel();
     contentPanel.setLayout(new GridLayoutManager(4, 2, new Insets(0, 0, 0, 0), -1, -1));
     final JLabel label1 = new JLabel();
     label1.setForeground(new Color(-4515818));
@@ -111,12 +110,16 @@ public class Vector4fEditor extends AbstractPropertyEditor<Vector4f> {
         false));
   }
 
-
+  /**
+   * @noinspection ALL
+   */
   public JComponent $$$getRootComponent$$$() {
     return contentPanel;
   }
 
+
   private void createUIComponents() {
+    contentPanel = this;
     FloatFormatFactory floatFormatFactory = new FloatFormatFactory();
     wTextField = new JFormattedTextField(floatFormatFactory, value.w);
     xTextField = new JFormattedTextField(floatFormatFactory, value.x);
@@ -128,9 +131,5 @@ public class Vector4fEditor extends AbstractPropertyEditor<Vector4f> {
     zTextField.addPropertyChangeListener(LISTENED_PROPERTY_NAME, propertyChangeListener);
   }
 
-  @Override
-  public Component getCustomEditor() {
-    return contentPanel;
-  }
 
 }

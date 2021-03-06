@@ -41,29 +41,28 @@ public class StringEditor extends AbstractPropertyEditor<String> {
    */
   private void $$$setupUI$$$() {
     createUIComponents();
-    contentPanel = new JPanel();
     contentPanel.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
     contentPanel.add(valueTextField, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST,
         GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW,
         GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
   }
 
-
+  /**
+   * @noinspection ALL
+   */
   public JComponent $$$getRootComponent$$$() {
     return contentPanel;
   }
+
 
   @Override
   protected String computeValue() {
     return valueTextField.getText();
   }
 
-  @Override
-  public Component getCustomEditor() {
-    return contentPanel;
-  }
 
   private void createUIComponents() {
+    contentPanel = this;
     valueTextField = new JTextField(value);
     valueTextField.addPropertyChangeListener("value", propertyChangeListener);
   }

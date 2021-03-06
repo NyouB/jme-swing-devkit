@@ -1,6 +1,14 @@
 Changelog
 ---
 
+### 1.2.0
+- the editors are now JPanel
+- simplify Texture2dEditor
+- remove javadoc no inspection
+
+### 1.1.7
+- The main page use zone instead of differents methods
+
 #### 1.1.6
 - fix the project version misconfigured on bintray
 

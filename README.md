@@ -172,3 +172,17 @@ All of These annotations have a `tab` property. The GUI control will be placed i
 `DevKitAppState` annotation. If no tab name is specified the GUI component will not be placed in a tab.
 
 For a complete example, see the [TestDevKitAppState](https://github.com/jayfella/jme-swing-devkit/blob/master/src/test/java/TestDevKitAppState.java) class.
+
+### Register Component
+For a basic component/class
+> PropertyEditorManager.registerEditor(Boolean.class, BooleanEditor.class);
+
+For a complex class with many field
+
+> ServiceManager.getService(RegistrationService.class).registerPropertySectionBuilder(classToMap, MyPropertySectionBuilder)
+
+
+### POSITIONNING PLUGIN
+The fork provides different area in which you can add your plugin in a tab; LEFT_TOP, LEFT_BOTTOM, TOP_LEFT, TOP_RIGHT, RIGHT_TOP, RIGHT_BOTTOM, BOTTOM_LEFT, BOTTOM_RIGHT.
+
+> ServiceManager.getService(CoreService.class).addTab("Tab Title", myComponent, myIcon, Zone.LEFT_TOP);

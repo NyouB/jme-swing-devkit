@@ -1,12 +1,14 @@
 package fr.exratio.jme.devkit.properties.component;
 
+import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyEditor;
+import javax.swing.JPanel;
 
-public abstract class AbstractPropertyEditor<T> implements PropertyEditor {
+public abstract class AbstractPropertyEditor<T> extends JPanel implements PropertyEditor {
 
   protected T value;
   private Object source;
@@ -39,6 +41,11 @@ public abstract class AbstractPropertyEditor<T> implements PropertyEditor {
   @Override
   public void setValue(Object value) {
     setTypedValue((T) value);
+  }
+
+  @Override
+  public Component getCustomEditor() {
+    return this;
   }
 
   @Override

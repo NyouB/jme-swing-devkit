@@ -2,6 +2,7 @@ import com.jme3.system.AppSettings;
 import com.jme3.system.JmeSystem;
 import com.jme3.system.awt.AwtPanelsContext;
 import fr.exratio.jme.devkit.config.DevKitConfig;
+import fr.exratio.jme.devkit.forms.MainPage.Zone;
 import fr.exratio.jme.devkit.service.ClipboardService;
 import fr.exratio.jme.devkit.service.CoreService;
 import fr.exratio.jme.devkit.service.EventService;
@@ -80,7 +81,7 @@ public class MainTest {
       //fix the node being display only on resizing
       coreService.getMainFrame().revalidate();
       coreService.getMainPage()
-          .addTabToSouthPane("property", new PropertyInspectorService().getSectionPanel());
+          .addTab("property", new PropertyInspectorService().getSectionPanel(), null, Zone.BOTTOM_LEFT);
       ServiceManager.registerService(RegistrationService.class);
       ServiceManager.registerService(ClipboardService.class);
       ServiceManager.registerService(PluginService.class);

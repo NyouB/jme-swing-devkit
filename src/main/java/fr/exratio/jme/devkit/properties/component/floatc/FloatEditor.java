@@ -32,10 +32,6 @@ public class FloatEditor extends AbstractPropertyEditor<Float> {
     return ((Number) valueTextField.getValue()).floatValue();
   }
 
-  @Override
-  public Component getCustomEditor() {
-    return contentPanel;
-  }
 
   @Override
   public void setTypedValue(Float newValue) {
@@ -54,19 +50,22 @@ public class FloatEditor extends AbstractPropertyEditor<Float> {
    */
   private void $$$setupUI$$$() {
     createUIComponents();
-    contentPanel = new JPanel();
     contentPanel.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
     contentPanel.add(valueTextField, new GridConstraints(0, 0, 1, 2, GridConstraints.ANCHOR_WEST,
         GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW,
         GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
   }
 
-
+  /**
+   * @noinspection ALL
+   */
   public JComponent $$$getRootComponent$$$() {
     return contentPanel;
   }
 
+
   private void createUIComponents() {
+    contentPanel = this;
     FloatFormatFactory floatFormatFactory = new FloatFormatFactory();
     valueTextField = new JFormattedTextField(floatFormatFactory, value);
     valueTextField.addPropertyChangeListener(LISTENED_PROPERTY_NAME, propertyChangeListener);
