@@ -9,7 +9,7 @@ plugins {
 }
 
 group 'fr.exratio'
-version '1.2.0'
+version '1.2.1-SNAPSHOT'
 
 publishing {
     publications {
@@ -97,11 +97,11 @@ dependencies {
     implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
 
     // jMonkey
-    implementation "org.jmonkeyengine:jme3-core:$version_jme"
-    implementation "org.jmonkeyengine:jme3-desktop:$version_jme"
-    implementation "org.jmonkeyengine:jme3-lwjgl:$version_jme"
-    implementation "org.jmonkeyengine:jme3-plugins:$version_jme"
-    implementation "org.jmonkeyengine:jme3-effects:$version_jme"
+    compile "org.jmonkeyengine:jme3-core:$version_jme"
+    compile "org.jmonkeyengine:jme3-desktop:$version_jme"
+    compile "org.jmonkeyengine:jme3-lwjgl:$version_jme"
+    compile "org.jmonkeyengine:jme3-plugins:$version_jme"
+    compile "org.jmonkeyengine:jme3-effects:$version_jme"
 
     // GLTF model importer
     implementation("com.simsilica:jmec:1.1.1") {

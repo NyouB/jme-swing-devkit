@@ -129,6 +129,7 @@ public class MainPage {
 
   public void addTab(String title, Component content, Icon icon, Zone zone) {
     switch (zone) {
+      case LEFT:
       case LEFT_TOP:
         leftTabbedPane.addTab(title, icon, content);
         int tabIndex = leftTabbedPane.indexOfTab(title);
@@ -138,14 +139,17 @@ public class MainPage {
         break;
       case LEFT_BOTTOM:
         break;
+      case TOP:
       case TOP_LEFT:
         break;
       case TOP_RIGHT:
         break;
+      case RIGHT:
       case RIGHT_TOP:
         break;
       case RIGHT_BOTTOM:
         break;
+      case BOTTOM:
       case BOTTOM_LEFT:
         botTabbedPane.addTab(title, icon, content);
         break;
@@ -162,7 +166,7 @@ public class MainPage {
   }
 
   public enum Zone {
-    LEFT_TOP, LEFT_BOTTOM, TOP_LEFT, TOP_RIGHT, RIGHT_TOP, RIGHT_BOTTOM, BOTTOM_LEFT, BOTTOM_RIGHT, CENTER
+    LEFT, TOP, BOTTOM, RIGHT, LEFT_TOP, LEFT_BOTTOM, TOP_LEFT, TOP_RIGHT, RIGHT_TOP, RIGHT_BOTTOM, BOTTOM_LEFT, BOTTOM_RIGHT, CENTER
   }
 
 }
