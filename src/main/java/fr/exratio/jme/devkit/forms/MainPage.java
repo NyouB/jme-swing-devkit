@@ -1,9 +1,13 @@
 package fr.exratio.jme.devkit.forms;
 
+import fr.exratio.jme.devkit.forms.ToolView.ViewMode;
+import fr.exratio.jme.devkit.service.ServiceManager;
+import fr.exratio.jme.devkit.service.ToolLocationService;
 import fr.exratio.jme.devkit.swing.JSplitPaneWithZeroSizeDivider;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Window;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import javax.swing.Icon;
@@ -16,10 +20,9 @@ import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import org.jdesktop.swingx.JXLabel;
 
-public class MainPage {
+public class MainPage extends JPanel {
 
   public static String WINDOW_ID = "main";
-  private final JFrame frame;
 
   private JPanel rootPanel;
   private JPanel botPanel;
@@ -34,8 +37,7 @@ public class MainPage {
   private JSplitPane verticalSplitPane;
   private JScrollPane rightArea;
 
-  public MainPage(JFrame frame) {
-    this.frame = frame;
+  public MainPage() {
   }
 
   {
@@ -53,7 +55,6 @@ public class MainPage {
    */
   private void $$$setupUI$$$() {
     createUIComponents();
-    rootPanel = new JPanel();
     rootPanel.setLayout(new BorderLayout(0, 0));
     final JLabel label1 = new JLabel();
     label1.setText("WEST");
@@ -107,13 +108,16 @@ public class MainPage {
     botPanel.add(botTabbedPane, BorderLayout.CENTER);
   }
 
-
+  /**
+   * @noinspection ALL
+   */
   public JComponent $$$getRootComponent$$$() {
     return rootPanel;
   }
 
 
   private void createUIComponents() {
+    rootPanel = this;
     rightSplitPane = new JSplitPaneWithZeroSizeDivider(JSplitPane.HORIZONTAL_SPLIT);
     leftSplitPane = new JSplitPaneWithZeroSizeDivider(JSplitPane.HORIZONTAL_SPLIT);
     verticalSplitPane = new JSplitPaneWithZeroSizeDivider(JSplitPane.VERTICAL_SPLIT);
@@ -121,7 +125,7 @@ public class MainPage {
     centerPanel.addComponentListener(new ComponentAdapter() {
       @Override
       public void componentResized(ComponentEvent e) {
-        frame.revalidate();
+        getParent().revalidate();
       }
     });
 
@@ -163,6 +167,13 @@ public class MainPage {
 
   public void setRightArea(Component component) {
     rightArea.setViewportView(component);
+  }
+
+  public void removeTab(JComponent tool) {
+    leftTabbedPane.remove(tool);
+    botTabbedPane.remove(tool);
+    centerTabbedPane.remove(tool);
+    revalidate();
   }
 
   public enum Zone {

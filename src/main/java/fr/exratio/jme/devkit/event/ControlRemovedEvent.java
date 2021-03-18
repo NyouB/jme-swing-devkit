@@ -1,9 +1,12 @@
-package fr.exratio.jme.devkit.properties.component.events;
+package fr.exratio.jme.devkit.event;
 
 import com.jme3.scene.control.Control;
-import fr.exratio.jme.devkit.event.Event;
+import lombok.Getter;
+import lombok.Setter;
 
-public class ControlRemovedEvent extends Event {
+@Getter
+@Setter
+public class ControlRemovedEvent {
 
   private final Control control;
 

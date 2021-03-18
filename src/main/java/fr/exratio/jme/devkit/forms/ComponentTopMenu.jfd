@@ -1,0 +1,50 @@
+JFDML JFormDesigner: "7.0.3.0.337" Java: "11.0.9.1" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+			name: "this"
+			add( new FormContainer( "javax.swing.JMenuBar", new FormLayoutManager( class javax.swing.JMenuBar ) ) {
+				name: "menuBar1"
+				"borderPainted": false
+				auxiliary() {
+					"JavaCodeGenerator.customCreate": true
+				}
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "titleLabel"
+					"text": "text"
+				} )
+				add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {
+					name: "settings"
+					"icon": new com.jformdesigner.model.SwingIcon( 0, "/icons/settings-wheel-16x16.png" )
+					add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {
+						name: "viewModeMenu"
+						"text": "View Mode"
+						add( new FormComponent( "javax.swing.JRadioButtonMenuItem" ) {
+							name: "windowsViewModeRadioButton"
+							"text": "Window"
+							auxiliary() {
+								"JavaCodeGenerator.customCreate": true
+							}
+							addEvent( new FormEvent( "java.awt.event.ItemListener", "itemStateChanged", "windowsViewModeRadioButtonItemStateChanged", true ) )
+						} )
+						add( new FormComponent( "javax.swing.JRadioButtonMenuItem" ) {
+							name: "pinnedViewModeRadioButton"
+							"text": "Dock Pinned"
+							auxiliary() {
+								"JavaCodeGenerator.customCreate": true
+							}
+							addEvent( new FormEvent( "java.awt.event.ItemListener", "itemStateChanged", "pinnedViewModeRadioButtonItemStateChanged", true ) )
+						} )
+					} )
+				} )
+			}, new FormLayoutConstraints( class java.lang.String ) {
+				"value": "North"
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 400, 300 )
+		} )
+	}
+}

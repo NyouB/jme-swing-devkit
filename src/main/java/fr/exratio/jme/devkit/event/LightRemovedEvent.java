@@ -1,9 +1,8 @@
-package fr.exratio.jme.devkit.properties.component.events;
+package fr.exratio.jme.devkit.event;
 
 import com.jme3.light.Light;
-import fr.exratio.jme.devkit.event.Event;
 
-public class LightRemovedEvent extends Event {
+public class LightRemovedEvent{
 
   private final Light light;
 

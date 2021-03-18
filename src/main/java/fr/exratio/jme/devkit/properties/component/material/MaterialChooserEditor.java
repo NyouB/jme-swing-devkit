@@ -6,6 +6,7 @@ import com.intellij.uiDesigner.core.Spacer;
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
 import com.jme3.util.MaterialDebugAppState;
+import fr.exratio.jme.devkit.config.DevKitConfig;
 import fr.exratio.jme.devkit.properties.component.AbstractPropertyEditor;
 import fr.exratio.jme.devkit.service.JmeEngineService;
 import fr.exratio.jme.devkit.service.ServiceManager;
@@ -13,16 +14,27 @@ import java.awt.Component;
 import java.awt.Insets;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import org.reflections.ReflectionUtils;
 import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
+import org.reflections.util.ConfigurationBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -105,7 +117,9 @@ public class MaterialChooserEditor extends AbstractPropertyEditor<Material> {
             GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
   }
 
-
+  /**
+   * @noinspection ALL
+   */
   public JComponent $$$getRootComponent$$$() {
     return contentPanel;
   }
@@ -115,17 +129,14 @@ public class MaterialChooserEditor extends AbstractPropertyEditor<Material> {
     contentPanel = this;
     DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
 
-    Reflections reflections = new Reflections(null, new ResourcesScanner());
-    Set<String> j3mdResourceList = reflections.getResources(Pattern.compile(".*\\.j3md"));
-    Set<String> j3mResourceList = reflections.getResources(Pattern.compile(".*\\.j3m"));
-
-    for (String resource : j3mdResourceList) {
-      model.addElement(resource);
+    try {
+      model.addAll(
+          findFiles(Paths.get(DevKitConfig.getInstance().getProjectConfig().getAssetRootDir()),
+              "j3md", "j3m"));
+    } catch (IOException e) {
+      e.printStackTrace();
     }
 
-    for (String resource : j3mResourceList) {
-      model.addElement(resource);
-    }
     materialsComboBox = new JComboBox();
     materialsComboBox.setModel(model);
 
@@ -150,6 +161,30 @@ public class MaterialChooserEditor extends AbstractPropertyEditor<Material> {
 
     });
 
+  }
+
+  public static List<String> findFiles(Path path, String... fileExtension)
+      throws IOException {
+
+    if (!Files.isDirectory(path)) {
+      throw new IllegalArgumentException("Path must be a directory!");
+    }
+
+    List<String> result;
+
+    try (Stream<Path> walk = Files.walk(path)) {
+      result = walk
+          .filter(p -> !Files.isDirectory(p))
+          // this is a path, not string,
+          // this only test if path end with a certain path
+          //.filter(p -> p.endsWith(fileExtension))
+          // convert path to string first
+          .map(p -> p.toString().toLowerCase())
+          .filter(f -> Arrays.stream(fileExtension).anyMatch((f::endsWith)))
+          .collect(Collectors.toList());
+    }
+
+    return result;
   }
 
 }

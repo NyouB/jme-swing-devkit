@@ -1,9 +1,15 @@
-package fr.exratio.jme.devkit.properties.component.events;
+package fr.exratio.jme.devkit.event;
 
+import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
-import fr.exratio.jme.devkit.event.Event;
+import lombok.Getter;
+import lombok.Setter;
 
-public class ControlCreatedEvent extends Event {
+@Getter
+@Setter
+public class ControlCreatedEvent {
+
+  private Spatial parent;
 
   private final Control control;
 

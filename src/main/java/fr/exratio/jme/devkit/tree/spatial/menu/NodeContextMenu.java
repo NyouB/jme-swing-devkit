@@ -18,6 +18,7 @@ import fr.exratio.jme.devkit.service.ClipboardService;
 import fr.exratio.jme.devkit.service.JmeEngineService;
 import fr.exratio.jme.devkit.service.MenuService;
 import fr.exratio.jme.devkit.service.RegistrationService;
+import fr.exratio.jme.devkit.service.SceneGraphService;
 import fr.exratio.jme.devkit.service.SceneTreeService;
 import fr.exratio.jme.devkit.service.ServiceManager;
 import fr.exratio.jme.devkit.tree.spatial.NodeTreeNode;
@@ -102,7 +103,7 @@ public class NodeContextMenu extends SpatialContextMenu {
         menuItem.addActionListener(e -> {
 
           Node node = registrar.createInstance(ServiceManager.getService(JmeEngineService.class));
-          ServiceManager.getService(SceneTreeService.class).addSpatial(node, nodeTreeNode);
+          ServiceManager.getService(SceneGraphService.class).addSpatial(node, nodeTreeNode.getUserObject());
 
         });
 
@@ -124,7 +125,7 @@ public class NodeContextMenu extends SpatialContextMenu {
 
           Geometry geometry = registrar
               .createInstance(ServiceManager.getService(JmeEngineService.class));
-          ServiceManager.getService(SceneTreeService.class).addSpatial(geometry, nodeTreeNode);
+          ServiceManager.getService(SceneGraphService.class).addSpatial(geometry, nodeTreeNode.getUserObject());
 
         });
 
@@ -141,7 +142,7 @@ public class NodeContextMenu extends SpatialContextMenu {
 
       Spatial clonedSpatial = ServiceManager.getService(ClipboardService.class)
           .getSpatialClipboardItem().getClonedCopy();
-      ServiceManager.getService(SceneTreeService.class).addSpatial(clonedSpatial, nodeTreeNode);
+      ServiceManager.getService(SceneGraphService.class).addSpatial(clonedSpatial, nodeTreeNode.getUserObject());
 
     });
 
@@ -164,32 +165,32 @@ public class NodeContextMenu extends SpatialContextMenu {
 
     JMenuItem cubeItem = parent.add(new JMenuItem("Cube"));
     cubeItem.addActionListener(e -> {
-      ServiceManager.getService(SceneTreeService.class).addSpatial(
-          createShape(new com.jme3.scene.shape.Box(1, 1, 1), "Cube"), nodeTreeNode);
+      ServiceManager.getService(SceneGraphService.class).addSpatial(
+          createShape(new com.jme3.scene.shape.Box(1, 1, 1), "Cube"), nodeTreeNode.getUserObject());
     });
 
     JMenuItem cylinderItem = parent.add(new JMenuItem("Cylinder"));
     cylinderItem.addActionListener(e -> {
-      ServiceManager.getService(SceneTreeService.class).addSpatial(
-          createShape(new Cylinder(32, 32, 1.0f, 1.0f, true), "Cylinder"), nodeTreeNode);
+      ServiceManager.getService(SceneGraphService.class).addSpatial(
+          createShape(new Cylinder(32, 32, 1.0f, 1.0f, true), "Cylinder"), nodeTreeNode.getUserObject());
     });
 
     JMenuItem domeItem = parent.add(new JMenuItem("Dome"));
     domeItem.addActionListener(e -> {
-      ServiceManager.getService(SceneTreeService.class).addSpatial(
-          createShape(new Dome(32, 32, 1.0f), "Dome"), nodeTreeNode);
+      ServiceManager.getService(SceneGraphService.class).addSpatial(
+          createShape(new Dome(32, 32, 1.0f), "Dome"), nodeTreeNode.getUserObject());
     });
 
     JMenuItem quadItem = parent.add(new JMenuItem("Quad"));
     quadItem.addActionListener(e -> {
-      ServiceManager.getService(SceneTreeService.class).addSpatial(
-          createShape(new Quad(1.0f, 1.0f), "Quad"), nodeTreeNode);
+      ServiceManager.getService(SceneGraphService.class).addSpatial(
+          createShape(new Quad(1.0f, 1.0f), "Quad"), nodeTreeNode.getUserObject());
     });
 
     JMenuItem sphereItem = parent.add(new JMenuItem("Sphere"));
     sphereItem.addActionListener(e -> {
-      ServiceManager.getService(SceneTreeService.class).addSpatial(
-          createShape(new Sphere(32, 32, 1.0f), "Sphere"), nodeTreeNode);
+      ServiceManager.getService(SceneGraphService.class).addSpatial(
+          createShape(new Sphere(32, 32, 1.0f), "Sphere"), nodeTreeNode.getUserObject());
     });
 
   }

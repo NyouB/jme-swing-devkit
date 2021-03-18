@@ -19,6 +19,7 @@ import fr.exratio.jme.devkit.core.ColorConverter;
 import fr.exratio.jme.devkit.core.DevkitPackages;
 import fr.exratio.jme.devkit.service.JmeEngineService;
 import fr.exratio.jme.devkit.service.ServiceManager;
+import fr.exratio.jme.devkit.swing.JSplitPaneWithZeroSizeDivider;
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.Window;
@@ -41,6 +42,7 @@ import javax.swing.BorderFactory;
 import javax.swing.DefaultBoundedRangeModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
@@ -62,7 +64,7 @@ import org.reflections.Reflections;
 import org.reflections.scanners.MethodAnnotationsScanner;
 import org.reflections.util.ConfigurationBuilder;
 
-public class RunAppStateWindow {
+public class RunAppStateWindow extends ToolView {
 
   public static final String RUN_APPSTATE_WINDOW_TITLE = "Run AppState";
   private static final Logger log = Logger.getLogger(RunAppStateWindow.class.getName());
@@ -71,8 +73,10 @@ public class RunAppStateWindow {
   private JPanel appstatePropertiesPanel;
   private JButton runButton;
   private JButton stopButton;
+  private JSplitPane noborderSpitPane;
 
   public RunAppStateWindow() {
+    super("runAppstate", RUN_APPSTATE_WINDOW_TITLE, null);
 
     $$$setupUI$$$();
 
@@ -793,19 +797,17 @@ public class RunAppStateWindow {
    */
   private void $$$setupUI$$$() {
     createUIComponents();
-    rootPane = new JPanel();
     rootPane.setLayout(new GridLayoutManager(1, 1, new Insets(5, 5, 5, 5), -1, -1));
     rootPane.setMinimumSize(new Dimension(-1, -1));
-    final JSplitPane splitPane1 = new JSplitPane();
-    splitPane1.setDividerLocation(150);
-    splitPane1.setOrientation(0);
-    rootPane.add(splitPane1,
+    noborderSpitPane.setDividerLocation(150);
+    noborderSpitPane.setOrientation(0);
+    rootPane.add(noborderSpitPane,
         new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH,
             GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
             GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
             new Dimension(250, 300), new Dimension(200, 200), null, 0, false));
     final JScrollPane scrollPane1 = new JScrollPane();
-    splitPane1.setRightComponent(scrollPane1);
+    noborderSpitPane.setRightComponent(scrollPane1);
     appstatePropertiesPanel.setMinimumSize(new Dimension(350, 150));
     scrollPane1.setViewportView(appstatePropertiesPanel);
     appstatePropertiesPanel.setBorder(BorderFactory
@@ -813,7 +815,7 @@ public class RunAppStateWindow {
             TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
     final JPanel panel1 = new JPanel();
     panel1.setLayout(new GridLayoutManager(2, 1, new Insets(0, 0, 5, 0), -1, -1));
-    splitPane1.setLeftComponent(panel1);
+    noborderSpitPane.setLeftComponent(panel1);
     panel1.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), null,
         TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
     final JPanel panel2 = new JPanel();
@@ -867,16 +869,20 @@ public class RunAppStateWindow {
         GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
   }
 
-
+  /**
+   * @noinspection ALL
+   */
   public JComponent $$$getRootComponent$$$() {
     return rootPane;
   }
 
 
   private void createUIComponents() {
-    // TODO: place custom component creation code here
+    rootPane = new JPanel();
+    setContent(rootPane);
     appstatePropertiesPanel = new JPanel();
     appstatePropertiesPanel.setLayout(new MigLayout());
+    noborderSpitPane = new JSplitPaneWithZeroSizeDivider();
 
   }
 }

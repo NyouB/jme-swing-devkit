@@ -183,6 +183,6 @@ For a complex class with many field
 
 
 ### POSITIONNING PLUGIN
-The fork provides different area in which you can add your plugin in a tab; LEFT, RIGHT, TOP, BOTTOM, LEFT_TOP, LEFT_BOTTOM, TOP_LEFT, TOP_RIGHT, RIGHT_TOP, RIGHT_BOTTOM, BOTTOM_LEFT, BOTTOM_RIGHT.
+The fork provides different area in which you can add your plugin in a tab; LEFT_TOP, LEFT_BOTTOM, TOP_LEFT, TOP_RIGHT, RIGHT_TOP, RIGHT_BOTTOM, BOTTOM_LEFT, BOTTOM_RIGHT.
 
 > ServiceManager.getService(CoreService.class).getMainPage().addTab("Tab Title", myComponent, myIcon, Zone.LEFT_TOP);

@@ -15,6 +15,7 @@ import fr.exratio.jme.devkit.service.ClipboardService;
 import fr.exratio.jme.devkit.service.JmeEngineService;
 import fr.exratio.jme.devkit.service.MenuService;
 import fr.exratio.jme.devkit.service.RegistrationService;
+import fr.exratio.jme.devkit.service.SceneGraphService;
 import fr.exratio.jme.devkit.service.SceneTreeService;
 import fr.exratio.jme.devkit.service.ServiceManager;
 import fr.exratio.jme.devkit.tree.TreeConstants;
@@ -117,13 +118,13 @@ public class SpatialContextMenu extends JPopupMenu {
             ServiceManager.getService(JmeEngineService.class).enqueue(() -> {
 
                 // verify we're allowed to delete this object.
-                final String undeletable = spatial.getUserData(TreeConstants.UNDELETABLE_FLAG);
+                final boolean isDeletable = spatial.getUserData(TreeConstants.UNDELETABLE_FLAG) == null;
 
                 SwingUtilities.invokeLater(() -> {
 
-                    if (undeletable == null) {
-                        ServiceManager.getService(SceneTreeService.class)
-                            .removeTreeNode(spatialTreeNode);
+                    if (isDeletable) {
+                        ServiceManager.getService(SceneGraphService.class)
+                            .removeSpatial(spatialTreeNode.getUserObject());
                     } else {
                         JOptionPane.showMessageDialog(null,
                             "You are not allowed to delete this spatial.",
@@ -153,8 +154,7 @@ public class SpatialContextMenu extends JPopupMenu {
 
                 Control control = registrar
                     .createInstance(ServiceManager.getService(JmeEngineService.class));
-                ServiceManager.getService(SceneTreeService.class)
-                    .addControl(control, spatialTreeNode);
+                ServiceManager.getService(SceneGraphService.class).addControl(control, spatialTreeNode.getUserObject());
 
             });
 
@@ -198,16 +198,16 @@ public class SpatialContextMenu extends JPopupMenu {
 
         JMenuItem ambLight = menu.add(new JMenuItem("Ambient"));
         ambLight.addActionListener(e -> {
-            ServiceManager.getService(SceneTreeService.class)
-                .addLight(new AmbientLight(), spatialTreeNode);
+            ServiceManager.getService(SceneGraphService.class)
+                .addLight(new AmbientLight(), spatialTreeNode.getUserObject());
         });
 
         JMenuItem dirLight = menu.add(new JMenuItem("Directional"));
         dirLight.addActionListener(e -> {
             DirectionalLight directionalLight = new DirectionalLight(
                 new Vector3f(-1, -1, -1).normalizeLocal());
-            ServiceManager.getService(SceneTreeService.class)
-                .addLight(directionalLight, spatialTreeNode);
+            ServiceManager.getService(SceneGraphService.class)
+                .addLight(directionalLight, spatialTreeNode.getUserObject());
         });
 
         JMenuItem pointLight = menu.add(new JMenuItem("Point"));
@@ -217,7 +217,7 @@ public class SpatialContextMenu extends JPopupMenu {
             // but I need to set its position to the camera position, so it will be set when it's attached - which will
             // be on the JME thread.
             PointLight light = new PointLight(new Vector3f(0, 0, 0), 10);
-            ServiceManager.getService(SceneTreeService.class).addLight(light, spatialTreeNode);
+            ServiceManager.getService(SceneGraphService.class).addLight(light, spatialTreeNode.getUserObject());
 
         });
 

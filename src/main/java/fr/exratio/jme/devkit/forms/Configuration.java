@@ -523,7 +523,9 @@ public class Configuration {
         false));
   }
 
-
+  /**
+   * @noinspection ALL
+   */
   public JComponent $$$getRootComponent$$$() {
     return rootPanel;
   }

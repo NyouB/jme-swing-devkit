@@ -1,9 +1,8 @@
-package fr.exratio.jme.devkit.properties.component.events;
+package fr.exratio.jme.devkit.event;
 
 import com.jme3.scene.Spatial;
-import fr.exratio.jme.devkit.event.Event;
 
-public class SpatialRemovedEvent extends Event {
+public class SpatialRemovedEvent {
 
   private final Spatial spatial;
 

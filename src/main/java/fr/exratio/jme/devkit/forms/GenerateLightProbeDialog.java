@@ -12,6 +12,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import fr.exratio.jme.devkit.service.JmeEngineService;
+import fr.exratio.jme.devkit.service.SceneGraphService;
 import fr.exratio.jme.devkit.service.SceneTreeService;
 import fr.exratio.jme.devkit.service.ServiceManager;
 import fr.exratio.jme.devkit.swing.ComponentUtilities;
@@ -111,8 +112,8 @@ public class GenerateLightProbeDialog {
                 SwingUtilities.invokeLater(() -> {
 
                   // add the light to the treenode we selected when we cliked "generate lightprobe".
-                  ServiceManager.getService(SceneTreeService.class)
-                      .addLight(result, spatialTreeNode);
+                  ServiceManager.getService(SceneGraphService.class)
+                      .addLight(result, spatialTreeNode.getUserObject());
 
                   JButton button = (JButton) e.getSource();
                   Window window = SwingUtilities.getWindowAncestor(button);
@@ -275,7 +276,9 @@ public class GenerateLightProbeDialog {
             false));
   }
 
-
+  /**
+   * @noinspection ALL
+   */
   public JComponent $$$getRootComponent$$$() {
     return rootPanel;
   }
