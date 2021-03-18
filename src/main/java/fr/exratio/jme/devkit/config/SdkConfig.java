@@ -1,14 +1,11 @@
 package fr.exratio.jme.devkit.config;
 
 import fr.exratio.jme.devkit.forms.MainPage.Zone;
-import fr.exratio.jme.devkit.forms.ToolView;
-import fr.exratio.jme.devkit.forms.ToolView.ViewMode;
 import fr.exratio.jme.devkit.service.SceneTreeService;
 import fr.exratio.jme.devkit.service.inspector.PropertyInspectorService;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Toolkit;
-import java.awt.Window;
 import java.beans.Transient;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,7 +21,6 @@ public class SdkConfig {
 
   private HashMap<String, Dimension> windowDimensions = new HashMap<>();
   private HashMap<String, Point> windowLocations = new HashMap<>();
-  private Map<String, ViewMode> toolViewMode = new HashMap<>();
   private Map<String, Zone> toolZone = new HashMap<>();
   private SpatialConfig mainViewConfig = new SpatialConfig(null, new Dimension(800, 600));
   private Map<String, ToolsConfig> toolsConfigMap = new HashMap<>();
@@ -112,7 +108,7 @@ public class SdkConfig {
 
   @Transient
   public void setWindowLocation(String name, Point point) {
-   // toolsConfigMap.get(name).spatialConfig.point = point;
+    // toolsConfigMap.get(name).spatialConfig.point = point;
   }
 
   @Transient
@@ -125,20 +121,5 @@ public class SdkConfig {
 //    toolsConfigMap.get(name).spatialConfig.dimension = dimension;
   }
 
-  public void setToolViewMode(ToolView tool, ViewMode viewMode) {
-    ToolsConfig config = toolsConfigMap.get(tool.getId());
-    if(config == null){
-      config = new ToolsConfig(Zone.LEFT_TOP, viewMode, new SpatialConfig(tool.getLocation(), tool.getPreferredSize()));
-    }
-    config.viewMode = viewMode;
-  }
-
-  public void registerWindow(String toolId, ToolView toolView) {
-    ToolsConfig config = toolsConfigMap.get(toolId);
-    if(config == null){
-      config = new ToolsConfig(Zone.LEFT_TOP, ViewMode.WINDOWED, new SpatialConfig(toolView.getLocation(), toolView.getPreferredSize()));
-    }
-    toolsConfigMap.put(toolId, config);
-  }
 
 }

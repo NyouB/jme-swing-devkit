@@ -1,23 +1,19 @@
 package fr.exratio.jme.devkit.forms;
 
-import fr.exratio.jme.devkit.forms.ToolView.ViewMode;
-import fr.exratio.jme.devkit.service.ServiceManager;
-import fr.exratio.jme.devkit.service.ToolLocationService;
 import fr.exratio.jme.devkit.swing.JSplitPaneWithZeroSizeDivider;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Window;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import javax.swing.Icon;
 import javax.swing.JComponent;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
+import javax.swing.SwingUtilities;
 import org.jdesktop.swingx.JXLabel;
 
 public class MainPage extends JPanel {
@@ -125,7 +121,8 @@ public class MainPage extends JPanel {
     centerPanel.addComponentListener(new ComponentAdapter() {
       @Override
       public void componentResized(ComponentEvent e) {
-        getParent().revalidate();
+
+        SwingUtilities.getRoot(e.getComponent()).revalidate();
       }
     });
 
