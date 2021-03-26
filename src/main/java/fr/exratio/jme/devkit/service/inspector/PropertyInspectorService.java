@@ -20,10 +20,10 @@ import net.miginfocom.swing.MigLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PropertyInspectorService implements Service {
+public class PropertyInspectorService extends JPanel implements Service {
 
   public static final String WINDOW_ID = "Property Inspector";
-  private static final Logger LOGGER = LoggerFactory.getLogger(PropertyInspectorService.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(PropertyInspectorTool.class);
   private final JPanel sectionPanel;
 
   private final JLabel nothingSelectedLabel = new JLabel("Nothing To Inspect.");

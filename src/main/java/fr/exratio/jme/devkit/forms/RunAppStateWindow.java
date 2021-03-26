@@ -17,10 +17,15 @@ import fr.exratio.jme.devkit.appstate.annotations.ListProperty;
 import fr.exratio.jme.devkit.appstate.annotations.ListType;
 import fr.exratio.jme.devkit.core.ColorConverter;
 import fr.exratio.jme.devkit.core.DevkitPackages;
+import fr.exratio.jme.devkit.forms.MainPage2.Zone;
 import fr.exratio.jme.devkit.service.JmeEngineService;
+import fr.exratio.jme.devkit.service.SceneTreeService;
 import fr.exratio.jme.devkit.service.ServiceManager;
-import fr.exratio.jme.devkit.tool.ToolView;
+import fr.exratio.jme.devkit.service.inspector.PropertyInspectorTool;
 import fr.exratio.jme.devkit.swing.JSplitPaneWithZeroSizeDivider;
+import fr.exratio.jme.devkit.tool.Tool;
+import fr.exratio.jme.devkit.tool.ViewMode;
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.Window;
@@ -43,6 +48,7 @@ import javax.swing.BorderFactory;
 import javax.swing.DefaultBoundedRangeModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
@@ -59,14 +65,15 @@ import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
+import lombok.Builder;
 import net.miginfocom.swing.MigLayout;
 import org.reflections.Reflections;
 import org.reflections.scanners.MethodAnnotationsScanner;
 import org.reflections.util.ConfigurationBuilder;
 
-public class RunAppStateWindow extends ToolView {
+public class RunAppStateWindow extends Tool {
 
-  public static final String RUN_APPSTATE_WINDOW_TITLE = "Run AppState";
+  public static final String TITLE = "Run AppState";
   private static final Logger log = Logger.getLogger(RunAppStateWindow.class.getName());
   private JPanel rootPane;
   private JList<Class<? extends AppState>> appstatesList;
@@ -76,7 +83,21 @@ public class RunAppStateWindow extends ToolView {
   private JSplitPane noborderSpitPane;
 
   public RunAppStateWindow() {
-    super("runAppstate", RUN_APPSTATE_WINDOW_TITLE, null);
+    super(RunAppStateWindow.class.getName(), TITLE, null, Zone.LEFT_BOTTOM, ViewMode.PIN, true);
+    $$$setupUI$$$();
+    initialize();
+  }
+
+  @Builder(builderMethodName = "appStateViewBuilder")
+  public RunAppStateWindow(String id, String title, Icon icon,
+      Zone zone, ViewMode viewMode, boolean isDisplayed) {
+    super(RunAppStateWindow.class.getName(), TITLE, null, Zone.LEFT_BOTTOM, ViewMode.PIN, true);
+    $$$setupUI$$$();
+    initialize();
+  }
+
+
+  public void initialize() {
 
     $$$setupUI$$$();
 
@@ -808,7 +829,7 @@ public class RunAppStateWindow extends ToolView {
             new Dimension(250, 300), new Dimension(200, 200), null, 0, false));
     final JScrollPane scrollPane1 = new JScrollPane();
     noborderSpitPane.setRightComponent(scrollPane1);
-    appstatePropertiesPanel.setMinimumSize(new Dimension(350, 150));
+    appstatePropertiesPanel.setMinimumSize(new Dimension(0, 0));
     scrollPane1.setViewportView(appstatePropertiesPanel);
     appstatePropertiesPanel.setBorder(BorderFactory
         .createTitledBorder(BorderFactory.createEtchedBorder(), "Properties",
@@ -879,7 +900,7 @@ public class RunAppStateWindow extends ToolView {
 
   private void createUIComponents() {
     rootPane = new JPanel();
-    setContent(rootPane);
+    add(rootPane, BorderLayout.CENTER);
     appstatePropertiesPanel = new JPanel();
     appstatePropertiesPanel.setLayout(new MigLayout());
     noborderSpitPane = new JSplitPaneWithZeroSizeDivider();

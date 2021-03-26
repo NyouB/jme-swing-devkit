@@ -8,7 +8,7 @@ import fr.exratio.jme.devkit.properties.component.integer.IntegerEditor;
 import fr.exratio.jme.devkit.properties.component.material.MaterialChooserEditor;
 import fr.exratio.jme.devkit.service.JmeEngineService;
 import fr.exratio.jme.devkit.service.ServiceManager;
-import fr.exratio.jme.devkit.service.inspector.PropertyInspectorService;
+import fr.exratio.jme.devkit.service.inspector.PropertyInspectorTool;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +62,7 @@ public class GeometryPropertySectionBuilder extends AbstractPropertySectionBuild
       Material material = (Material) evt.getNewValue();
       List<PropertySection> sections = buildMaterialSection(material);
       if (!sections.isEmpty()) {
-        ServiceManager.getService(PropertyInspectorService.class)
+        ServiceManager.getService(PropertyInspectorTool.class)
             .updateSections(sections);
       }
     };

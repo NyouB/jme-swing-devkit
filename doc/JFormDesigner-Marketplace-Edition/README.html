@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>JFormDesigner README</title>
+  <style type="text/css">
+
+body {
+	margin: 1cm;
+	font-family: sans-serif;
+	font-size: 14px;
+	line-height: 21px;
+	color: #444;
+}
+
+h1 {
+	font-weight: 200;
+	font-size: 36px;
+	line-height: 42px;
+}
+
+h2 {
+	border-bottom: 1px solid #ccc;
+	font-weight: normal;
+	font-size: 24px;
+	line-height: 30px;
+}
+
+h3 {
+	border-bottom: 1px solid #ddd;
+	font-weight: normal;
+	font-size: 18px;
+	line-height: 24px;
+}
+
+h4 {
+	border-bottom: 1px solid #eee;
+	font-weight: normal;
+	font-size: 16px;
+	line-height: 22px;
+}
+
+a {
+	color: #53915b;
+	ext-decoration: none;
+}
+
+a:hover {
+	color: #dd6900;
+	text-decoration: underline;
+}
+
+pre {
+	border: 1px solid #e8e8d8;
+	border-radius: 3px;
+	background: #f8f8f0;
+	padding: 14px;
+}
+
+pre code {
+	font-family: Consolas, monospace;
+	font-size: 12px;
+	line-height: 18px;
+}
+
+.key {
+	color: #0099FF;
+	font-weight: bold;
+}
+
+.edition {
+	color: #990000;
+	font-weight: bold;
+}
+
+.platform {
+	color: #660000;
+	font-style: italic;
+}
+
+.fd-install-path {
+	text-decoration: underline;
+}
+
+.fd-install-instr strong {
+	background-color: #f8f8f0;
+}
+
+.fd-install-instr pre {
+	padding: 3px 5px;
+	margin-bottom: 5px;
+	margin-top: 5px;
+	font-size: 12px;
+	line-height: 14px;
+}
+
+.fd-licenses pre {
+	background: #fcfcf9;
+}
+
+.fd-example-main {
+	padding: 3px 6px;
+	background-color: #f8f8f0;
+	font-size: 12px;
+}
+
+  </style>
+
+
+</head>
+
+<body>
+<div style="max-width: 50em;">
+<h1>JFormDesigner README</h1>
+<p>Thank you for downloading JFormDesigner.</p>
+<h2>Introduction</h2>
+<p>JFormDesigner&trade; is an advanced GUI designer for Java&trade; Swing user
+interfaces. Its outstanding support for <a href="http://miglayout.com/">MigLayout</a>,
+<a href="http://www.jgoodies.com/freeware/libraries/forms/">JGoodies FormLayout</a>,
+GroupLayout (Free Design),
+<a href="http://www.clearthought.info/sun/products/jfc/tsc/articles/tablelayout/">TableLayout</a>
+and GridBagLayout makes it easy to create professional looking forms.</p>
+<p>JFormDesigner is available in five editions: as stand-alone application and as
+IDE plug-ins for Eclipse, IntelliJ IDEA, NetBeans and JDeveloper.</p>
+<h2>Changes</h2>
+<p>Changes since last release: <a href="CHANGELOG.html">read...</a></p>
+<h2>Home page and contact addresses</h2>
+<p><a href="https://www.formdev.com/">www.formdev.com</a> - FormDev Software GmbH</p>
+<p><a href="mailto:support@formdev.com">support@formdev.com</a> - Technical support<br />
+<a href="mailto:sales@formdev.com">sales@formdev.com</a> - Sales inquiries</p>
+<h2>System Requirements</h2>
+<p>Java 8 - 15 (OpenJDK or Oracle JRE/JDK).</p>
+<ul>
+<li><span class="edition">Eclipse plug-in</span>: Eclipse 4.5 - 2020-09 (4.17);<br />
+<strong>Linux</strong>: <a href="https://adoptopenjdk.net/">AdoptOpenJDK</a> 11 or later is recommended to run Eclipse;<br />
+<strong>Linux</strong>: Eclipse 2019-03 (4.11) or later required if running on Java 9 or later;<br />
+<strong>Linux</strong>: Eclipse 4.9 or earlier using GTK+ 2 required if running on Java 8</li>
+<li><span class="edition">IntelliJ IDEA plug-in</span>: IntelliJ IDEA 2016.1 - 2020.3;<br />
+<strong>Marketplace Edition</strong>: IntelliJ IDEA 2019.1 - 2020.3 Ultimate</li>
+<li><span class="edition">NetBeans plug-in</span>: NetBeans 8.0 - 12.1</li>
+<li><span class="edition">JDeveloper plug-in</span>: JDeveloper 12c Release 2 (12.2.x)</li>
+</ul>
+<h2>Installation Instructions</h2>
+<ul>
+<li><a href="#install_stand_alone">Stand-alone</a></li>
+<li><a href="#install_eclipse">Eclipse plug-in</a></li>
+<li><a href="#install_intellij_idea">IntelliJ IDEA plug-in</a></li>
+<li><a href="#install_netbeans">NetBeans plug-in</a></li>
+<li><a href="#install_jdeveloper">JDeveloper plug-in</a></li>
+</ul>
+<h3 id="install_stand_alone">Stand-alone</h3>
+<ul>
+<li><strong>Windows</strong>: Execute the installer and follow the
+instructions. Administrator rights are not required. The
+installer adds a menu item to the Windows Start menu.</li>
+<li><strong>macOS</strong>: Open the downloaded disk image (.dmg) and
+drag-and-drop the JFormDesigner application to your <code>Applications</code>
+folder.</li>
+<li><strong>Other platforms</strong>: Extract the downloaded archive. Execute <code>JFormDesigner.sh</code>
+to start JFormDesigner.</li>
+</ul>
+<h3 id="install_eclipse">Eclipse plug-in</h3>
+<p>The Eclipse plug-in is available in two different ZIPs.
+Make sure to use the right one for the chosen installation method.</p>
+<ul>
+<li><span class="fd-install-path">JFormDesigner-x.x-eclipse-site.zip</span> is an Eclipse &quot;Site Archive&quot;,
+which is used to install JFormDesigner using <strong>Install New Software</strong> wizard.
+Do not extract this ZIP into the Eclipse installation folder.</li>
+<li><span class="fd-install-path">JFormDesigner-x.x-eclipse.zip</span> is a simple ZIP archive, which can
+be extracted into the Eclipse installation or dropins folder.</li>
+</ul>
+<h4>Install from disk (JFormDesigner-x.x-eclipse-site.zip)</h4>
+<ol class="fd-install-instr">
+<li>Start Eclipse.</li>
+<li>Open the install wizard (Menu: <strong>Help &gt; Install New Software</strong>)</li>
+<li>Click <strong>Add</strong> button to open the <strong>Add Repository</strong>
+dialog.</li>
+<li>Click <strong>Archive</strong> button, select the site archive ZIP file
+(JFormDesigner-x.x-eclipse-site.zip) and click <strong>Add</strong> to close the
+<strong>Add Repository</strong> dialog.</li>
+<li>Check &quot;JFormDesigner&quot; in the list of available software and click <strong>Next</strong>.</li>
+<li>Review the items to be installed and click <strong>Next</strong>.</li>
+<li>If requested, accept the license agreement and click <strong>Finish</strong>
+to start the installation.</li>
+<li>Restart Eclipse.</li>
+</ol>
+<p><strong>Note</strong>: To download and install the latest stable version of
+the Eclipse plug-in, it is recommended to use the update site
+<a href="https://download.formdev.com/jformdesigner/eclipse/">https://download.formdev.com/jformdesigner/eclipse/</a>
+in the <strong>Install New Software</strong> wizard instead of downloading the site archive
+ZIP file. <a href="https://www.formdev.com/jformdesigner/installation/#install_eclipse">Details &raquo;</a></p>
+<h4>Manual installation (JFormDesigner-x.x-eclipse.zip)</h4>
+<ol class="fd-install-instr">
+<li>Quit Eclipse.</li>
+<li>Extract the ZIP file (JFormDesigner-x.x-eclipse.zip) into a folder in the
+Eclipse dropins folder:
+<pre><code>&lt;eclipse-install&gt;/
+    dropins/
+        JFormDesigner-x.x-eclipse/
+            features/
+                com.jformdesigner_x.x.x/...
+            plugins/
+                com.jformdesigner_x.x.x.jar
+                com.jformdesigner.doc_x.x.x.jar
+                com.jformdesigner.redist_x.x.x/...
+</code></pre>
+</li>
+<li>Start Eclipse.</li>
+</ol>
+<h3 id="install_intellij_idea">IntelliJ IDEA plug-in</h3>
+<ol class="fd-install-instr">
+<li>Start IntelliJ IDEA.</li>
+<li>Open the plugin manager dialog (Menu: <strong>File &gt; Settings &gt; Plugins</strong>)</li>
+<li>Click <strong>Gear &gt; Install plugin from disk</strong> to open the
+<strong>Choose Plugin file</strong> dialog.</li>
+<li>Select the ZIP file and click <strong>OK</strong> to close the dialog.</li>
+<li>Click <strong>OK</strong> to close the <strong>Settings</strong> dialog.</li>
+<li>Restart IntelliJ IDEA.</li>
+</ol>
+<p><strong>Note</strong>: To download and install the latest stable version of the IntelliJ IDEA
+plug-in, it is recommended to use the JetBrains Plugins Repository instead of
+manually downloading the ZIP file.
+<a href="https://www.formdev.com/jformdesigner/installation/#install_intellij_idea">Details &raquo;</a></p>
+<h3 id="install_netbeans">NetBeans plug-in</h3>
+<ol class="fd-install-instr">
+<li>Start NetBeans.</li>
+<li>Open the Plugins dialog (Menu: <strong>Tools &gt; Plugins</strong>)</li>
+<li>Select the <strong>Downloaded</strong> tab.</li>
+<li>Click <strong>Add Plugins</strong> button, select the NBM file
+(JFormDesigner-x.x-netbeans.nbm) and click <strong>OK</strong> to close the
+<strong>Add Plugins</strong> dialog.</li>
+<li>Review the items to be installed and click <strong>Install</strong>.</li>
+<li>If requested, accept the license agreement and click <strong>Install</strong>
+to start the installation.</li>
+<li>Close the <strong>Plugins</strong> dialog.</li>
+</ol>
+<h3 id="install_jdeveloper">JDeveloper plug-in</h3>
+<ol class="fd-install-instr">
+<li>Start JDeveloper.</li>
+<li>Open the Check for Updates dialog (Menu: <strong>Help &gt; Check for Updates</strong>)</li>
+<li>Select the <strong>Install From Local File</strong> checkbox.</li>
+<li>Use the <strong>Browse</strong> button to select the ZIP file.</li>
+<li>Click <strong>Next</strong> and <strong>Finish</strong> to start the installation.</li>
+<li>Restart JDeveloper.</li>
+</ol>
+<p><strong>Note</strong>: To download and install the latest stable version of
+the JDeveloper plug-in, it is recommended to use the JDeveloper Check
+for Updates Wizard (<strong>Help &gt; Check for Updates</strong>) instead of
+manually downloading and extracting the ZIP file.
+<a href="https://www.formdev.com/jformdesigner/installation/#install_jdeveloper">Details &raquo;</a></p>
+<p><br />
+Copyright &copy; 2004-2020 FormDev Software GmbH. All rights reserved.</p>
+
+</div>
+</body>
+
+</html>

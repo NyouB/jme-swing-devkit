@@ -2,7 +2,7 @@ package fr.exratio.jme.devkit.config;
 
 import fr.exratio.jme.devkit.forms.MainPage.Zone;
 import fr.exratio.jme.devkit.service.SceneTreeService;
-import fr.exratio.jme.devkit.service.inspector.PropertyInspectorService;
+import fr.exratio.jme.devkit.service.inspector.PropertyInspectorTool;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Toolkit;
@@ -30,7 +30,7 @@ public class SdkConfig {
 
     // Dimensions
     windowDimensions.putIfAbsent(SceneTreeService.WINDOW_ID, new Dimension(250, 600));
-    windowDimensions.putIfAbsent(PropertyInspectorService.WINDOW_ID, new Dimension(250, 600));
+//    windowDimensions.putIfAbsent(PropertyInspectorTool.WINDOW_ID, new Dimension(250, 600));
 
     // Locations
     // The main window will be placed in the center of the screen..
@@ -42,7 +42,7 @@ public class SdkConfig {
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     int xPropInspector = (int) (screenSize.getWidth() - 250);
 
-    windowLocations.putIfAbsent(PropertyInspectorService.WINDOW_ID, new Point(xPropInspector, 0));
+//    windowLocations.putIfAbsent(PropertyInspectorTool.WINDOW_ID, new Point(xPropInspector, 0));
   }
 
   public String getTheme() {

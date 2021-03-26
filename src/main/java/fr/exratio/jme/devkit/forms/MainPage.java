@@ -28,6 +28,7 @@ public class MainPage extends JPanel {
   private JTabbedPane centerTabbedPane;
   private JTabbedPane leftTabbedPane;
   private JTabbedPane botTabbedPane;
+  private JTabbedPane rightTabbedPane;
   private JSplitPane rightSplitPane;
   private JSplitPane leftSplitPane;
   private JSplitPane verticalSplitPane;

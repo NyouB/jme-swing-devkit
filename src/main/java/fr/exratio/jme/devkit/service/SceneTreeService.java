@@ -16,12 +16,15 @@ import fr.exratio.jme.devkit.event.LightRemovedEvent;
 import fr.exratio.jme.devkit.event.SpatialCreatedEvent;
 import fr.exratio.jme.devkit.event.SpatialNameChangedEvent;
 import fr.exratio.jme.devkit.event.SpatialRemovedEvent;
+import fr.exratio.jme.devkit.forms.MainPage2.Zone;
+import fr.exratio.jme.devkit.forms.RunAppStateWindow;
 import fr.exratio.jme.devkit.jme.SceneObjectHighlighterState;
 import fr.exratio.jme.devkit.registration.Registrar;
 import fr.exratio.jme.devkit.registration.spatial.GeometryRegistrar;
 import fr.exratio.jme.devkit.registration.spatial.NodeRegistrar;
-import fr.exratio.jme.devkit.service.inspector.PropertyInspectorService;
-import fr.exratio.jme.devkit.tool.ToolView;
+import fr.exratio.jme.devkit.service.inspector.PropertyInspectorTool;
+import fr.exratio.jme.devkit.tool.Tool;
+import fr.exratio.jme.devkit.tool.ViewMode;
 import fr.exratio.jme.devkit.tree.JmeTreeNode;
 import fr.exratio.jme.devkit.tree.SceneTreeMouseListener;
 import fr.exratio.jme.devkit.tree.TreeConstants;
@@ -32,10 +35,13 @@ import fr.exratio.jme.devkit.tree.spatial.GeometryTreeNode;
 import fr.exratio.jme.devkit.tree.spatial.MeshTreeNode;
 import fr.exratio.jme.devkit.tree.spatial.NodeTreeNode;
 import fr.exratio.jme.devkit.tree.spatial.SpatialTreeNode;
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.util.HashMap;
 import java.util.Map;
+import javax.swing.Icon;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
@@ -44,6 +50,7 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
+import lombok.Builder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,12 +58,14 @@ import org.slf4j.LoggerFactory;
  * Provides a jMonkey Scene Tree visualised in a Swing JTree. This implementation does not reflect
  * any changes made by outside sources.
  */
-public class SceneTreeService extends ToolView implements Service {
+public class SceneTreeService extends Tool implements Service {
 
   public static final String WINDOW_ID = "scene-tree";
+  public static final String TITLE = "Project";
   private static final Logger LOGGER = LoggerFactory.getLogger(SceneTreeService.class);
-  private final JTree tree;
-  private final long threadId;
+  private JTree tree;
+  private final long threadId = Thread.currentThread().getId();
+  ;
   // These are "fake" nodes. They are added to their counterparts so we don't see things like "statsappstate".
   // These nodes are created, queried and modified on the JME thread ONLY.
   private Node guiNode;
@@ -69,12 +78,21 @@ public class SceneTreeService extends ToolView implements Service {
   private Map<Object, DefaultMutableTreeNode> objectToNodeMap = new HashMap<>();
 
   public SceneTreeService() {
-    super(WINDOW_ID, "Project", null);
+    super(SceneTreeService.class.getName(), TITLE, null, Zone.LEFT_TOP, ViewMode.PIN, true);
+    initialize();
+  }
 
-    threadId = Thread.currentThread().getId();
+  @Builder(builderMethodName = "treeBuilder")
+  public SceneTreeService(String id, String title, Icon icon,
+      Zone zone, ViewMode viewMode,
+      boolean isDisplayed) {
+    super(id, title, icon, zone, viewMode, isDisplayed);
+    initialize();
+  }
 
+  private void initialize() {
     this.tree = new JTree();
-    setContent(new JScrollPane(tree));
+    add(new JScrollPane(tree), BorderLayout.CENTER);
     tree.setMinimumSize(new Dimension(100, 500));
     tree.setPreferredSize(new Dimension(200, 500));
     DefaultTreeCellRenderer renderer =
@@ -148,7 +166,7 @@ public class SceneTreeService extends ToolView implements Service {
             paths.length
                 - 1].getLastPathComponent();
 
-        ServiceManager.getService(PropertyInspectorService.class)
+        ServiceManager.getService(PropertyInspectorTool.class)
             .inspect(lastSelectedTreeNode.getUserObject());
 
         // highlighting
@@ -199,7 +217,9 @@ public class SceneTreeService extends ToolView implements Service {
     // register our listener
     ServiceManager.getService(EventService.class).register(this);
 
+
   }
+
 
   /**
    * Returns the "fake" RootNode as opposed to the "real" rootNode. Note that this node is attached

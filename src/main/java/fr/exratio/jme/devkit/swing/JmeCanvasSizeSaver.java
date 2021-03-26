@@ -2,6 +2,7 @@ package fr.exratio.jme.devkit.swing;
 
 import fr.exratio.jme.devkit.config.DevKitConfig;
 import fr.exratio.jme.devkit.forms.MainPage;
+import fr.exratio.jme.devkit.forms.MainPage2;
 import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.event.ComponentEvent;
@@ -17,7 +18,7 @@ public class JmeCanvasSizeSaver implements ComponentListener {
     Canvas canvas = (Canvas) e.getComponent();
     Dimension size = canvas.getSize();
 
-    DevKitConfig.getInstance().getSdkConfig().setWindowDimensions(MainPage.WINDOW_ID, size);
+    DevKitConfig.getInstance().getSdkConfig().setWindowDimensions(MainPage2.WINDOW_ID, size);
     DevKitConfig.getInstance().save();
   }
 

@@ -1,18 +1,21 @@
 package fr.exratio.jme.devkit.service;
 
 import fr.exratio.jme.devkit.config.DevKitConfig;
-import fr.exratio.jme.devkit.forms.MainPage;
-import fr.exratio.jme.devkit.forms.MainPage.Zone;
-import fr.exratio.jme.devkit.tool.ToolView;
+import fr.exratio.jme.devkit.forms.MainPage2;
+import fr.exratio.jme.devkit.forms.MainPage2.Zone;
+import fr.exratio.jme.devkit.tool.Tool;
+import fr.exratio.jme.devkit.tool.ViewMode;
+import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Point;
 import java.awt.Window;
 import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -30,27 +33,56 @@ import javax.swing.WindowConstants;
 public class ToolLocationService implements Service {
 
   private final JFrame mainFrame;
-  private MainPage mainPage;
+  private MainPage2 mainPage;
   private final long threadId;
-  private Map<String, ToolView> tools = new HashMap<>();
+  private Map<Zone, List<Tool>> toolsZone;
+  private Map<String, Tool> toolSet = new HashMap<>();
   private JMenu toolViewMenu = new JMenu("View");
 
-  public ToolLocationService(JFrame mainFrame, MainPage mainPage) {
+  public ToolLocationService(JFrame mainFrame, MainPage2 mainPage) {
     this.mainFrame = mainFrame;
     threadId = Thread.currentThread().getId();
     this.mainPage = mainPage;
     ServiceManager.getService(MenuService.class).addPrimaryMenu(toolViewMenu);
+    initializeMap();
   }
 
-  public void registerTool(ToolView toolView) {
-    if (tools.get(toolView.getId()) == null) {
-      tools.put(toolView.getId(), toolView);
-      toolView.changeViewMode(toolView.getViewMode());
-      addViewMenuEntry(toolView);
+  private void initializeMap() {
+    toolsZone = new HashMap<>();
+    for (Zone zone : Zone.values()) {
+      toolsZone.put(zone, new ArrayList<>());
     }
   }
 
-  public void addViewMenuEntry(ToolView toolView) {
+  /*public void registerTool(Tool tool) {
+    if (!isToolRegistered(tool)) {
+      tool.setViewMode(tool.getViewMode());
+      addViewMenuEntry(tool);
+      toolSet.put(tool.getId(), tool);
+      toolsZone.get(tool.getZone()).add(tool);
+      tool.getZone().getToolBar().add(tool);
+    }
+
+  }  */
+  public void registerTool(Tool tool) {
+    if (!isToolRegistered(tool)) {
+      addViewMenuEntry(tool);
+      toolSet.put(tool.getId(), tool);
+    }
+    tool.getZone().add(tool);
+  }
+
+  public void attachTool(Tool tool){
+    if (!isToolRegistered(tool)) {
+      registerTool(tool);
+    }
+    tool.setViewMode(tool.getViewMode());
+    toolsZone.get(tool.getZone()).add(tool);
+    tool.getZone().add(tool);
+
+  }
+
+  public void addViewMenuEntry(Tool toolView) {
     JRadioButtonMenuItem jRadioButtonMenuItem = new JRadioButtonMenuItem(toolView.getTitle(),
         toolView.getIcon());
     jRadioButtonMenuItem.addItemListener(
@@ -110,47 +142,26 @@ public class ToolLocationService implements Service {
 
   public JDialog createDialog(Frame parent, JComponent content, String title, boolean saveLocation,
       boolean saveSize) {
-
     JDialog dialog = new JDialog(parent, title);
-
     dialog.setContentPane(content);
     dialog.pack();
-
     dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-
-
-  /*  if (saveLocation) {
-      dialog.addComponentListener(new WindowLocationSaver(title));
-    }
-
-    if (saveSize) {
-      dialog.addComponentListener(new WindowSizeSaver(title));
-    }
-
-    if (saveLocation) {
-      ServiceManager.getService(ToolLocationService.class).positionWindowFromSavedPosition(dialog, title);
-    }
-
-    if (saveSize) {
-      ServiceManager.getService(ToolLocationService.class).sizeWindowFromSavedSize(dialog, title);
-    }*/
-
     return dialog;
 
   }
 
-  public MainPage getMainPage() {
+  public MainPage2 getMainPage() {
     return mainPage;
   }
 
-  public void closeToolDialog(ToolView tool) {
-    if (fr.exratio.jme.devkit.tool.Window.class.isInstance(tool.getParent())) {
-      JDialog dialog = (JDialog) SwingUtilities.getRoot(tool);
-      dialog.dispose();
+  public void closeToolDialog(Tool tool) {
+    if (ViewMode.WINDOW == tool.getViewMode()) {
+      Window window = (Window) SwingUtilities.getRoot(tool);
+      window.dispose();
     }
   }
 
-  public Window wrapInWindow(ToolView tool) {
+  public Window wrapInWindow(Tool tool) {
     Window window = getWindow(tool.getId());
     if (window == null) {
       window = createDialog(mainFrame,
@@ -164,15 +175,34 @@ public class ToolLocationService implements Service {
     return window;
   }
 
-  public void moveZone(ToolView toolView, Zone newZone) {
-    mainPage.removeTab(toolView);
-    mainPage.addTab(toolView.getTitle(), toolView, toolView.getIcon(), newZone);
+  public void moveZone(Tool tool, Zone newZone) {
+    if (tool.getViewMode() != ViewMode.PIN){
+      return;
+    }
+    removeTool(tool);
+    newZone.add(tool);
   }
 
-  public void hide(ToolView toolView){
-    closeToolDialog(toolView);
-    mainPage.removeTab(toolView);
+  public void removeTool(JComponent tool) {
+    if (tool.getParent() != null) {
+      tool.getParent().remove(tool);
+    }
   }
+
+  public void hide(Tool toolView) {
+    toolView.setVisible(false);
+  }
+
+  public void show(Tool toolView) {
+    toolView.setVisible(true);
+  }
+
+  public void remove(Component component) {
+    if (component.getParent() != null) {
+      component.getParent().remove(component);
+    }
+  }
+
 
   @Override
   public long getThreadId() {
@@ -182,6 +212,21 @@ public class ToolLocationService implements Service {
   @Override
   public void stop() {
 
+  }
+
+  public void changeToolViewMode(Tool toolView, ViewMode newViewMode) {
+    if (toolView.getViewMode().equals(newViewMode)) {
+      return;
+    }
+    if (!isToolRegistered(toolView)) {
+      registerTool(toolView);
+    }
+
+
+  }
+
+  public boolean isToolRegistered(Tool toolView) {
+    return toolSet.get(toolView.getId()) != null;
   }
 
 }

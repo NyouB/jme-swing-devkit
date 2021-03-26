@@ -5,6 +5,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Box;
 import com.jme3.system.AppSettings;
 import com.jme3.system.JmeCanvasContext;
+import com.jme3.system.awt.AwtPanelsContext;
 import java.awt.BorderLayout;
 import java.awt.Canvas;
 import java.awt.Container;
@@ -23,6 +24,7 @@ public class MaintestCanvas extends SimpleApplication {
     MaintestCanvas maintest = new MaintestCanvas();
     maintest.setShowSettings(false);
     AppSettings settings = new AppSettings(true);
+    settings.setCustomRenderer(AwtPanelsContext.class);
     maintest.setSettings(settings);
     maintest.start(true);
     while (maintest.getViewPort() == null) {

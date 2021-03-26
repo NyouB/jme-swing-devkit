@@ -1,0 +1,2438 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>JFormDesigner Change Log</title>
+  <style type="text/css">
+
+body {
+	margin: 1cm;
+	font-family: sans-serif;
+	font-size: 14px;
+	line-height: 21px;
+	color: #444;
+}
+
+h1 {
+	font-weight: 200;
+	font-size: 36px;
+	line-height: 42px;
+}
+
+h2 {
+	border-bottom: 1px solid #ccc;
+	font-weight: normal;
+	font-size: 24px;
+	line-height: 30px;
+}
+
+h3 {
+	border-bottom: 1px solid #ddd;
+	font-weight: normal;
+	font-size: 18px;
+	line-height: 24px;
+	margin-left: 7px;
+}
+
+h4 {
+	border-bottom: 1px solid #eee;
+	font-weight: normal;
+	font-size: 16px;
+	line-height: 22px;
+	margin-left: 14px;
+}
+
+a {
+	color: #53915b;
+	ext-decoration: none;
+}
+
+a:hover {
+	color: #dd6900;
+	text-decoration: underline;
+}
+
+.uk-alert {
+	padding: 15px;
+	background: #fcf9e4;
+	color: #444;
+	border: 1px solid #ffd324;
+	border-radius: 4px;
+}
+
+h2 > span {
+	font-size: 13px;
+	font-weight: normal;
+	color: #999;
+}
+
+ul.toc {
+	padding-left: 14px;
+}
+.toc li {
+	list-style: none;
+}
+.toc a {
+	display: inline-block;
+	min-width: 34px;
+	border-radius: 2px;
+	background: #f4f4f4;
+	color: #444;
+	margin: 2px 1px;
+	padding: 2px;
+	text-align: center;
+	text-decoration: none;
+}
+.toc a.version {
+	background: #1e87f0;
+	color: #f8f8f8;
+	margin-right: 14px;
+}
+.toc a:hover {
+	background: #ccc;
+}
+
+.sep {
+	height: 3px;
+	background: #ccc;
+	margin: 25px 0;
+}
+
+  </style>
+
+
+</head>
+
+<body>
+<h1>JFormDesigner Change Log</h1>
+<ul class="toc">
+  <li>
+    <a href="#v7" class="version"><strong>7</strong></a>
+    <a href="#7">7</a>
+    <a href="#7_0_0_1">7.0.0.1</a>
+    <a href="#7_0_0_2">7.0.0.2</a>
+    <a href="#7_0_0_3">7.0.0.3</a>
+    <a href="#7_0_0_4">7.0.0.4</a>
+    <a href="#7_0_0_5">7.0.0.5</a>
+    <a href="#7_0_0_6">7.0.0.6</a>
+    <a href="#7_0_1">7.0.1</a>
+    <a href="#7_0_2">7.0.2</a>
+    <a href="#7_0_2_1">7.0.2.1</a>
+    <a href="#7_0_2_2">7.0.2.2</a>
+    <a href="#7_0_2_3">7.0.2.3</a>
+    <a href="#7_0_2_4">7.0.2.4</a>
+    <a href="#7_0_2_5">7.0.2.5</a>
+    <a href="#7_0_2_6">7.0.2.6</a>
+    <a href="#7_0_3">7.0.3</a>
+  </li>
+  <li>
+    <a href="#v6" class="version"><strong>6</strong></a>
+    <a href="#6">6</a>
+    <a href="#6_0_1">6.0.1</a>
+    <a href="#6_0_2">6.0.2</a>
+    <a href="#6_0_3">6.0.3</a>
+    <a href="#6_0_4">6.0.4</a>
+    <a href="#6_0_4_1">6.0.4.1</a>
+    <a href="#6_0_5">6.0.5</a>
+    <a href="#6_0_6">6.0.6</a>
+    <a href="#6_0_6_1">6.0.6.1</a>
+    <a href="#6_0_6_2">6.0.6.2</a>
+    <a href="#6_0_6_3">6.0.6.3</a>
+    <a href="#6_0_6_4">6.0.6.4</a>
+  </li>
+  <li>
+    <a href="#v5.2" class="version"><strong>5.2</strong></a>
+    <a href="#5_2">5.2</a>
+    <a href="#5_2_0_1">5.2.0.1</a>
+    <a href="#5_2_0_2">5.2.0.2</a>
+    <a href="#5_2_0_3">5.2.0.3</a>
+    <a href="#5_2_1">5.2.1</a>
+    <a href="#5_2_2">5.2.2</a>
+    <a href="#5_2_2_1">5.2.2.1</a>
+    <a href="#5_2_2_2">5.2.2.2</a>
+    <a href="#5_2_3">5.2.3</a>
+    <a href="#5_2_4">5.2.4</a>
+    <a href="#5_2_4_1">5.2.4.1</a>
+    <a href="#5_2_5">5.2.5</a>
+    <a href="#5_2_5_1">5.2.5.1</a>
+  </li>
+  <li>
+    <a href="#v5.1" class="version"><strong>5.1</strong></a>
+    <a href="#5_1">5.1</a>
+    <a href="#5_1_0_1">5.1.0.1</a>
+    <a href="#5_1_0_2">5.1.0.2</a>
+    <a href="#5_1_1">5.1.1</a>
+    <a href="#5_1_2">5.1.2</a>
+    <a href="#5_1_3">5.1.3</a>
+    <a href="#5_1_3_1">5.1.3.1</a>
+    <a href="#5_1_3_2">5.1.3.2</a>
+    <a href="#5_1_3_3">5.1.3.3</a>
+  </li>
+  <li>
+    <a href="#v5" class="version"><strong>5</strong></a>
+    <a href="#5">5</a>
+    <a href="#5_0_0_1">5.0.0.1</a>
+    <a href="#5_0_1">5.0.1</a>
+    <a href="#5_0_2">5.0.2</a>
+    <a href="#5_0_2_1">5.0.2.1</a>
+    <a href="#5_0_2_2">5.0.2.2</a>
+    <a href="#5_0_2_3">5.0.2.3</a>
+    <a href="#5_0_3">5.0.3</a>
+    <a href="#5_0_4">5.0.4</a>
+    <a href="#5_0_4_1">5.0.4.1</a>
+  </li>
+  <li>
+    <a href="#v4" class="version"><strong>4</strong></a>
+    <a href="#4">4</a>
+    <a href="#4_0_1">4.0.1</a>
+    <a href="#4_0_2">4.0.2</a>
+    <a href="#4_0_2_1">4.0.2.1</a>
+    <a href="#4_0_3">4.0.3</a>
+    <a href="#4_0_4">4.0.4</a>
+    <a href="#4_0_5">4.0.5</a>
+    <a href="#4_0_6">4.0.6</a>
+    <a href="#4_0_7">4.0.7</a>
+    <a href="#4_0_7_1">4.0.7.1</a>
+    <a href="#4_0_7_2">4.0.7.2</a>
+    <a href="#4_0_8">4.0.8</a>
+    <a href="#4_0_9">4.0.9</a>
+  </li>
+  <li>
+    <a href="#v3.1" class="version"><strong>3.1</strong></a>
+    <a href="#3_1">3.1</a>
+    <a href="#3_1_1">3.1.1</a>
+    <a href="#3_1_1_1">3.1.1.1</a>
+    <a href="#3_1_2">3.1.2</a>
+    <a href="#3_1_3">3.1.3</a>
+    <a href="#3_1_4">3.1.4</a>
+  </li>
+  <li>
+    <a href="#v3" class="version"><strong>3</strong></a>
+    <a href="#3">3</a>
+    <a href="#3_0_1">3.0.1</a>
+    <a href="#3_0_2">3.0.2</a>
+    <a href="#3_0_3">3.0.3</a>
+    <a href="#3_0_4">3.0.4</a>
+    <a href="#3_0_4_1">3.0.4.1</a>
+    <a href="#3_0_5">3.0.5</a>
+  </li>
+  <li>
+    <a href="#v2" class="version"><strong>2</strong></a>
+    <a href="#2">2</a>
+    <a href="#2_0_1">2.0.1</a>
+    <a href="#2_0_2">2.0.2</a>
+    <a href="#2_0_3">2.0.3</a>
+    <a href="#2_0_4">2.0.4</a>
+    <a href="#2_0_5">2.0.5</a>
+  </li>
+  <li>
+    <a href="#v1" class="version"><strong>1</strong></a>
+    <a href="#1">1</a>
+    <a href="#1_0_1">1.0.1</a>
+    <a href="#1_0_2">1.0.2</a>
+    <a href="#1_0_3">1.0.3</a>
+    <a href="#1_0_4">1.0.4</a>
+    <a href="#1_0_5">1.0.5</a>
+    <a href="#1_0_6">1.0.6</a>
+  </li>
+</ul>
+<div style="max-width: 50em;">
+<div id="v7" class="sep"></div><h2 id="7_0_3">7.0.3</h2>
+<h3>New Features and Improvements</h3>
+<ul>
+<li>Java 15 support.</li>
+<li>Improved look and feel switching.</li>
+<li>IntelliJ IDEA plug-in: Support for IntelliJ IDEA 2020.3.</li>
+<li>Stand-alone: Updated bundled JRE to OpenJDK Java 15.0.1 (64 bit).</li>
+</ul>
+<h3>Bugs fixed</h3>
+<ul>
+<li>If using Nimbus look and feel in designer, then opening a form that contains
+comboboxes, spinners or scrollbars did paint arrows wrong.</li>
+<li>Properties view was not updated when switching designer from Nimbus to
+another look and feel.</li>
+<li>IntelliJ IDEA plug-in: Look and Feel switching is now again available, even
+if <strong>Windows 10 Light Theme</strong> or <strong>macOS Light Theme</strong> plugins are enabled
+(was not available since 7.0.2).</li>
+<li>IntelliJ IDEA plug-in: If using non-default look and feel in designer (e.g.
+Nimbus), then opening another form did not show the form in the correct look
+and feel.</li>
+<li>IntelliJ IDEA plug-in: Fixed exception <code>java.lang.Error: no ComponentUI class for: com.intellij.ui.components.ActionLink</code>, which may have occurred
+if look and feel switching was used.</li>
+<li>IntelliJ IDEA plug-in: Show correct IntelliJ IDEA theme name in designer
+look and feel combobox.</li>
+<li>IntelliJ IDEA plug-in: Fixed continuous repaint of design grid and medium
+CPU/GPU load while form is open.</li>
+</ul>
+<h2 id="7_0_2_6">7.0.2.6 <span>(IntelliJ IDEA plug-in only)</span></h2>
+<ul>
+<li>IntelliJ IDEA plug-in: Support for IntelliJ IDEA 2020.2.</li>
+<li>IntelliJ IDEA plug-in: Renaming components in Structure tree by pressing F2
+key did not work because the text field was not focused.</li>
+<li>IntelliJ IDEA plug-in: Fixed <code>NullPointerException</code> in icon chooser dialog
+when using Maven project and module <code>.iml</code> file is missing.</li>
+</ul>
+<h2 id="7_0_2_5">7.0.2.5 <span>(NetBeans plug-in only)</span></h2>
+<ul>
+<li>NetBeans plug-in: Fixed failed installation of plug-in if NetBeans runs on
+Java 14.</li>
+</ul>
+<h2 id="7_0_2_4">7.0.2.4 <span>(IntelliJ IDEA plug-in only)</span></h2>
+<ul>
+<li>IntelliJ IDEA plug-in: Fixed <code>IllegalArgumentException</code> at startup in
+IntelliJ IDEA 2019.2 and earlier when trying to reopen forms (regression in
+7.0.2.1).</li>
+</ul>
+<h2 id="7_0_2_3">7.0.2.3 <span>(IntelliJ IDEA plug-in only)</span></h2>
+<ul>
+<li>IntelliJ IDEA plug-in: Changed vendor in Marketplace Edition plugin
+descriptor in to comply with JetBrains Marketplace organization ID rules.</li>
+</ul>
+<h2 id="7_0_2_2">7.0.2.2 <span>(IntelliJ IDEA plug-in only)</span></h2>
+<ul>
+<li>IntelliJ IDEA plug-in: Changed vendor in plugin descriptor to comply with
+JetBrains Marketplace organization ID rules.</li>
+</ul>
+<h2 id="7_0_2_1">7.0.2.1 <span>(IntelliJ IDEA plug-in only)</span></h2>
+<ul>
+<li>IntelliJ IDEA plug-in: Fixed <code>Should be called at least in the state COMPONENTS_LOADED, the current state is: CONFIGURATION_STORE_INITIALIZED</code>
+exception on startup (only in IntelliJ IDEA 2020.1).</li>
+<li>IntelliJ IDEA plug-in: Removed JGoodies Looks Windows classes because they
+are not compatible with Java 11.</li>
+</ul>
+<h2 id="7_0_2">7.0.2</h2>
+<h3>New Features and Improvements</h3>
+<ul>
+<li>Java 14 support.</li>
+<li>Support adding
+<a href="https://www.formdev.com/flatlaf/" target="_blank">FlatLaf</a> on
+Look and Feel preferences page.</li>
+<li>IntelliJ IDEA plug-in: Support for IntelliJ IDEA 2020.1.</li>
+<li>NetBeans plug-in: Support for NetBeans 11.3.</li>
+</ul>
+<h3>Bugs fixed</h3>
+<ul>
+<li>IntelliJ IDEA plug-in: Fixed <code>Failed to create look and feel</code> error dialog
+in IntelliJ IDEA 2020.1, which occurred if <strong>Windows 10 Light</strong> or <strong>macOS
+Light</strong> theme are active. JFormDesigner look and Feel switching is now
+disabled if <strong>Windows 10 Light Theme</strong> or <strong>macOS Light Theme</strong> plugins are
+installed and enabled.</li>
+<li>Eclipse plug-in on Ubuntu Linux: Disallow using Ubuntu Java to avoid Eclipse
+crashes. <a href="https://adoptopenjdk.net/" target="_blank">AdoptOpenJDK</a>
+11 or later is recommended to run Eclipse on Ubuntu.</li>
+</ul>
+<h2 id="7_0_1">7.0.1</h2>
+<h3>New Features and Improvements</h3>
+<ul>
+<li>Java 13 support.</li>
+<li>Support fluent style properties (property setter method returns <code>this</code>).</li>
+<li>Properties view: Property editor for type <code>java.lang.Class</code> now supports
+primitive types and array types.</li>
+<li>Stand-alone: Use Java 8 (instead of Java 12) as default source compatibility
+for generated code.</li>
+<li>Stand-alone: Updated bundled JRE to OpenJDK Java 13.0.2 (64 bit).</li>
+<li>IntelliJ IDEA plug-in: Support for IntelliJ IDEA 2020.1 EAP.</li>
+</ul>
+<h3>Bugs fixed</h3>
+<ul>
+<li>Fixed flicker when resizing dialogs to smaller sizes on Windows and Linux.</li>
+<li>Some icons were not painted in high resolution on HiDPI displays.</li>
+<li>Stand-alone: Fixed occasional <code>NullPointerException</code> after closing a form.</li>
+<li>Eclipse plug-in on Mac: In-place-editing labels did not work because editing
+field did not get focus. Also, editing in Properties view did not work
+sometimes.</li>
+<li>Eclipse plug-in: Fixed occasional <code>NullPointerException</code> in refactoring when
+renaming a class.</li>
+</ul>
+<h2 id="7_0_0_6">7.0.0.6 <span>(IntelliJ IDEA plug-in only)</span></h2>
+<ul>
+<li>IntelliJ IDEA plug-in: Fixed <code>NoSuchMethodError</code> when invoking
+JFormDesigner help in IntelliJ IDEA 2019.3 EAP.</li>
+</ul>
+<h2 id="7_0_0_5">7.0.0.5 <span>(IntelliJ IDEA plug-in only)</span></h2>
+<ul>
+<li>IntelliJ IDEA plug-in: Fixed look and feel switching issues in IntelliJ IDEA
+2019.2.</li>
+</ul>
+<h2 id="7_0_0_4">7.0.0.4 <span>(IntelliJ IDEA plug-in only)</span></h2>
+<ul>
+<li>IntelliJ IDEA plug-in: Fixes for dark theme.</li>
+</ul>
+<h2 id="7_0_0_3">7.0.0.3 <span>(IntelliJ IDEA plug-in only)</span></h2>
+<ul>
+<li>IntelliJ IDEA plug-in: Fixed high CPU load when animation is enabled and
+using <code>GridBagLayout</code>.</li>
+<li>IntelliJ IDEA plug-in: Fixed memory leak, which was reported to IDEA log.</li>
+<li>IntelliJ IDEA plug-in: Look and feel combobox in designer toolbar was not
+updated when switching IntelliJ IDEA theme (regression in 7).</li>
+</ul>
+<h2 id="7_0_0_2">7.0.0.2 <span>(IntelliJ IDEA plug-in only)</span></h2>
+<ul>
+<li>IntelliJ IDEA plug-in: Fixed display errors in various components and
+dialogs.</li>
+<li>IntelliJ IDEA plug-in: Fixed <code>AbstractMethodError</code> exception when clicking
+on links in labels (regression in 7.0.0.1).</li>
+</ul>
+<h2 id="7_0_0_1">7.0.0.1 <span>(IntelliJ IDEA plug-in only)</span></h2>
+<ul>
+<li>IntelliJ IDEA plug-in: Marketplace edition introduced to support JetBrains
+Marketplace licensing.</li>
+<li>IntelliJ IDEA plug-in: Fixed <code>NullPointerException</code> when invoking
+JFormDesigner help in IntelliJ IDEA 2019.2 EAP.</li>
+</ul>
+<h2 id="7">7</h2>
+<h3>New Features and Improvements</h3>
+<ul>
+<li>Java 9 - 12 support.</li>
+<li>Java 10 <code>var</code> support in generated Java code.</li>
+<li>New icon/image chooser dialog.</li>
+<li>Load images from project source folders.</li>
+<li>Icon editor: Support selecting icons in JARs of classpath.</li>
+<li>Design view: Invisible frame around top-level components for easy resizing
+them.</li>
+<li>Highlight filter matches in Choose Bean and Choose Key (i18n) dialogs.</li>
+<li>Rename component dialog: Added &quot;Previous&quot; and &quot;Next&quot; buttons to quickly
+rename multiple components without closing the dialog.</li>
+<li>Improved multi-monitor support.</li>
+<li>Support per-monitor scale factors when running JFormDesigner in Java 9 VM
+or in IntelliJ IDEA 2017.2.</li>
+<li>Eclipse plug-in: Refactoring integration improved:
+<ul>
+<li>JFormDesigner form files and palette are now updated when using
+<code>Refactor &gt; Rename</code>, <code>Refactor &gt; Move</code>, <code>Refactor &gt; Change Method Signature</code>
+or <code>Rename in workspace</code> on packages, classes, fields and methods.</li>
+<li>Rename component in Design view now allows using Eclipse Java refactoring
+to rename all occurrences of the component name (including Preview).</li>
+<li>Rename/move .properties files now updates .jfd and .java files.</li>
+<li>Rename nested class now updates .jfd file.</li>
+</ul>
+</li>
+<li>Eclipse plug-in: Support assigning shortcut keys to JFormDesigner commands
+in the Eclipse Preferences dialog on page &quot;Keys&quot;
+(search for JFormDesigner to find the available commands).</li>
+<li>Eclipse plug-in: Improved modal dialog experience.</li>
+<li>Eclipse plug-in on Linux: Support running Eclipse under GTK+ 3
+in a Java 9 (or later) VM (requires Eclipse 2019-03 (4.11) or later).</li>
+<li>I18n: Support UTF-8 Property Resource Bundles (default since Java 9).</li>
+<li>Java Code Generator template for <code>java.awt.Dialog</code> changed to use
+single constructor with parameter <code>Window owner</code>.</li>
+<li>Support components that subclass <code>java.awt.Window</code> and have a constructor
+with a single parameter of type <code>java.awt.Window</code>.</li>
+<li>Java Code Generator: Use constants for font names (e.g. <code>Font.DIALOG</code>).</li>
+</ul>
+<h3>Other Changes</h3>
+<ul>
+<li>System Requirements: Java 8 - 12 (OpenJDK or Oracle JRE/JDK).</li>
+<li>System Requirements: Dropped support for Eclipse 3.6 - 4.4,
+IntelliJ IDEA 12.0 - 15.0, NetBeans 7.2 - 7.4 and JDeveloper 11g - 12c R1.</li>
+<li>Updated MigLayout to 5.2.</li>
+<li>Updated IntelliJ IDEA GridLayout to 2018.2.</li>
+<li>Removed &quot;JARs&quot; tab from &quot;Choose Bean&quot; dialog.</li>
+<li>Removed support for .jfd files created with JFormDesigner 1.0
+(use JFormDesigner 6 to save them in current format).</li>
+<li>Updated JRE in Windows setup to OpenJDK Java 12.0.1 (64 bit).</li>
+<li>macOS distribution now bundles a JRE: OpenJDK Java 12.0.1 (64 bit).</li>
+<li>Linux distribution now bundles a JRE: OpenJDK Java 12.0.1 (64 bit).</li>
+</ul>
+<div id="v6" class="sep"></div><h2 id="6_0_6_4">6.0.6.4 <span>(IntelliJ IDEA plug-in only)</span></h2>
+<ul>
+<li>IntelliJ IDEA plug-in: Fixed deadlock in IntelliJ IDEA 2019.1 when opening a
+form in a Gradle project.</li>
+</ul>
+<h2 id="6_0_6_3">6.0.6.3 <span>(Eclipse plug-in only)</span></h2>
+<ul>
+<li>Eclipse plug-in: Fixed NPEs after dropping container to Outline view.</li>
+</ul>
+<h2 id="6_0_6_2">6.0.6.2 <span>(IntelliJ IDEA plug-in only)</span></h2>
+<ul>
+<li>IntelliJ IDEA plug-in: Fixed form designer did open as text in IntelliJ IDEA
+2019.1 EAP.</li>
+</ul>
+<h2 id="6_0_6_1">6.0.6.1 <span>(IntelliJ IDEA plug-in only)</span></h2>
+<ul>
+<li>IntelliJ IDEA plug-in: Support for IntelliJ IDEA 2019.1 EAP.</li>
+</ul>
+<p class="uk-alert"><strong>Note</strong>: This release requires IntelliJ IDEA 2016.1 or later. Use JFormDesigner
+6.0.6 for IntelliJ IDEA 12.0 - 15.0.</p>
+<h2 id="6_0_6">6.0.6</h2>
+<ul>
+<li>I18n: Fixed NPE when creating new form with i18n enabled, but properties
+file does not exist.</li>
+<li>IntelliJ IDEA plug-in: Fixed <code>ConcurrentModificationException</code> when using
+Darcula theme and Nimbus L&amp;F in IntelliJ IDEA 2018.3 and later.</li>
+<li>Disabled animation if Nimbus L&amp;F is active to avoid occasional
+<code>ClassCastException</code>.</li>
+<li>Minor bugs fixed.</li>
+</ul>
+<h2 id="6_0_5">6.0.5</h2>
+<ul>
+<li>NetBeans plug-in: Fixed NPE when saving modified form and properties files
+while closing project.</li>
+<li>Minor bugs fixed.</li>
+</ul>
+<h2 id="6_0_4_1">6.0.4.1 <span>(IntelliJ IDEA plug-in only)</span></h2>
+<ul>
+<li>IntelliJ IDEA plug-in: Disabled Look and Feel switching if <strong>Material Theme
+UI</strong> plug-in is installed and enabled.</li>
+</ul>
+<h2 id="6_0_4">6.0.4</h2>
+<h3>Bugs fixed</h3>
+<ul>
+<li>IntelliJ IDEA plug-in: Fixed too large MigLayout scaling on HiDPI monitors
+running on Windows in a JetBrains Java 8 VM.</li>
+<li>Minor bugs fixed.</li>
+</ul>
+<h3>Other Changes</h3>
+<ul>
+<li>NetBeans plug-in: Support Apache NetBeans 9.0.</li>
+<li>NetBeans form converter: Convert per property custom code to per component
+&quot;Pre-Initialization Code&quot; property.</li>
+</ul>
+<h2 id="6_0_3">6.0.3</h2>
+<h3>Bugs fixed</h3>
+<ul>
+<li>Scale system icons in file chooser tree on HiDPI monitors.</li>
+<li>Scale size of <code>java.awt.Window</code> based components (e.g. <code>JFrame</code>) on HiDPI
+monitors in &quot;Test Form&quot; command and in generated Java code.</li>
+<li>SpinnerModel editor: Fixed test spinner in edit dialog for model type <code>List</code>.</li>
+<li>Java code generator: Fixed NPE when component class does not exist
+(regression in 6.0).</li>
+<li>Eclipse plug-in: Removed key binding <code>Ctrl+Shift+D</code> from &quot;New JFormDesigner form&quot;
+command to avoid conflict with another command.</li>
+<li>IntelliJ IDEA plug-in: Scale position and size of top-level form components
+on HiDPI monitors when changing default font size in IntelliJ IDEA
+Appearance Settings dialog.</li>
+<li>IntelliJ IDEA plug-in: Fixed garbage painting of some fields in Binding dialog
+on Windows 10 in IntelliJ IDEA 2017.2 (and later) if IntelliJ theme is active.</li>
+<li>Catch exceptions in Look and Feel initialization and show them in Error Log view.</li>
+<li>Use secure connection when checking for updates.</li>
+</ul>
+<h3>Other Changes</h3>
+<ul>
+<li>IntelliJ IDEA plug-in: Support for IntelliJ IDEA 2018.1.</li>
+<li>Updated JRE in Windows setup to Java 8 Update 172.</li>
+</ul>
+<h2 id="6_0_2">6.0.2</h2>
+<h3>Bugs fixed</h3>
+<ul>
+<li>I18n in IDE plug-ins: Fixed escaping of characters in properties files
+if encoding of properties files is not <code>ISO-8859-1</code>.</li>
+<li>IntelliJ IDEA plug-in: Minor fixes for the Darcula and IntelliJ themes.</li>
+<li>IntelliJ IDEA plug-in: Form classpath now includes resources output folder
+of Gradle projects (requires IntelliJ IDEA 2017.1 or later).</li>
+<li>NetBeans plug-in: Fixed missing <code>selectionMode</code> and <code>rowHeight</code> properties
+for <code>org.jdesktop.swingx.JXTable</code> SwingX component.</li>
+<li>Minor bugs fixed.</li>
+</ul>
+<h3>Other Changes</h3>
+<ul>
+<li>IntelliJ IDEA plug-in: Support for IntelliJ IDEA 2017.2.</li>
+</ul>
+<h2 id="6_0_1">6.0.1</h2>
+<h3>Bugs fixed</h3>
+<ul>
+<li>Eclipse plug-in: Fixed &quot;Class/method not found&quot; errors when creating
+actions or event handlers (regression in 6.0).</li>
+<li>Eclipse plug-in on Linux: Avoid crash when running Eclipse under GTK+ 3
+by forcing usage of GTK+ 2.</li>
+<li>Eclipse plug-in on Linux: Fixed crash when using GTK+ look and feel
+(which is now no longer available in JFormDesigner when running in Eclipse).</li>
+<li>Eclipse plug-in: Fixed rare deadlock when opening a form.</li>
+<li>Eclipse plug-in: Fixed rare <code>SWTException: Widget is disposed</code> error
+when closing a form.</li>
+<li>IntelliJ IDEA plug-in on Mac: Fixed rare <code>NullPointerException: textInactiveText</code>.</li>
+<li>Stand-alone on Linux: Fixed <code>Syntax error: &quot;(&quot; unexpected</code> when
+launching <code>JFormDesigner.sh</code>.</li>
+<li>Stand-alone on Mac: Fixed starting JFormDesigner if Java 9 is installed.</li>
+<li>Mac: Fixed painting of handles on Retina displays.</li>
+<li>Minor fixes for the Darcula L&amp;F.</li>
+<li>JTabbedPane: Tab background and foreground colors were not used
+in &quot;Test Form&quot; and in runtime library.</li>
+<li>Minor bugs fixed.</li>
+</ul>
+<h3>Other Changes</h3>
+<ul>
+<li>Updated JRE in Windows setup to Java 8 Update 131.</li>
+</ul>
+<h2 id="6">6</h2>
+<h3>New Features and Improvements</h3>
+<ul>
+<li>MigLayout support.</li>
+<li>Support for HiDPI monitors (scaled UI and images).</li>
+<li>New modern icons (including 2x resolution).</li>
+<li>Stand-alone: New modern user interface.</li>
+<li>Stand-alone: New &quot;Wide Layout&quot; option shows Properties and
+Structure views side by side.</li>
+<li>IntelliJ IDEA plug-in: Darcula theme support improved.</li>
+<li>NetBeans plug-in: Support Darcula L&amp;F (requires Darcula LAF plug-in).</li>
+<li>Design view: Improved grid selection figure (handles always at
+cell bounds).</li>
+<li>Properties view: Improved property editors for data types
+<code>Dimension</code>, <code>Insets</code>, <code>Point</code> and <code>Rectangle</code>.</li>
+<li>Properties view: Color editor now supports hex color values (e.g.
+<code>0x00ff00</code> or <code>0xaa00ff00</code>).</li>
+<li>Properties view: Search for multiple property names.</li>
+<li>Look and Feels: Highlight application L&amp;F in toolbar combobox.</li>
+<li>Increment/decrement numbers in text fields using Up/Down keys
+(Ctrl+Up and Ctrl+Down in multi-line text fields).</li>
+<li>Command-line tool: Batch convert layout managers (e.g. from
+FormLayout to MigLayout).</li>
+<li>Code generator can now write IntelliJ IDEA non-nls tags
+(<code>//NON-NLS</code>). Enable it in the Preferences dialog.</li>
+<li>Stand-alone on Linux: Now using GTK+ look and feel.</li>
+</ul>
+<h3>Bugs fixed</h3>
+<ul>
+<li>GroupLayout: Fixes in layout design (from NetBeans 8.1 and 8.2).</li>
+<li>Eclipse plug-in: Test form window did not receive focus.</li>
+<li>Eclipse plug-in: Resize Eclipse Preferences dialog when it is too
+small for JFormDesigner option pages.</li>
+<li>NetBeans plug-in: Resize NetBeans Options dialog when it is too
+small for JFormDesigner option pages.</li>
+<li>Disabling project specific &quot;Java Code Generator &gt; Layout
+Managers&quot; settings did also disable project specific &quot;GridBagLayout&quot;
+settings.</li>
+</ul>
+<h3>Other Changes</h3>
+<ul>
+<li>System Requirements: Oracle Java 6, 7 or 8 required.</li>
+<li>System Requirements: Eclipse 3.2 - 3.5, Eclipse 3.x Carbon and Motif,
+IntelliJ IDEA 9.0 - 11.1 and NetBeans 7.0 - 7.1 no longer supported.</li>
+<li>Dropped JBuilder plug-in.</li>
+<li>Dropped &quot;Show Diagonals&quot; and &quot;Squint Test&quot;.</li>
+<li>Dropped Abeille forms converter.</li>
+<li>Dropped JGoodies UIF lite components.</li>
+</ul>
+<div id="v5.2" class="sep"></div><h2 id="5_2_5_1">5.2.5.1 <span>(IntelliJ IDEA plug-in only)</span></h2>
+<ul>
+<li>IntelliJ IDEA plug-in: Support for IntelliJ IDEA 2016.3.</li>
+</ul>
+<h2 id="5_2_5">5.2.5</h2>
+<h3>New Features and Improvements</h3>
+<ul>
+<li>Updated JRE in Windows setup to Java 8 Update 112.</li>
+</ul>
+<h3>Bugs fixed</h3>
+<ul>
+<li>Minor bugs fixed.</li>
+</ul>
+<h2 id="5_2_4_1">5.2.4.1 <span>(IntelliJ IDEA plug-in only)</span></h2>
+<ul>
+<li>IntelliJ IDEA plug-in: Fixed broken NullPointerException when
+updating GotoJfdOrJavaAction.</li>
+<li>Do not use SwingX classes bundled with IDE to avoid possible
+version conflicts with SwingX library in own projects.</li>
+</ul>
+<h2 id="5_2_4">5.2.4</h2>
+<h3>New Features and Improvements</h3>
+<ul>
+<li>Eclipse plug-in: Support for Eclipse 4.6.</li>
+<li>IntelliJ IDEA plug-in: Support for IntelliJ IDEA 2016.2.</li>
+<li>IntelliJ IDEA plug-in: Show exception stack trace in &quot;Convert to
+JFormDesigner form failed&quot; dialog.</li>
+<li>Updated JRE in Windows setup to Java 8 Update 92.</li>
+</ul>
+<h3>Bugs fixed</h3>
+<ul>
+<li>NetBeans plug-in: Fixed NoClassDefFoundError exception when using
+dependencies with scope &quot;provided&quot; in maven projects.</li>
+<li>IntelliJ IDEA plug-in: Fixed NPE when closing a form in IntelliJ
+IDEA 2016.2.</li>
+<li>IntelliJ IDEA plug-in: Fixed &quot;Read access&quot; errors when converting
+IDEA forms to JFormDesigner forms.</li>
+<li>Stand-alone: Fixed &quot;IllegalArgumentException: proportional
+location must be between 0.0 and 1.0.&quot; at startup.</li>
+<li>Minor bugs fixed.</li>
+</ul>
+<h2 id="5_2_3">5.2.3</h2>
+<h3>New Features and Improvements</h3>
+<ul>
+<li>IntelliJ IDEA plug-in: Basic HiDPI support (scaled icons, larger
+handles, fixed tree and table row heights, etc).</li>
+<li>IntelliJ IDEA plug-in: Support for IntelliJ IDEA 2016.1.</li>
+<li>Updated JRE in Windows setup to Java 8 Update 74.</li>
+</ul>
+<h3>Bugs fixed</h3>
+<ul>
+<li>Properties view did not remember last used grouping.</li>
+<li>Properties view: Fixed dead table after clearing filter while
+editing JFrame &quot;Size Policy&quot; property.</li>
+<li>IntelliJ IDEA plug-in: Fixed exceptions in class NimbusStyle when
+using Nimbus look and feel.</li>
+<li>Eclipse plug-in on Mac OS X: Fixed occasional dead lock when
+updating .java file after changing property value (e.g. if form
+contains a TitledBorder).</li>
+<li>Stand-alone: Fixed mixed line separators (LF and CR LF) in
+properties files if platform default line separator is different to
+existing line separators in properties file.</li>
+</ul>
+<h2 id="5_2_2_2">5.2.2.2 <span>(IntelliJ IDEA and Eclipse plug-ins only)</span></h2>
+<ul>
+<li>IntelliJ IDEA plug-in: Support for IntelliJ IDEA 15.</li>
+<li>IntelliJ IDEA plug-in: Fixed broken &quot;Configure IDE/Project
+Specific settings&quot; links in Settings dialog (IntelliJ IDEA 14.1 and later).</li>
+<li>Eclipse plug-in on Mac OS X: Fixed occasional dead lock when
+opening forms (Eclipse 4.4 and later).</li>
+</ul>
+<h2 id="5_2_2_1">5.2.2.1 <span>(JDeveloper plug-in only)</span></h2>
+<ul>
+<li>JDeveloper plug-in: Support for JDeveloper 12.2.1 and 12.1.3.</li>
+<li>JDeveloper plug-in: Fixed &quot;Rule id
+node-selected-in-navigator-or-open-in-editor referenced in extension
+com.jformdesigner is not defined in it, or any of its dependencies&quot; error.</li>
+</ul>
+<h2 id="5_2_2">5.2.2</h2>
+<h3>Bugs fixed</h3>
+<ul>
+<li>FormLayout: Columns/rows were not marked with a light-red
+background in the column/row header when having zero size (since 5.2).</li>
+<li>GroupLayout: Fixed StackOverflowError at
+SwingLayoutBuilder.convertSize().</li>
+<li>null layout manager did accept non-visual components and windows.</li>
+<li>IntelliJ IDEA plug-in: Fixed display errors after switching
+IntelliJ IDEA UI theme.</li>
+<li>IntelliJ IDEA plug-in: Fixed occasional blocked UI when checking
+for updates using HTTP proxy.</li>
+<li>Eclipse plug-in: Fixed endless &quot;Loading...&quot; problem when
+restoring minimized views (Eclipse 4.x only).</li>
+<li>Eclipse plug-in: Fixed layout of Import, Export, Restore Defaults
+and Apply buttons in Preferences dialog (since Eclipse 4.5).</li>
+<li>Eclipse plug-in on Mac OS X: Modal Swing dialogs did not receive
+focus (Eclipse 4.x on Java 7+ only)</li>
+<li>NetBeans form converter: Remove empty type parameters.</li>
+</ul>
+<h3>Other Changes</h3>
+<ul>
+<li>IntelliJ IDEA plug-in: Improved support for IntelliJ IDEA 14.1.</li>
+<li>IntelliJ IDEA plug-in: Improved colors for Darcula look and feel.</li>
+<li>Updated JRE in Windows setup to Java 8 Update 45.</li>
+</ul>
+<h2 id="5_2_1">5.2.1</h2>
+<h3>Bugs fixed</h3>
+<ul>
+<li>Eclipse plug-in on Windows: Fixed editor/view activation when
+running Eclipse on Java 7 or later.</li>
+<li>Eclipse plug-in on Mac OS X: Fixed focus/editing issue when
+running Eclipse on Java 7 or later.</li>
+<li>Minor bugs fixed.</li>
+</ul>
+<h3>Other Changes</h3>
+<ul>
+<li>IntelliJ IDEA plug-in: Support for IntelliJ IDEA 14.</li>
+<li>Stand-alone on Mac OS X: Use Oracle Java 7 or 8 (if installed) to
+run JFormDesigner.</li>
+<li>Updated JRE in Windows setup to Java 8 Update 25.</li>
+</ul>
+<h2 id="5_2_0_3">5.2.0.3 <span>(Eclipse plug-in only)</span></h2>
+<ul>
+<li>Eclipse plug-in on Mac OS X: Fixed load error of XML formatted .jfd
+forms when running JFormDesigner in Eclipse 4.4 on Java 7u55 or later.</li>
+</ul>
+<h2 id="5_2_0_2">5.2.0.2 <span>(NetBeans plug-in only)</span></h2>
+<ul>
+<li>NetBeans plug-in: Fixed occasional problem that the Java code of a form was
+no longer saved to disk (NetBeans 8.0 only).</li>
+</ul>
+<h2 id="5_2_0_1">5.2.0.1 <span>(NetBeans plug-in only)</span></h2>
+<ul>
+<li>NetBeans plug-in: Fixed &quot;NoClassDefFoundError: org/jdom/input/SAXBuilder&quot;
+when converting NetBeans form.</li>
+</ul>
+<h2 id="5_2">5.2</h2>
+<h3>New Features and Improvements</h3>
+<ul>
+<li>JDeveloper plug-in.</li>
+<li>Java 8 support: Use lambda expressions for events.</li>
+<li>JGoodies Forms 1.6, 1.7 and 1.8 support.</li>
+<li>GroupLayout: Many improvements and fixes in layout design (from NetBeans
+7.2, 7.3, 7.4 and 8.0).</li>
+<li>Toolbar added to tree file chooser dialog (Go to Home/Project Folder, New
+Folder, Show Hidden Files and Folders, Refresh commands).</li>
+<li>Forms converter: Remove member variable prefix from component names if a
+prefix is specified in Java Code Generator preferences.</li>
+<li>Stand-alone: Support hidden folders in project source folders and
+classpath.</li>
+<li>IntelliJ IDEA plug-in: Enabled search for JFormDesigner options in Settings
+dialog.</li>
+<li>IntelliJ IDEA plug-in: Added &quot;Configure IDE Settings&quot; and &quot;Configure Project
+Specific Settings&quot; links to some settings pages.</li>
+<li>NetBeans plug-in: Enabled filter for JFormDesigner options in Options dialog
+(NetBeans 7.3 and later).</li>
+</ul>
+<h3>Other Changes</h3>
+<ul>
+<li>Updated JGoodies Forms to 1.8.0.</li>
+<li>Updated JGoodies Looks to 2.6.0.</li>
+<li>Updated IntelliJ IDEA GridLayout to 12.1.6 (equal to 13.0).</li>
+<li>Updated JRE in Windows setup to Java 8 Update 5.</li>
+</ul>
+<div id="v5.1" class="sep"></div><h2 id="5_1_3_3">5.1.3.3 <span>(Eclipse plug-in only)</span></h2>
+<ul>
+<li>Eclipse plug-in on Mac OS X: Fixed load error of XML formatted .jfd
+forms when running JFormDesigner in Eclipse 4.4 on Java 7u55 or later.</li>
+</ul>
+<h2 id="5_1_3_2">5.1.3.2 <span>(NetBeans plug-in only)</span></h2>
+<ul>
+<li>NetBeans plug-in: Fixed occasional problem that the Java code of a form was
+no longer saved to disk (NetBeans 8.0 only).</li>
+</ul>
+<h2 id="5_1_3_1">5.1.3.1 <span>(NetBeans plug-in only)</span></h2>
+<ul>
+<li>NetBeans plug-in: Fixed &quot;NoClassDefFoundError: org/jdom/input/SAXBuilder&quot;
+when converting NetBeans form.</li>
+</ul>
+<h2 id="5_1_3">5.1.3</h2>
+<h3>Bugs fixed</h3>
+<ul>
+<li>IntelliJ IDEA plug-in: Fixed &quot;IllegalArgumentException: Width and height
+must be &gt;= 0&quot; in Binding dialog when using IntelliJ or Darcula look and
+feel.</li>
+<li>IntelliJ IDEA plug-in: Fixed inactive tool window splitters if a JPopupMenu
+or JMenu component is in the active form (IntelliJ IDEA 12 and later).</li>
+<li>NetBeans plug-in: Fixed occasional FileAlreadyLockedException in Java code
+generation.</li>
+<li>NetBeans plug-in: Fixed occasional NullPointerException when marking a form
+as modified.</li>
+<li>NetBeans plug-in: Beans.isDesignTime() did not return true when running
+NetBeans in a Java 7 or later VM.</li>
+<li>Eclipse plug-in: Fixed memory leak (on Windows only; Java 6 or later).</li>
+<li>Java code generator: Fixed invalid FormLayout column specification
+<code>$growing-button</code>.</li>
+<li>Fixed NullPointerException when using JIDE component ColorExComboBox (and
+others).</li>
+</ul>
+<h3>Other Changes</h3>
+<ul>
+<li>Updated JRE in Windows setup to Java 7 Update 55.</li>
+</ul>
+<h2 id="5_1_2">5.1.2</h2>
+<h3>Bugs fixed</h3>
+<ul>
+<li>Changing font property of JSpinner component did not always update design
+view.</li>
+<li>Runtime library and Test form: Fixed NoSuchMethodException:
+DefaultComponentFactory$TitleLabel.setTextWithMnemonic(&quot;&amp;text&quot;) when having
+JGoodies components in form (since 5.1.1).</li>
+<li>Java code generator: Fixed missing &quot;bundle&quot; variable if i18n only used in
+beans binding (since 5.1.1).</li>
+<li>NetBeans forms converter: Fixed conversion of top-level menu bars in
+non-JFrame forms.</li>
+</ul>
+<h3>Other Changes</h3>
+<ul>
+<li>IntelliJ IDEA plug-in: Support for IntelliJ IDEA 13.</li>
+<li>IntelliJ IDEA plug-in: Support IntelliJ look and feel.</li>
+<li>Updated JRE in Windows setup to Java 7 Update 45.</li>
+</ul>
+<h2 id="5_1_1">5.1.1</h2>
+<h3>Bugs fixed</h3>
+<ul>
+<li>Java code generator: Fixed missing &quot;bundle&quot; variable in initComponentsI18n()
+method when using custom 'getString' template.</li>
+<li>Java code generator: Listener methods are now ordered alphabetically.</li>
+<li>Java code generator: Invoke initComponentsI18n() before pack().</li>
+<li>Java code generator: No code generated for JTabbedPane.setDisabledIconAt()
+under special circumstances.</li>
+<li>Java code generator and FormCreator: JTabbedPane.setSelectedIndex() was
+invoked before adding tabs.</li>
+<li>Binding groups without children causes issues in the Bindings view.</li>
+<li>Border editor dialog: Catch exceptions that occur in painting border
+preview.</li>
+<li>IntelliJ IDEA plug-in: Fixed NPE in StructureViewWrapperImpl.setFile()
+(since IntelliJ IDEA 12.0.2).</li>
+<li>NetBeans plug-in: Support resources directory in Maven projects.</li>
+<li>Eclipse plug-in on Mac OS X: Support running JFormDesigner in Eclipse on Mac
+OS X Java 7 VM. Requires class sun.lwawt.macosx.CViewEmbeddedFrame in Java 7. At
+date of release, this class was only available in JDK 7u12 Developer Preview
+(1.7.0_12-ea) (from
+<a href="https://jdk7.java.net/download.html">https://jdk7.java.net/download.html</a>),
+but not in Java SE 7u21 (from
+<a href="https://www.oracle.com/technetwork/java/javase/downloads/">oracle.com</a>).
+See also Java Bug
+<a href="https://bugs.java.com/bugdatabase/view_bug.do?bug_id=7154778">7154778</a>
+and Eclipse Bug
+<a href="https://bugs.eclipse.org/bugs/show_bug.cgi?id=374199">374199</a>.</li>
+<li>Eclipse plug-in: Fixed NullPointerException when using &quot;New Editor&quot;
+command.</li>
+</ul>
+<h3>Other Changes</h3>
+<ul>
+<li>IntelliJ IDEA plug-in: Support for IntelliJ IDEA 12 and 12.1.</li>
+<li>IntelliJ IDEA plug-in: Support Darcula look and feel.</li>
+<li>Updated JRE in Windows setup to Java 7 Update 21.</li>
+</ul>
+<h2 id="5_1_0_2">5.1.0.2 <span>(IntelliJ IDEA plug-in only)</span></h2>
+<ul>
+<li>IntelliJ IDEA plug-in: Forms were not saved in IntelliJ IDEA 12 EAP.</li>
+</ul>
+<h2 id="5_1_0_1">5.1.0.1 <span>(NetBeans and IntelliJ IDEA plug-ins only)</span></h2>
+<ul>
+<li>NetBeans plug-in: Automatic refresh of designers on project classpath
+changes or project builds did not work.</li>
+<li>IntelliJ IDEA plug-in: Support for IntelliJ IDEA 12 EAP.</li>
+</ul>
+<h2 id="5_1">5.1</h2>
+<h3>New Features and Improvements</h3>
+<ul>
+<li>NetBeans plug-in.</li>
+<li>Java 7 support: Use diamond operator if source compatibility is set to Java 7.
+Automatically use type parameter <code>&lt;String&gt;</code> for
+<code>ComboBoxModel&lt;E&gt;</code>, <code>JComboBox&lt;E&gt;</code>,
+<code>ListModel&lt;E&gt;</code> and <code>JList&lt;E&gt;</code> if model
+property is set.</li>
+<li>JGoodies Forms 1.4 and 1.5 support.</li>
+<li>GroupLayout: Many improvements and fixes in layout design (from NetBeans
+7.1).</li>
+<li>Palette: Display multiple items per row if there is enough room.</li>
+<li>Palette: New option &quot;Item Names&quot; in context menu to show only item
+icons.</li>
+<li>New JFDML persistence format for .jfd form files. This is a compact,
+easy-to-merge and fast-to-load format.</li>
+<li>New preferences page &quot;GridBagLayout&quot; supports specification of default
+properties for new columns/rows.</li>
+<li>I18n: Added localization preferences option &quot;Format used for generated
+keys&quot;.</li>
+<li>I18n: Support XML resource bundles.</li>
+<li>Java code generator: Added preferences options &quot;Variable modifiers&quot; and
+&quot;Event handler modifiers&quot;.</li>
+<li>Java code generator: Added &quot;Variable Annotations&quot; property to ButtonGroup
+objects.</li>
+<li>Added property editor for <code>java.lang.Class</code>.</li>
+<li>Added code templates for <code>java.awt.Frame</code> and
+<code>java.awt.Window</code> to &quot;Java Code Generator &gt; Templates&quot;
+preferences.</li>
+<li>Forms converter: Batch convert all forms in selected folders (Eclipse,
+IntelliJ IDEA and NetBeans plug-ins only).</li>
+<li>NetBeans forms converter: Support conversion of NetBeans 7.1 GridBagLayout
+gaps and FlowLayout.alignOnBaseline.</li>
+</ul>
+<h3>Bugs fixed</h3>
+<ul>
+<li>TitledBorder and JGoodies Titled Separator used different font in Design
+view (bold) than in application (on Windows).</li>
+<li>Nesting &quot;this&quot; component in panel was not handled properly.</li>
+</ul>
+<h3>Other Changes</h3>
+<ul>
+<li>Updated JGoodies Forms to 1.4.2.</li>
+<li>Updated JGoodies Looks to 2.4.2.</li>
+<li>Updated IntelliJ IDEA GridLayout to 11.1.1.</li>
+<li>IntelliJ IDEA plug-in: Use IntelliJ IDEA 10.x button-less scroll bars.</li>
+<li>Changed license of runtime library from
+<a href="https://opensource.org/licenses/BSD-3-Clause">BSD-3-Clause</a> to
+<a href="https://opensource.org/licenses/BSD-2-Clause">BSD-2-Clause</a>.</li>
+<li>Dropped Java 1.4 edition of runtime library (jfd-loader14.jar).</li>
+<li>Updated JRE in Windows setup to Java 7 Update 3.</li>
+</ul>
+<div id="v5" class="sep"></div><h2 id="5_0_4_1">5.0.4.1 <span>(IntelliJ IDEA plug-in only)</span></h2>
+<ul>
+<li>IntelliJ IDEA plug-in: JFormDesigner help was not available in IntelliJ IDEA
+11.1 Ultimate Edition.</li>
+</ul>
+<h2 id="5_0_4">5.0.4</h2>
+<h3>Bugs fixed</h3>
+<ul>
+<li>Fixed NullPointerException in Java code generator if no PropertyEditor is
+available (since 5.0.3).</li>
+<li>JBuilder plug-in: Fixed NullPointerException in code generation when
+converting a form that contains menu separators.</li>
+</ul>
+<h3>Other Changes</h3>
+<ul>
+<li>Updated JRE 6 in Windows setup to JRE 6 Update 31.</li>
+</ul>
+<h2 id="5_0_3">5.0.3</h2>
+<h3>Bugs fixed</h3>
+<ul>
+<li>Fixed failure of JIDE extensions initialization when JIDE library path
+contains spaces.</li>
+<li>Catch NoClassDefFoundError when getting BeanInfo to fix strange behavior of
+Binding dialog if a referenced class is not found in classpath.</li>
+<li>Minor bugs fixed.</li>
+</ul>
+<h3>Other Changes</h3>
+<ul>
+<li>IntelliJ IDEA plug-in: Support for IntelliJ IDEA 11.1.</li>
+<li>Invoke method &quot;public String getJavaPostInitializationString(String
+componentName, String propertyName)&quot; in java.beans.PropertyEditor
+implementations to get property post initialization Java code.</li>
+</ul>
+<h2 id="5_0_2_3">5.0.2.3 <span>(IntelliJ IDEA plug-in only)</span></h2>
+<ul>
+<li>IntelliJ IDEA plug-in: Support for IntelliJ IDEA 11.1 EAP build 114.55.</li>
+</ul>
+<h2 id="5_0_2_2">5.0.2.2 <span>(IntelliJ IDEA plug-in only)</span></h2>
+<ul>
+<li>IntelliJ IDEA plug-in: Project specific JFormDesigner settings were not
+reloaded on startup (throws ClassCastException: java.lang.Object cannot be cast
+to org.jdom.Element).</li>
+</ul>
+<h2 id="5_0_2_1">5.0.2.1 <span>(IntelliJ IDEA plug-in only)</span></h2>
+<ul>
+<li>IntelliJ IDEA plug-in: Editing Java custom code properties displayed empty
+dialogs under special circumstances in IntelliJ IDEA 10.5 (and later) on Mac OS
+X.</li>
+</ul>
+<h2 id="5_0_2">5.0.2</h2>
+<h3>Bugs fixed</h3>
+<ul>
+<li>Fixed NullPointerException when opening Binding dialog and using a property
+that has a custom property editor.</li>
+<li>I18n: JTabbedPane tab titles were not always auto-externalized.</li>
+<li>Eclipse plug-in: Look and Feels or Locales combobox drop-down list (in
+Designer toolbar) occasional closed immediately after popping up.</li>
+<li>IntelliJ IDEA plug-in: Creating new form with OK/Cancel/Help buttons and
+i18n enabled did not add the OK/Cancel/Help texts to the resource bundle.</li>
+<li>Mac OS X: Binding dialog was too small (Edit and Remove column buttons on
+&quot;Table Binding&quot; tab were hidden).</li>
+<li>ListModel: Added @Override annotation to implemented interface methods if
+source compatibility is Java 6.</li>
+<li>Color editor: Fixed issue with selecting System or Swing palette colors when
+running JFormDesigner in Java 7 VM.</li>
+<li>Java code generator: Fixed generation of invalid code if &quot;Custom Create&quot; and
+&quot;Use Local Variable&quot; properties are set to true.</li>
+<li>Java code generator: Fixed generation of invalid code if &quot;Type Parameters&quot;
+and &quot;Nested Class Name&quot; properties are set.</li>
+<li>Java code generator: Update type parameters in extends clause of form/nested
+class when changing &quot;Type Parameters&quot; property.</li>
+<li>NetBeans forms converter: Support conversion of TreeModel and String[]
+property values.</li>
+<li>NetBeans forms converter: Fixed missing trailing ';' in &quot;Custom Creation
+Code&quot; property.</li>
+<li>NetBeans forms converter: Fixed NullPointerException when converting default
+LineBorder.</li>
+<li>NetBeans forms converter: Fixed invalid generated code if an event has more
+than one handler method.</li>
+<li>&quot;Unknown property&quot; dialog were shown for inactive forms.</li>
+</ul>
+<h3>Other Changes</h3>
+<ul>
+<li>IntelliJ IDEA plug-in: Support for IntelliJ IDEA 11.</li>
+<li><code>MatteBorder(Icon)</code> without insets is now supported.</li>
+<li>Warning when trying to open a JFDML form file, which requires JFormDesigner
+5.1 or later.</li>
+<li>Updated JRE 6 in Windows setup to JRE 6 Update 29.</li>
+</ul>
+<h2 id="5_0_1">5.0.1</h2>
+<h3>Bugs fixed</h3>
+<ul>
+<li>Wildcards did not work in &quot;Choose Bean&quot; dialog when pattern starts with
+uppercase letter.</li>
+<li>Properties view: Used localized decimal separator (e.g. ',' on German OS)
+for editing double and float values, but always '.' for displaying them.</li>
+<li>Properties view: Clicking on number value did not position the caret at the
+mouse location.</li>
+<li>Fixed NullPointerException when using TitledBorder and running JFormDesigner
+in a Java 7 VM.</li>
+<li>Fixed StackOverflowError when having a GridBagLayout panel within an
+IntelliJ IDEA GridLayout panel and disabled layout animation.</li>
+<li>Fixed occasional NullPointerException when having a JTabbedPane within an
+IntelliJ IDEA GridLayout panel and using Nimbus look and feel.</li>
+<li>Eclipse plug-in: Test form window occasional moved behind Eclipse
+window.</li>
+<li>IntelliJ IDEA plug-in: &quot;Go to form/java&quot; toolbar command always opened file
+in same tab group even if file was already open in another tab group (IntelliJ
+IDEA 10 or later only).</li>
+<li>IntelliJ IDEA plug-in: &quot;Convert to JFormDesigner Form&quot; progress window
+blocked other dialogs.</li>
+<li>IntelliJ IDEA plug-in: Raw HTML were shown in Binding dialog tab title
+&quot;Table Binding&quot; when using IDEA 4.5 Look and Feel.</li>
+<li>Java code generator: Avoid duplicate ButtonGroup instantiation when using
+non-local button group variable.</li>
+<li>Windows 7: Fixed window decorations used in Designer when designing dialogs
+or frames.</li>
+</ul>
+<h3>Other Changes</h3>
+<ul>
+<li>Windows Stand-alone: Added x64 executables.</li>
+<li>Updated GroupLayout (swing-layout.jar) to 1.0.4.</li>
+<li>Updated JRE 6 in Windows setup to JRE 6 Update 26.</li>
+</ul>
+<h2 id="5_0_0_1">5.0.0.1 <span>(IntelliJ IDEA plug-in only)</span></h2>
+<h3>Bugs fixed</h3>
+<ul>
+<li>IntelliJ IDEA plug-in: IntelliJ IDEA 10 and 10.5 sometimes did no longer
+respond to mouse clicks after using source/target path combobox in Bindings
+dialog (throws NullPointerException in com.intellij.ui.BalloonImpl).</li>
+</ul>
+<h2 id="5">5</h2>
+<h3>New Features and Improvements</h3>
+<ul>
+<li>Beans Binding (JSR 295) support.</li>
+<li>BeanInfo annotations.</li>
+<li>Properties view: Ability to filter properties added.</li>
+<li>Properties view: &quot;Group by Category&quot;, &quot;Group by Defining Type&quot; and
+&quot;Alphabetical&quot; commands introduced to allow grouping of bean properties into
+categories (normal, expert, read-only and custom categories specified in
+BeanInfo); into defining types (e.g. JTextField, JTextComponent, JComponent,
+Container, Component); or alphabetically.</li>
+<li>Properties view: Support for property categories specified in
+PropertyDescriptor of BeanInfo.</li>
+<li>Properties view: Show changed properties even if containing category is
+collapsed.</li>
+<li>Properties view: Moved &quot;Code Generation&quot; properties from own tab to category
+into properties table.</li>
+<li>Properties view: Added &quot;Force Value&quot; command to property context menu. If
+checked, it forces setting of property value even if it is equal to the default
+property value.</li>
+<li>GroupLayout: &quot;Duplicate&quot; command added.</li>
+<li>GroupLayout: Added layout constraints properties for space around
+component.</li>
+<li>JGoodies Forms 1.3 support.</li>
+<li>FormLayout: Auto-detect version of used JGoodies Forms library and generate
+appropriate Java code.</li>
+<li>FormLayout: Added option &quot;Make anonymous PanelBuilder JPanel transparent&quot; to
+&quot;Java Code Generator &gt; Layout Managers&quot; preferences page.</li>
+<li>BorderLayout: Support relative positioning (with PAGE_START, PAGE_END,
+LINE_START and LINE_END constraints).</li>
+<li>Support for using non-public JavaBeans and interfaces in Design view.
+Non-public JavaBeans must be in the same package as the form or a nested static
+class of the form class. Interfaces are not initialized in the generated Java
+code. You have to do this yourself before invoking initComponents().</li>
+<li>&quot;Choose Bean&quot; dialog now displays additional information about matching
+classes: modifiers (as icon), class hierarchy (in tooltip), number of matching
+classes and used filter.</li>
+<li>&quot;Choose Bean&quot; dialog now supports camel-case search.</li>
+<li>&quot;Choose Bean&quot; dialog now highlights characters that match the filter
+pattern.</li>
+<li>&quot;Classpath Info&quot; link added to &quot;Choose Bean&quot; dialog, which shows the
+resolved classpath used by JFormDesigner.</li>
+<li>Clicking on a JScrollPane in Design view now selects its child.</li>
+<li>Simplified handling of JScrollPanes: now you can select the child of a
+JScrollPane and change layout properties of the JScrollPane in the Properties
+view and using the context popup menu.</li>
+<li>Automatically reload custom components when changed.</li>
+<li>Automatically refresh designers on project classpath changes.</li>
+<li>Added &quot;Events&quot; property to Properties view. No longer display events in
+Structure view.</li>
+<li>&quot;Add Event Handler&quot; popup menu improved.</li>
+<li>Eclipse plug-in: The Java code generator can now use the Eclipse code
+formatter to format generated code. Enable option &quot;Use Eclipse code formatter&quot;
+in &quot;Java Code Generator&quot; preferences.</li>
+<li>Eclipse plug-in: Support creation of forms in non-Java projects (e.g. in a
+Pydev project).</li>
+<li>Eclipse plug-in preferences: Improved filter for JFormDesigner preference
+pages.</li>
+<li>Java code generator: Better support for custom creation of components (e.g.
+using factories) with new property &quot;Custom Create&quot; (category &quot;Code Generation&quot;).
+When checked for a component, you can write your own component creation code
+into the method createUIComponents().</li>
+<li>IntelliJ IDEA forms converter now supports nested forms and the &quot;Custom
+Create&quot; flag. The new option &quot;Form class extends top-level container&quot; changes
+the extends clause of the converted form to extend the top-level container,
+which is necessary for nested forms.</li>
+<li>NetBeans forms converter now supports forms that use Swing Application
+Framework resource management.</li>
+<li>Palette: Remembers expanded categories per form.</li>
+<li>Project specific settings.</li>
+<li>Added property editor for string arrays.</li>
+<li>I18n: Support localization of string arrays.</li>
+<li>I18n: Externalization of forms from command-line.</li>
+<li>Look and Feels: Added option &quot;Enable Look and Feel switching&quot; to &quot;Look and
+Feels&quot; preferences page, which allows you to disable Look and Feel switching if
+it causes problems.</li>
+<li>Preferences: Support definition of client properties for multiple component
+classes.</li>
+<li>Runtime library: Automatically use <code>javax.swing.GroupLayout</code> if
+running in Java 6 VM.</li>
+<li>Stand-alone: Show file paths in &quot;Reopen Project&quot; and &quot;Reopen Form&quot;
+submenus.</li>
+<li>Stand-alone: Improved startup script for Unix/Linux based systems.</li>
+<li>Added &quot;Tab Background&quot; and &quot;Tab Foreground&quot; properties for JTabbedPane
+components.</li>
+<li>Added &quot;Help&quot; button to dialogs.</li>
+<li>Automatically check for available updates and new versions of
+JFormDesigner.</li>
+<li>Unified look of Palette view for all platforms.</li>
+<li>Support for using custom beans compiled for Java 6+ while running
+JFormDesigner in a Java 5 VM (when the custom beans does not use Java 6+
+API).</li>
+<li>Updated JGoodies Looks to 2.3.1.</li>
+</ul>
+<h3>Bugs fixed</h3>
+<ul>
+<li>JARs on the project classpath were locked after loading custom beans.</li>
+<li>I18n: Some properties were not included in the Externalize Strings
+dialog.</li>
+<li>I18n: Avoid overwriting existing messages on message key conflicts.</li>
+<li>Changes to properties of javax.swing.Action objects did not update connected
+components in Design view (e.g. JButton) if running JFormDesigner in a Java 6
+VM.</li>
+<li>NetBeans form converter: Fixed occasional error when converting NetBeans
+6.9+ forms.</li>
+<li>Stand-alone on Mac OS X: JFormDesigner canceled Log Out and Shut Down even
+when there were no unsaved forms.</li>
+<li>Eclipse plug-in: Fixed occasionally empty file view in file chooser
+dialogs.</li>
+<li>Eclipse plug-in: Editing some properties (e.g. icon) set the property value
+to null under special circumstances.</li>
+<li>IntelliJ IDEA plug-in: Fixed dead-lock on start-up of IntelliJ IDEA 10 with
+installed Clover plug-in and enabled Clover auto-update checking.</li>
+<li>IntelliJ IDEA plug-in: Fixed occasional NullPointerException in
+com.jformdesigner.KS.getState().</li>
+<li>Windows: Fixed painting of JRadioButtonMenuItem and JCheckBoxMenuItem on
+Windows Vista/7.</li>
+<li>Windows: Fixed invisible texts (of labels, buttons, etc.) in Design view on
+Windows XP and Java 6.</li>
+</ul>
+<h3>Other Changes</h3>
+<ul>
+<li>System Requirements: Sun/Oracle Java 5 or later; Eclipse 3.2 - 3.6; IntelliJ
+IDEA 8 - 10; JBuilder 2006.</li>
+<li>Updated JRE 6 in Windows setup to JRE 6 Update 24.</li>
+</ul>
+<div id="v4" class="sep"></div><h2 id="4_0_9">4.0.9</h2>
+<h3>Bugs fixed</h3>
+<ul>
+<li>I18n: Support resource bundles that have '_' in its name.</li>
+<li>I18n: On internalize, avoid removal of externalized strings from resource
+bundle if still used in form.</li>
+<li>Stand-alone: When changing the screen resolution, the Structure and
+Properties views were occasionally not visible after restart.</li>
+<li>Loading forms failed when running JFormDesigner in a Java 7 EA VM.</li>
+<li>Using FormCreator in custom components caused java.lang.NoSuchMethodError
+exceptions when using the custom component in JFormDesigner.</li>
+<li>Fixed layout of vertical JMenuBar.</li>
+<li>Fixed wrong layering of JLayeredPane children in Design view after re-open
+or refresh a form.</li>
+<li><code>java.beans.Customizer</code> implementations did not persist primitive
+properties.</li>
+<li>Linux: Fixed add, move and reject cursor images.</li>
+<li>Windows setups no longer require administrator rights.</li>
+</ul>
+<h3>Other Changes</h3>
+<ul>
+<li>Updated JRE 6 in Windows setup to JRE 6 Update 22.</li>
+</ul>
+<h2 id="4_0_8">4.0.8</h2>
+<h3>Bugs fixed</h3>
+<ul>
+<li>GroupLayout: Adding multiple instances to a form (holding down
+Ctrl key; Command key on Mac) did not always work as expected.</li>
+<li>GroupLayout: Improved baseline alignment behavior.</li>
+<li>GroupLayout: When adding or moving a component, in some situations a medium
+or large gap of another component was changed to a small gap.</li>
+<li>GroupLayout: Improved generated code for labels and buttons with HTML
+content.</li>
+<li>GroupLayout: linkSize() statements did not have fixed order.</li>
+<li>GroupLayout: Avoid ambiguous GroupLayout compiler warning when using
+swing-layout.jar and Java 6 compiler.</li>
+<li>GroupLayout: Minor bugs fixed.</li>
+<li>Windows Vista: Combo boxes did not paint focus indicator.</li>
+<li>Eclipse plug-in: Ctrl+X, Ctrl+C, Ctrl+V and Ctrl+A did not always work in
+JFormDesigner views (in Eclipse 3.5 and later).</li>
+<li>Eclipse plug-in: The classpath used for the &quot;Choose Bean&quot; dialog did not
+include all direct dependent projects on complex project dependencies (since
+4.0.7).</li>
+<li>Eclipse plug-in: On Windows, sometimes two mouse clicks were necessary to
+activate a palette entry or to activate another JFormDesigner view.</li>
+<li>Eclipse plug-in on Mac OS X: Improved integration into Eclipse Mac Cocoa
+edition.</li>
+<li>Eclipse plug-in on Mac OS X: In the Eclipse Mac Carbon edition, the main
+window occasionally stayed always on top of all other windows.</li>
+<li>IntelliJ IDEA plug-in: Command &quot;New &gt; JFormDesigner Form&quot; was not shown
+in Packages view (Project tool window) context menu when having same package in
+different source folders.</li>
+<li>IntelliJ IDEA plug-in: &quot;Reset&quot; button in Settings dialog did not work.</li>
+<li>IntelliJ IDEA plug-in: JFormDesigner did not use changed project or module
+language levels (in IntelliJ IDEA 8.0 and later).</li>
+<li>IntelliJ IDEA plug-in: Fixed occasional exception in Structure view after
+closing last editor.</li>
+<li>JBuilder plug-in: External read-only state changes of form files were not
+detected.</li>
+<li>IDE plug-ins: Palette was not updated in all opened form designers when
+using &quot;Palette Manager&quot; dialog.</li>
+<li>Using MiG Calendar components did cause errors on save when running
+JFormDesigner in Java 6 Update 15 VM (and later) or in Java 5 Update 20 VM (and
+later).</li>
+<li>Java code generator: Added @Override annotation to implemented interface
+methods if source compatibility is Java 6.</li>
+<li>Java code generator: Avoid unused constraints variables for FormLayout and
+GridBagLayout if the container does not have children.</li>
+<li>Java code generator: Avoid unused import statements for FormLayout,
+GridBagLayout, IntelliJ IDEA GridLayout and TableLayout when using generation of
+explicit imports.</li>
+<li>I18n: No longer escape printable ISO 8859-1 characters (e.g. German umlauts)
+in .properties files.</li>
+<li>Client property editor did not work for value type
+<code>java.lang.Object</code> and subclasses (e.g.
+<code>java.awt.Component</code>).</li>
+<li>NetBeans form converter: Fixed NPE when converting NetBeans forms that use
+automatic resource management and the Swing application framework.</li>
+<li>NetBeans form converter: Detect form superclass from Java source.</li>
+<li>Mac OS X: Fixed erroneously reported ClassNotFoundException for
+com.apple.laf.AquaLookAndFeel when using JIDE components 2.7.2 (or later) on Mac
+OS X 10.5 (or earlier) and running JFormDesigner in a Java 5 VM.</li>
+<li>Runtime library: Fixed NoClassDefFoundError:
+org/jdesktop/layout/GroupLayout$Group exception. swing-layout.jar is no longer
+required.</li>
+<li>Fixed StackOverflowError when saving a form, after refreshing it, that uses
+a custom border in a TitledBorder.</li>
+<li>Minor bugs fixed.</li>
+</ul>
+<h3>Other Changes</h3>
+<ul>
+<li>System Requirements: IntelliJ IDEA 5.0 no longer supported.</li>
+<li>Updated JRE 6 in Windows setup to JRE 6 Update 20.</li>
+<li>Updated JRE 5 in Windows setup to JRE 5 Update 22.</li>
+</ul>
+<h2 id="4_0_7_2">4.0.7.2 <span>(IntelliJ IDEA plug-in only)</span></h2>
+<h3>New Features and Improvements</h3>
+<ul>
+<li>IntelliJ IDEA plug-in: Support for latest IntelliJ IDEA 9 Preview builds
+(Community Edition and Ultimate Edition build 90.122).</li>
+</ul>
+<h3>Bugs fixed</h3>
+<ul>
+<li>IntelliJ IDEA plug-in: Fixed occasional NullPointerException when creating
+new forms.</li>
+<li>IntelliJ IDEA plug-in: Check marks for &quot;Auto-close Test Forms&quot; and &quot;Show
+Test Form Size&quot; toggle commands were not shown in &quot;Test Form&quot; toolbar popup
+menu.</li>
+<li>Minor bugs fixed.</li>
+</ul>
+<h2 id="4_0_7_1">4.0.7.1 <span>(IntelliJ IDEA plug-in only)</span></h2>
+<h3>Bugs fixed</h3>
+<ul>
+<li>IntelliJ IDEA plug-in: IntelliJ IDEA 8.1 (and earlier) did not start the
+JFormDesigner plug-in because it thought that it is not compatible (since
+4.0.7).</li>
+</ul>
+<h2 id="4_0_7">4.0.7</h2>
+<h3>New Features and Improvements</h3>
+<ul>
+<li>IntelliJ IDEA plug-in: Support for IntelliJ IDEA 9.0M1.</li>
+</ul>
+<h3>Bugs fixed</h3>
+<ul>
+<li>Using MiG Calendar components did cause errors on save when setting some
+properties (e.g. <code>DateAreaBean.labelPlaceRect</code> or
+<code>DateHeaderBean.cellDecorationRow</code>).</li>
+<li>Eclipse plug-in: Cycle project dependencies sometimes caused
+StackOverflowErrors.</li>
+<li>IntelliJ IDEA plug-in: Fixed ClassCastException that may occur when
+converting several IntelliJ IDEA forms to JFormDesigner forms.</li>
+<li>Java code generator produced invalid code for nested FormLayout containers
+if both options &quot;Use PanelBuilder in generated code&quot; and &quot;Use 'this' for member
+variables&quot; were enabled.</li>
+<li>Java code generator produced uncompilable code when using local component
+variables and generating text initialization into initComponentsI18n()
+method.</li>
+</ul>
+<h3>Other Changes</h3>
+<ul>
+<li>Updated JRE 6 in Windows setup to JRE 6 Update 16.</li>
+<li>Updated JRE 5 in Windows setup to JRE 5 Update 20.</li>
+</ul>
+<h2 id="4_0_6">4.0.6</h2>
+<h3>Bugs fixed</h3>
+<ul>
+<li>I18n: Choosing a resource bundle did generate a wrong package for the bundle
+in the Eclipse plug-in or if the bundle is in the root of a source folder in all
+editions (since 4.0.5).</li>
+</ul>
+<h3>Other Changes</h3>
+<ul>
+<li>Updated JRE 6 in Windows setup to JRE 6 Update 14.</li>
+<li>Updated JRE 5 in Windows setup to JRE 5 Update 19.</li>
+<li>Updated JRE 1.4 in Windows setup to JRE 1.4.2_19.</li>
+</ul>
+<h2 id="4_0_5">4.0.5</h2>
+<h3>New Features and Improvements</h3>
+<ul>
+<li>Eclipse plug-in: Support for Eclipse 3.5 (Galileo).</li>
+<li>Eclipse plug-in: Support for multi-instance (pinned) properties views in
+Eclipse 3.5.</li>
+</ul>
+<h3>Bugs fixed</h3>
+<ul>
+<li>Fixed various Nimbus look and feel related issues.</li>
+<li>GroupLayout: Auto-correct invalid preferred size.</li>
+<li>I18n: Choosing a resource bundle in a nested source folder did generate a
+wrong package for the bundle.</li>
+<li>I18n: Compose key sequences, which can be used to enter accented and other
+non-standard characters, did not work correctly in the &quot;Localize&quot; dialog.</li>
+<li>JSplitPane: Design view used wrong default value (0.5) for property
+&quot;resizeWeight&quot; (should be 0.0).</li>
+<li>JSplitPane: Changing property &quot;resizeWeight&quot; did not update Design view.</li>
+<li>JScrollPane: Changed preferred size of non-scrollable child did compute a
+wrong preferred size for scroll pane if horizontal and vertical scroll bar
+policies are &quot;as needed&quot;.</li>
+<li>Java code generator sometimes produced unnecessary <code>import java.lang.*;</code> statements.</li>
+<li>Eclipse plug-in: Fixed occasional deadlock on opening forms that have
+unknown properties.</li>
+<li>IntelliJ IDEA plug-in: When using JIDE components, the IDE erroneously
+reported ClassNotFoundExceptions for AquaLookAndFeel and other look and feel
+classes.</li>
+<li>Layout of some dialogs (e.g. Choose Bean, Preferences) was not correct when
+running JFormDesigner on Java 6 and using not the platform look and feel (e.g.
+JGoodies Looks on Windows) in the Design view.</li>
+<li>Designer did not display correctly when a custom component throws an
+exception in its overridden addNotify() method.</li>
+</ul>
+<h2 id="4_0_4">4.0.4</h2>
+<h3>New Features and Improvements</h3>
+<ul>
+<li>IntelliJ IDEA plug-in: Support for IntelliJ IDEA 8.1.</li>
+</ul>
+<h3>Bugs fixed</h3>
+<ul>
+<li>Mac OS X: Fixed display of too large toolbar and palette buttons.</li>
+<li>IntelliJ IDEA plug-in on Mac OS X: When using the Quaqua look and feel that
+is bundled with IntelliJ IDEA 7 (and later), then designing with GroupLayout did
+not work. Also, the Border, Color, Font and Icon property editors dialogs did not
+open.</li>
+<li>NetBeans form converter: Fixed import of CompoundBorder.</li>
+<li>Java code generator produced uncompilable code when using nested class as
+custom border.</li>
+<li>Java code generator produced duplicate event handler methods if parameter of
+event handler method is final.</li>
+</ul>
+<h3>Other Changes</h3>
+<ul>
+<li>Updated JRE 6 in Windows setup to JRE 6 Update 12.</li>
+<li>Updated JRE 5 in Windows setup to JRE 5 Update 17.</li>
+</ul>
+<h2 id="4_0_3">4.0.3</h2>
+<h3>New Features and Improvements</h3>
+<ul>
+<li>Added &quot;Show Test Form Size&quot; option to &quot;Test Form&quot; drop-down menu.</li>
+<li>IntelliJ IDEA plug-in: Support for IntelliJ IDEA 8.1 EAP.</li>
+</ul>
+<h3>Bugs fixed</h3>
+<ul>
+<li>GroupLayout: When resizing a top-level panel in designer, the generated code
+did not reflect the correct new panel size.</li>
+<li>GroupLayout: Initial size of newly created form panel were not set correctly
+in generated code.</li>
+<li>GroupLayout: Resetting horizontal/vertical auto resizing of components did
+not work in some situations.</li>
+<li>GroupLayout: &quot;Set Default Size&quot; command did not work correctly for resizable
+components.</li>
+<li>GroupLayout: Layout constraints properties for horizontal/vertical
+size/resizable did no longer work after renaming the selected component (since
+4.0.2).</li>
+<li>Eclipse and IntelliJ IDEA plug-ins: The classpath used by the designer did
+not include non-exported classpath entries from dependent projects. This caused
+NoClassDefFoundError exceptions when using beans from dependent projects, which
+use classes from non-exported libraries.</li>
+<li>Fixed Java code generation and persistence problem with Java 5 enum property
+values, which override Enum.toString().</li>
+<li>Stand-alone: Maximized state of JFormDesigner window were not restored on
+startup.</li>
+<li>Stand-alone: Fixed problem that sometimes placed the JFormDesigner window
+outside of the screen area on startup.</li>
+</ul>
+<h2 id="4_0_2_1">4.0.2.1 <span>(IntelliJ IDEA plug-in only)</span></h2>
+<h3>Bugs fixed</h3>
+<ul>
+<li>IntelliJ IDEA plug-in: Support for IntelliJ IDEA 8.0.</li>
+</ul>
+<h2 id="4_0_2">4.0.2</h2>
+<h3>New Features and Improvements</h3>
+<ul>
+<li>Properties view: Always show changed advanced properties even if the
+advanced properties are hidden.</li>
+<li>GroupLayout: Added layout constraints properties for horizontal/vertical
+size/resizable.</li>
+<li>Stand-alone: Added option &quot;Encoding&quot; to &quot;Code Style&quot; preferences.</li>
+<li>IntelliJ IDEA plug-in: Support for IntelliJ IDEA 8.0 M1 and current Diana
+EAP build 8823.</li>
+<li>JBuilder plug-in: jbInit() converter now supports TableLayout.</li>
+</ul>
+<h3>Bugs fixed</h3>
+<ul>
+<li>GroupLayout: Fixed problem that did change the size of a GroupLayout
+container when adding new components to it.</li>
+<li>GroupLayout: Fixed problem that occasional reports an &quot;Unknown component ID
+xyz used in GroupLayout specification&quot; error message after deleting a
+GroupLayout container (since 4.0.1).</li>
+<li>GroupLayout: Some fixes related to center alignment and vertical
+resizing.</li>
+<li>GroupLayout: Adding a panel (with any layout manager except GroupLayout) to
+a GroupLayout container did give the new panel a zero size.</li>
+<li>GroupLayout: Copying a GroupLayout container (with children) did not copy
+the layout information and the children were not visible.</li>
+<li>FormLayout: Custom column/row templates were not added to the FormLayout
+root layout map in the designer.</li>
+<li>FormLayout: Changing custom column/row templates did not update them in the
+designer.</li>
+<li>Java code generator: Fixed generation of invalid GroupLayout initialization
+code when using member variable prefix or 'this' prefix for component
+variables.</li>
+<li>Java code generator: Fixed ArrayIndexOutOfBoundsException in application
+when using JGoodies Titled Separator in localized form (i18n) and generating
+text initialization into initComponentsI18n() method.</li>
+<li>Java code generator: When running JFormDesigner in a Java 7 EA VM, it did
+not generate code for some properties (background, foreground, font, visible,
+preferredSize, minimumSize, maximumSize, etc).</li>
+<li>Java code generator: Did not generate getter methods for non-referenced
+top-level components (e.g. actions).</li>
+<li>Eclipse plug-in did not work on 64-bit Windows Vista and XP.</li>
+<li>JBuilder plug-in: jbInit() converter did not always use up-to-date data when
+converting changed Java code.</li>
+<li>Stand-alone: Fixed exception when opening localized form while having
+non-existing folder in project source folders.</li>
+<li>Stand-alone: Fixed exception and unnecessary error messages when deleting
+multiple opened forms files.</li>
+</ul>
+<h2 id="4_0_1">4.0.1</h2>
+<h3>New Features and Improvements</h3>
+<ul>
+<li>IDE plug-ins: Double-clicking Action object in Design view opens Java editor
+and goes to Action's actionPerformed() method.</li>
+<li>TableModel editor: Always enabled the Insert (and Delete) column/row buttons
+to allow easier editing of empty table models. E.g. when using SwingX
+JXTable.</li>
+<li>Updated JGoodies Forms to 1.2.1.</li>
+</ul>
+<h3>Bugs fixed</h3>
+<ul>
+<li>Fixed Java code generation of <code>boolean</code> properties when using
+Apache xbean-reflect.jar (e.g. in IntelliJ IDEA 7.0.4).</li>
+<li>Fixed potential ClassCastException in
+<code>com.jgoodies.forms.layout.LayoutMap.getRoot()</code> when two independent
+instances of the JGoodies Forms 1.2 library are loaded into same VM.</li>
+<li>Fixed paint problem when using SwingX JXPanel (or subclasses) and set
+&quot;alpha&quot; property.</li>
+<li>GroupLayout: Fixed problem that can corrupt forms when renaming a container
+that has GroupLayout and then rename a child component of that container.</li>
+<li>GroupLayout: &quot;Test Form&quot; command and runtime library did not show components
+that have been pasted from the clipboard but not laid out.</li>
+<li>GroupLayout: Fixed order of horizontal and vertical layout groups in
+generated Java code for components that have been pasted from the clipboard but
+not laid out.</li>
+<li>GroupLayout: Fixed indentation of generated Java code.</li>
+<li>FormLayout: Fixed wrong Dialog Unit calculation when switching to another
+look and feel in the designer.</li>
+<li>Fixed layout conversion problem with zero sized components when converting
+from GroupLayout to FormLayout.</li>
+<li>Eclipse plug-in: Using and creating resource bundles on linked folders did
+not work.</li>
+<li>IntelliJ IDEA plug-in: Fixed a problem that did prevent opening form editors
+on startup of IntelliJ IDEA, if the form uses SwingX JXHeader component.</li>
+</ul>
+<h2 id="4">4</h2>
+<h3>New Features and Improvements</h3>
+<ul>
+<li>GroupLayout support (as in NetBeans GUI Builder; formerly Project
+Matisse).</li>
+<li>JGoodies Forms 1.2 support.</li>
+<li>Updating class name cache of &quot;Choose Bean&quot; dialog is now done in the
+background.</li>
+<li>Support for <a href="http://www.swinglabs.org/">SwingX</a> HorizontalLayout
+and VerticalLayout.</li>
+<li>Support for <a href="http://www.swinglabs.org/">SwingX</a>
+DropShadowBorder.</li>
+<li>Convert Abeille forms to JFormDesigner forms.</li>
+<li>Improved NetBeans form conversion (ListModel, SpinnerModel, ComponentRef,
+etc).</li>
+<li>IntelliJ IDEA and Eclipse plug-ins: The improved conversion of IntelliJ IDEA
+forms now removes IDEA's GUI code (e.g. $$$setupUI$$$() method and component
+fields) and also uses the same modifiers (public, private, protected, etc) for
+the new component fields as the removed fields. This makes the migration from
+IntelliJ IDEA GUI builder to JFormDesigner seamless.</li>
+<li>Improved usability of SpinnerModel property editor.</li>
+<li>Support for JTable.selectionMode property.</li>
+<li>Support for custom borders.</li>
+<li>I18n: Added localization preferences option &quot;Delete messages only if key
+prefix is equal to form's key prefix&quot;, which is on by default.</li>
+<li>Java code generator: Support custom code indentation. The IDE plug-ins are
+using the IDE code style settings of the project or workspace. The stand-alone
+edition provides a &quot;Code Style&quot; preferences page.</li>
+<li>Java code generator: Support for JGoodies factory components text
+initialization in initComponentsI18n() method, which can be used to switch
+locale at runtime (requires JGoodies Forms 1.2).</li>
+<li>Java code generator: Support for invoking the JFormDesigner Java code
+generator from command-line.</li>
+<li>Improved keyboard navigation in Design view.</li>
+</ul>
+<h3>Other Changes</h3>
+<ul>
+<li>Updated JRE 6.0 in Windows setup to JRE 6.0 Update 6.</li>
+<li>Updated JRE 5.0 in Windows setup to JRE 5.0 Update 15.</li>
+<li>Updated JRE 1.4 in Windows setup to JRE 1.4.2_17.</li>
+</ul>
+<div id="v3.1" class="sep"></div><h2 id="3_1_4">3.1.4</h2>
+<h3>Bugs fixed</h3>
+<ul>
+<li>Fixed Java code generation of <code>boolean</code> properties when using
+Apache xbean-reflect.jar (e.g. in IntelliJ IDEA 7.0.4).</li>
+<li>Eclipse plug-in: Using and creating resource bundles on linked folders did
+not work.</li>
+<li>IntelliJ IDEA plug-in: Fixed a problem that did prevent opening form editors
+on startup of IntelliJ IDEA, if the form uses SwingX JXHeader component.</li>
+</ul>
+<h2 id="3_1_3">3.1.3</h2>
+<h3>Bugs fixed</h3>
+<ul>
+<li>Contents of custom dialogs/frames not shown in designer.</li>
+<li>Vista and Leopard dialog/frame borders in designer.</li>
+<li>&quot;New Form&quot; dialog did not remember the 'none' state for button bars in
+settings.</li>
+<li>Conversion from null layout to grid-based layout did not compute optimal
+column/row spans for multiple components.</li>
+<li>Clipboard: Paste frames/dialogs now always to the top-level.</li>
+<li>SpinnerDateModel editor did not show correct end date and changing end date
+was now always possible.</li>
+<li>CardLayout: Fixed NPE when trying to localize card name.</li>
+<li>Java code generator: Avoid unused import statements for FormLayout classes
+when using generation of explicit imports.</li>
+<li>Java code generator inserted unnecessary '}' at end of initComponents() in
+NetBeans 5.5+ generated .java files.</li>
+<li>Java code generator: Fixed possible wrong order of variables when using
+nested classes.</li>
+<li>Eclipse plug-in: Fixed occasional deadlock on opening forms when running
+Eclipse on Java 6.</li>
+<li>IntelliJ IDEA plug-in: Fixed occasional deadlock on running ANT build when
+running IntelliJ IDEA 7 on Java 6.</li>
+</ul>
+<h3>Other Changes</h3>
+<ul>
+<li>Updated JRE 6.0 in Windows setup to JRE 6.0 Update 4.</li>
+<li>Updated JRE 5.0 in Windows setup to JRE 5.0 Update 14.</li>
+</ul>
+<h2 id="3_1_2">3.1.2</h2>
+<h3>New Features</h3>
+<ul>
+<li>Stand-alone edition: New icons for .jfd and .jfdproj files on Windows and
+Mac OS X.</li>
+<li>Mac OS X: Now using smaller fonts for palette, structure and properties
+views.</li>
+</ul>
+<h3>Bugs fixed</h3>
+<ul>
+<li>Mac OS X 10.5 (Leopard): Fixed missing selection in palette and fixed
+appearance of combo boxes in toolbar.</li>
+<li>Mac OS X: In-place-editing text field for frame and dialog titles now
+horizontally centered.</li>
+<li>Java code generator: Avoid unnecessary &quot;bundle&quot; variables when using own
+'getString' templates in localization preferences.</li>
+<li>Java code generator: Assigning actions to buttons in nested classes did not
+work because the actions have been instantiated too late.</li>
+<li>Eclipse plug-in: Fixed casual activation of another view (Mac OS X
+only).</li>
+<li>IntelliJ IDEA plug-in: Fixed assertion when saving forms on project closing
+(since 3.1.1).</li>
+<li>Properties view: Changing &quot;enabled&quot; property of
+<code>javax.swing.Action</code> objects did not work.</li>
+</ul>
+<h2 id="3_1_1_1">3.1.1.1 <span>(IntelliJ IDEA plug-in only)</span></h2>
+<h3>Bugs fixed</h3>
+<ul>
+<li>IntelliJ IDEA plug-in: Fixed deprecated method ProjectImpl.getProjectFile()
+usage error in IntelliJ IDEA 7.0.</li>
+</ul>
+<h2 id="3_1_1">3.1.1</h2>
+<h3>New Features</h3>
+<ul>
+<li>Property editor for <code>java.awt.Paint</code>.</li>
+<li>I18n: Support specification of resource bundle key for TitledBorders.</li>
+<li>Support for <code>JViewport</code>.</li>
+<li>Java code generator: Possibility to specify whether to generate code on a
+form-by-form basis.</li>
+<li>Java code generator: Support for TableLayout implementation in another
+package.</li>
+<li>Eclipse plug-in: Added &quot;Generate Java Code&quot; command to designer toolbar.</li>
+<li>Updated JRE 6.0 in Windows setup to JRE 6.0 Update 3.</li>
+<li>Updated JRE 5.0 in Windows setup to JRE 5.0 Update 13.</li>
+<li>Updated JRE 1.4 in Windows setup to JRE 1.4.2_16.</li>
+</ul>
+<h3>Bugs fixed</h3>
+<ul>
+<li>FlowLayout properties not shown in Properties view when running on Java 1.4
+or Java 5 (since 3.1).</li>
+<li>Eclipse plug-in did not work on 64-bit Linux (since 3.1).</li>
+<li>IntelliJ IDEA plug-in: Fixed IllegalAccessException: Class
+com.jformdesigner.yX can not access a member of class
+com.intellij.openapi.localVcs.LvcsAction$1 with modifiers &quot;public&quot;.</li>
+<li>IntelliJ IDEA plug-in: Fixed assertion when using Perforce VCS.</li>
+<li>JBuilder plug-in: jbInit() converter replaced layout manager of custom
+beans, which already had set the layout manager in the bean constructor.</li>
+<li>JBuilder plug-in: &quot;Add&quot; buttons on &quot;Native Library Paths&quot; preferences page
+did not work.</li>
+<li>Stand-alone: Update unknown palette icons on project open.</li>
+</ul>
+<h2 id="3_1">3.1</h2>
+<h3>New Features</h3>
+<ul>
+<li>Animated layout changes in Design view.</li>
+<li>Preferences page &quot;General&quot; added.</li>
+<li>Relative font specification.</li>
+<li>JBuilder 2005/2006 plug-in. (for JBuilder 2007 use the Eclipse plug-in)</li>
+<li>Support Java 6 baseline layout extensions of GridBagLayout and
+FlowLayout.</li>
+<li>Support abstract classes as superclass of forms.</li>
+<li>Support JavaBeans that use native libraries (e.g. JOGL). Added &quot;Native
+Library Paths&quot; page to the preferences.</li>
+<li>Properties view: Use spinner component as cell editor for number
+properties.</li>
+<li>Properties view: Improved keyboard editing: Space key starts editing; other
+keys replace old value.</li>
+<li>Added &quot;no layout (GenericIndexLayout)&quot; to list of layout managers in &quot;New
+Container&quot; dialog.</li>
+<li>Test form: If form uses CardLayout, then show same cards in the test form as
+in the Design view.</li>
+<li>Improved ButtonGroup member visualization.</li>
+<li>Support for ButtonGroup subclasses.</li>
+<li>Java code generator: Possibility to generate initComponentsI18n() method,
+which can be used to switch locale at runtime.</li>
+<li>Preferences: Added &quot;Import&quot; and &quot;Export&quot; buttons to the IDE plug-ins
+preferences/settings dialogs for importing and exporting of JFormDesigner .prefs
+files, which are compatible with all editions of JFormDesigner (IDE plug-ins and
+stand-alone).</li>
+<li>Preferences: Possibility to export parts of the preferences.</li>
+<li>Preferences: Added &quot;Restore Defaults&quot; button to preferences/settings dialogs
+of stand-alone edition and IntelliJ IDEA plug-in.</li>
+<li>Stand-alone: Possibility to change order of classpath entries in project
+dialog.</li>
+<li>Updated JGoodies Looks to 2.1.4.</li>
+<li>Updated JGoodies Forms to 1.1.</li>
+<li>Updated TableLayout to latest release (2007-03-06).</li>
+<li>The runtime library <code>jfd-loader.jar</code>, which can be used to load
+.jfd files at runtime, is now open source licensed under the BSD license. Source
+code and Javadoc are in the redist folder. <code>jfd-loader.jar</code> is now
+about 20kB larger because it is no longer obfuscated.</li>
+</ul>
+<h3>Bugs fixed</h3>
+<ul>
+<li>If a spinner component is focused in a dialog, the ENTER and ESC keys now
+work as expected and close the dialog.</li>
+<li>Properties view sometimes lost focus after editing a property value.</li>
+<li>Eclipse plug-in: Improved reliability and stability of Swing/SWT integration
+(especially on Mac OS X and Linux).</li>
+<li>Eclipse plug-in: Fixed StackOverflowError while calling X11 error handler,
+which sometimes occurred on Linux/GTK.</li>
+<li>Eclipse plug-in: When renaming a component in Outline view, the editing text
+field was not focused on Linux.</li>
+<li>Eclipse plug-in: Failed to open forms if xercesImpl.jar is in
+<code>&lt;JRE&gt;/lib/ext</code> folder.</li>
+</ul>
+<div id="v3" class="sep"></div><h2 id="3_0_5">3.0.5</h2>
+<h3>New Features</h3>
+<ul>
+<li>Updated JRE 6.0 in Windows setup to JRE 6.0 Update 2.</li>
+<li>Updated JRE 5.0 in Windows setup to JRE 5.0 Update 12.</li>
+<li>Updated JRE 1.4 in Windows setup to JRE 1.4.2_15.</li>
+</ul>
+<h3>Bugs fixed</h3>
+<ul>
+<li>Java code generator: Fixed missing import statement for
+<code>javax.swing.JLayeredPane</code> when generating explicit imports.</li>
+<li>Java parser reported missing opening curly bracket for some field
+initialization code.</li>
+<li>Linux: Fixed NullPointerException on drag-and-drop in Structure view.</li>
+<li>Eclipse plug-in: Failed to open forms if something is wrong in the project's
+classpath.</li>
+<li>Eclipse plug-in: Failed to open forms under some circumstances with
+following message: &quot;Attempted to beginRule: R/, does not match outer scope
+rule&quot;.</li>
+<li>IntelliJ IDEA plug-in: Fixed assertion when using Perforce VCS.</li>
+<li>Minor bugs fixed.</li>
+</ul>
+<h2 id="3_0_4_1">3.0.4.1 <span>(IntelliJ IDEA plug-in only)</span></h2>
+<h3>Bugs fixed</h3>
+<ul>
+<li>IntelliJ IDEA plug-in: Fixed &quot;old lvcs is disabled&quot; errors when using
+IntelliJ IDEA 7.0 EAP build 6951 (or later).</li>
+</ul>
+<h2 id="3_0_4">3.0.4</h2>
+<h3>New Features</h3>
+<ul>
+<li>Updated JRE 6.0 in Windows setup to JRE 6.0 Update 1.</li>
+<li>Updated JRE 1.4 in Windows setup to JRE 1.4.2_14.</li>
+</ul>
+<h3>Bugs fixed</h3>
+<ul>
+<li>IntelliJ IDEA plug-in: Fixed NoSuchMethodError errors when using IntelliJ
+IDEA 7.0 EAP build 6913 (or later).</li>
+<li>IntelliJ IDEA plug-in: Fixed exceptions when drag-and-drop components in
+Structure view in IntelliJ IDEA 7.0 M1 EAP (or later).</li>
+<li>Eclipse plug-in: Fixed occasional activating Eclipse window when switching
+to another application (since 3.0.1).</li>
+<li>Java code generator: Parser reported syntax error if component field
+annotation parameters contains '{' and '}' (Java 5).</li>
+<li>Java code generator: Fixed missing &quot;bundle&quot; variable when localizing only
+TitledBorder or JGoodies factory components (since 3.0.1).</li>
+<li>Java code generator: Insert event handler methods before Javadoc of
+initComponents() method.</li>
+<li>Minor performance improvements for initializing &quot;Choose Bean&quot; dialog.</li>
+</ul>
+<h2 id="3_0_3">3.0.3</h2>
+<h3>Bugs fixed</h3>
+<ul>
+<li>Deleting components failed if the component or one of its descending
+components has Code Generation properties set (since JFormDesigner 3.0.2).</li>
+<li>GridBagLayout is now used as layout manager for button bars when creating
+new forms, except when using FormLayout or TableLayout for the content pane.
+This is to avoid the dependency on JGoodies FormLayout when using e.g.
+BorderLayout for the content pane.</li>
+</ul>
+<h2 id="3_0_2">3.0.2</h2>
+<h3>New Features</h3>
+<ul>
+<li>Java code generator can now generate member variables and getter methods for
+<code>JToolBar.Separator</code> components.</li>
+</ul>
+<h3>Bugs fixed</h3>
+<ul>
+<li>IntelliJ IDEA plug-in: Check boxes not shown in popup menus if the menu item
+has another icon.</li>
+<li>Feedback grids for GridLayout placed at wrong coordinates if component
+orientation is right-to-left and horizontal gap is greater than zero.</li>
+<li>Could not edit TitledBorders imported from IntelliJ IDEA forms.</li>
+<li>Java code generator: Fixed generation of invalid import statements for
+nested classes if generation of explicit imports is enabled in the Java Code
+Generator preferences.</li>
+<li>Java code generator: Fixed code generation failure when using a spacer
+component in a JToolBar.</li>
+</ul>
+<h2 id="3_0_1">3.0.1</h2>
+<h3>New Features</h3>
+<ul>
+<li>New Windows setup with bundled JRE 6.0.</li>
+<li>Updated JRE 5.0 in Windows setup to JRE 5.0 Update 11.</li>
+<li>Updated JRE 1.4 in Windows setup to JRE 1.4.2_13.</li>
+<li>Mac OS X: Support for the
+<a href="https://www.randelshofer.ch/quaqua/download.html">Quaqua look and feel</a>.</li>
+</ul>
+<h3>Bugs fixed</h3>
+<ul>
+<li>Saving forms failed if non-visual beans have event listeners.</li>
+<li>Saving forms failed if color from Swing color palette is not available in
+current look and feel.</li>
+<li>Properties view not updated when removing events.</li>
+<li>Clicking JTabbedPane tabs in Design view did not activate tabs if
+tabLayoutPolicy is SCROLL.</li>
+<li>Eclipse plug-in: Closing JFormDesigner dialogs did activate random window
+when running Eclipse on Java 6.</li>
+<li>Eclipse plug-in: Fixed deadlock on opening multiple forms when running
+Eclipse on Java 6.</li>
+<li>Eclipse plug-in on Linux: Size of JFormDesigner editors and views not
+updated on resize when running Eclipse on Java 6.</li>
+<li>Hover selection not updated in Structure view on form changes.</li>
+<li>Feedback grids for GridLayout placed at wrong coordinates if component
+orientation is right-to-left or if the container has different sized insets.</li>
+<li>Shift+Click on column/row in header, when resize cursor is visible, did not
+select columns/rows between the last selected and the clicked column/row.</li>
+<li>Externalize Strings dialog: Locale combo was not updated after selecting a
+resource bundle.</li>
+<li>Client property values were auto-externalized in localized forms.</li>
+<li>Java code generator: Avoid unnecessary &quot;bundle&quot; variables in nested
+classes.</li>
+</ul>
+<h2 id="3">3</h2>
+<h3>New Features</h3>
+<h4>Eclipse plug-in</h4>
+<ul>
+<li>Designer integrated as Eclipse editor for JFormDesigner .jfd files.</li>
+<li>Eclipse &quot;Outline&quot; view displays structure of form.</li>
+<li>Eclipse &quot;Properties&quot; view displays properties of selected components.</li>
+<li>&quot;JFormDesigner Error Log&quot; view automatically opens on errors.</li>
+<li>Wizard to create new forms. Select &quot;JFormDesigner Form&quot; in the &quot;New&quot;
+wizard.</li>
+<li>Uses the source folders and classpath of the current Eclipse project.</li>
+<li>Java code generator updates the .java file on every change in the designer
+if the .java file is open or when saving the form.</li>
+<li>Fold generated code in Java editor.</li>
+<li>Go to event handler method in Java editor.</li>
+<li>Two-way synchronization of localized strings in designer and in properties
+file editors.</li>
+<li>Integrated into refactoring: Copy, rename, move or delete .jfd files when
+coping, renaming, moving or deleting .java files.</li>
+<li>Menu &quot;Form&quot; in the main menu bar if a .jfd file is active.</li>
+<li>JFormDesigner preferences integrated into Eclipse preferences.</li>
+<li>Copy needed libraries (JGoodies Forms, TableLayout, etc) to the project and
+add them to the classpath. Optionally include source code and Javadoc.</li>
+<li>Convert IntelliJ IDEA and NetBeans forms to JFormDesigner forms.</li>
+<li>Supports Eclipse 3.1, 3.2 or later (Mac OS X: Eclipse 3.2 and Java 6 DP 6 or
+later required; Linux: Java 5 or later required).</li>
+</ul>
+<h4>IntelliJ IDEA plug-in</h4>
+<ul>
+<li>Designer integrated as IntelliJ IDEA editor for JFormDesigner .jfd files.</li>
+<li>IntelliJ IDEA &quot;Structure&quot; view displays structure of form.</li>
+<li>&quot;JFormDesigner Error Log&quot; view automatically opens on errors.</li>
+<li>Create new forms. Select &quot;JFormDesigner Form&quot; in the &quot;New&quot; popup menu.</li>
+<li>Uses the source folders and classpath of the current IntelliJ IDEA
+module.</li>
+<li>Java code generator updates the .java file on every change in the designer
+if the .java file is open or when saving the form.</li>
+<li>Fold generated code in Java editor.</li>
+<li>Go to event handler method in Java editor.</li>
+<li>Two-way synchronization of localized strings in designer and in properties
+file editors.</li>
+<li>JFormDesigner preferences integrated into IntelliJ IDEA settings.</li>
+<li>Assign shortcut keys to JFormDesigner commands in &quot;Keymap&quot; settings.</li>
+<li>Copy needed libraries (JGoodies Forms, TableLayout, etc) to the project and
+add them to the classpath. Optionally include source code and Javadoc.</li>
+<li>Convert IntelliJ IDEA and NetBeans forms to JFormDesigner forms.</li>
+<li>Supports IntelliJ IDEA 5.0, 5.1, 6.0 or later.</li>
+</ul>
+<h4>Localization</h4>
+<ul>
+<li>Updating properties files without loosing comments and order of keys.</li>
+<li>Use of resource bundles in any folder (within source folders).</li>
+<li>Change of resource bundle used in form.</li>
+<li>Select existing keys. In the Properties view click the small globe in a
+String property value to open the &quot;Choose Key&quot; dialog.</li>
+<li>Log missing resources to Error Log view.</li>
+<li>&quot;Delete Locale&quot; command added.</li>
+<li>New preference option &quot;Copy localized messages when copying components&quot;.</li>
+<li>New preference option &quot;append new strings to the end of properties
+files&quot;.</li>
+<li>Reload properties files on external changes.</li>
+<li>Localization of mnemonics.</li>
+<li>Externalize strings to any locale.</li>
+</ul>
+<h4>Design view</h4>
+<ul>
+<li>Column/row headers: Resizing of columns/rows to change (minimum) size.</li>
+<li>New &quot;Nest in Container&quot; command in component context menu.</li>
+<li>Added &quot;Auto-close Test Forms&quot; option to &quot;Test Form&quot; drop-down menu.</li>
+<li>Test Form: Embed form into scroll pane if preferred size is larger than
+screen size.</li>
+<li>null layout manager: move selected components with Ctrl+ArrowKey and change
+size with Shift+ArrowKey. New commands &quot;Make Horizontal/Vertical Space Equal&quot;
+added to popup menu. All alignment commands have now keyboard shortcuts.</li>
+<li>Added &quot;Use local variable&quot; check box to Rename dialog.</li>
+<li>Support adding PropertyChangeListener for a specific property.</li>
+<li>Support for IntelliJ IDEA's layout manager GridLayoutManager.</li>
+</ul>
+<h4>Structure view</h4>
+<ul>
+<li>No longer expand and scroll to components, which are under the mouse
+location in the Design view.</li>
+</ul>
+<h4>Properties view</h4>
+<ul>
+<li>Support Java 5 enums in property values.</li>
+<li>Easy creation of nested action classes
+(<code>javax.swing.Action</code>).</li>
+<li>Enhanced <code>TableModel</code> editor: Specification of column widths,
+resizable flag, predefined values for combo box editor and support
+<code>java.util.Date</code> as column type.</li>
+<li>New property &quot;Variable Name&quot; introduced to allow equal variable names in
+nested classes.</li>
+<li>New properties &quot;Location Policy&quot; and &quot;Size Policy&quot; for
+<code>java.awt.Window</code> based classes (<code>JDialog</code>,
+<code>JFrame</code>, etc.) to control the initial location and size of the
+window. Default location policy is &quot;Relative to owner&quot; and default size policy
+is &quot;Preferred size&quot;. <strong>Note</strong>: This is a minor incompatibility to
+previous versions, which did not set the location and size.</li>
+<li>Property editor for <code>javax.swing.border.Border</code>,
+<code>java.awt.Font</code> and <code>javax.swing.Icon</code> now supports usage
+of <code>javax.swing.UIManager</code> values.</li>
+<li>Property editors for <code>javax.swing.ActionMap</code> and
+<code>javax.swing.InputMap</code> (read-only).</li>
+<li>Property editor for <code>java.awt.Image</code> added. Allows setting
+<code>iconImage</code> of <code>java.awt.Frame</code>.</li>
+<li>Added property editors for <code>char</code>,
+<code>java.lang.Character</code> and <code>java.lang.Boolean</code>.</li>
+<li>Support for JComponent's client properties: Define client properties in the
+Preferences dialog and use them in the Properties view.</li>
+<li>Annotations for component variable (Java 5).</li>
+</ul>
+<h4>Palette</h4>
+<ul>
+<li>New tab &quot;JARs&quot; in &quot;Choose Bean&quot; and &quot;Add Beans&quot; dialogs allows selecting
+classes that are marked as JavaBeans in the JAR manifests. This makes it easier
+to add beans from 3rd party libraries (like MiG Calendar or JIDE) to the
+palette.</li>
+<li>Hide unavailable components in history of &quot;Choose Bean&quot; dialog.</li>
+<li>Exclude classes without public &quot;null&quot; constructor in &quot;Choose Bean&quot;
+dialog.</li>
+<li>JRE components included in &quot;Choose Bean&quot; dialog.</li>
+<li>Reduced height of palette buttons to show more components.</li>
+<li>Added <code>javax.swing.Action</code>, horizontal Spacer and vertical Spacer
+to palette. Spacers are for use in IntelliJ IDEA GridLayout only.</li>
+</ul>
+<h4>Preferences</h4>
+<ul>
+<li>Preference pages &quot;Source Folders&quot; and &quot;Classpath&quot; removed and replaced with
+a default project.</li>
+<li>Added page to define client properties for use in the Properties view.</li>
+<li>Added page to specify BeanInfo and PropertyEditor search paths.</li>
+<li>Localization: Template for new properties files.</li>
+<li>Java Code Generator: Specification of source compatibility of generated
+code, member variable prefix, etc.</li>
+<li>Added option to disable IntelliGap for JGoodies FormLayout.</li>
+<li>Specification of i18n getBundle() and getString() code templates.</li>
+</ul>
+<h4>Java code generator</h4>
+<ul>
+<li>Renames existing event handler methods when changing the event handler
+name.</li>
+<li>Renames existing component getter methods and update the return statement
+when renaming a component.</li>
+<li>Renames existing nested classes when changing the &quot;Nested Class Name&quot;
+property.</li>
+<li>Updates the <code>extends</code> clause of a class when morphing a bean,
+which is connected to a (nested) class.</li>
+<li>Determine source compatibility of generated code from JRE. E.g. if
+JFormDesigner runs on Java 5, it generates Java 5 compatible source code. You
+can change the source compatibility level in the preferences.</li>
+<li>Parametrization of component class names (e.g.
+<code>MyComponent&lt;String&gt;</code>).</li>
+<li>Option to use 'this' to access component member variables.</li>
+<li>Optionally generate explicit imports (see Preferences).</li>
+<li>Specification of i18n getBundle() and getString() code template.</li>
+<li>Determine line separators when updating existing .java files.</li>
+<li>Support for non-local <code>ButtonGroup</code> variables.</li>
+<li>Generation of <code>PanelBuilder</code> code for JGoodies FormLayout.</li>
+<li>GridBagLayout: New option to use empty <code>GridBagConstraints</code>
+constructors (for Java &lt;= 1.1).</li>
+<li>Java parser now allows curly brackets outside of class (e.g. for
+annotations).</li>
+</ul>
+<h4>Runtime library</h4>
+<ul>
+<li><code>FormCreator</code>: Added methods to get form model, locale, class
+loader.</li>
+<li><code>FormCreator</code>: Allow overriding of methods to get i18n resource
+bundles and strings.</li>
+<li><code>FormComponentVisitor</code> introduced to visit all components in a
+hierarchy.</li>
+</ul>
+<h4>Other</h4>
+<ul>
+<li>Stand-alone: Simple project manager.</li>
+<li>Stand-alone: Import IntelliJ IDEA .form files. Either select &quot;File &gt;
+Import&quot; from the main menu or drag .form files to the JFormDesigner window.</li>
+<li>Stand-alone: Improved start-up speed when many forms are open.</li>
+<li>Stand-alone: Reload form files and properties files on external changes.</li>
+<li>Updated BeanInfos for Java 6.</li>
+<li>Updated JRE 5.0 in Windows setup to JRE 5.0 Update 9.</li>
+<li>Updated JRE 1.4 in Windows setup to JRE 1.4.2_12.</li>
+<li>Updated JGoodies Looks to 2.0.4.</li>
+<li>Updated JGoodies Forms to 1.0.7.</li>
+</ul>
+<h3>Bugs fixed</h3>
+<ul>
+<li>FormLayout: Small constant sized columns/rows (e.g. 1dlu) no longer stretch
+when smaller than 5 pixels.</li>
+<li>Runtime library: Event handler methods not added to windows (JFrame,
+JDialog, etc) when specifying an owner.</li>
+<li>Fixed exception when removing last column/row in GridBagLayout or
+TableLayout.</li>
+<li>Swing palette colors did not use current look and feel.</li>
+<li>&quot;Reopen&quot; submenu was not updated on Mac OS X.</li>
+<li>Using <code>JTabbedPane</code>, <code>JScrollPane</code>,
+<code>JSplitPane</code>, etc. as superclass for new forms works now as
+expected.</li>
+<li>Fixed generation of uncompilable code when using null layout manager in
+<code>JFrame</code>.</li>
+<li>Fixed problem when saving <code>SpinnerNumberModel</code> on some VMs.</li>
+<li>Using <code>TitledBorder</code> may cause errors on save when JFormDesigner
+runs on Java 6.</li>
+<li>null layout did not compute minimal size.</li>
+<li>Minor bugs fixed.</li>
+</ul>
+<div id="v2" class="sep"></div><h2 id="2_0_5">2.0.5</h2>
+<h3>New Features</h3>
+<ul>
+<li>Runtime library: Added convenience methods to get menu components.</li>
+</ul>
+<h3>Bugs fixed</h3>
+<ul>
+<li>Fixed application freeze when using animated GIFs.</li>
+<li>Fixed: Renaming button groups did not update references in menu bars.</li>
+<li>Fixed ClassCastException when setting tile icon of MatteBorder to
+default.</li>
+<li>Fixed in runtime library: Event handler methods not found in superclasses of
+target object.</li>
+<li>Java code generator: Fixed exception when using a menu bar in a JFrame and
+&quot;Set Component Names&quot; property is true.</li>
+<li>Java code generator: Fixed generation of uncompilable code when referencing
+a top-level component that is a nested class.</li>
+<li>Minor bugs fixed.</li>
+</ul>
+<h2 id="2_0_4">2.0.4</h2>
+<h3>Bugs fixed</h3>
+<ul>
+<li>Linux and Mac OS X: Fixed bug in Java parser which may partly corrupt
+generated code in case that the file contains multi-line comments with empty
+lines.</li>
+<li>Java code generator: Do not generate component getter methods for local
+component variables.</li>
+<li>Java code generator: Fixed missing import statement when using subclasses of
+Swing components.</li>
+<li>Fixed look and feel problem regarding JIDE components.</li>
+<li>Fixed ClassCastException when testing a form where a ButtonGroup is the
+first component.</li>
+<li>Minor bugs fixed.</li>
+</ul>
+<h2 id="2_0_3">2.0.3</h2>
+<h3>Bugs fixed</h3>
+<ul>
+<li>Localization: Do not auto-externalize excluded properties when editing
+properties.</li>
+<li>Fixed NPE when using FormCreator with event handlers and removing another
+event listener.</li>
+<li>Java code generator: Fixed missing import statement for
+<code>java.awt.Toolkit</code> in <code>KeyStroke</code> property editor.</li>
+<li>Added some missing Java 5 properties to BeanInfos of
+<code>java.awt.Container</code> and <code>java.awt.Window</code>.</li>
+<li>Mac OS X: Forward delete key works now as expected in text fields
+(in-place-editing, etc.).</li>
+<li>Minor bugs fixed.</li>
+</ul>
+<h2 id="2_0_2">2.0.2</h2>
+<h3>New Features</h3>
+<ul>
+<li>Assign &quot;labelFor&quot; property of labels in component context menu.</li>
+<li>Allow remove or reassign of refactored or unknown properties.</li>
+<li>Java code generator: Generate <code>BorderFactory.createEmptyBorder()</code>
+for empty <code>EmptyBorders</code>.</li>
+</ul>
+<h3>Bugs fixed</h3>
+<ul>
+<li>Marquee selection no longer selects invisible components in
+<code>JTabbedPane</code> and <code>CardLayout</code>.</li>
+<li>Size of <code>GridBagLayout</code> panel too small in some situations.</li>
+<li>Column/row headers not always updated when moving a panel.</li>
+<li>Pasting non-visual beans may cause errors on save.</li>
+<li>&quot;Restore Default Value&quot; in Properties view did not use the current look and
+feel.</li>
+<li>Morphing did not remove read-only properties.</li>
+<li>Fixed exception when using <code>JMenuBar</code> and WinLAF look and
+feel.</li>
+<li>Java code generator: Fixed exception when using a menu bar and null layout
+in a <code>JFrame</code>.</li>
+<li>Java code generator: Fixed generated event handler invocation code for the
+case that the listener interface has a method with the same name as the handler
+method.</li>
+<li>Mac OS X: Command key now works as expected to add multiple components. No
+longer drops component to parent of container.</li>
+</ul>
+<h2 id="2_0_1">2.0.1</h2>
+<h3>New Features</h3>
+<ul>
+<li>Simplified moving and resizing of JScrollPanes in Design view: now you click
+on the child of a JScrollPane and then move or resize the JScrollPane including
+its child component.</li>
+<li>When morphing a bean from a non-scrollable component type to a scrollable
+component type, JFormDesigner asks to wrap the component in a
+<code>JScrollPane</code>.</li>
+<li>Java code generator: Generation of getter methods for components.</li>
+<li>Possibility to exclude properties from code generation. This is useful to
+exclude table, tree, etc. models, which are set for prototyping purposes, from
+code generation.</li>
+<li><code>FormCreator</code>: <code>isSetComponentNames()</code> and
+<code>setSetComponentNames()</code> added.</li>
+</ul>
+<h3>Bugs fixed</h3>
+<ul>
+<li>Couldn't add menu items to subclasses of JMenu.</li>
+<li>Column/row grouping lines scroll out of visible area.</li>
+<li>Grid of GridBagLayout panel shown in wrong location in some conditions.</li>
+<li>Java code generator: Fixed line counting bug in parser on Linux, Mac OS X
+and other Unix systems when single-line comments contains multi-line
+comments.</li>
+<li>Java code generator: Fixed wrong evaluation of custom code variable ${field}
+when using a member variable prefix.</li>
+<li>Java code generator: Fixed wrong evaluation of custom code variable
+${field_type} for JGoodies ComponentFactory components and nested classes.</li>
+<li>Fixed painting problem in Design view when using Liquid look and feel.</li>
+<li>Mac OS X: Increased row height of Properties view.</li>
+</ul>
+<h2 id="2">2</h2>
+<h3>New Features</h3>
+<h4>Design view</h4>
+<ul>
+<li>Menu designer: Visual design of menu bars and popup menus, in-place edit
+menu item texts and drag-and-drop menu items. The component palette contains a
+new category &quot;Menus&quot;.</li>
+<li>Internationalization support: externalize and internalize strings, edit
+resource bundles, add locales, switch locale used in Design view, in-place-edit
+text of current locale.</li>
+<li>Support for events: Add and remove event handlers, generates handler
+methods, also usable with runtime library (see documentation of method
+<code>FormCreator.setTarget()</code> for details).</li>
+<li>New &quot;Morph Bean&quot; command allows you to change the class of existing
+components without loosing properties, events or layout information.</li>
+<li>Layout manager changing.</li>
+<li>Marquee selection tool.</li>
+<li>Auto-insert new columns/rows when dropping components on a gap
+column/row.</li>
+<li>Auto-insert new columns/rows when adding or moving components outside of the
+existing grid.</li>
+<li>Improved moving of multiple selected components.</li>
+<li>Keep selection when moving components/columns/rows.</li>
+<li>Column/row splitting introduced.</li>
+<li>When adding a scrollable component, ask the user whether he wants to add a
+<code>JScrollPane</code> as well.</li>
+<li>Made colors of feedback figures in Design view brighter.</li>
+<li>Show tooltips when moving or resizing components.</li>
+<li>Highlight occupied areas under the current mouse location when adding or
+moving components.</li>
+<li>The Shift key now behaves the same as the Ctrl key while selecting
+components in the Design view.</li>
+<li>Possibility to specify a &quot;Default alignment&quot; for components in a column/row
+of <code>GridBagLayout</code> and <code>TableLayout</code> (as already supported
+by FormLayout). This is e.g. very useful for columns with right aligned labels
+because you specify the alignment only once and all added labels will
+automatically aligned to the right.</li>
+<li>Improved BorderLayout support when containing small sized children.</li>
+<li>Improved <code>JTabbedPane</code> support: reorder tabs in Design view,
+insert new tabs before other tabs.</li>
+<li>Support for <code>GridLayout</code>.</li>
+<li>Support for <code>CardLayout</code>.</li>
+<li>Support for <code>JDesktopPane</code>, <code>JInternalFrame</code> and
+<code>JLayeredPane</code>.</li>
+<li><code>null</code> layout manager support.</li>
+<li>Support for non-visual JavaBeans.</li>
+<li><code>java.beans.Customizer</code> is now supported.</li>
+<li>Support for right-to-left component orientation.</li>
+</ul>
+<h4>Structure view</h4>
+<ul>
+<li>Drag and drop components in tree, drop new components to tree.</li>
+<li>Show events in tree.</li>
+<li>Highlight the tree node of the component which is under the current mouse
+location in the Design view.</li>
+<li>Show small overlay icons for component variable modifiers
+<code>public</code>, <code>protected</code>, <code>default</code> and
+<code>private</code> in Structure tree in case it is not the default
+modifier.</li>
+<li>New tree root node &quot;(form)&quot;. When selected, allows specification of form
+global options in Properties view.</li>
+<li>&quot;Expand All&quot;, &quot;Collapse All&quot; and &quot;Hide Events&quot; commands in toolbar.</li>
+</ul>
+<h4>Properties view</h4>
+<ul>
+<li>Allow property value modification of multiple selected components.</li>
+<li>Remove property value when setting to the default.</li>
+<li>Improved handling or <code>null</code> value in property editors.</li>
+<li>&quot;Restore Default Value&quot; command enabled for Layout, Constraints and Code
+Generation properties.</li>
+<li>&quot;Set Value to null&quot; command added to popup menu.</li>
+<li>Added &quot;Externalize String&quot; and &quot;Internalize String&quot; commands to popup
+menu.</li>
+<li>Mark localized strings with a small globe in the property value.</li>
+<li>Show class hierarchy in tool tip of the &quot;Class&quot; property.</li>
+<li>The combo box to assign a component to the <code>JLabel.labelFor</code>
+property no longer contains <code>JLabels</code> so that the component list is
+shorter, which makes it easier to find the target component.</li>
+<li>Possibility to reference any (non-visual) JavaBean as a property value.</li>
+<li>The <code>SpinnerModel</code> editor now supports
+<code>javax.swing.SpinnerDateModel</code> and
+<code>javax.swing.SpinnerListModel</code>.</li>
+<li>Added property editor for <code>java.awt.Cursor</code>.</li>
+<li>Added property editor for <code>javax.swing.KeyStroke</code>. Supports menu
+shortcut modifier key (Command key on Mac OS X, Ctrl key otherwise).</li>
+<li>Improved border editor.</li>
+<li><code>MatteBorder</code> is now supported.</li>
+<li>Show image dimensions and file size in icon editor.</li>
+<li>Added &quot;Insert Variable&quot; button to custom Java code editors.</li>
+<li>Improved error message of mnemonic property editor.</li>
+<li>Remove property value references to removed components. E.g. when removing a
+ButtonGroup object then also the references to this object are removed.</li>
+<li>Made &quot;visible&quot; property of java.awt.Component visible.</li>
+<li>Made &quot;toolBar&quot; property of SimpleInternalFrame visible. Now you can add a
+JToolBar to the Design view and assign it to the SimpleInternalFrame in the
+Properties view.</li>
+</ul>
+<h4>Palette</h4>
+<ul>
+<li>Palette Manager allows the configuration of the component palette (add,
+edit, remove and rearrange categories and beans).</li>
+<li>New &quot;Choose Bean&quot; dialog that allows to search for classes in the classpath,
+history and palette.</li>
+<li>&quot;Is Container&quot; check box in &quot;Choose Bean&quot; dialog allows to specify whether a
+bean is a container or not.</li>
+</ul>
+<h4>Preferences</h4>
+<ul>
+<li>Added support for custom Look and Feels.</li>
+<li>Added support for custom column/row templates for FormLayout.</li>
+<li>New preferences page &quot;Localization&quot; that allows the specification of
+properties, which should not externalized.</li>
+<li>Allow editing of Source Folders and Classpath items.</li>
+<li>Added &quot;Edit&quot; and &quot;Insert Variable&quot; buttons to Java code templates page.</li>
+</ul>
+<h4>Java code generator</h4>
+<ul>
+<li>Generate shorter GridBagConstraints code (pass all values to the
+constructor).</li>
+<li>Added template for &quot;Event Handler Body&quot; to preferences.</li>
+<li>Specification of member variable prefix for component variables.</li>
+<li>Specification of default &quot;Variable modifiers&quot; and default &quot;Use Local
+Variable&quot; properties used for the whole form.</li>
+<li>Specification of event handler method modifiers (public, protected, private,
+etc). You can also use &quot;abstract&quot;, which is useful if you subclass form
+classes.</li>
+<li>Possibility to generate code, which invokes java.awt.Component.setName() on
+all components. Works also in jfd-loader.jar.</li>
+<li>Variables for component fields and types in custom code.</li>
+<li>Modifier &quot;static&quot; for component variables.</li>
+<li>Code generator can now write Eclipse non-nls tags (//$NON-NLS-n$) and
+NetBeans no-i18n tags (//NOI18N). Enable it in the Preferences dialog.</li>
+<li>The Java code generator now orders the properties in the same order as you
+have set the properties in the Properties view. This makes sure that the
+generated code behaves the same as the &quot;Test Form&quot; command and solves problems
+where the property set order is important.</li>
+<li>Improved speed of Java code generator about 15%.</li>
+</ul>
+<h4>Other</h4>
+<ul>
+<li>Import NetBeans .form files. Either select &quot;File &gt; Import&quot; from the main
+menu or drag .form files to the JFormDesigner window. When saving an imported
+NetBeans form, JFormDesigner replaces the NetBeans generated code with its own
+code. If using NetBeans, you should remove (and backup) the .form files.
+Otherwise, NetBeans would again replace the JFormDesigner generated code with its
+own code.</li>
+<li>JBuilder plugin to convert jbInit() methods to JFormDesigner forms.
+Download: <a href="http://www.jformdesigner.com/">www.jformdesigner.com</a>.</li>
+<li>Clipboard paste improved.</li>
+<li>Changed keyboard shortcut for &quot;Close&quot; to &quot;Ctrl+W&quot; and &quot;Close All&quot; to
+&quot;Ctrl+Shift+W&quot;.</li>
+<li>Added &quot;Browse...&quot; buttons for choosing class names to several dialogs.</li>
+<li>Linux: Added GNOME window decoration images.</li>
+<li>Better support of dark color themes.</li>
+<li>Possibility to specify persistence delegates
+(java.beans.PersistenceDelegate) for property values in property descriptors
+(java.beans.PropertyDescriptor). They are used while saving a form to a .jfd
+file.</li>
+<li>Now using always the read and write methods specified in the property
+descriptors to get and set bean properties.</li>
+<li>Improved error handling for &quot;Test Form&quot; command. You can now see the whole
+occurred exception in the Error Log view for easier analysis of the problem.</li>
+<li>Show window size and inner size of &quot;Test Form&quot; frame in window title.</li>
+<li>Improved exception handling when accessing BeanInfos.</li>
+<li>JGradientPanel example bean added (see
+&lt;jfd-install&gt;/examples/src/com/jformdesigner/examples/beans/JGradientPanel.java).</li>
+<li>New Windows setup with JRE 5.0 Update 5.</li>
+<li>Updated JRE 1.4 in Windows setup to JRE 1.4.2_09.</li>
+<li>Updated TableLayout.jar to latest release (2005-09-20). Added
+TableLayout-javadoc.jar.</li>
+<li>Updated JGoodies Looks to 1.3.2.</li>
+</ul>
+<h3>Bugs fixed</h3>
+<ul>
+<li>Design view: Fixed preferred size calculation of GridBagLayout panels.</li>
+<li>Design view: Improved performance of feedback figure painting.</li>
+<li>Design view: Better auto-numbering of copied components.</li>
+<li>Design view: Keep component sizes when moving components to null layout.</li>
+<li>Design view: Fixed layout problem when adding a <code>JScrollPane</code> to
+<code>FormLayout</code>, <code>GridBagLayout</code> or
+<code>TableLayout</code>.</li>
+<li>Design view: No longer caching icons used in forms.</li>
+<li>Properties view: Fixed wrong display of DLU4_BORDER and DLU7_BORDER.</li>
+<li>Properties view: Fixed minor problem in <code>TableModel</code> property
+editor.</li>
+<li>Properties view: Removed option EXIT_ON_CLOSE from property
+JDialog.defaultCloseOperation.</li>
+<li>Java code generator: Place &quot;Post-Initialization Code&quot; behind setting the
+layout manager.</li>
+<li>Java code generator: Fixed import statement merging bug.</li>
+<li>Java code generator: Fixed single-line comment recognition bug in
+parser.</li>
+<li>Java code generator: Generate JSplitPane.setTopComponent() and
+setBottomComponent() when orientation is VERTICAL_SPLIT.</li>
+<li>Java code generator: Fixed generation of Java code for alpha value of Color
+property values.</li>
+<li>Java code generator: Fixed generation of Java code for bevelType of
+BevelBorder.</li>
+<li>Fixed appearance of Ocean theme (Java 5).</li>
+<li>Linux: Fixed appearance of JComboBox in Design view when using Ocean theme
+(Java 5).</li>
+<li>Linux: Fixed NullPointerException and confusing &quot;Open Form&quot; error message
+when using &quot;JGoodies Plastic&quot; or &quot;JGoodies Plastic XP&quot; look and feels.</li>
+<li>Splitter between palette and designer jumps to the left when showing or
+hiding the Error Log view.</li>
+<li>Linux: No longer using GTK as application look and feel on GNOME
+desktops.</li>
+<li>Windows: Fixed occasional problems with &quot;short&quot; (8+3) filenames when
+double-clicking .jfd files in Windows Explorer.</li>
+<li><code>java.beans.Beans.isDesignTime()</code> returns now always
+<code>true</code>. Previously, it returned <code>false</code> on &quot;Test Form&quot;
+command.</li>
+<li>Fixed class loader problem regarding JIDE components.</li>
+<li>Fixed class loader problem regarding
+<a href="http://common.l2fprod.com/">l2fprod Common Components</a> (requires
+2005-01-30 release).</li>
+<li>Fixed some memory leaks.</li>
+</ul>
+<p class="uk-alert"><strong>Important</strong>: The .jfd file format has changed
+in this release. It is still XML, but some class names and the structure has
+changed slightly. This release can read all .jfd files created with previous
+releases (1.0 and 2.0 EA), but always writes the new format. The new
+<strong>jfd-loader.jar</strong> runtime library can read old and new .jfd files.
+Also, the package names of the jfd-loader.jar classes has changed from
+<code>com.ktauber.form.runtime</code> to
+<code>com.jformdesigner.runtime</code>.</p>
+<div id="v1" class="sep"></div><h2 id="1_0_6">1.0.6</h2>
+<ul>
+<li>Ported to <strong>Mac OS X</strong>.</li>
+<li>Fixed: Component variable modifier &quot;final&quot; disabled because it would lead to
+compiler errors.</li>
+<li>Fixed: Flag &quot;Container blocks&quot; in Java Code Generator Preferences will now
+saved.</li>
+</ul>
+<h2 id="1_0_5">1.0.5</h2>
+<ul>
+<li>Fixed: Update Preferences dialog and internal states correctly after
+importing preferences.</li>
+</ul>
+<h2 id="1_0_4">1.0.4</h2>
+<ul>
+<li>Fixed generation of Java code for bevelType of BevelBorder.</li>
+<li>Removed option EXIT_ON_CLOSE from property
+JDialog.defaultCloseOperation.</li>
+<li>config/persistenceDelegates.conf: fixed wrong example.</li>
+<li>Fixed appearance of Ocean theme (Java 5).</li>
+<li>Fixed generation of Java code for alpha value of Color property values.</li>
+<li>Better support of dark color themes.</li>
+<li>Improved error message of mnemonic property editor.</li>
+<li>Fixed some memory leaks.</li>
+</ul>
+<h2 id="1_0_3">1.0.3</h2>
+<ul>
+<li>Improved BorderLayout support when containing small sized children.</li>
+<li><code>java.beans.Beans.isDesignTime()</code> returns now always
+<code>true</code>. Previously, it returned <code>false</code> on &quot;Test Form&quot;
+command.</li>
+<li>Fixed wrong XML encoding when saving a form, which uses &quot;(no border)&quot; (was
+introduced in 1.0.1).</li>
+<li>Fixed some minor look and feel paint problems.</li>
+</ul>
+<h2 id="1_0_2">1.0.2</h2>
+<ul>
+<li>Non-Commercial license.</li>
+<li><code>FormLayout</code>: Columns/rows with size &quot;default&quot; now shrink in the
+design view if space is scare.</li>
+<li><code>GridBagLayout</code>: Fixed wrong calculation of grid x/y when
+removing or moving first column/row.</li>
+<li><code>java.beans.Beans.isDesignTime()</code> returns now
+<code>true</code>.</li>
+<li>Palette now disabled if no form opened.</li>
+<li>Minor bugs fixed.</li>
+</ul>
+<h2 id="1_0_1">1.0.1</h2>
+<ul>
+<li>Added property editors for <code>java.lang.Byte</code>,
+<code>java.lang.Double</code>, <code>java.lang.Float</code>,
+<code>java.lang.Integer</code>, <code>java.lang.Long</code>,
+<code>java.lang.Short</code>, <code>java.math.BigDecimal</code> and
+<code>java.math.BigInteger</code>.</li>
+<li>Added support for Quest's JClass Field beans.</li>
+<li>Added class <code>FormSaver</code> to runtime library
+<code>jfd-loader.jar</code>. This class can be used to convert a proprietary
+form specification to a JFormDesigner .jfd file.</li>
+<li>Added support to specify own persistence delegates for custom classes in
+property values. See <code>config/persistenceDelegates.conf</code> for
+details.</li>
+<li>Fixed persistence problems regarding custom classes in property values.</li>
+<li>Fixed problem in <code>jfd-loader.jar</code> regarding
+<code>SimpleInternalFrame</code> not showing title.</li>
+<li>Fixed memory leak: Memory of form not freed after closing form.</li>
+</ul>
+<h2 id="1">1</h2>
+<ul>
+<li>Initial release.</li>
+</ul>
+
+</div>
+</body>
+
+</html>
