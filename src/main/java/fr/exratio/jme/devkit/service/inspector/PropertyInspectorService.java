@@ -1,7 +1,11 @@
 package fr.exratio.jme.devkit.service.inspector;
 
+import com.google.common.eventbus.Subscribe;
+import fr.exratio.jme.devkit.event.SelectedItemEvent;
 import fr.exratio.jme.devkit.properties.PropertySection;
+import fr.exratio.jme.devkit.service.EventService;
 import fr.exratio.jme.devkit.service.Service;
+import fr.exratio.jme.devkit.service.ServiceManager;
 import java.awt.Color;
 import java.awt.Component;
 import java.util.Collection;
@@ -16,10 +20,10 @@ import net.miginfocom.swing.MigLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PropertyInspectorService implements Service {
+public class PropertyInspectorService extends JPanel implements Service {
 
   public static final String WINDOW_ID = "Property Inspector";
-  private static final Logger LOGGER = LoggerFactory.getLogger(PropertyInspectorService.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(PropertyInspectorTool.class);
   private final JPanel sectionPanel;
 
   private final JLabel nothingSelectedLabel = new JLabel("Nothing To Inspect.");
@@ -36,6 +40,7 @@ public class PropertyInspectorService implements Service {
     propertySectionListBuilder = new ExactMatchFinder();
     propertySectionListBuilder.chainWith(new InheritedMatchFinder())
         .chainWith(new DefaultMatchFinder());
+    ServiceManager.getService(EventService.class).register(this);
 
   }
 
@@ -83,6 +88,17 @@ public class PropertyInspectorService implements Service {
       sectionPanel.add(entry.getValue(), "growx, wrap");
       sectionPanel.add(new JSeparator(SwingConstants.HORIZONTAL), "growx, span 2, wrap");
     }
+  }
+
+  @Subscribe
+  public void onItemSelected(SelectedItemEvent event) {
+    Object selectedItem = event.getSelectedItem();
+    if (selectedItem == null) {
+      LOGGER.warn(
+          "-- onItemSelected() the object contained in the event is null. Doing nothing");
+      return;
+    }
+    inspect(event);
   }
 
   /**

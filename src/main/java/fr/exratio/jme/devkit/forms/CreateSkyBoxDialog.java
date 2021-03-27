@@ -13,6 +13,7 @@ import com.jme3.util.SkyFactory.EnvMapType;
 import fr.exratio.jme.devkit.config.DevKitConfig;
 import fr.exratio.jme.devkit.jme.TextureImage;
 import fr.exratio.jme.devkit.service.JmeEngineService;
+import fr.exratio.jme.devkit.service.SceneGraphService;
 import fr.exratio.jme.devkit.service.SceneTreeService;
 import fr.exratio.jme.devkit.service.ServiceManager;
 import fr.exratio.jme.devkit.swing.ComponentUtilities;
@@ -80,7 +81,8 @@ public class CreateSkyBoxDialog {
         sky.setQueueBucket(Bucket.Sky);
 
         // add it to the scene tree. This will also safely add it to the scene.
-        ServiceManager.getService(SceneTreeService.class).addSpatial(sky, parentNode);
+        ServiceManager.getService(SceneGraphService.class)
+            .addSpatial(sky, parentNode.getUserObject());
 
         JButton button = (JButton) e.getSource();
         Window window = SwingUtilities.getWindowAncestor(button);
@@ -217,7 +219,9 @@ public class CreateSkyBoxDialog {
         GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
   }
 
-
+  /**
+   * @noinspection ALL
+   */
   public JComponent $$$getRootComponent$$$() {
     return rootPanel;
   }

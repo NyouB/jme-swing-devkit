@@ -1,0 +1,88 @@
+JFDML JFormDesigner: "7.0.3.0.337" Java: "11.0.10" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+			name: "this"
+			add( new FormContainer( "fr.exratio.jme.devkit.swing.JSplitPaneWithZeroSizeDivider", new FormLayoutManager( class javax.swing.JSplitPane ) ) {
+				name: "verticalMainSplitPane"
+				"orientation": 0
+				add( new FormContainer( "fr.exratio.jme.devkit.swing.JSplitPaneWithZeroSizeDivider", new FormLayoutManager( class javax.swing.JSplitPane ) ) {
+					name: "horizontalLeftSplitPane"
+					add( new FormContainer( "fr.exratio.jme.devkit.swing.JSplitPaneWithZeroSizeDivider", new FormLayoutManager( class javax.swing.JSplitPane ) ) {
+						name: "leftVerticalFinalSplitPane"
+						"orientation": 0
+					}, new FormLayoutConstraints( class java.lang.String ) {
+						"value": "left"
+					} )
+					add( new FormContainer( "fr.exratio.jme.devkit.swing.JSplitPaneWithZeroSizeDivider", new FormLayoutManager( class javax.swing.JSplitPane ) ) {
+						name: "horizontalRightSplitPane"
+						add( new FormContainer( "fr.exratio.jme.devkit.swing.JSplitPaneWithZeroSizeDivider", new FormLayoutManager( class javax.swing.JSplitPane ) ) {
+							name: "rightVerticalFinalSplitPane"
+							"orientation": 0
+							"minimumSize": new java.awt.Dimension( 57, 49 )
+						}, new FormLayoutConstraints( class java.lang.String ) {
+							"value": "right"
+						} )
+						add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+							name: "centerPanel"
+							auxiliary() {
+								"JavaCodeGenerator.customCreate": true
+							}
+							add( new FormContainer( "javax.swing.JTabbedPane", new FormLayoutManager( class javax.swing.JTabbedPane ) ) {
+								name: "centerTabbedPane"
+							}, new FormLayoutConstraints( class java.lang.String ) {
+								"value": "Center"
+							} )
+						}, new FormLayoutConstraints( class java.lang.String ) {
+							"value": "left"
+						} )
+					}, new FormLayoutConstraints( class java.lang.String ) {
+						"value": "right"
+					} )
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "left"
+				} )
+				add( new FormContainer( "fr.exratio.jme.devkit.swing.JSplitPaneWithZeroSizeDivider", new FormLayoutManager( class javax.swing.JSplitPane ) ) {
+					name: "bottomFinalSplitPane"
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "right"
+				} )
+			}, new FormLayoutConstraints( class java.lang.String ) {
+				"value": "Center"
+			} )
+			add( new FormContainer( "fr.exratio.jme.devkit.ZonedToolBar", new FormLayoutManager( class javax.swing.JToolBar ) ) {
+				name: "leftToolBar"
+				"orientation": 1
+				"side": enum fr.exratio.jme.devkit.ZonedToolBar$Side LEFT
+				auxiliary() {
+					"JavaCodeGenerator.customCreate": true
+				}
+			}, new FormLayoutConstraints( class java.lang.String ) {
+				"value": "West"
+			} )
+			add( new FormContainer( "fr.exratio.jme.devkit.ZonedToolBar", new FormLayoutManager( class javax.swing.JToolBar ) ) {
+				name: "bottomToolBar"
+				auxiliary() {
+					"JavaCodeGenerator.customCreate": true
+				}
+			}, new FormLayoutConstraints( class java.lang.String ) {
+				"value": "South"
+			} )
+			add( new FormContainer( "fr.exratio.jme.devkit.ZonedToolBar", new FormLayoutManager( class javax.swing.JToolBar ) ) {
+				name: "rightToolBar"
+				"orientation": 1
+				"side": enum fr.exratio.jme.devkit.ZonedToolBar$Side RIGHT
+				auxiliary() {
+					"JavaCodeGenerator.customCreate": true
+				}
+			}, new FormLayoutConstraints( class java.lang.String ) {
+				"value": "East"
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 400, 300 )
+		} )
+	}
+}

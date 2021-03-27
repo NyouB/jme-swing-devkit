@@ -1,8 +1,11 @@
 package fr.exratio.jme.devkit;
 
+import com.jme3.app.state.AppStateManager;
 import com.jme3.system.AppSettings;
 import com.jme3.system.JmeSystem;
 import com.jme3.system.awt.AwtPanelsContext;
+import devkit.appstate.tool.SpatialSelectorState;
+import devkit.appstate.tool.SpatialToolState;
 import fr.exratio.jme.devkit.config.DevKitConfig;
 import fr.exratio.jme.devkit.service.ClipboardService;
 import fr.exratio.jme.devkit.service.CoreService;
@@ -10,6 +13,7 @@ import fr.exratio.jme.devkit.service.EventService;
 import fr.exratio.jme.devkit.service.JmeEngineService;
 import fr.exratio.jme.devkit.service.PluginService;
 import fr.exratio.jme.devkit.service.RegistrationService;
+import fr.exratio.jme.devkit.service.SceneGraphService;
 import fr.exratio.jme.devkit.service.ServiceManager;
 import fr.exratio.jme.devkit.service.impl.JmeEngineServiceImpl;
 import fr.exratio.jme.devkit.swing.SwingTheme;
@@ -44,6 +48,7 @@ public class Main {
     settings.setWidth(DevKitConfig.getInstance().getCameraConfig().getCameraDimension().width);
     settings.setHeight(DevKitConfig.getInstance().getCameraConfig().getCameraDimension().height);
     engineService.setSettings(settings);
+
     engineService.start(true);
     if (engineService != null) {
 
@@ -78,12 +83,17 @@ public class Main {
       // register all of our services...
       // All of these services are created on the AWT thread.
       CoreService coreService = ServiceManager.registerService(CoreService.class, parentDirName);
+
       //fix the node being display only on resizing
       coreService.getMainFrame().revalidate();
       ServiceManager.registerService(RegistrationService.class);
       ServiceManager.registerService(ClipboardService.class);
+      ServiceManager.registerService(SceneGraphService.class);
       ServiceManager.registerService(PluginService.class);
-
+      AppStateManager appStateManager = ServiceManager.getService(JmeEngineService.class)
+          .getStateManager();
+      appStateManager.attach(new SpatialSelectorState());
+      appStateManager.attach(new SpatialToolState());
       // load any available plugins.
       // I'm not sure where we should put this.
       ServiceManager.getService(PluginService.class).loadPlugins();

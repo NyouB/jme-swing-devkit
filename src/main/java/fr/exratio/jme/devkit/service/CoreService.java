@@ -4,14 +4,14 @@ import com.jme3.asset.AssetManager;
 import com.jme3.asset.plugins.FileLocator;
 import com.jme3.system.awt.AwtPanel;
 import fr.exratio.jme.devkit.config.DevKitConfig;
-import fr.exratio.jme.devkit.forms.MainPage;
-import fr.exratio.jme.devkit.forms.MainPage.Zone;
-import fr.exratio.jme.devkit.service.inspector.PropertyInspectorService;
+import fr.exratio.jme.devkit.forms.MainPage2;
+import fr.exratio.jme.devkit.forms.MainPage2.Zone;
+import fr.exratio.jme.devkit.forms.RunAppStateWindow;
+import fr.exratio.jme.devkit.service.inspector.PropertyInspectorTool;
 import fr.exratio.jme.devkit.swing.MainMenu;
 import fr.exratio.jme.devkit.swing.WindowLocationSaver;
 import java.awt.Dimension;
 import java.awt.Frame;
-import java.awt.Point;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.WindowAdapter;
@@ -31,13 +31,11 @@ public class CoreService implements Service {
   private static final Logger LOGGER = LoggerFactory.getLogger(CoreService.class);
   private final long threadId;
   private final JFrame mainFrame;
-  private final MainPage mainPage;
+  private final MainPage2 mainPage;
 
   public CoreService(String parentDirName) {
     mainFrame = new JFrame("JmeDevKit: " + parentDirName);
     threadId = Thread.currentThread().getId();
-    mainFrame.setPreferredSize(DevKitConfig.getInstance().getSdkConfig()
-        .getWindowDimensions(MainPage.WINDOW_ID));
     mainFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     mainFrame.addWindowListener(new WindowAdapter() {
       @Override
@@ -57,7 +55,7 @@ public class CoreService implements Service {
         Dimension newSize = frame.getSize();
 
         DevKitConfig.getInstance().getSdkConfig()
-            .setWindowDimensions(MainPage.WINDOW_ID, newSize);
+            .setWindowDimensions(MainPage2.WINDOW_ID, newSize);
         DevKitConfig.getInstance().save();
 
       }
@@ -77,22 +75,13 @@ public class CoreService implements Service {
 
       }
     });
-    ServiceManager.registerService(new WindowService(mainFrame));
+    mainPage = new MainPage2();
     JMenuBar menu = new MainMenu(mainFrame);
     ServiceManager.registerService(new MenuService(menu));
+    ServiceManager.registerService(new ToolLocationService(mainFrame, mainPage));
     mainFrame.setJMenuBar(menu);
-
-    // position and size the main window...
-    Point location = DevKitConfig.getInstance().getSdkConfig()
-        .getWindowLocation(MainPage.WINDOW_ID);
-    if (location == null) {
-      mainFrame.setLocationRelativeTo(null);
-    } else {
-      mainFrame.setLocation(location);
-    }
-
-    mainPage = new MainPage(mainFrame);
-    mainFrame.setContentPane(mainPage.$$$getRootComponent$$$());
+    mainFrame.setContentPane(mainPage);
+    registerTools();
 
     // position and size the jme panel
 
@@ -100,28 +89,36 @@ public class CoreService implements Service {
         .getAWTPanel();
     jmePanel.setSize(DevKitConfig.getInstance().getCameraConfig().getCameraDimension());
     ImageIcon icon = new ImageIcon("images/middle.gif");
-    mainPage.addTab("Canvas", jmePanel, icon, Zone.CENTER);
-
-    PropertyInspectorService propertyInspectorService = ServiceManager
-        .registerService(PropertyInspectorService.class);
-
-    SceneTreeService sceneTreeService = ServiceManager.registerService(SceneTreeService.class);
-    String treeViewTabTitle = "TreeView";
-    mainPage.addTab(treeViewTabTitle, sceneTreeService.getRootComponent(), null, Zone.LEFT_TOP);
-    mainPage.setRightArea(propertyInspectorService.getSectionPanel());
+    mainPage.addTabCenterPanel("Canvas", jmePanel, icon);
 
     // add the canvas AFTER we set the window size because the camera.getWidth and .getHeight values will change.
     // whilst it's easy to understand once you know, it can be confusing to figure this out.
 
     // save any changes of movement and size to the configuration.
     // frame.addComponentListener(new WindowSizeAndLocationSaver(MainPage.WINDOW_ID));
-    mainFrame.addComponentListener(new WindowLocationSaver(MainPage.WINDOW_ID));
+    mainFrame.addComponentListener(new WindowLocationSaver(MainPage2.WINDOW_ID));
     //frame.addComponentListener(new WindowSizeSaver(MainPage.WINDOW_ID));
     mainFrame.pack();
     // show the window.
     mainFrame.setVisible(true);
     // verify that the asset root directory has been set properly.
     checkAssetRootDir(mainFrame);
+  }
+
+  private void registerTools() {
+
+    SceneTreeService sceneTreeService = new SceneTreeService();
+    ServiceManager.registerService(sceneTreeService);
+    sceneTreeService.getZone().add(sceneTreeService);
+    ServiceManager.getService(ToolLocationService.class).registerTool(sceneTreeService);
+
+    RunAppStateWindow runAppStateWindow = new RunAppStateWindow();
+    ServiceManager.getService(ToolLocationService.class).registerTool(runAppStateWindow);
+
+    PropertyInspectorTool propertyInspectorTool = new PropertyInspectorTool();
+    ServiceManager.registerService(propertyInspectorTool);
+    ServiceManager.getService(ToolLocationService.class).registerTool(propertyInspectorTool);
+
   }
 
   /**
@@ -174,7 +171,7 @@ public class CoreService implements Service {
 
   }
 
-  public MainPage getMainPage() {
+  public MainPage2 getMainPage() {
     return mainPage;
   }
 

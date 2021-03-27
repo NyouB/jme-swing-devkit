@@ -1,0 +1,104 @@
+JFDML JFormDesigner: "7.0.3.0.337" Java: "11.0.10" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+			name: "this"
+			add( new FormContainer( "javax.swing.JMenuBar", new FormLayoutManager( class javax.swing.JMenuBar ) ) {
+				name: "toolMenuBar"
+				"borderPainted": false
+				auxiliary() {
+					"JavaCodeGenerator.customCreate": true
+				}
+				add( new FormComponent( "javax.swing.JLabel" ) {
+					name: "titleLabel"
+					auxiliary() {
+						"JavaCodeGenerator.customCreate": true
+					}
+				} )
+				add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {
+					name: "settings"
+					"icon": new com.jformdesigner.model.SwingIcon( 0, "/icons/settings-wheel-16x16.png" )
+					add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {
+						name: "viewModeMenu"
+						"text": "View Mode"
+						add( new FormComponent( "javax.swing.JRadioButtonMenuItem" ) {
+							name: "windowsViewModeRadioButton"
+							"text": "Window"
+							auxiliary() {
+								"JavaCodeGenerator.customCreate": true
+							}
+							addEvent( new FormEvent( "java.awt.event.ItemListener", "itemStateChanged", "windowsViewModeRadioButtonItemStateChanged", true ) )
+						} )
+						add( new FormComponent( "javax.swing.JRadioButtonMenuItem" ) {
+							name: "pinnedViewModeRadioButton"
+							"text": "Dock Pinned"
+							auxiliary() {
+								"JavaCodeGenerator.customCreate": true
+							}
+							addEvent( new FormEvent( "java.awt.event.ItemListener", "itemStateChanged", "pinnedViewModeRadioButtonItemStateChanged", true ) )
+						} )
+					} )
+					add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {
+						name: "zoneMenu"
+						"text": "Zone"
+						add( new FormComponent( "javax.swing.JRadioButtonMenuItem" ) {
+							name: "leftTopRadioButton"
+							"text": "Left Top"
+							auxiliary() {
+								"JavaCodeGenerator.customCreate": true
+							}
+							addEvent( new FormEvent( "java.awt.event.ItemListener", "itemStateChanged", "leftTopRadioButtonItemStateChanged", true ) )
+						} )
+						add( new FormComponent( "javax.swing.JRadioButtonMenuItem" ) {
+							name: "leftBotRadioButton"
+							"text": "Left Bottom"
+							auxiliary() {
+								"JavaCodeGenerator.customCreate": true
+							}
+							addEvent( new FormEvent( "java.awt.event.ItemListener", "itemStateChanged", "leftBotRadioButtonItemStateChanged", true ) )
+						} )
+						add( new FormComponent( "javax.swing.JRadioButtonMenuItem" ) {
+							name: "botLeftRadioButton"
+							"text": "Bot Left"
+							auxiliary() {
+								"JavaCodeGenerator.customCreate": true
+							}
+							addEvent( new FormEvent( "java.awt.event.ItemListener", "itemStateChanged", "botLeftRadioButtonItemStateChanged", true ) )
+						} )
+						add( new FormComponent( "javax.swing.JRadioButtonMenuItem" ) {
+							name: "botRightRadioButton"
+							"text": "Bottom Right"
+							auxiliary() {
+								"JavaCodeGenerator.customCreate": true
+							}
+							addEvent( new FormEvent( "java.awt.event.ItemListener", "itemStateChanged", "botRightRadioButtonItemStateChanged", true ) )
+						} )
+						add( new FormComponent( "javax.swing.JRadioButtonMenuItem" ) {
+							name: "rightBotRadioButton"
+							"text": "Right Bottom"
+							auxiliary() {
+								"JavaCodeGenerator.customCreate": true
+							}
+							addEvent( new FormEvent( "java.awt.event.ItemListener", "itemStateChanged", "rightBotRadioButtonItemStateChanged", true ) )
+						} )
+						add( new FormComponent( "javax.swing.JRadioButtonMenuItem" ) {
+							name: "rightTopRadioButton"
+							"text": "Right Top"
+							auxiliary() {
+								"JavaCodeGenerator.customCreate": true
+							}
+							addEvent( new FormEvent( "java.awt.event.ItemListener", "itemStateChanged", "rightTopRadioButtonItemStateChanged", true ) )
+						} )
+					} )
+				} )
+			}, new FormLayoutConstraints( class java.lang.String ) {
+				"value": "North"
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 400, 300 )
+		} )
+	}
+}

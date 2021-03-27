@@ -2,7 +2,7 @@ import com.jme3.system.AppSettings;
 import com.jme3.system.JmeSystem;
 import com.jme3.system.awt.AwtPanelsContext;
 import fr.exratio.jme.devkit.config.DevKitConfig;
-import fr.exratio.jme.devkit.forms.MainPage.Zone;
+import fr.exratio.jme.devkit.forms.MainPage2.Zone;
 import fr.exratio.jme.devkit.service.ClipboardService;
 import fr.exratio.jme.devkit.service.CoreService;
 import fr.exratio.jme.devkit.service.EventService;
@@ -11,7 +11,7 @@ import fr.exratio.jme.devkit.service.PluginService;
 import fr.exratio.jme.devkit.service.RegistrationService;
 import fr.exratio.jme.devkit.service.ServiceManager;
 import fr.exratio.jme.devkit.service.impl.JmeEngineServiceImpl;
-import fr.exratio.jme.devkit.service.inspector.PropertyInspectorService;
+import fr.exratio.jme.devkit.service.inspector.PropertyInspectorTool;
 import fr.exratio.jme.devkit.swing.SwingTheme;
 import java.io.File;
 import javax.swing.JPopupMenu;
@@ -80,8 +80,7 @@ public class MainTest {
       CoreService coreService = ServiceManager.registerService(CoreService.class, parentDirName);
       //fix the node being display only on resizing
       coreService.getMainFrame().revalidate();
-      coreService.getMainPage()
-          .addTab("property", new PropertyInspectorService().getSectionPanel(), null, Zone.BOTTOM_LEFT);
+
       ServiceManager.registerService(RegistrationService.class);
       ServiceManager.registerService(ClipboardService.class);
       ServiceManager.registerService(PluginService.class);

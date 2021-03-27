@@ -28,7 +28,7 @@ public class ServiceManager {
     // return (T)services.get(serviceClass);
 
     Service service = services.entrySet().stream()
-        .filter(entry -> isAssignable(entry.getValue().getClass(), serviceClass))
+        .filter(entry -> serviceClass.isInstance(entry.getValue()))
         .findFirst()
         .map(Map.Entry::getValue)
         .orElse(null);

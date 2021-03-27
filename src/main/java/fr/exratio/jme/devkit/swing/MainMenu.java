@@ -11,7 +11,7 @@ import fr.exratio.jme.devkit.jme.CameraRotationWidgetState;
 import fr.exratio.jme.devkit.jme.DebugGridState;
 import fr.exratio.jme.devkit.service.JmeEngineService;
 import fr.exratio.jme.devkit.service.ServiceManager;
-import fr.exratio.jme.devkit.service.WindowService;
+import fr.exratio.jme.devkit.service.ToolLocationService;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Window;
@@ -116,149 +116,10 @@ public class MainMenu extends JMenuBar {
 
     // WINDOW menu
     windowItem = add(new JMenu("Window"));
-    JCheckBoxMenuItem debugLightsItem = (JCheckBoxMenuItem) windowItem
-        .add(new JCheckBoxMenuItem("Debug Lights"));
-    debugLightsItem
-        .setSelected(DevKitConfig.getInstance().getSdkConfig().isShowDebugLightsWindow());
-    debugLightsItem.addActionListener(e -> {
 
-      // A Dialog is still owned even if it is disposed. dispose() only affects a Window's displayability, not its ownership.
-      // A window can be re-created after disposal by calling .setVisible(true) or .pack().
 
-      // so we check if the main window still owns the dialog, and if it does, call .setVisible(true), else create it.
 
-      Window window = ServiceManager.getService(WindowService.class)
-          .getWindow(DebugLights.DEBUG_LIGHTS_WINDOW_TITLE);
 
-      if (debugLightsItem.isSelected()) {
-
-        if (window == null) {
-          DebugLights debugLights = new DebugLights();
-
-          JDialog dialog = ServiceManager.getService(WindowService.class)
-              .createDialog(frame,
-                  debugLights.$$$getRootComponent$$$(),
-                  DebugLights.DEBUG_LIGHTS_WINDOW_TITLE,
-                  true, true);
-
-          dialog.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosed(WindowEvent e) {
-              debugLightsItem.setSelected(false);
-            }
-          });
-
-          dialog.setVisible(true);
-
-        } else {
-          window.setVisible(true);
-        }
-
-      } else {
-
-        if (window != null) {
-          window.dispose();
-        }
-
-      }
-
-      DevKitConfig.getInstance().getSdkConfig()
-          .setShowDebugLightsWindow(debugLightsItem.isSelected());
-      DevKitConfig.getInstance().save();
-
-    });
-
-    // bit of a strange place to put it, but we need to menu item to toggle if the window is closed.
-    if (DevKitConfig.getInstance().getSdkConfig().isShowDebugLightsWindow()) {
-      DebugLights debugLights = new DebugLights();
-
-      JDialog dialog = ServiceManager.getService(WindowService.class)
-          .createDialog(frame,
-              debugLights.$$$getRootComponent$$$(),
-              DebugLights.DEBUG_LIGHTS_WINDOW_TITLE,
-              true, true);
-
-      dialog.addWindowListener(new WindowAdapter() {
-        @Override
-        public void windowClosed(WindowEvent e) {
-          debugLightsItem.setSelected(false);
-        }
-      });
-
-      dialog.setVisible(true);
-    }
-
-    // AppState Window
-    JCheckBoxMenuItem runAppStateItem = (JCheckBoxMenuItem) windowItem
-        .add(new JCheckBoxMenuItem("Run AppState"));
-    runAppStateItem
-        .setSelected(DevKitConfig.getInstance().getSdkConfig().isShowRunAppStateWindow());
-    runAppStateItem.addActionListener(e -> {
-
-      Window window = ServiceManager.getService(WindowService.class)
-          .getWindow(RunAppStateWindow.RUN_APPSTATE_WINDOW_TITLE);
-
-      if (runAppStateItem.isSelected()) {
-
-        if (window == null) {
-          RunAppStateWindow runAppStateWindow = new RunAppStateWindow();
-
-          JDialog dialog = ServiceManager.getService(WindowService.class)
-              .createDialog(frame,
-                  runAppStateWindow.$$$getRootComponent$$$(),
-                  RunAppStateWindow.RUN_APPSTATE_WINDOW_TITLE,
-                  true, true);
-
-          dialog.setMinimumSize(new Dimension(400, 500));
-
-          dialog.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosed(WindowEvent e) {
-              runAppStateItem.setSelected(false);
-            }
-          });
-
-          dialog.setVisible(true);
-
-        } else {
-          window.setVisible(true);
-        }
-
-      } else {
-
-        if (window != null) {
-          window.dispose();
-        }
-
-      }
-
-      DevKitConfig.getInstance().getSdkConfig()
-          .setShowRunAppStateWindow(runAppStateItem.isSelected());
-      DevKitConfig.getInstance().save();
-
-    });
-
-    // bit of a strange place to put it, but we need to menu item to toggle if the window is closed.
-    if (DevKitConfig.getInstance().getSdkConfig().isShowRunAppStateWindow()) {
-      RunAppStateWindow runAppStateWindow = new RunAppStateWindow();
-
-      JDialog dialog = ServiceManager.getService(WindowService.class)
-          .createDialog(frame,
-              runAppStateWindow.$$$getRootComponent$$$(),
-              RunAppStateWindow.RUN_APPSTATE_WINDOW_TITLE,
-              true, true);
-
-      dialog.setMinimumSize(new Dimension(400, 500));
-
-      dialog.addWindowListener(new WindowAdapter() {
-        @Override
-        public void windowClosed(WindowEvent e) {
-          runAppStateItem.setSelected(false);
-        }
-      });
-
-      dialog.setVisible(true);
-    }
 
   }
 

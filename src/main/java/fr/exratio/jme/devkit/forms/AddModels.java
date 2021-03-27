@@ -6,6 +6,7 @@ import com.intellij.uiDesigner.core.Spacer;
 import com.jme3.scene.Spatial;
 import fr.exratio.jme.devkit.config.DevKitConfig;
 import fr.exratio.jme.devkit.service.JmeEngineService;
+import fr.exratio.jme.devkit.service.SceneGraphService;
 import fr.exratio.jme.devkit.service.SceneTreeService;
 import fr.exratio.jme.devkit.service.ServiceManager;
 import fr.exratio.jme.devkit.swing.ComponentUtilities;
@@ -81,7 +82,7 @@ public class AddModels {
         SwingUtilities.invokeLater(() -> {
 
           JmeEngineService engineService = ServiceManager.getService(JmeEngineService.class);
-          SceneTreeService treeService = ServiceManager.getService(SceneTreeService.class);
+          SceneGraphService sceneGraphService = ServiceManager.getService(SceneGraphService.class);
 
           for (int index : indices) {
 
@@ -89,7 +90,7 @@ public class AddModels {
 
             Spatial model = engineService.getAssetManager().loadModel(assetPath);
 
-            treeService.addSpatial(model, nodeTreeNode);
+            sceneGraphService.addSpatial(model, nodeTreeNode.getUserObject());
 
           }
 
@@ -142,7 +143,9 @@ public class AddModels {
     scrollPane1.setViewportView(modelsList);
   }
 
-
+  /**
+   * @noinspection ALL
+   */
   public JComponent $$$getRootComponent$$$() {
     return rootPanel;
   }

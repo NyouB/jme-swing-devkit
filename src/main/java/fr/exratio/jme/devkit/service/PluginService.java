@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
-import org.reflections.Reflections;
-import org.reflections.util.ConfigurationBuilder;
+import org.reflections8.Reflections;
+import org.reflections8.util.ConfigurationBuilder;
 
 public class PluginService implements Service {
 

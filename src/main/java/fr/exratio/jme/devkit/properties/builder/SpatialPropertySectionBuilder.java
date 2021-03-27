@@ -9,7 +9,7 @@ import com.jme3.scene.Spatial.BatchHint;
 import com.jme3.scene.Spatial.CullHint;
 import fr.exratio.jme.devkit.properties.PropertySection;
 import fr.exratio.jme.devkit.properties.component.enumeration.EnumEditor;
-import fr.exratio.jme.devkit.properties.component.events.SpatialNameChangedEvent;
+import fr.exratio.jme.devkit.event.SpatialNameChangedEvent;
 import fr.exratio.jme.devkit.properties.component.quaternion.QuaternionEditor;
 import fr.exratio.jme.devkit.properties.component.string.StringEditor;
 import fr.exratio.jme.devkit.properties.component.vector3f.Vector3fEditor;
@@ -72,7 +72,7 @@ public class SpatialPropertySectionBuilder extends AbstractPropertySectionBuilde
     // the scene tree needs to know when this happened so it can change the name visually.
     StringEditor name = new StringEditor(object.getName());
     name.addPropertyChangeListener(evt -> ServiceManager.getService(EventService.class)
-        .fireEvent(new SpatialNameChangedEvent(object)));
+        .post(new SpatialNameChangedEvent(object)));
     name.addPropertyChangeListener(value -> ServiceManager.getService(JmeEngineService.class)
         .enqueue(() -> object.setName((String) value.getNewValue())));
     spatialSection.addProperty(NAME, name.getCustomEditor());
