@@ -96,7 +96,9 @@ dependencies {
     implementation 'org.swinglabs.swingx:swingx-core:1.6.5-1'
 
     // reflection
-    compile "org.reflections:reflections:0.9.12"
+    // https://mvnrepository.com/artifact/net.oneandone.reflections8/reflections8
+    implementation group: 'net.oneandone.reflections8', name: 'reflections8', version: '0.11.7'
+
     compile "org.apache.commons:commons-lang3:3.11"
     compile group: 'commons-io', name: 'commons-io', version: '2.6'
 

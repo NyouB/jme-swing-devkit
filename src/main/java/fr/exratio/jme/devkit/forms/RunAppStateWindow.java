@@ -19,9 +19,7 @@ import fr.exratio.jme.devkit.core.ColorConverter;
 import fr.exratio.jme.devkit.core.DevkitPackages;
 import fr.exratio.jme.devkit.forms.MainPage2.Zone;
 import fr.exratio.jme.devkit.service.JmeEngineService;
-import fr.exratio.jme.devkit.service.SceneTreeService;
 import fr.exratio.jme.devkit.service.ServiceManager;
-import fr.exratio.jme.devkit.service.inspector.PropertyInspectorTool;
 import fr.exratio.jme.devkit.swing.JSplitPaneWithZeroSizeDivider;
 import fr.exratio.jme.devkit.tool.Tool;
 import fr.exratio.jme.devkit.tool.ViewMode;
@@ -67,9 +65,9 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 import lombok.Builder;
 import net.miginfocom.swing.MigLayout;
-import org.reflections.Reflections;
-import org.reflections.scanners.MethodAnnotationsScanner;
-import org.reflections.util.ConfigurationBuilder;
+import org.reflections8.Reflections;
+import org.reflections8.scanners.MethodAnnotationsScanner;
+import org.reflections8.util.ConfigurationBuilder;
 
 public class RunAppStateWindow extends Tool {
 
