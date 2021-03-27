@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -19,16 +18,21 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import org.jdesktop.swingx.JXLabel;
+import org.jdesktop.swingx.painter.MattePainter;
 
 public class ZonedToolBar extends JToolBar {
+
+  public static final String COLOR_BACKGROUND = "background";
+  public static final String COLOR_BACKGROUND_SELECTED = "backgroundSelectedSecondary";
+  public static final String COLOR_BACKGROUND_HOVER = "backgroundHover";
 
   public static final int LEFT = 0;
   public static final int RIGHT = 1;
   public static final int TOP = 2;
   public static final int BOTTOM = 3;
 
-  private ToolBarZone firstZone = new ToolBarZone();
-  private ToolBarZone secondZone = new ToolBarZone();
+  private final ToolBarZone firstZone = new ToolBarZone();
+  private final ToolBarZone secondZone = new ToolBarZone();
   private Side side;
 
   public ZonedToolBar() {
@@ -38,9 +42,11 @@ public class ZonedToolBar extends JToolBar {
   public ZonedToolBar(Side side) {
     setSide(side);
     setFloatable(false);
-    add(firstZone);
-    add(getOrientation() == VERTICAL ? Box.createVerticalGlue() : Box.createHorizontalGlue());
     add(secondZone);
+    add(getOrientation() == VERTICAL ? Box.createVerticalGlue() : Box.createHorizontalGlue());
+    add(firstZone);
+    setOpaque(true);
+    setBackground(Color.BLUE);
   }
 
   public ToolBarZone getFirstZone() {
@@ -95,21 +101,21 @@ public class ZonedToolBar extends JToolBar {
   }
 
   public enum Side {
-    CENTER {
+    CENTER(Math.toRadians(0)) {
       @Override
       public JLabel getOrientedLabel(String title, Icon icon) {
         JXLabel tabLabel = new JXLabel(title, icon, SwingConstants.LEADING);
         return tabLabel;
       }
     },
-    LEFT {
+    LEFT(Math.toRadians(270)) {
       @Override
       public JLabel getOrientedLabel(String title, Icon icon) {
         JXLabel tabLabel = new JXLabel(title, icon, SwingConstants.LEADING);
         tabLabel.setTextRotation(3 * Math.PI / 2);
         return tabLabel;
       }
-    }, RIGHT {
+    }, RIGHT(Math.toRadians(90)) {
       @Override
       public JLabel getOrientedLabel(String title, Icon icon) {
         JXLabel tabLabel = new JXLabel(title, icon, SwingConstants.LEADING);
@@ -119,25 +125,29 @@ public class ZonedToolBar extends JToolBar {
     };
 
     abstract JLabel getOrientedLabel(String title, Icon icon);
+
+    private final double labelRotation;
+
+    Side(double rotation) {
+      labelRotation = rotation;
+    }
   }
 
   public class ToolBarZone extends JPanel {
 
     private Zone zone;
     List<Tool> toolList = new ArrayList<>();
-    Map<Tool, JLabel> labelMap = new HashMap<>();
+    Map<Tool, JXLabel> labelMap = new HashMap<>();
     Tool selectedTool;
 
     public ToolBarZone() {
-      setLayout(new BoxLayout(ToolBarZone.this, BoxLayout.X_AXIS));
+      // ToolBarZone.this.setLayout(new BoxLayout(ToolBarZone.this, BoxLayout.Y_AXIS));
     }
 
     public void addTool(Tool tool) {
       toolList.add(tool);
-      JLabel jLabel = side.getOrientedLabel(tool.getTitle(), tool.getIcon());
-      jLabel.setOpaque(true);
-      jLabel.setBackground(Color.RED);
-      jLabel.addMouseListener(new MouseListener() {
+      JXLabel label = createLabel(tool.getTitle(), tool.getIcon());
+      label.addMouseListener(new MouseListener() {
         @Override
         public void mouseClicked(MouseEvent e) {
 
@@ -155,39 +165,42 @@ public class ZonedToolBar extends JToolBar {
 
         @Override
         public void mouseEntered(MouseEvent e) {
-
-          jLabel.setBackground(UIManager.getColor("backgroundHover"));
+          if (tool.equals(selectedTool)) {
+            return;
+          }
+          label.setBackgroundPainter(new MattePainter(UIManager.getColor(COLOR_BACKGROUND_HOVER)));
 
         }
 
         @Override
         public void mouseExited(MouseEvent e) {
-
-          jLabel.setBackground(UIManager.getColor("background"));
+          if (tool.equals(selectedTool)) {
+            return;
+          }
+          label.setBackgroundPainter(new MattePainter(UIManager.getColor(COLOR_BACKGROUND)));
         }
       });
-      labelMap.put(tool, jLabel);
-      add(jLabel);
-      selectTool(tool);
+      labelMap.put(tool, label);
+      ToolBarZone.this.add(label);
+      ToolBarZone.this.selectTool(tool);
     }
 
     public void selectTool(Tool tool) {
       if (selectedTool != null) {
         SwingUtilities.invokeLater(() ->
-            labelMap.get(selectedTool).setBackground(UIManager.getColor("background"))
+            labelMap.get(selectedTool)
+                .setBackgroundPainter(new MattePainter(UIManager.getColor(COLOR_BACKGROUND)))
         );
       }
       selectedTool = tool;
-//      labelMap.get(selectedTool).setBackground(UIManager.getColor("backgroundSelectedSecondary"));
-      SwingUtilities.invokeLater(() ->
-          labelMap.get(selectedTool).setBackground(Color.GREEN)
-      );
+      labelMap.get(selectedTool)
+          .setBackgroundPainter(new MattePainter(UIManager.getColor(COLOR_BACKGROUND_SELECTED)));
     }
 
 
     public void removeTool(Tool tool) {
       toolList.remove(tool);
-      remove(labelMap.get(tool));
+      ToolBarZone.this.remove(labelMap.get(tool));
       if (selectedTool != null && selectedTool.equals(tool)) {
         selectedTool = null;
       }
@@ -195,6 +208,14 @@ public class ZonedToolBar extends JToolBar {
 
     public void setZone(Zone zone) {
       this.zone = zone;
+    }
+
+    public JXLabel createLabel(String text, Icon icon) {
+      JXLabel jxLabel = new JXLabel(text, icon, CENTER);
+      jxLabel.setBackgroundPainter(new MattePainter(UIManager.getColor(COLOR_BACKGROUND)));
+      jxLabel.setTextRotation(side.labelRotation);
+      jxLabel.setOpaque(true);
+      return jxLabel;
     }
   }
 

@@ -35,12 +35,24 @@ public class MainPage2 extends JPanel {
 
   public MainPage2() {
     initComponents();
-    Zone.LEFT_TOP.setConcreteZone(new ConcreteZone(Zone.LEFT_TOP, leftToolBar.getSecondZone(), leftVerticalFinalSplitPane, JSplitPane.TOP));
-    Zone.LEFT_BOTTOM.setConcreteZone(new ConcreteZone(Zone.LEFT_BOTTOM, leftToolBar.getFirstZone(), leftVerticalFinalSplitPane, JSplitPane.BOTTOM));
-    Zone.RIGHT_TOP.setConcreteZone(new ConcreteZone(Zone.RIGHT_TOP, rightToolBar.getFirstZone(), rightVerticalFinalSplitPane, JSplitPane.TOP));
-    Zone.RIGHT_BOTTOM.setConcreteZone(new ConcreteZone(Zone.RIGHT_BOTTOM, rightToolBar.getSecondZone(), leftVerticalFinalSplitPane, JSplitPane.BOTTOM));
-    Zone.BOTTOM_LEFT.setConcreteZone(new ConcreteZone(Zone.BOTTOM_LEFT, bottomToolBar.getFirstZone(), bottomFinalSplitPane, JSplitPane.LEFT));
-    Zone.BOTTOM_RIGHT.setConcreteZone(new ConcreteZone(Zone.BOTTOM_RIGHT, bottomToolBar.getSecondZone(), bottomFinalSplitPane, JSplitPane.RIGHT));
+    Zone.LEFT_TOP.setConcreteZone(
+        new ConcreteZone(Zone.LEFT_TOP, leftToolBar.getSecondZone(), leftVerticalFinalSplitPane,
+            JSplitPane.TOP));
+    Zone.LEFT_BOTTOM.setConcreteZone(
+        new ConcreteZone(Zone.LEFT_BOTTOM, leftToolBar.getFirstZone(), leftVerticalFinalSplitPane,
+            JSplitPane.BOTTOM));
+    Zone.RIGHT_TOP.setConcreteZone(
+        new ConcreteZone(Zone.RIGHT_TOP, rightToolBar.getSecondZone(), rightVerticalFinalSplitPane,
+            JSplitPane.TOP));
+    Zone.RIGHT_BOTTOM.setConcreteZone(
+        new ConcreteZone(Zone.RIGHT_BOTTOM, rightToolBar.getFirstZone(), leftVerticalFinalSplitPane,
+            JSplitPane.BOTTOM));
+    Zone.BOTTOM_LEFT.setConcreteZone(
+        new ConcreteZone(Zone.BOTTOM_LEFT, bottomToolBar.getFirstZone(), bottomFinalSplitPane,
+            JSplitPane.LEFT));
+    Zone.BOTTOM_RIGHT.setConcreteZone(
+        new ConcreteZone(Zone.BOTTOM_RIGHT, bottomToolBar.getSecondZone(), bottomFinalSplitPane,
+            JSplitPane.RIGHT));
   }
 
   private void createUIComponents() {
@@ -189,21 +201,21 @@ public class MainPage2 extends JPanel {
     }
   }
 
-  class ConcreteZone implements ToolContainer{
+  class ConcreteZone implements ToolContainer {
 
-    private ToolBarZone toolBarZone;
-    private JSplitPane contentPane;
-    private String splitPaneSide;
-    private List<Tool> attachedTools = new LinkedList<>();
+    private final ToolBarZone toolBarZone;
+    private final JSplitPane contentPane;
+    private final String splitPaneSide;
+    private final List<Tool> attachedTools = new LinkedList<>();
     private Tool displayedTool;
-    private Zone zone;
+    private final Zone zone;
 
-    public ConcreteZone(Zone zone, ToolBarZone toolBarZone, JSplitPane jSplitPane, String side ) {
+    public ConcreteZone(Zone zone, ToolBarZone toolBarZone, JSplitPane jSplitPane, String side) {
       this.toolBarZone = toolBarZone;
       this.zone = zone;
       toolBarZone.setZone(zone);
       this.contentPane = jSplitPane;
-      this.splitPaneSide =side;
+      this.splitPaneSide = side;
     }
 
     @Override
