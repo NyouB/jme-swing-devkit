@@ -9,6 +9,13 @@ plugins {
     id "io.freefair.lombok" version "5.3.0"
 }
 
+repositories {
+    flatDir {
+        dirs 'annotations'
+    }
+}
+
+
 group 'fr.exratio'
 version '1.2.1-SNAPSHOT'
 
@@ -130,6 +137,7 @@ dependencies {
 
     // https://mvnrepository.com/artifact/com.google.guava/guava
     implementation group: 'com.google.guava', name: 'guava', version: '30.1-jre'
+    implementation name: 'jfd-annotations'
 
 }
 
