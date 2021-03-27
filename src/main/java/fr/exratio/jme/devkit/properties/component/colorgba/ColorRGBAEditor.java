@@ -7,7 +7,6 @@ import com.jme3.math.ColorRGBA;
 import fr.exratio.jme.devkit.core.ColorConverter;
 import fr.exratio.jme.devkit.properties.component.AbstractPropertyEditor;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Insets;
 import javax.swing.BorderFactory;
@@ -77,9 +76,7 @@ public class ColorRGBAEditor extends AbstractPropertyEditor<ColorRGBA> {
         GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
   }
 
-  /**
-   * @noinspection ALL
-   */
+
   public JComponent $$$getRootComponent$$$() {
     return contentPanel;
   }

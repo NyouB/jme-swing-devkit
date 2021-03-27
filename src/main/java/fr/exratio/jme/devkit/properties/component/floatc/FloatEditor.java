@@ -4,7 +4,6 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import fr.exratio.jme.devkit.properties.component.AbstractPropertyEditor;
 import fr.exratio.jme.devkit.properties.component.FloatFormatFactory;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Insets;
 import javax.swing.JComponent;
@@ -56,9 +55,7 @@ public class FloatEditor extends AbstractPropertyEditor<Float> {
         GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
   }
 
-  /**
-   * @noinspection ALL
-   */
+
   public JComponent $$$getRootComponent$$$() {
     return contentPanel;
   }

@@ -9,7 +9,6 @@ import com.jme3.anim.tween.action.Action;
 import fr.exratio.jme.devkit.properties.component.AbstractPropertyEditor;
 import fr.exratio.jme.devkit.service.JmeEngineService;
 import fr.exratio.jme.devkit.service.ServiceManager;
-import java.awt.Component;
 import java.awt.Insets;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -107,9 +106,7 @@ public class AnimComposerEditor extends AbstractPropertyEditor<AnimComposer> {
     scrollPane1.setViewportView(animationsList);
   }
 
-  /**
-   * @noinspection ALL
-   */
+
   public JComponent $$$getRootComponent$$$() {
     return contentPanel;
   }

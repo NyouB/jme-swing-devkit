@@ -3,7 +3,6 @@ package fr.exratio.jme.devkit.properties.component.bool;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import fr.exratio.jme.devkit.properties.component.AbstractPropertyEditor;
-import java.awt.Component;
 import java.awt.Insets;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
@@ -51,9 +50,7 @@ public class BooleanEditor extends AbstractPropertyEditor<Boolean> {
             GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
   }
 
-  /**
-   * @noinspection ALL
-   */
+
   public JComponent $$$getRootComponent$$$() {
     return contentPanel;
   }

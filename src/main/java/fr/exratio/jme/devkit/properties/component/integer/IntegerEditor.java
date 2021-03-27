@@ -4,7 +4,6 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import fr.exratio.jme.devkit.properties.component.AbstractPropertyEditor;
 import fr.exratio.jme.devkit.properties.component.IntegerFormatFactory;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Insets;
 import javax.swing.JComponent;
@@ -55,9 +54,7 @@ public class IntegerEditor extends AbstractPropertyEditor<Integer> {
         GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
   }
 
-  /**
-   * @noinspection ALL
-   */
+
   public JComponent $$$getRootComponent$$$() {
     return contentPanel;
   }

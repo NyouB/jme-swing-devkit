@@ -6,7 +6,6 @@ import com.jme3.math.Quaternion;
 import fr.exratio.jme.devkit.properties.component.AbstractPropertyEditor;
 import fr.exratio.jme.devkit.properties.component.FloatFormatFactory;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Insets;
 import javax.swing.JComponent;
@@ -108,9 +107,7 @@ public class QuaternionEditor extends AbstractPropertyEditor<Quaternion> {
         false));
   }
 
-  /**
-   * @noinspection ALL
-   */
+
   public JComponent $$$getRootComponent$$$() {
     return contentPanel;
   }

@@ -6,7 +6,6 @@ import com.jme3.math.Vector3f;
 import fr.exratio.jme.devkit.properties.component.AbstractPropertyEditor;
 import fr.exratio.jme.devkit.properties.component.FloatFormatFactory;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Insets;
 import javax.swing.JButton;
@@ -110,9 +109,7 @@ public class Vector3fEditor extends AbstractPropertyEditor<Vector3f> {
         GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
   }
 
-  /**
-   * @noinspection ALL
-   */
+
   public JComponent $$$getRootComponent$$$() {
     return contentPanel;
   }

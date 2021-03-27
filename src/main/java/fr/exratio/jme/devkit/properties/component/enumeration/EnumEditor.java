@@ -3,7 +3,6 @@ package fr.exratio.jme.devkit.properties.component.enumeration;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import fr.exratio.jme.devkit.properties.component.AbstractPropertyEditor;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.event.ItemEvent;
@@ -60,9 +59,7 @@ public class EnumEditor extends AbstractPropertyEditor<Enum> {
         false));
   }
 
-  /**
-   * @noinspection ALL
-   */
+
   public JComponent $$$getRootComponent$$$() {
     return contentPanel;
   }

@@ -7,7 +7,6 @@ import com.jme3.scene.Spatial;
 import fr.exratio.jme.devkit.config.DevKitConfig;
 import fr.exratio.jme.devkit.service.JmeEngineService;
 import fr.exratio.jme.devkit.service.SceneGraphService;
-import fr.exratio.jme.devkit.service.SceneTreeService;
 import fr.exratio.jme.devkit.service.ServiceManager;
 import fr.exratio.jme.devkit.swing.ComponentUtilities;
 import fr.exratio.jme.devkit.tree.spatial.NodeTreeNode;
@@ -143,9 +142,7 @@ public class AddModels {
     scrollPane1.setViewportView(modelsList);
   }
 
-  /**
-   * @noinspection ALL
-   */
+
   public JComponent $$$getRootComponent$$$() {
     return rootPanel;
   }

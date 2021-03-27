@@ -254,9 +254,7 @@ public class Texture2DEditor extends AbstractPropertyEditor<Texture2D> {
             new Dimension(60, 60), null, 0, false));
   }
 
-  /**
-   * @noinspection ALL
-   */
+
   public JComponent $$$getRootComponent$$$() {
     return contentPanel;
   }

@@ -276,9 +276,7 @@ public class GenerateLightProbeDialog {
             false));
   }
 
-  /**
-   * @noinspection ALL
-   */
+
   public JComponent $$$getRootComponent$$$() {
     return rootPanel;
   }

@@ -105,9 +105,7 @@ public class MainPage extends JPanel {
     botPanel.add(botTabbedPane, BorderLayout.CENTER);
   }
 
-  /**
-   * @noinspection ALL
-   */
+
   public JComponent $$$getRootComponent$$$() {
     return rootPanel;
   }
