@@ -5,22 +5,22 @@ import fr.exratio.jme.devkit.util.GUIUtils;
 public enum ViewMode {
   WINDOW {
     @Override
-    void changeView(Tool toolView) {
-      if (toolView.isRegistered() && WINDOW == toolView.getViewMode()) {
+    void changeView(Tool tool) {
+      if (tool.isRegistered() && WINDOW == tool.getViewMode()) {
         return;
       }
-      toolView.getZone().remove(toolView);
-      GUIUtils.wrapInWindow(toolView);
+      tool.getZone().remove(tool);
+      GUIUtils.wrapInWindow(tool);
     }
   },
   PIN {
     @Override
-    void changeView(Tool toolView) {
-      if (toolView.isRegistered() && PIN == toolView.getViewMode()) {
+    void changeView(Tool tool) {
+      if (tool.isRegistered() && PIN == tool.getViewMode()) {
         return;
       }
-      GUIUtils.closeToolDialog(toolView);
-      toolView.getZone().add(toolView);
+      GUIUtils.closeToolDialog(tool);
+      tool.getZone().add(tool);
     }
   };
 

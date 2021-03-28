@@ -113,9 +113,15 @@ public class Tool extends JPanel {
   }
 
   public void setZone(Zone newZone) {
-    if (zone == newZone) {
+    //to prevent the tool to be docked if the zone is changed while the voiewmode is window
+    if (viewMode == ViewMode.WINDOW) {
+      this.zone = newZone;
       return;
     }
+    if (zone == newZone || viewMode == ViewMode.WINDOW) {
+      return;
+    }
+
     Zone oldZone = zone;
     this.zone = newZone;
     oldZone.remove(this);
