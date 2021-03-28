@@ -17,7 +17,7 @@ import fr.exratio.jme.devkit.appstate.annotations.ListProperty;
 import fr.exratio.jme.devkit.appstate.annotations.ListType;
 import fr.exratio.jme.devkit.core.ColorConverter;
 import fr.exratio.jme.devkit.core.DevkitPackages;
-import fr.exratio.jme.devkit.forms.MainPage2.Zone;
+import fr.exratio.jme.devkit.forms.MainPage.Zone;
 import fr.exratio.jme.devkit.service.JmeEngineService;
 import fr.exratio.jme.devkit.service.ServiceManager;
 import fr.exratio.jme.devkit.swing.JSplitPaneWithZeroSizeDivider;

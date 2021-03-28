@@ -5,8 +5,8 @@
 package fr.exratio.jme.devkit.tool;
 
 import com.jformdesigner.annotations.BeanInfo;
-import fr.exratio.jme.devkit.forms.MainPage2;
-import fr.exratio.jme.devkit.forms.MainPage2.Zone;
+import fr.exratio.jme.devkit.forms.MainPage;
+import fr.exratio.jme.devkit.forms.MainPage.Zone;
 import fr.exratio.jme.devkit.service.ServiceManager;
 import fr.exratio.jme.devkit.service.ToolLocationService;
 import java.awt.BorderLayout;
@@ -117,7 +117,7 @@ public class Tool extends JPanel {
     menuComponent.onZoneChange();
   }
 
-  public MainPage2.Zone getZone() {
+  public MainPage.Zone getZone() {
     return zone;
   }
 

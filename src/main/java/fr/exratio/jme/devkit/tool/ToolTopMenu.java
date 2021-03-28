@@ -4,7 +4,7 @@
 
 package fr.exratio.jme.devkit.tool;
 
-import fr.exratio.jme.devkit.forms.MainPage2.Zone;
+import fr.exratio.jme.devkit.forms.MainPage.Zone;
 import fr.exratio.jme.devkit.service.ServiceManager;
 import fr.exratio.jme.devkit.service.ToolLocationService;
 import java.awt.BorderLayout;

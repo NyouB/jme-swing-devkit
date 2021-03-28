@@ -1,6 +1,6 @@
 package fr.exratio.jme.devkit;
 
-import fr.exratio.jme.devkit.forms.MainPage2.Zone;
+import fr.exratio.jme.devkit.forms.MainPage.Zone;
 import fr.exratio.jme.devkit.tool.Tool;
 import java.awt.Color;
 import java.awt.event.MouseEvent;

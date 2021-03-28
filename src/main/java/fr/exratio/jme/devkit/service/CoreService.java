@@ -4,8 +4,7 @@ import com.jme3.asset.AssetManager;
 import com.jme3.asset.plugins.FileLocator;
 import com.jme3.system.awt.AwtPanel;
 import fr.exratio.jme.devkit.config.DevKitConfig;
-import fr.exratio.jme.devkit.forms.MainPage2;
-import fr.exratio.jme.devkit.forms.MainPage2.Zone;
+import fr.exratio.jme.devkit.forms.MainPage;
 import fr.exratio.jme.devkit.forms.RunAppStateWindow;
 import fr.exratio.jme.devkit.service.inspector.PropertyInspectorTool;
 import fr.exratio.jme.devkit.swing.MainMenu;
@@ -31,7 +30,7 @@ public class CoreService implements Service {
   private static final Logger LOGGER = LoggerFactory.getLogger(CoreService.class);
   private final long threadId;
   private final JFrame mainFrame;
-  private final MainPage2 mainPage;
+  private final MainPage mainPage;
 
   public CoreService(String parentDirName) {
     mainFrame = new JFrame("JmeDevKit: " + parentDirName);
@@ -55,7 +54,7 @@ public class CoreService implements Service {
         Dimension newSize = frame.getSize();
 
         DevKitConfig.getInstance().getSdkConfig()
-            .setWindowDimensions(MainPage2.WINDOW_ID, newSize);
+            .setWindowDimensions(MainPage.WINDOW_ID, newSize);
         DevKitConfig.getInstance().save();
 
       }
@@ -75,7 +74,7 @@ public class CoreService implements Service {
 
       }
     });
-    mainPage = new MainPage2();
+    mainPage = new MainPage();
     JMenuBar menu = new MainMenu(mainFrame);
     ServiceManager.registerService(new MenuService(menu));
     ServiceManager.registerService(new ToolLocationService(mainFrame, mainPage));
@@ -96,7 +95,7 @@ public class CoreService implements Service {
 
     // save any changes of movement and size to the configuration.
     // frame.addComponentListener(new WindowSizeAndLocationSaver(MainPage.WINDOW_ID));
-    mainFrame.addComponentListener(new WindowLocationSaver(MainPage2.WINDOW_ID));
+    mainFrame.addComponentListener(new WindowLocationSaver(MainPage.WINDOW_ID));
     //frame.addComponentListener(new WindowSizeSaver(MainPage.WINDOW_ID));
     mainFrame.pack();
     // show the window.
@@ -171,7 +170,7 @@ public class CoreService implements Service {
 
   }
 
-  public MainPage2 getMainPage() {
+  public MainPage getMainPage() {
     return mainPage;
   }
 

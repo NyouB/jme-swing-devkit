@@ -1,8 +1,6 @@
 package fr.exratio.jme.devkit.config;
 
-import fr.exratio.jme.devkit.forms.MainPage.Zone;
 import fr.exratio.jme.devkit.service.SceneTreeService;
-import fr.exratio.jme.devkit.service.inspector.PropertyInspectorTool;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Toolkit;
@@ -21,9 +19,7 @@ public class SdkConfig {
 
   private HashMap<String, Dimension> windowDimensions = new HashMap<>();
   private HashMap<String, Point> windowLocations = new HashMap<>();
-  private Map<String, Zone> toolZone = new HashMap<>();
-  private SpatialConfig mainViewConfig = new SpatialConfig(null, new Dimension(800, 600));
-  private Map<String, ToolsConfig> toolsConfigMap = new HashMap<>();
+  private final Map<String, ToolsConfig> toolsConfigMap = new HashMap<>();
 
   public SdkConfig() {
     // default values

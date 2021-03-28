@@ -16,8 +16,7 @@ import fr.exratio.jme.devkit.event.LightRemovedEvent;
 import fr.exratio.jme.devkit.event.SpatialCreatedEvent;
 import fr.exratio.jme.devkit.event.SpatialNameChangedEvent;
 import fr.exratio.jme.devkit.event.SpatialRemovedEvent;
-import fr.exratio.jme.devkit.forms.MainPage2.Zone;
-import fr.exratio.jme.devkit.forms.RunAppStateWindow;
+import fr.exratio.jme.devkit.forms.MainPage.Zone;
 import fr.exratio.jme.devkit.jme.SceneObjectHighlighterState;
 import fr.exratio.jme.devkit.registration.Registrar;
 import fr.exratio.jme.devkit.registration.spatial.GeometryRegistrar;
@@ -41,7 +40,6 @@ import java.awt.FlowLayout;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.Icon;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
@@ -65,7 +63,6 @@ public class SceneTreeService extends Tool implements Service {
   private static final Logger LOGGER = LoggerFactory.getLogger(SceneTreeService.class);
   private JTree tree;
   private final long threadId = Thread.currentThread().getId();
-  ;
   // These are "fake" nodes. They are added to their counterparts so we don't see things like "statsappstate".
   // These nodes are created, queried and modified on the JME thread ONLY.
   private Node guiNode;
@@ -75,7 +72,7 @@ public class SceneTreeService extends Tool implements Service {
   // private final SceneObjectHighlighter sceneObjectHighlighter = new SceneObjectHighlighter();
   private NodeTreeNode rootNodeTreeNode;
 
-  private Map<Object, DefaultMutableTreeNode> objectToNodeMap = new HashMap<>();
+  private final Map<Object, DefaultMutableTreeNode> objectToNodeMap = new HashMap<>();
 
   public SceneTreeService() {
     super(SceneTreeService.class.getName(), TITLE, null, Zone.LEFT_TOP, ViewMode.PIN, true);

@@ -1,8 +1,8 @@
 package fr.exratio.jme.devkit.service;
 
 import fr.exratio.jme.devkit.config.DevKitConfig;
-import fr.exratio.jme.devkit.forms.MainPage2;
-import fr.exratio.jme.devkit.forms.MainPage2.Zone;
+import fr.exratio.jme.devkit.forms.MainPage;
+import fr.exratio.jme.devkit.forms.MainPage.Zone;
 import fr.exratio.jme.devkit.tool.Tool;
 import fr.exratio.jme.devkit.tool.ViewMode;
 import java.awt.Component;
@@ -25,21 +25,19 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
-;
-
 /**
  * A simple service to set window positions and sizes from saved settings.
  */
 public class ToolLocationService implements Service {
 
   private final JFrame mainFrame;
-  private MainPage2 mainPage;
+  private final MainPage mainPage;
   private final long threadId;
   private Map<Zone, List<Tool>> toolsZone;
-  private Map<String, Tool> toolSet = new HashMap<>();
-  private JMenu toolViewMenu = new JMenu("View");
+  private final Map<String, Tool> toolSet = new HashMap<>();
+  private final JMenu toolViewMenu = new JMenu("View");
 
-  public ToolLocationService(JFrame mainFrame, MainPage2 mainPage) {
+  public ToolLocationService(JFrame mainFrame, MainPage mainPage) {
     this.mainFrame = mainFrame;
     threadId = Thread.currentThread().getId();
     this.mainPage = mainPage;
@@ -150,7 +148,7 @@ public class ToolLocationService implements Service {
 
   }
 
-  public MainPage2 getMainPage() {
+  public MainPage getMainPage() {
     return mainPage;
   }
 
