@@ -1,24 +1,27 @@
 Changelog
 ---
+### 1.3.0
+- View can now be swap between dock and window
+- Tools inherit Tool class
 
 ### 1.2.0
-- the editors are now JPanel
-- simplify Texture2dEditor
-- remove javadoc no inspection
+- The editors are now JPanel
+- Simplify Texture2dEditor
+- Remove javadoc no inspection
 
 ### 1.1.7
 - The main page use zone instead of differents methods
 
 #### 1.1.6
-- fix the project version misconfigured on bintray
+- Fix the project version misconfigured on bintray
 
 #### 1.1.5
 
-- update gradle configuration for publishing on bintray
-- refactor package name
+- Update gradle configuration for publishing on bintray
+- Refactor package name
 - Add color and inline for vector editor
 - Refactor main windows loading and add Canvas test
-- fix propagation of different value to editor
+- Fix propagation of different value to editor
 - Move plugin to be displayed in tab and splitpane instead of dialog
 
 #### 1.1.4
@@ -34,7 +37,7 @@ Changelog
 
 #### 1.1.2
 
-- fix international formatting
+- Fix international formatting
 
 #### 1.0.5
 
