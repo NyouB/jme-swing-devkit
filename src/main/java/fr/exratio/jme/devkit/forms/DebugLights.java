@@ -364,9 +364,7 @@ public class DebugLights {
         0, false));
   }
 
-  /**
-   * @noinspection ALL
-   */
+
   public JComponent $$$getRootComponent$$$() {
     return rootPanel;
   }

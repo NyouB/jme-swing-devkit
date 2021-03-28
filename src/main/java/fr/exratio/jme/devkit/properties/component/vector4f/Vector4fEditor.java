@@ -109,9 +109,7 @@ public class Vector4fEditor extends AbstractPropertyEditor<Vector4f> {
         false));
   }
 
-  /**
-   * @noinspection ALL
-   */
+
   public JComponent $$$getRootComponent$$$() {
     return contentPanel;
   }
