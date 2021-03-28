@@ -6,7 +6,7 @@ package fr.exratio.jme.devkit.service.inspector;
 
 import com.google.common.eventbus.Subscribe;
 import fr.exratio.jme.devkit.event.SelectedItemEvent;
-import fr.exratio.jme.devkit.forms.MainPage.Zone;
+import fr.exratio.jme.devkit.main.MainPage.Zone;
 import fr.exratio.jme.devkit.properties.PropertySection;
 import fr.exratio.jme.devkit.service.EventService;
 import fr.exratio.jme.devkit.service.Service;

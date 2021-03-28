@@ -17,7 +17,7 @@ import fr.exratio.jme.devkit.appstate.annotations.ListProperty;
 import fr.exratio.jme.devkit.appstate.annotations.ListType;
 import fr.exratio.jme.devkit.core.ColorConverter;
 import fr.exratio.jme.devkit.core.DevkitPackages;
-import fr.exratio.jme.devkit.forms.MainPage.Zone;
+import fr.exratio.jme.devkit.main.MainPage.Zone;
 import fr.exratio.jme.devkit.service.JmeEngineService;
 import fr.exratio.jme.devkit.service.ServiceManager;
 import fr.exratio.jme.devkit.swing.JSplitPaneWithZeroSizeDivider;
@@ -888,7 +888,9 @@ public class RunAppStateWindow extends Tool {
         GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
   }
 
-
+  /**
+   * @noinspection ALL
+   */
   public JComponent $$$getRootComponent$$$() {
     return rootPane;
   }

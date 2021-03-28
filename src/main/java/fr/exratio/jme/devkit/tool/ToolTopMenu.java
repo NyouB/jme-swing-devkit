@@ -4,9 +4,7 @@
 
 package fr.exratio.jme.devkit.tool;
 
-import fr.exratio.jme.devkit.forms.MainPage.Zone;
-import fr.exratio.jme.devkit.service.ServiceManager;
-import fr.exratio.jme.devkit.service.ToolLocationService;
+import fr.exratio.jme.devkit.main.MainPage.Zone;
 import java.awt.BorderLayout;
 import java.awt.Graphics;
 import java.awt.event.ItemEvent;
@@ -32,7 +30,6 @@ import lombok.Setter;
 public class ToolTopMenu extends JPanel {
 
   private final Tool tool;
-  private ToolLocationService toolLocationService = ServiceManager.getService(ToolLocationService.class);
 
   public ToolTopMenu(Tool tool) {
     this.tool = tool;

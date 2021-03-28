@@ -1,7 +1,7 @@
 package fr.exratio.jme.devkit.swing;
 
 import fr.exratio.jme.devkit.config.DevKitConfig;
-import fr.exratio.jme.devkit.forms.MainPage;
+import fr.exratio.jme.devkit.main.MainPage;
 import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.event.ComponentEvent;

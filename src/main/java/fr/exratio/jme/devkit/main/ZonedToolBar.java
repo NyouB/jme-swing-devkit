@@ -1,6 +1,6 @@
-package fr.exratio.jme.devkit;
+package fr.exratio.jme.devkit.main;
 
-import fr.exratio.jme.devkit.forms.MainPage.Zone;
+import fr.exratio.jme.devkit.main.MainPage.Zone;
 import fr.exratio.jme.devkit.tool.Tool;
 import java.awt.Color;
 import java.awt.event.MouseEvent;
@@ -181,8 +181,10 @@ public class ZonedToolBar extends JToolBar {
         }
       });
       labelMap.put(tool, label);
-      ToolBarZone.this.add(label);
-      ToolBarZone.this.selectTool(tool);
+      add(label);
+      revalidate();
+      repaint();
+      selectTool(tool);
     }
 
     public void selectTool(Tool tool) {
@@ -200,10 +202,12 @@ public class ZonedToolBar extends JToolBar {
 
     public void removeTool(Tool tool) {
       toolList.remove(tool);
-      ToolBarZone.this.remove(labelMap.get(tool));
+      remove(labelMap.get(tool));
       if (selectedTool != null && selectedTool.equals(tool)) {
         selectedTool = null;
       }
+      revalidate();
+      repaint();
     }
 
     public void setZone(Zone zone) {

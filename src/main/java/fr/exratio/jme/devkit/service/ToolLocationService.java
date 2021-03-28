@@ -1,8 +1,8 @@
 package fr.exratio.jme.devkit.service;
 
 import fr.exratio.jme.devkit.config.DevKitConfig;
-import fr.exratio.jme.devkit.forms.MainPage;
-import fr.exratio.jme.devkit.forms.MainPage.Zone;
+import fr.exratio.jme.devkit.main.MainPage;
+import fr.exratio.jme.devkit.main.MainPage.Zone;
 import fr.exratio.jme.devkit.tool.Tool;
 import fr.exratio.jme.devkit.tool.ViewMode;
 import java.awt.Component;
@@ -52,25 +52,14 @@ public class ToolLocationService implements Service {
     }
   }
 
-  /*public void registerTool(Tool tool) {
-    if (!isToolRegistered(tool)) {
-      tool.setViewMode(tool.getViewMode());
-      addViewMenuEntry(tool);
-      toolSet.put(tool.getId(), tool);
-      toolsZone.get(tool.getZone()).add(tool);
-      tool.getZone().getToolBar().add(tool);
+  public static void closeToolDialog(Tool tool) {
+    if (ViewMode.WINDOW == tool.getViewMode()) {
+      Window window = (Window) SwingUtilities.getRoot(tool);
+      window.dispose();
     }
-
-  }  */
-  public void registerTool(Tool tool) {
-    if (!isToolRegistered(tool)) {
-      addViewMenuEntry(tool);
-      toolSet.put(tool.getId(), tool);
-    }
-    tool.getZone().add(tool);
   }
 
-  public void attachTool(Tool tool){
+  public void attachTool(Tool tool) {
     if (!isToolRegistered(tool)) {
       registerTool(tool);
     }
@@ -152,17 +141,29 @@ public class ToolLocationService implements Service {
     return mainPage;
   }
 
-  public void closeToolDialog(Tool tool) {
-    if (ViewMode.WINDOW == tool.getViewMode()) {
-      Window window = (Window) SwingUtilities.getRoot(tool);
-      window.dispose();
+  /*public void registerTool(Tool tool) {
+    if (!isToolRegistered(tool)) {
+      tool.setViewMode(tool.getViewMode());
+      addViewMenuEntry(tool);
+      toolSet.put(tool.getId(), tool);
+      toolsZone.get(tool.getZone()).add(tool);
+      tool.getZone().getToolBar().add(tool);
     }
+
+  }  */
+  public void registerTool(Tool tool) {
+    if (!isToolRegistered(tool)) {
+      addViewMenuEntry(tool);
+      toolSet.put(tool.getId(), tool);
+      tool.setRegistered(true);
+    }
+    tool.getZone().add(tool);
   }
 
   public Window wrapInWindow(Tool tool) {
     Window window = getWindow(tool.getId());
     if (window == null) {
-      window = createDialog(mainFrame,
+      window = createDialog(null,
           tool,
           tool.getTitle(),
           true, true);

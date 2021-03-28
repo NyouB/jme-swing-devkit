@@ -5,8 +5,8 @@
 package fr.exratio.jme.devkit.tool;
 
 import com.jformdesigner.annotations.BeanInfo;
-import fr.exratio.jme.devkit.forms.MainPage;
-import fr.exratio.jme.devkit.forms.MainPage.Zone;
+import fr.exratio.jme.devkit.main.MainPage;
+import fr.exratio.jme.devkit.main.MainPage.Zone;
 import fr.exratio.jme.devkit.service.ServiceManager;
 import fr.exratio.jme.devkit.service.ToolLocationService;
 import java.awt.BorderLayout;
@@ -30,6 +30,7 @@ public class Tool extends JPanel {
   protected Zone zone = Zone.LEFT_TOP;
   protected ViewMode viewMode = ViewMode.PIN;
   protected boolean isDisplayed = true;
+  protected boolean registered = false;
 
   public Tool() {
     initComponents();
@@ -111,10 +112,14 @@ public class Tool extends JPanel {
     menuComponent.getTitleLabel().setIcon(icon);
   }
 
-  public void setZone(Zone zone) {
-    ServiceManager.getService(ToolLocationService.class).moveZone(this, zone);
-    this.zone = zone;
-    menuComponent.onZoneChange();
+  public void setZone(Zone newZone) {
+    if (zone == newZone) {
+      return;
+    }
+    Zone oldZone = zone;
+    this.zone = newZone;
+    oldZone.remove(this);
+    newZone.add(this);
   }
 
   public MainPage.Zone getZone() {

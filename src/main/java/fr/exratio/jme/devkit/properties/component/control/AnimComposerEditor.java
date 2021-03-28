@@ -106,7 +106,9 @@ public class AnimComposerEditor extends AbstractPropertyEditor<AnimComposer> {
     scrollPane1.setViewportView(animationsList);
   }
 
-
+  /**
+   * @noinspection ALL
+   */
   public JComponent $$$getRootComponent$$$() {
     return contentPanel;
   }

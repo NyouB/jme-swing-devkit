@@ -52,17 +52,17 @@ new FormModel {
 			}, new FormLayoutConstraints( class java.lang.String ) {
 				"value": "Center"
 			} )
-			add( new FormContainer( "fr.exratio.jme.devkit.ZonedToolBar", new FormLayoutManager( class javax.swing.JToolBar ) ) {
+			add( new FormContainer( "fr.exratio.jme.devkit.main.ZonedToolBar", new FormLayoutManager( class javax.swing.JToolBar ) ) {
 				name: "leftToolBar"
 				"orientation": 1
-				"side": enum fr.exratio.jme.devkit.ZonedToolBar$Side LEFT
+				"side": enum fr.exratio.jme.devkit.main.ZonedToolBar$Side LEFT
 				auxiliary() {
 					"JavaCodeGenerator.customCreate": true
 				}
 			}, new FormLayoutConstraints( class java.lang.String ) {
 				"value": "West"
 			} )
-			add( new FormContainer( "fr.exratio.jme.devkit.ZonedToolBar", new FormLayoutManager( class javax.swing.JToolBar ) ) {
+			add( new FormContainer( "fr.exratio.jme.devkit.main.ZonedToolBar", new FormLayoutManager( class javax.swing.JToolBar ) ) {
 				name: "bottomToolBar"
 				auxiliary() {
 					"JavaCodeGenerator.customCreate": true
@@ -70,10 +70,10 @@ new FormModel {
 			}, new FormLayoutConstraints( class java.lang.String ) {
 				"value": "South"
 			} )
-			add( new FormContainer( "fr.exratio.jme.devkit.ZonedToolBar", new FormLayoutManager( class javax.swing.JToolBar ) ) {
+			add( new FormContainer( "fr.exratio.jme.devkit.main.ZonedToolBar", new FormLayoutManager( class javax.swing.JToolBar ) ) {
 				name: "rightToolBar"
 				"orientation": 1
-				"side": enum fr.exratio.jme.devkit.ZonedToolBar$Side RIGHT
+				"side": enum fr.exratio.jme.devkit.main.ZonedToolBar$Side RIGHT
 				auxiliary() {
 					"JavaCodeGenerator.customCreate": true
 				}
