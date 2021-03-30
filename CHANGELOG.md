@@ -1,6 +1,7 @@
 Changelog
 ---
 ### 1.3.0
+- Change camera binding mechanism to match Godot Engine one
 - View can now be swap between dock and window
 - Tools inherit Tool class
 

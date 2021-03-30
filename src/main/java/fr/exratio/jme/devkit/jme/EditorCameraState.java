@@ -14,11 +14,26 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class EditorCameraState extends BaseAppState implements AnalogListener, ActionListener {
 
-  private static final Logger log = Logger.getLogger(EditorCameraState.class.getName());
+  public static final String CAMERA_ACTIVATED = "cameraActivated";
+  public static final String ROTATE_LEFT = "rotateLeft";
+  public static final String ROTATE_RIGHT = "rotateRight";
+  public static final String ROTATE_UP = "rotateUp";
+  public static final String ROTATE_DOWN = "rotateDown";
+  public static final String MOVE_LEFT = "moveLeft";
+  public static final String MOVE_RIGHT = "moveRight";
+  public static final String MOVE_FORWARD = "moveForward";
+  public static final String MOVE_BACKWARD = "moveBackward";
+  public static final String MOVE_UP = "moveUp";
+  public static final String MOVE_DOWN = "moveDown";
+  public static final String ZOOM_IN = "zoomIn";
+  public static final String ZOOM_OUT = "zoomOut";
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(EditorCameraState.class);
   private final float[] camAngles = new float[]{0, FastMath.PI, 0};
 
   // Location and rotation are positioned away from 0,0,0 because if the user imports a model they will most likely
@@ -34,22 +49,22 @@ public class EditorCameraState extends BaseAppState implements AnalogListener, A
   private float rotateSpeed = 5.0F;
   private float zoomSpeed = 10.0F;
 
-  private boolean lmb_pressed;
-  private boolean mmb_pressed;
-  private boolean rmb_pressed;
-  private boolean key_forward;
-  private boolean key_back;
-  private boolean key_left;
-  private boolean key_right;
-  private boolean key_up;
-  private boolean key_down;
+  private boolean cameraActivated;
+  private boolean zoomIn;
+  private boolean zoomOut;
+  private boolean moveLeft;
+  private boolean moveRight;
+  private boolean moveUp;
+  private boolean moveDown;
+  private boolean moveForward;
+  private boolean moveBackward;
 
 
   public EditorCameraState() {
   }
 
   public float getPanSpeed() {
-    return this.panSpeed;
+    return panSpeed;
   }
 
   public void setPanSpeed(float panSpeed) {
@@ -57,7 +72,7 @@ public class EditorCameraState extends BaseAppState implements AnalogListener, A
   }
 
   public float getRotateSpeed() {
-    return this.rotateSpeed;
+    return rotateSpeed;
   }
 
   public void setRotateSpeed(float rotateSpeed) {
@@ -65,7 +80,7 @@ public class EditorCameraState extends BaseAppState implements AnalogListener, A
   }
 
   public float getZoomSpeed() {
-    return this.zoomSpeed;
+    return zoomSpeed;
   }
 
   public void setZoomSpeed(float zoomSpeed) {
@@ -73,74 +88,45 @@ public class EditorCameraState extends BaseAppState implements AnalogListener, A
   }
 
   protected void initialize(Application app) {
-    this.cam = app.getCamera();
+    cam = app.getCamera();
   }
 
   public Camera getCamera() {
-    return this.cam;
+    return cam;
   }
 
   private void addMappings() {
 
-    InputManager inputManager = this.getApplication().getInputManager();
-    inputManager.addMapping("MouseAxisX", new MouseAxisTrigger(MouseInput.AXIS_X, false));
-    inputManager.addMapping("MouseAxisX-", new MouseAxisTrigger(MouseInput.AXIS_X, true));
-    inputManager.addMapping("MouseAxisY", new MouseAxisTrigger(MouseInput.AXIS_Y, false));
-    inputManager.addMapping("MouseAxisY-", new MouseAxisTrigger(MouseInput.AXIS_Y, true));
-    inputManager.addMapping("MouseWheel", new MouseAxisTrigger(MouseInput.AXIS_WHEEL, false));
-    inputManager.addMapping("MouseWheel-", new MouseAxisTrigger(MouseInput.AXIS_WHEEL, true));
+    InputManager inputManager = getApplication().getInputManager();
+    azertyMapping(inputManager);
 
-    inputManager.addMapping("MouseButtonLeft", new MouseButtonTrigger(0));
-    inputManager.addMapping("MouseButtonMiddle", new MouseButtonTrigger(2));
-    inputManager.addMapping("MouseButtonRight", new MouseButtonTrigger(1));
+    inputManager.addListener(this, ROTATE_RIGHT, ROTATE_LEFT, ROTATE_UP, ROTATE_DOWN,
+        CAMERA_ACTIVATED, MOVE_FORWARD, MOVE_BACKWARD, MOVE_LEFT, MOVE_RIGHT, MOVE_DOWN,
+        MOVE_UP, ZOOM_IN, ZOOM_OUT);
 
-    inputManager.addMapping("Key_Forward", new KeyTrigger(KeyInput.KEY_W));
-    inputManager.addMapping("Key_Backward", new KeyTrigger(KeyInput.KEY_S));
-    inputManager.addMapping("Key_Left", new KeyTrigger(KeyInput.KEY_A));
-    inputManager.addMapping("Key_Right", new KeyTrigger(KeyInput.KEY_D));
-
-    inputManager.addMapping("Key_Down", new KeyTrigger(KeyInput.KEY_Q));
-    inputManager.addMapping("Key_Up", new KeyTrigger(KeyInput.KEY_E));
-
-    inputManager.addListener(this,
-        "MouseAxisX", "MouseAxisY",
-        "MouseAxisX-", "MouseAxisY-",
-        "MouseWheel", "MouseWheel-",
-        "MouseButtonLeft", "MouseButtonMiddle", "MouseButtonRight",
-        "Key_Forward", "Key_Backward", "Key_Left", "Key_Right",
-        "Key_Down", "Key_Up");
-
-    log.info("Registered Keyboard Mappings");
+    LOGGER.info("-- addMappings() Keyboard Mappings Registered ");
   }
 
   private void removeMappings() {
 
-    InputManager inputManager = this.getApplication().getInputManager();
+    InputManager inputManager = getApplication().getInputManager();
 
-    inputManager.deleteMapping("MouseAxisX");
-    inputManager.deleteMapping("MouseAxisX-");
-
-    inputManager.deleteMapping("MouseAxisY");
-    inputManager.deleteMapping("MouseAxisY-");
-
-    inputManager.deleteMapping("MouseWheel");
-    inputManager.deleteMapping("MouseWheel-");
-
-    inputManager.deleteMapping("MouseButtonLeft");
-    inputManager.deleteMapping("MouseButtonMiddle");
-    inputManager.deleteMapping("MouseButtonRight");
-
-    inputManager.deleteMapping("Key_Forward");
-    inputManager.deleteMapping("Key_Backward");
-    inputManager.deleteMapping("Key_Left");
-    inputManager.deleteMapping("Key_Right");
-
-    inputManager.deleteMapping("Key_Down");
-    inputManager.deleteMapping("Key_Up");
-
+    inputManager.deleteMapping(ROTATE_RIGHT);
+    inputManager.deleteMapping(ROTATE_LEFT);
+    inputManager.deleteMapping(ROTATE_UP);
+    inputManager.deleteMapping(ROTATE_DOWN);
+    inputManager.deleteMapping(CAMERA_ACTIVATED);
+    inputManager.deleteMapping(MOVE_FORWARD);
+    inputManager.deleteMapping(MOVE_BACKWARD);
+    inputManager.deleteMapping(MOVE_LEFT);
+    inputManager.deleteMapping(MOVE_RIGHT);
+    inputManager.deleteMapping(MOVE_DOWN);
+    inputManager.deleteMapping(MOVE_UP);
+    inputManager.deleteMapping(ZOOM_IN);
+    inputManager.deleteMapping(ZOOM_OUT);
     inputManager.removeListener(this);
 
-    log.info("Unregistered Keyboard Mappings");
+    LOGGER.info("-- removeMappings() Unregistered Keyboard Mappings");
   }
 
   @Override
@@ -158,135 +144,126 @@ public class EditorCameraState extends BaseAppState implements AnalogListener, A
 
   @Override
   protected void onDisable() {
-    this.lmb_pressed = this.rmb_pressed = this.mmb_pressed = false;
-    this.key_forward = this.key_back = this.key_left = this.key_right = false;
-    this.key_up = this.key_down = false;
-    this.removeMappings();
+
+    cameraActivated = zoomIn = zoomOut = moveLeft = moveRight = moveUp = moveDown = false;
+    removeMappings();
 
     // store the existing location so we can re-set it.
-    this.cameraLocation.set(getApplication().getCamera().getLocation());
+    cameraLocation.set(getApplication().getCamera().getLocation());
   }
 
   @Override
   public void update(float tpf) {
-    if (this.cam != null) {
-      if (this.lmb_pressed || this.mmb_pressed || this.rmb_pressed) {
-        if (this.key_forward) {
-          this.zoomCamera(tpf * this.zoomSpeed);
-        }
-
-        if (this.key_back) {
-          this.zoomCamera(-tpf * this.zoomSpeed);
-        }
-
-        if (this.key_left) {
-          this.panCamera(tpf * this.panSpeed, 0.0F);
-        }
-
-        if (this.key_right) {
-          this.panCamera(-tpf * this.panSpeed, 0.0F);
-        }
-
-        if (this.key_up) {
-          this.panCamera(0.0F, tpf * this.panSpeed);
-        }
-
-        if (this.key_down) {
-          this.panCamera(0.0F, -tpf * this.panSpeed);
-        }
-      }
-
+    if (cam == null || !cameraActivated) {
+      return;
     }
+
+    if (moveForward) {
+      zoomCamera(tpf * zoomSpeed);
+    }
+
+    if (moveBackward) {
+      zoomCamera(-tpf * zoomSpeed);
+    }
+
+    if (moveLeft) {
+      panCamera(tpf * panSpeed, 0.0F);
+    }
+
+    if (moveRight) {
+      panCamera(-tpf * panSpeed, 0.0F);
+    }
+
+    if (moveUp) {
+      panCamera(0.0F, tpf * panSpeed);
+    }
+
+    if (moveDown) {
+      panCamera(0.0F, -tpf * panSpeed);
+    }
+
   }
 
   @Override
   public void onAction(String name, boolean isPressed, float tpf) {
-    if (this.cam != null) {
-      if (this.isEnabled()) {
-        if (name.equals("MouseButtonLeft")) {
-          this.lmb_pressed = isPressed;
-        }
-
-        if (name.equals("MouseButtonMiddle")) {
-          this.mmb_pressed = isPressed;
-        }
-
-        if (name.equals("MouseButtonRight")) {
-          this.rmb_pressed = isPressed;
-        }
-
-        if (name.equals("Key_Forward")) {
-          this.key_forward = isPressed;
-        }
-
-        if (name.equals("Key_Backward")) {
-          this.key_back = isPressed;
-        }
-
-        if (name.equals("Key_Left")) {
-          this.key_left = isPressed;
-        }
-
-        if (name.equals("Key_Right")) {
-          this.key_right = isPressed;
-        }
-
-        if (name.equals("Key_Up")) {
-          this.key_up = isPressed;
-        }
-
-        if (name.equals("Key_Down")) {
-          this.key_down = isPressed;
-        }
-
-      }
+    if (cam == null || !isEnabled()) {
+      return;
     }
+
+    if (name.equals(CAMERA_ACTIVATED)) {
+      cameraActivated = isPressed;
+    }
+
+    if (name.equals(MOVE_FORWARD)) {
+      moveForward = isPressed;
+    }
+
+    if (name.equals(MOVE_BACKWARD)) {
+      moveBackward = isPressed;
+    }
+
+    if (name.equals(MOVE_LEFT)) {
+      moveLeft = isPressed;
+    }
+
+    if (name.equals(MOVE_RIGHT)) {
+      moveRight = isPressed;
+    }
+
+    if (name.equals(MOVE_UP)) {
+      moveUp = isPressed;
+    }
+
+    if (name.equals(MOVE_DOWN)) {
+      moveDown = isPressed;
+    }
+
   }
 
   private void panCamera(float left, float up) {
-    Vector3f leftVec = this.cam.getLeft().mult(left);
-    Vector3f upVec = this.cam.getUp().mult(up);
-    Vector3f camLoc = this.cam.getLocation().add(leftVec).add(upVec);
-    this.cam.setLocation(camLoc);
+    Vector3f leftVec = cam.getLeft().mult(left);
+    Vector3f upVec = cam.getUp().mult(up);
+    Vector3f camLoc = cam.getLocation().add(leftVec).add(upVec);
+    cam.setLocation(camLoc);
   }
 
-  private void rotateCamera(float x, float y) {
-    float[] var10000 = this.camAngles;
+  private void rotateCamera(float y, float x) {
+    float[] var10000 = camAngles;
     var10000[0] += x;
-    var10000 = this.camAngles;
+    var10000 = camAngles;
     var10000[1] += y;
     float maxRotX = 1.553343F;
-    if (this.camAngles[0] < -maxRotX) {
-      this.camAngles[0] = -maxRotX;
+    if (camAngles[0] < -maxRotX) {
+      camAngles[0] = -maxRotX;
     }
 
-    if (this.camAngles[0] > maxRotX) {
-      this.camAngles[0] = maxRotX;
+    if (camAngles[0] > maxRotX) {
+      camAngles[0] = maxRotX;
     }
 
-    if (this.camAngles[1] > 6.2831855F) {
-      var10000 = this.camAngles;
+    if (camAngles[1] > 6.2831855F) {
+      var10000 = camAngles;
       var10000[1] -= 6.2831855F;
-    } else if (this.camAngles[1] < -6.2831855F) {
-      var10000 = this.camAngles;
+    } else if (camAngles[1] < -6.2831855F) {
+      var10000 = camAngles;
       var10000[1] += 6.2831855F;
     }
 
-    this.camRotation.fromAngles(this.camAngles);
-    this.cam.setRotation(this.camRotation);
+    camRotation.fromAngles(camAngles);
+    cam.setRotation(camRotation);
   }
 
   public void setRotation(float x, float y, float z) {
-    this.camAngles[0] = x;
-    this.camAngles[1] = y;
-    this.camAngles[2] = z;
-    this.camRotation.fromAngles(this.camAngles);
-    this.cam.setRotation(this.camRotation);
+    camAngles[0] = x;
+    camAngles[1] = y;
+    camAngles[2] = z;
+    camRotation.fromAngles(camAngles);
+    cam.setRotation(camRotation);
   }
 
   public void setRotation(Quaternion rotation) {
-    this.camRotation.set(rotation);
-    this.cam.setRotation(this.camRotation);
+    camRotation.set(rotation);
+    cam.setRotation(camRotation);
   }
 
   public void lookAt(Vector3f pos, Vector3f worldUpVector) {
@@ -326,109 +303,84 @@ public class EditorCameraState extends BaseAppState implements AnalogListener, A
   }
 
   public void setLocation(Vector3f location) {
-    this.cam.setLocation(location);
+    cam.setLocation(location);
   }
 
   public void setLocation(float x, float y, float z) {
-    this.setLocation(new Vector3f(x, y, z));
+    setLocation(new Vector3f(x, y, z));
   }
 
   private void zoomCamera(float amount) {
-    Vector3f camLoc = this.cam.getLocation();
-    Vector3f movement = this.cam.getDirection().mult(amount);
+    Vector3f camLoc = cam.getLocation();
+    Vector3f movement = cam.getDirection().mult(amount);
     Vector3f newLoc = camLoc.add(movement);
-    this.cam.setLocation(newLoc);
+    cam.setLocation(newLoc);
   }
 
   public void onAnalog(String name, float value, float tpf) {
-    if (this.cam != null) {
-      if (this.isEnabled()) {
-        byte var5 = -1;
-        switch (name.hashCode()) {
-          case -1690062569:
-            if (name.equals("MouseWheel-")) {
-              var5 = 5;
-            }
-            break;
-          case -1321280686:
-            if (name.equals("MouseAxisX")) {
-              var5 = 0;
-            }
-            break;
-          case -1321280685:
-            if (name.equals("MouseAxisY")) {
-              var5 = 2;
-            }
-            break;
-          case -1301444138:
-            if (name.equals("MouseWheel")) {
-              var5 = 4;
-            }
-            break;
-          case 1989971739:
-            if (name.equals("MouseAxisX-")) {
-              var5 = 1;
-            }
-            break;
-          case 1989971770:
-            if (name.equals("MouseAxisY-")) {
-              var5 = 3;
-            }
-        }
-
-        switch (var5) {
-          case 0:
-            if (this.lmb_pressed || this.rmb_pressed) {
-              this.rotateCamera(0.0F, -value * this.rotateSpeed);
-            }
-
-            if (this.mmb_pressed) {
-              this.panCamera(value * this.panSpeed, 0.0F);
-            }
-            break;
-          case 1:
-            if (this.lmb_pressed || this.rmb_pressed) {
-              this.rotateCamera(0.0F, value * this.rotateSpeed);
-            }
-
-            if (this.mmb_pressed) {
-              this.panCamera(-value * this.panSpeed, 0.0F);
-            }
-            break;
-          case 2:
-            if (this.lmb_pressed) {
-              this.zoomCamera(value * this.zoomSpeed * this.zoomSpeed);
-            }
-
-            if (this.rmb_pressed) {
-              this.rotateCamera(-value * this.rotateSpeed, 0.0F);
-            }
-
-            if (this.mmb_pressed) {
-              this.panCamera(0.0F, -value * this.panSpeed);
-            }
-            break;
-          case 3:
-            if (this.lmb_pressed) {
-              this.zoomCamera(-value * this.zoomSpeed * this.zoomSpeed);
-            }
-
-            if (this.rmb_pressed) {
-              this.rotateCamera(value * this.rotateSpeed, 0.0F);
-            }
-
-            if (this.mmb_pressed) {
-              this.panCamera(0.0F, value * this.panSpeed);
-            }
-            break;
-          case 4:
-            this.zoomCamera(value);
-            break;
-          case 5:
-            this.zoomCamera(-value);
-        }
-
-      }
+    if (cam == null || !isEnabled() || !cameraActivated) {
+      return;
     }
+
+    switch (name) {
+      case ROTATE_DOWN:
+        rotateCamera(0.0F, value * rotateSpeed);
+        break;
+      case ROTATE_UP:
+        rotateCamera(0.0F, -value * rotateSpeed);
+        break;
+      case ROTATE_LEFT:
+        rotateCamera(value * rotateSpeed, 0.0F);
+        break;
+      case ROTATE_RIGHT:
+        rotateCamera(-value * rotateSpeed, 0.0F);
+        break;
+      case ZOOM_IN:
+        //zoomCamera(value * zoomSpeed * zoomSpeed);
+        zoomCamera(value);
+        break;
+      case ZOOM_OUT:
+        // zoomCamera(-value * zoomSpeed * zoomSpeed);
+        zoomCamera(-value);
+        break;
+    }
+  }
+
+  public void qwertyMapping(InputManager inputManager) {
+    inputManager.addMapping(ROTATE_RIGHT, new MouseAxisTrigger(MouseInput.AXIS_X, false));
+    inputManager.addMapping(ROTATE_LEFT, new MouseAxisTrigger(MouseInput.AXIS_X, true));
+    inputManager.addMapping(ROTATE_UP, new MouseAxisTrigger(MouseInput.AXIS_Y, false));
+    inputManager.addMapping(ROTATE_DOWN, new MouseAxisTrigger(MouseInput.AXIS_Y, true));
+
+    inputManager.addMapping(CAMERA_ACTIVATED, new MouseButtonTrigger(1));
+
+    inputManager.addMapping(MOVE_FORWARD, new KeyTrigger(KeyInput.KEY_W));
+    inputManager.addMapping(MOVE_BACKWARD, new KeyTrigger(KeyInput.KEY_S));
+    inputManager.addMapping(MOVE_LEFT, new KeyTrigger(KeyInput.KEY_A));
+    inputManager.addMapping(MOVE_RIGHT, new KeyTrigger(KeyInput.KEY_D));
+    inputManager.addMapping(MOVE_DOWN, new KeyTrigger(KeyInput.KEY_Q));
+    inputManager.addMapping(MOVE_UP, new KeyTrigger(KeyInput.KEY_E));
+    inputManager.addMapping(ZOOM_IN, new KeyTrigger(KeyInput.KEY_E));
+    inputManager.addMapping(ZOOM_OUT, new KeyTrigger(KeyInput.KEY_E));
+
+  }
+
+  public void azertyMapping(InputManager inputManager) {
+    inputManager.addMapping(ROTATE_RIGHT, new MouseAxisTrigger(MouseInput.AXIS_X, false));
+    inputManager.addMapping(ROTATE_LEFT, new MouseAxisTrigger(MouseInput.AXIS_X, true));
+    inputManager.addMapping(ROTATE_UP, new MouseAxisTrigger(MouseInput.AXIS_Y, false));
+    inputManager.addMapping(ROTATE_DOWN, new MouseAxisTrigger(MouseInput.AXIS_Y, true));
+
+    inputManager.addMapping(CAMERA_ACTIVATED, new MouseButtonTrigger(1));
+
+    inputManager.addMapping(MOVE_FORWARD, new KeyTrigger(KeyInput.KEY_Z));
+    inputManager.addMapping(MOVE_BACKWARD, new KeyTrigger(KeyInput.KEY_S));
+    inputManager.addMapping(MOVE_LEFT, new KeyTrigger(KeyInput.KEY_Q));
+    inputManager.addMapping(MOVE_RIGHT, new KeyTrigger(KeyInput.KEY_D));
+    inputManager.addMapping(MOVE_DOWN, new KeyTrigger(KeyInput.KEY_A));
+    inputManager.addMapping(MOVE_UP, new KeyTrigger(KeyInput.KEY_E));
+    inputManager.addMapping(ZOOM_IN, new MouseAxisTrigger(MouseInput.AXIS_WHEEL, false));
+    inputManager.addMapping(ZOOM_OUT, new MouseAxisTrigger(MouseInput.AXIS_WHEEL, true));
+
   }
 }
