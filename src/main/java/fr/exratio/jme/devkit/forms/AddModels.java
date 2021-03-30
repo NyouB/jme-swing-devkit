@@ -142,7 +142,9 @@ public class AddModels {
     scrollPane1.setViewportView(modelsList);
   }
 
-
+  /**
+   * @noinspection ALL
+   */
   public JComponent $$$getRootComponent$$$() {
     return rootPanel;
   }

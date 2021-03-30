@@ -156,7 +156,7 @@ public class PropertyInspectorTool extends Tool implements Service {
           "-- onItemSelected() the object contained in the event is null. Doing nothing");
       return;
     }
-    inspect(event);
+    inspect(selectedItem);
   }
 
   /**

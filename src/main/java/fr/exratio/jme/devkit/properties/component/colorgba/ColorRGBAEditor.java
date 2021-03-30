@@ -76,7 +76,9 @@ public class ColorRGBAEditor extends AbstractPropertyEditor<ColorRGBA> {
         GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
   }
 
-
+  /**
+   * @noinspection ALL
+   */
   public JComponent $$$getRootComponent$$$() {
     return contentPanel;
   }

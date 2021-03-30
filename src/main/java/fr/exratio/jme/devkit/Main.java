@@ -4,8 +4,9 @@ import com.jme3.app.state.AppStateManager;
 import com.jme3.system.AppSettings;
 import com.jme3.system.JmeSystem;
 import com.jme3.system.awt.AwtPanelsContext;
+import devkit.appstate.tool.MouseOverAppState;
+import devkit.appstate.tool.SpatialMoveToolState;
 import devkit.appstate.tool.SpatialSelectorState;
-import devkit.appstate.tool.SpatialToolState;
 import fr.exratio.jme.devkit.config.DevKitConfig;
 import fr.exratio.jme.devkit.service.ClipboardService;
 import fr.exratio.jme.devkit.service.CoreService;
@@ -92,8 +93,9 @@ public class Main {
       ServiceManager.registerService(PluginService.class);
       AppStateManager appStateManager = ServiceManager.getService(JmeEngineService.class)
           .getStateManager();
+      appStateManager.attach(new MouseOverAppState());
       appStateManager.attach(new SpatialSelectorState());
-      appStateManager.attach(new SpatialToolState());
+      appStateManager.attach(new SpatialMoveToolState());
       // load any available plugins.
       // I'm not sure where we should put this.
       ServiceManager.getService(PluginService.class).loadPlugins();

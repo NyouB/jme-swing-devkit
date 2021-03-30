@@ -27,7 +27,7 @@ public class SpatialSelectorState extends BaseAppState implements ActionListener
 
   private final CollisionResults collisionResults = new CollisionResults();
   private final Ray ray = new Ray();
-  private static Logger LOGGER = LoggerFactory.getLogger(SpatialSelectorState.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(SpatialSelectorState.class);
 
   public SpatialSelectorState() {}
 
@@ -56,10 +56,10 @@ public class SpatialSelectorState extends BaseAppState implements ActionListener
 
   @Override
   public void onAction(String binding, boolean isPressed, float tpf) {
-
+/*
     if (getState(SpatialToolState.class).isBusy()) {
       return;
-    }
+    }*/
 
     if (binding.equals("Select Spatial") && !isPressed) {
 

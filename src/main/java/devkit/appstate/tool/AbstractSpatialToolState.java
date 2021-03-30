@@ -11,7 +11,7 @@ import fr.exratio.jme.devkit.event.SelectedItemEvent;
 import fr.exratio.jme.devkit.service.EventService;
 import fr.exratio.jme.devkit.service.ServiceManager;
 
-public abstract class SpatialTool extends BaseAppState {
+public abstract class AbstractSpatialToolState extends BaseAppState {
 
   protected Spatial selectedSpatial;
   protected Node toolModel;
@@ -19,7 +19,7 @@ public abstract class SpatialTool extends BaseAppState {
   protected boolean busy;
   protected float distance;
 
-  public SpatialTool() {
+  public AbstractSpatialToolState() {
     ServiceManager.getService(EventService.class).register(this);
   }
 

@@ -1,6 +1,9 @@
 import com.jme3.system.AppSettings;
 import com.jme3.system.JmeSystem;
 import com.jme3.system.awt.AwtPanelsContext;
+import devkit.appstate.tool.MouseOverAppState;
+import devkit.appstate.tool.SpatialMoveToolState;
+import devkit.appstate.tool.SpatialSelectorState;
 import fr.exratio.jme.devkit.config.DevKitConfig;
 import fr.exratio.jme.devkit.service.ClipboardService;
 import fr.exratio.jme.devkit.service.CoreService;
@@ -8,6 +11,7 @@ import fr.exratio.jme.devkit.service.EventService;
 import fr.exratio.jme.devkit.service.JmeEngineService;
 import fr.exratio.jme.devkit.service.PluginService;
 import fr.exratio.jme.devkit.service.RegistrationService;
+import fr.exratio.jme.devkit.service.SceneGraphService;
 import fr.exratio.jme.devkit.service.ServiceManager;
 import fr.exratio.jme.devkit.service.impl.JmeEngineServiceImpl;
 import fr.exratio.jme.devkit.swing.SwingTheme;
@@ -80,9 +84,14 @@ public class MainTest {
       coreService.getMainFrame().revalidate();
 
       ServiceManager.registerService(RegistrationService.class);
+      ServiceManager.registerService(SceneGraphService.class);
       ServiceManager.registerService(ClipboardService.class);
       ServiceManager.registerService(PluginService.class);
-
+      engineService.getStateManager().attach(new MouseOverAppState());
+      SpatialMoveToolState spatialMoveToolState = new SpatialMoveToolState();
+      spatialMoveToolState.setEnabled(true);
+      engineService.getStateManager().attach(spatialMoveToolState);
+      engineService.getStateManager().attach(new SpatialSelectorState());
       // load any available plugins.
       // I'm not sure where we should put this.
       ServiceManager.getService(PluginService.class).loadPlugins();

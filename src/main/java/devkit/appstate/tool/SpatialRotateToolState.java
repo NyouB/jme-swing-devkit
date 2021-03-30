@@ -18,17 +18,18 @@ import com.jme3.scene.Node;
 import fr.exratio.jme.devkit.service.EventService;
 import fr.exratio.jme.devkit.service.ServiceManager;
 
-public class SpatialRotateToolState extends SpatialTool implements ActionListener, AnalogListener {
+public class SpatialRotateToolState extends AbstractSpatialToolState implements ActionListener,
+    AnalogListener {
 
-    private InputManager inputManager;
-    private Camera camera;
+  private InputManager inputManager;
+  private Camera camera;
 
-    private final CollisionResults collisionResults = new CollisionResults();
-    private final Ray ray = new Ray();
+  private final CollisionResults collisionResults = new CollisionResults();
+  private final Ray ray = new Ray();
 
-    private boolean move_x, move_y, move_z;
+  private boolean move_x, move_y, move_z;
 
-    public SpatialRotateToolState() {
+  public SpatialRotateToolState() {
         setEnabled(false);
         ServiceManager.getService(EventService.class).register(this);
     }
