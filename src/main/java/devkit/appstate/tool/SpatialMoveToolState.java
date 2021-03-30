@@ -2,7 +2,6 @@ package devkit.appstate.tool;
 
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
-import com.jme3.collision.CollisionResults;
 import com.jme3.input.InputManager;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
@@ -12,8 +11,6 @@ import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.material.Material;
 import com.jme3.material.MaterialDef;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.Ray;
-import com.jme3.renderer.Camera;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
@@ -25,14 +22,16 @@ public class SpatialMoveToolState extends AbstractSpatialToolState implements Ac
   public static final String AXIS_X = "Axis_X";
   public static final String AXIS_Y = "Axis_Y";
   public static final String AXIS_Z = "Axis_Z";
+  public static final String MOVE = "Move";
+  public static final String MOVE_AXIS_X_PLUS = "MoveAxisX";
+  public static final String MOVE_AXIS_X_MINUS = "MoveAxisX-";
+  public static final String MOVE_AXIS_Y_PLUS = "MoveAxisY";
+  public static final String MOVE_AXIS_Y_MINUS = "MoveAxisY-";
   public static final String COLOR = "Color";
   public static final ColorRGBA LIGHT_RED = new ColorRGBA(1f, 0.5f, 0.5f, 1f);
   public static final ColorRGBA LIGHT_GREEN = new ColorRGBA(0.5f, 1f, 0.5f, 1f);
   public static final ColorRGBA LIGHT_BLUE = new ColorRGBA(0.5f, 0.5f, 1f, 1f);
-  private final CollisionResults collisionResults = new CollisionResults();
-  private final Ray ray = new Ray();
   private InputManager inputManager;
-  private Camera camera;
   private boolean move_x, move_y, move_z;
 
   private SimpleApplication application;
@@ -47,7 +46,6 @@ public class SpatialMoveToolState extends AbstractSpatialToolState implements Ac
   protected void initialize(Application app) {
     this.application = (SimpleApplication) app;
     this.inputManager = app.getInputManager();
-    this.camera = app.getCamera();
     this.mouseHoverAppState = application.getStateManager().getState(MouseOverAppState.class);
     if (toolModel == null) {
       toolModel = (Node) app.getAssetManager().loadModel("Models/SDK/Widget_Translation.j3o");
@@ -131,18 +129,15 @@ public class SpatialMoveToolState extends AbstractSpatialToolState implements Ac
   @Override
   protected void onEnable() {
 
-    inputManager.addMapping("Move", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
+    inputManager.addMapping(MOVE, new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
 
-    inputManager.addMapping("MoveAxisX", new MouseAxisTrigger(MouseInput.AXIS_X, false));
-    inputManager.addMapping("MoveAxisX-", new MouseAxisTrigger(MouseInput.AXIS_X, true));
+    inputManager.addMapping(MOVE_AXIS_X_PLUS, new MouseAxisTrigger(MouseInput.AXIS_X, false));
+    inputManager.addMapping(MOVE_AXIS_X_MINUS, new MouseAxisTrigger(MouseInput.AXIS_X, true));
+    inputManager.addMapping(MOVE_AXIS_Y_PLUS, new MouseAxisTrigger(MouseInput.AXIS_Y, false));
+    inputManager.addMapping(MOVE_AXIS_Y_MINUS, new MouseAxisTrigger(MouseInput.AXIS_Y, true));
 
-    inputManager.addMapping("MoveAxisY", new MouseAxisTrigger(MouseInput.AXIS_Y, false));
-    inputManager.addMapping("MoveAxisY-", new MouseAxisTrigger(MouseInput.AXIS_Y, true));
-
-    inputManager.addListener(this,
-        "Move",
-        "MoveAxisX", "MoveAxisX-",
-        "MoveAxisY", "MoveAxisY-"
+    inputManager.addListener(this, MOVE, MOVE_AXIS_X_PLUS, MOVE_AXIS_X_MINUS, MOVE_AXIS_Y_PLUS,
+        MOVE_AXIS_Y_MINUS
     );
 
   }
@@ -151,13 +146,13 @@ public class SpatialMoveToolState extends AbstractSpatialToolState implements Ac
   @Override
   protected void onDisable() {
 
-    inputManager.deleteMapping("Move");
+    inputManager.deleteMapping(MOVE);
 
-    inputManager.deleteMapping("MoveAxisX");
-    inputManager.deleteMapping("MoveAxisX-");
+    inputManager.deleteMapping(MOVE_AXIS_X_PLUS);
+    inputManager.deleteMapping(MOVE_AXIS_X_MINUS);
 
-    inputManager.deleteMapping("MoveAxisY");
-    inputManager.deleteMapping("MoveAxisY-");
+    inputManager.deleteMapping(MOVE_AXIS_Y_PLUS);
+    inputManager.deleteMapping(MOVE_AXIS_Y_MINUS);
 
     inputManager.removeListener(this);
 
@@ -169,26 +164,28 @@ public class SpatialMoveToolState extends AbstractSpatialToolState implements Ac
 
   @Override
   public void onAction(String binding, boolean isPressed, float tpf) {
-
-    if (binding.equals("Move") && isPressed) {
+    if (currentMouseHoverTool == null) {
+      return;
+    }
+    if (binding.equals(MOVE) && isPressed) {
 
       if (!move_x && !move_y && !move_z) {
 
-        move_x = currentMouseHoverTool.getName().equals("Axis_X");
-        move_y = currentMouseHoverTool.getName().equals("Axis_Y");
-        move_z = currentMouseHoverTool.getName().equals("Axis_Z");
+        move_x = AXIS_X.equals(currentMouseHoverTool.getName());
+        move_y = AXIS_Y.equals(currentMouseHoverTool.getName());
+        move_z = AXIS_Z.equals(currentMouseHoverTool.getName());
 
         // System.out.println(String.format("Move: [ %b | %b | %b ]", move_x, move_y, move_z));
 
-        super.busy = true;
+        busy = true;
         getState(SpatialSelectorState.class).setEnabled(false);
       } else {
-        super.busy = false;
+        busy = false;
         getState(SpatialSelectorState.class).setEnabled(true);
       }
 
     } else {
-      super.busy = false;
+      busy = false;
       move_x = move_y = move_z = false;
     }
 
@@ -200,32 +197,34 @@ public class SpatialMoveToolState extends AbstractSpatialToolState implements Ac
 
   @Override
   public void onAnalog(String binding, float value, float tpf) {
+    if ((!binding.startsWith(MOVE_AXIS_X_PLUS) && !binding.startsWith(MOVE_AXIS_Y_PLUS))
+        || selectedSpatial == null) {
+      return;
+    }
 
-    if (binding.startsWith("MoveAxisX") || binding.startsWith("MoveAxisY")) {
+    if (isMoving()) {
 
-      if (isMoving() && super.selectedSpatial != null) {
+      // we're moving something.
 
-        // we're moving something.
+      // Vector3f left = selectedSpatial.getLocalRotation().mult(Vector3f.UNIT_X);
+      // Vector3f up = selectedSpatial.getLocalRotation().mult(Vector3f.UNIT_Y);
+      // Vector3f forward = selectedSpatial.getLocalRotation().mult(Vector3f.UNIT_Z);
 
-        // Vector3f left = selectedSpatial.getLocalRotation().mult(Vector3f.UNIT_X);
-        // Vector3f up = selectedSpatial.getLocalRotation().mult(Vector3f.UNIT_Y);
-        // Vector3f forward = selectedSpatial.getLocalRotation().mult(Vector3f.UNIT_Z);
+      float val = binding.endsWith("-")
+          ? value * -1
+          : value;
 
-        float val = binding.endsWith("-")
-            ? value * -1
-            : value;
+      val *= distance;
 
-        val *= super.distance;
-
-        if (move_x) {
-          super.selectedSpatial.move(val, 0, 0);
-        } else if (move_y) {
-          super.selectedSpatial.move(0, val, 0);
-        } else if (move_z) {
-          super.selectedSpatial.move(0, 0, -val);
-        }
-
+      if (move_x) {
+        super.selectedSpatial.move(val, 0, 0);
+      } else if (move_y) {
+        super.selectedSpatial.move(0, val, 0);
+      } else if (move_z) {
+        super.selectedSpatial.move(0, 0, -val);
       }
+
+
     }
 
   }
