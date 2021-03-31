@@ -159,7 +159,6 @@ public class SpatialRotateToolState extends AbstractSpatialToolState implements 
                 val *= tpf;
 
                 if (move_x) {
-                    // selectedSpatial.move(val, 0 ,0);
                     selectedSpatial.rotate(val, 0, 0);
                 } else if (move_y) {
                     selectedSpatial.rotate(0, val, 0);

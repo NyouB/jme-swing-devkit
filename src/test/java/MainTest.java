@@ -3,6 +3,7 @@ import com.jme3.system.JmeSystem;
 import com.jme3.system.awt.AwtPanelsContext;
 import devkit.appstate.tool.MouseOverAppState;
 import devkit.appstate.tool.SpatialMoveToolState;
+import devkit.appstate.tool.SpatialRotateToolState2;
 import devkit.appstate.tool.SpatialSelectorState;
 import fr.exratio.jme.devkit.config.DevKitConfig;
 import fr.exratio.jme.devkit.service.ClipboardService;
@@ -91,6 +92,9 @@ public class MainTest {
       SpatialMoveToolState spatialMoveToolState = new SpatialMoveToolState();
       spatialMoveToolState.setEnabled(true);
       engineService.getStateManager().attach(spatialMoveToolState);
+      SpatialRotateToolState2 spatialRotateToolState2 = new SpatialRotateToolState2();
+      spatialRotateToolState2.setEnabled(true);
+      engineService.getStateManager().attach(spatialRotateToolState2);
       engineService.getStateManager().attach(new SpatialSelectorState());
       // load any available plugins.
       // I'm not sure where we should put this.
