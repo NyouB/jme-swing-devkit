@@ -29,6 +29,8 @@ public class SpatialMoveToolState extends AbstractSpatialToolState implements Ac
   public static final String MOVE_AXIS_Y_PLUS = "MoveAxisY";
   public static final String MOVE_AXIS_Y_MINUS = "MoveAxisY-";
   public static final String COLOR = "Color";
+  public static final String WIDGET = "Models/SDK/Widget_Translation.j3o";
+  public static final String MAT_DEF = "/MatDefs/FogUnshaded.j3md";
   public static final ColorRGBA LIGHT_RED = new ColorRGBA(1f, 0.5f, 0.5f, 1f);
   public static final ColorRGBA LIGHT_GREEN = new ColorRGBA(0.5f, 1f, 0.5f, 1f);
   public static final ColorRGBA LIGHT_BLUE = new ColorRGBA(0.5f, 0.5f, 1f, 1f);
@@ -49,9 +51,9 @@ public class SpatialMoveToolState extends AbstractSpatialToolState implements Ac
     this.inputManager = app.getInputManager();
     this.mouseHoverAppState = application.getStateManager().getState(MouseOverAppState.class);
     if (toolModel == null) {
-      toolModel = (Node) app.getAssetManager().loadModel("Models/SDK/Widget_Translation.j3o");
+      toolModel = (Node) app.getAssetManager().loadModel(WIDGET);
       MaterialDef materialDef = (MaterialDef) application.getAssetManager()
-          .loadAsset("/MatDefs/FogUnshaded.j3md");
+          .loadAsset(MAT_DEF);
       Material redMaterial = new Material(materialDef);
       redMaterial.setColor(COLOR, ColorRGBA.Red);
       toolModel.getChild(AXIS_X).setMaterial(redMaterial);
