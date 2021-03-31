@@ -14,6 +14,7 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import org.apache.commons.lang3.StringUtils;
 
 
 public class SpatialMoveToolState extends AbstractSpatialToolState implements ActionListener,
@@ -165,30 +166,32 @@ public class SpatialMoveToolState extends AbstractSpatialToolState implements Ac
   @Override
   public void onAction(String binding, boolean isPressed, float tpf) {
     if (currentMouseHoverTool == null) {
+      disableMoving();
       return;
     }
     if (binding.equals(MOVE) && isPressed) {
-
+      move_x = AXIS_X.equals(currentMouseHoverTool.getName());
+      move_y = AXIS_Y.equals(currentMouseHoverTool.getName());
+      move_z = AXIS_Z.equals(currentMouseHoverTool.getName());
       if (!move_x && !move_y && !move_z) {
-
-        move_x = AXIS_X.equals(currentMouseHoverTool.getName());
-        move_y = AXIS_Y.equals(currentMouseHoverTool.getName());
-        move_z = AXIS_Z.equals(currentMouseHoverTool.getName());
-
         // System.out.println(String.format("Move: [ %b | %b | %b ]", move_x, move_y, move_z));
-
+        busy = true;
+        getState(SpatialSelectorState.class).setEnabled(true);
+      } else {
         busy = true;
         getState(SpatialSelectorState.class).setEnabled(false);
-      } else {
-        busy = false;
-        getState(SpatialSelectorState.class).setEnabled(true);
       }
 
     } else {
-      busy = false;
-      move_x = move_y = move_z = false;
+      disableMoving();
     }
 
+  }
+
+  private void disableMoving() {
+    busy = false;
+    move_x = move_y = move_z = false;
+    getState(SpatialSelectorState.class).setEnabled(true);
   }
 
   private boolean isMoving() {
@@ -197,8 +200,9 @@ public class SpatialMoveToolState extends AbstractSpatialToolState implements Ac
 
   @Override
   public void onAnalog(String binding, float value, float tpf) {
-    if ((!binding.startsWith(MOVE_AXIS_X_PLUS) && !binding.startsWith(MOVE_AXIS_Y_PLUS))
-        || selectedSpatial == null) {
+    if (selectedSpatial == null || !StringUtils
+        .equalsAny(binding, MOVE_AXIS_X_PLUS, MOVE_AXIS_Y_PLUS, MOVE_AXIS_X_MINUS,
+            MOVE_AXIS_Y_MINUS)) {
       return;
     }
 
