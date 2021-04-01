@@ -33,6 +33,7 @@ public class CoreService implements Service {
   private final MainPage mainPage;
 
   public CoreService(String parentDirName) {
+
     mainFrame = new JFrame("JmeDevKit: " + parentDirName);
     threadId = Thread.currentThread().getId();
     mainFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

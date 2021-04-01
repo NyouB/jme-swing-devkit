@@ -180,9 +180,9 @@ For a basic component/class
 For a complex class with many field
 
 > ServiceManager.getService(RegistrationService.class).registerPropertySectionBuilder(classToMap, MyPropertySectionBuilder)
+### TOOL DOC
 
-
-### POSITIONNING PLUGIN
-The fork provides different area in which you can add your plugin in a tab; LEFT_TOP, LEFT_BOTTOM, TOP_LEFT, TOP_RIGHT, RIGHT_TOP, RIGHT_BOTTOM, BOTTOM_LEFT, BOTTOM_RIGHT.
+### POSITIONNING TOOL
+The fork provides different area in which you can add your tool; LEFT_TOP, LEFT_BOTTOM, RIGHT_TOP, RIGHT_BOTTOM, BOTTOM_LEFT, BOTTOM_RIGHT.
 
 > ServiceManager.getService(CoreService.class).getMainPage().addTab("Tab Title", myComponent, myIcon, Zone.LEFT_TOP);

@@ -1,6 +1,10 @@
 package fr.exratio.jme.devkit.tree.spatial.menu;
 
+import static devkit.appstate.tool.SpatialMoveToolState.COLOR;
+import static devkit.appstate.tool.SpatialMoveToolState.MAT_DEF;
+
 import com.jme3.material.Material;
+import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
@@ -9,7 +13,6 @@ import com.jme3.scene.shape.Cylinder;
 import com.jme3.scene.shape.Dome;
 import com.jme3.scene.shape.Quad;
 import com.jme3.scene.shape.Sphere;
-import fr.exratio.jme.devkit.config.DevKitConfig;
 import fr.exratio.jme.devkit.forms.AddModels;
 import fr.exratio.jme.devkit.forms.CreateSkyBoxDialog;
 import fr.exratio.jme.devkit.registration.spatial.GeometryRegistrar;
@@ -19,7 +22,6 @@ import fr.exratio.jme.devkit.service.JmeEngineService;
 import fr.exratio.jme.devkit.service.MenuService;
 import fr.exratio.jme.devkit.service.RegistrationService;
 import fr.exratio.jme.devkit.service.SceneGraphService;
-import fr.exratio.jme.devkit.service.SceneTreeService;
 import fr.exratio.jme.devkit.service.ServiceManager;
 import fr.exratio.jme.devkit.tree.spatial.NodeTreeNode;
 import java.awt.HeadlessException;
@@ -201,9 +203,10 @@ public class NodeContextMenu extends SpatialContextMenu {
 
     Geometry geometry = new Geometry(name, mesh);
 
-    Material material = new Material(engineService.getAssetManager(),
-        DevKitConfig.getInstance().getSdkConfig().getDefaultMaterial());
+    Material material = new Material(engineService.getAssetManager(), MAT_DEF);
     geometry.setMaterial(material);
+
+    material.setColor(COLOR, ColorRGBA.Blue);
 
     return geometry;
   }

@@ -12,8 +12,13 @@ import com.jme3.material.Material;
 import com.jme3.material.MaterialDef;
 import com.jme3.math.ColorRGBA;
 import com.jme3.renderer.queue.RenderQueue;
+import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import fr.exratio.jme.devkit.service.EventService;
+import fr.exratio.jme.devkit.service.ServiceManager;
+import fr.exratio.jme.devkit.service.inspector.SpatialMoveEvent;
+import javax.swing.SwingUtilities;
 import org.apache.commons.lang3.StringUtils;
 
 
@@ -63,7 +68,7 @@ public class SpatialMoveToolState extends AbstractSpatialToolState implements Ac
       Material blueMaterial = new Material(materialDef);
       blueMaterial.setColor(COLOR, LIGHT_BLUE);
       toolModel.getChild(AXIS_Z).setMaterial(blueMaterial);
-      toolModel.setQueueBucket(RenderQueue.Bucket.Transparent);
+      toolModel.setQueueBucket(Bucket.Translucent);
       toolModel.setShadowMode(RenderQueue.ShadowMode.Off);
     }
   }
@@ -229,6 +234,9 @@ public class SpatialMoveToolState extends AbstractSpatialToolState implements Ac
       } else if (move_z) {
         super.selectedSpatial.move(0, 0, -val);
       }
+
+      SwingUtilities.invokeLater(() -> ServiceManager.getService(EventService.class)
+          .post(new SpatialMoveEvent(selectedSpatial)));
 
 
     }

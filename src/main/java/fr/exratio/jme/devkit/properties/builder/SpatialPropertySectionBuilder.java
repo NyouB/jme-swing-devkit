@@ -1,18 +1,14 @@
 package fr.exratio.jme.devkit.properties.builder;
 
-import com.jme3.math.Quaternion;
-import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.Spatial.BatchHint;
 import com.jme3.scene.Spatial.CullHint;
+import fr.exratio.jme.devkit.event.SpatialNameChangedEvent;
 import fr.exratio.jme.devkit.properties.PropertySection;
 import fr.exratio.jme.devkit.properties.component.enumeration.EnumEditor;
-import fr.exratio.jme.devkit.event.SpatialNameChangedEvent;
-import fr.exratio.jme.devkit.properties.component.quaternion.QuaternionEditor;
 import fr.exratio.jme.devkit.properties.component.string.StringEditor;
-import fr.exratio.jme.devkit.properties.component.vector3f.Vector3fEditor;
 import fr.exratio.jme.devkit.service.EventService;
 import fr.exratio.jme.devkit.service.JmeEngineService;
 import fr.exratio.jme.devkit.service.ServiceManager;
@@ -44,25 +40,8 @@ public class SpatialPropertySectionBuilder extends AbstractPropertySectionBuilde
 
     List<PropertySection> propertySections = new ArrayList<>();
 
-    PropertySection transformSection = new PropertySection("Transform");
+    PropertySection transformSection = new TransformSection(object);
     // Transform : location, rotation, scale
-
-    Vector3fEditor localTranslation = new Vector3fEditor(object.getLocalTranslation());
-    localTranslation.addPropertyChangeListener(
-        value -> ServiceManager.getService(JmeEngineService.class)
-            .enqueue(() -> object.setLocalTranslation((Vector3f) value.getNewValue())));
-    transformSection.addProperty(LOCAL_TRANSLATION, localTranslation.getCustomEditor());
-
-    QuaternionEditor localRotation = new QuaternionEditor(object.getLocalRotation());
-    localRotation.addPropertyChangeListener(
-        value -> ServiceManager.getService(JmeEngineService.class)
-            .enqueue(() -> object.setLocalRotation((Quaternion) value.getNewValue())));
-    transformSection.addProperty(LOCAL_ROTATION, localRotation.getCustomEditor());
-
-    Vector3fEditor localScale = new Vector3fEditor(object.getLocalScale());
-    localScale.addPropertyChangeListener(value -> ServiceManager.getService(JmeEngineService.class)
-        .enqueue(() -> object.setLocalScale((Vector3f) value.getNewValue())));
-    transformSection.addProperty(LOCAL_SCALE, localScale.getCustomEditor());
 
     propertySections.add(transformSection);
 
