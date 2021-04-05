@@ -38,7 +38,7 @@ public class AddModels {
 
     try {
       modelFiles = Files
-          .walk(new File(DevKitConfig.getInstance().getProjectConfig().getAssetRootDir()).toPath())
+          .walk(new File(DevKitConfig.getInstance().getAssetRootDir()).toPath())
           .filter(p -> p.toString().endsWith(".j3o"))
           .collect(Collectors.toList());
 
@@ -53,7 +53,7 @@ public class AddModels {
       for (Path path : modelFiles) {
 
         String relativePath = path.toString()
-            .replace(DevKitConfig.getInstance().getProjectConfig().getAssetRootDir(), "");
+            .replace(DevKitConfig.getInstance().getAssetRootDir(), "");
 
         // remove any trailing slashes.
         if (relativePath.startsWith("/") || relativePath.startsWith("\\")) {

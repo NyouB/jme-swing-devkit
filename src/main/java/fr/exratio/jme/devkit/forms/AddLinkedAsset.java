@@ -33,13 +33,13 @@ public class AddLinkedAsset {
   private JList<String> modelsList;
   private JButton addLinkedAssetButton;
 
-  public AddLinkedAsset(final AssetLinkNodeTreeNode assetLinkNodeTreeNode) {
+  public AddLinkedAsset(final AssetLinkNodeTreeNode assetLinkNodeTreeNode, String assetRootDirectory) {
 
     List<Path> modelFiles = null;
 
     try {
       modelFiles = Files
-          .walk(new File(DevKitConfig.getInstance().getProjectConfig().getAssetRootDir()).toPath())
+          .walk(new File(assetRootDirectory).toPath())
           .filter(p -> p.toString().endsWith(".j3o"))
           .collect(Collectors.toList());
 
@@ -54,7 +54,7 @@ public class AddLinkedAsset {
       for (Path path : modelFiles) {
 
         String relativePath = path.toString()
-            .replace(DevKitConfig.getInstance().getProjectConfig().getAssetRootDir(), "");
+            .replace(DevKitConfig.getInstance().getAssetRootDir(), "");
 
         // remove any trailing slashes.
         if (relativePath.startsWith("/")) {

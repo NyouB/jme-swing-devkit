@@ -123,7 +123,7 @@ public class MaterialChooserEditor extends AbstractPropertyEditor<Material> {
 
     try {
       model.addAll(
-          findFiles(Paths.get(DevKitConfig.getInstance().getProjectConfig().getAssetRootDir()),
+          findFiles(Paths.get(DevKitConfig.getInstance().getAssetRootDir()),
               "j3md", "j3m"));
     } catch (IOException e) {
       e.printStackTrace();

@@ -74,12 +74,6 @@ public class PropertyInspectorTool extends Tool implements Service {
     contentPane = new JPanel();
 
     //======== this ========
-    setBorder(
-        new javax.swing.border.CompoundBorder(new javax.swing.border.TitledBorder(new javax.swing.
-            border.EmptyBorder(0, 0, 0, 0), "JF\u006frmDes\u0069gner \u0045valua\u0074ion",
-            javax.swing.border.TitledBorder.CENTER
-            , javax.swing.border.TitledBorder.BOTTOM, new java.awt.Font("D\u0069alog", java.awt.Font
-            .BOLD, 12), java.awt.Color.red), getBorder()));
     var contentPane2 = getContentPane();
     contentPane2.setLayout(new BorderLayout());
 

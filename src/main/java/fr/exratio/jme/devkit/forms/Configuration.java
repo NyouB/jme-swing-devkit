@@ -87,14 +87,14 @@ public class Configuration {
     themeComboBox.setRenderer(new ThemeComboBoxCellRenderer());
 
     try {
-      Class<?> currentThemeClass = Class.forName(devKitConfig.getSdkConfig().getTheme());
+      Class<?> currentThemeClass = Class.forName(devKitConfig.getTheme());
       themeComboBox.setSelectedItem(currentThemeClass);
     } catch (ClassNotFoundException e) {
       e.printStackTrace();
     }
 
     // asset root
-    assetRootTextField.setText(devKitConfig.getProjectConfig().getAssetRootDir()
+    assetRootTextField.setText(devKitConfig.getAssetRootDir()
         .replace(System.getProperty("user.dir"), ""));
     browseAssetRootButton.addActionListener(e -> {
 
@@ -123,14 +123,14 @@ public class Configuration {
     materials.addElement(Materials.PBR);
     defaultMaterialComboBox.setModel(materials);
     defaultMaterialComboBox
-        .setSelectedItem(DevKitConfig.getInstance().getSdkConfig().getDefaultMaterial());
+        .setSelectedItem(DevKitConfig.getInstance().getDefaultMaterial());
 
     // viewport
     viewPortColorPreviewPanel
-        .setBackground(ColorConverter.toColor(devKitConfig.getCameraConfig().getViewportColor()));
-    fieldOfViewTextField.setValue(devKitConfig.getCameraConfig().getFieldOfView());
-    frustumNearTextField.setValue(devKitConfig.getCameraConfig().getFrustumNear());
-    frustumFarTextField.setValue(devKitConfig.getCameraConfig().getFrustumFar());
+        .setBackground(ColorConverter.toColor(devKitConfig.getViewportColor()));
+    fieldOfViewTextField.setValue(devKitConfig.getFieldOfView());
+    frustumNearTextField.setValue(devKitConfig.getFrustumNear());
+    frustumFarTextField.setValue(devKitConfig.getFrustumFar());
 
     viewPortColorChooseButton.addActionListener(e -> {
 
@@ -138,34 +138,34 @@ public class Configuration {
 
       Color chosenColor = JColorChooser.showDialog(window,
           "ViewPort Color",
-          ColorConverter.toColor(devKitConfig.getCameraConfig().getViewportColor()));
+          ColorConverter.toColor(devKitConfig.getViewportColor()));
 
       viewPortColorPreviewPanel.setBackground(chosenColor);
 
     });
 
     // grid
-    xGridSizeTextField.setValue(devKitConfig.getSceneConfig().getGridSize().x);
-    yGridSizeTextField.setValue(devKitConfig.getSceneConfig().getGridSize().y);
-    gridSpacingTextField.setValue(devKitConfig.getSceneConfig().getGridSize().z);
+    xGridSizeTextField.setValue(devKitConfig.getGridSize().x);
+    yGridSizeTextField.setValue(devKitConfig.getGridSize().y);
+    gridSpacingTextField.setValue(devKitConfig.getGridSize().z);
 
     gridColorPanel
-        .setBackground(ColorConverter.toColor(devKitConfig.getSceneConfig().getGridColor()));
+        .setBackground(ColorConverter.toColor(devKitConfig.getGridColor()));
     gridColorChooseButton.addActionListener(e -> {
 
       Window window = SwingUtilities.getWindowAncestor((Component) e.getSource());
 
       Color chosenColor = JColorChooser.showDialog(window,
           "ViewPort Color",
-          ColorConverter.toColor(devKitConfig.getCameraConfig().getViewportColor()));
+          ColorConverter.toColor(devKitConfig.getViewportColor()));
 
       gridColorPanel.setBackground(chosenColor);
 
     });
 
-    xGridLocationTextField.setValue(devKitConfig.getSceneConfig().getGridLocation().x);
-    yGridLocationTextField.setValue(devKitConfig.getSceneConfig().getGridLocation().y);
-    zGridLocationTextField.setValue(devKitConfig.getSceneConfig().getGridLocation().z);
+    xGridLocationTextField.setValue(devKitConfig.getGridLocation().x);
+    yGridLocationTextField.setValue(devKitConfig.getGridLocation().y);
+    zGridLocationTextField.setValue(devKitConfig.getGridLocation().z);
 
     // Save & Apply
     saveChangesButton.addActionListener(e -> {
@@ -176,14 +176,14 @@ public class Configuration {
           .getSelectedItem());
 
       if (chosenThemeClass != null) {
-        if (!chosenThemeClass.getName().equals(devKitConfig.getSdkConfig().getTheme())) {
-          devKitConfig.getSdkConfig().setTheme(chosenThemeClass.getName());
+        if (!chosenThemeClass.getName().equals(devKitConfig.getTheme())) {
+          devKitConfig.setTheme(chosenThemeClass.getName());
           SwingTheme.setTheme(chosenThemeClass);
         }
       }
 
       // asset root
-      String existingAssetRoot = devKitConfig.getProjectConfig().getAssetRootDir();
+      String existingAssetRoot = devKitConfig.getAssetRootDir();
       String newAssetRoot = assetRootTextField.getText();
 
       if (!existingAssetRoot.equals(newAssetRoot)) {
@@ -192,7 +192,7 @@ public class Configuration {
             .unregisterLocator(existingAssetRoot, FileLocator.class);
         log.info("Unregistered Asset Root: " + existingAssetRoot);
 
-        devKitConfig.getProjectConfig().setAssetRootDir(newAssetRoot);
+        devKitConfig.setAssetRootDir(newAssetRoot);
         ServiceManager.getService(JmeEngineService.class).getAssetManager()
             .registerLocator(newAssetRoot, FileLocator.class);
         log.info("Registering New Asset Root: " + newAssetRoot);
@@ -200,21 +200,17 @@ public class Configuration {
 
       // default material
       String defaultMaterial = (String) defaultMaterialComboBox.getSelectedItem();
-      devKitConfig.getSdkConfig().setDefaultMaterial(defaultMaterial);
+      devKitConfig.setDefaultMaterial(defaultMaterial);
 
       // viewport
-      devKitConfig.getCameraConfig()
+      devKitConfig
           .setViewportColor(ColorConverter.toColorRGBA(viewPortColorPreviewPanel.getBackground()));
-      devKitConfig.getCameraConfig()
-          .setFieldOfView(((Number) fieldOfViewTextField.getValue()).floatValue());
-      devKitConfig.getCameraConfig()
-          .setFrustumNear(((Number) frustumNearTextField.getValue()).floatValue());
-      devKitConfig.getCameraConfig()
-          .setFrustumFar(((Number) frustumFarTextField.getValue()).floatValue());
+      devKitConfig.setFieldOfView(((Number) fieldOfViewTextField.getValue()).floatValue());
+      devKitConfig.setFrustumNear(((Number) frustumNearTextField.getValue()).floatValue());
+      devKitConfig.setFrustumFar(((Number) frustumFarTextField.getValue()).floatValue());
 
       // grid
-      devKitConfig.getSceneConfig()
-          .setGridColor(ColorConverter.toColorRGBA(gridColorPanel.getBackground()));
+      devKitConfig.setGridColor(ColorConverter.toColorRGBA(gridColorPanel.getBackground()));
 
       Float gridSizeX = (Float) xGridSizeTextField.getValue();
       Float gridSizeY = (Float) yGridSizeTextField.getValue();
@@ -224,12 +220,12 @@ public class Configuration {
       int iGridY = gridSizeY == null ? 200 : gridSizeY.intValue();
       float fGridSpacing = gridSpacing == null ? 1.0f : gridSpacing;
 
-      devKitConfig.getSceneConfig().setGridSize(new Vector3f(
+      devKitConfig.setGridSize(new Vector3f(
           ((Number) xGridSizeTextField.getValue()).floatValue(),
           ((Number) yGridSizeTextField.getValue()).floatValue(),
           ((Number) gridSpacingTextField.getValue()).floatValue()));
 
-      devKitConfig.getSceneConfig().setGridLocation(new Vector3f(
+      devKitConfig.setGridLocation(new Vector3f(
           ((Number) xGridLocationTextField.getValue()).floatValue(),
           ((Number) yGridLocationTextField.getValue()).floatValue(),
           ((Number) zGridLocationTextField.getValue()).floatValue()));
@@ -243,7 +239,7 @@ public class Configuration {
         // apply viewport settongs
         engineService.applyCameraFrustumSizes();
         engineService.getViewPort()
-            .setBackgroundColor(devKitConfig.getCameraConfig().getViewportColor());
+            .setBackgroundColor(devKitConfig.getViewportColor());
 
         // apply grid settings
         DebugGridState debugGridState = engineService.getStateManager()

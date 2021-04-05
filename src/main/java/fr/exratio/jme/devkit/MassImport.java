@@ -20,7 +20,7 @@ public class MassImport {
 
   public static void main(String... args) {
 
-    String assetRoot = DevKitConfig.getInstance().getProjectConfig().getAssetRootDir();
+    String assetRoot = DevKitConfig.getInstance().getAssetRootDir();
 
     Path originalsPath = Paths.get(assetRoot, "Originals");
 
@@ -78,12 +78,12 @@ public class MassImport {
 
         // remove the .gltf or .glb extension from the name.
         Path resultFile = Paths.get(
-            DevKitConfig.getInstance().getProjectConfig().getAssetRootDir(),
+            DevKitConfig.getInstance().getAssetRootDir(),
             targetAssetPath,
             modelPath.getFileName() + ".j3o");
 
         Path extRemoved = Paths.get(
-            DevKitConfig.getInstance().getProjectConfig().getAssetRootDir(),
+            DevKitConfig.getInstance().getAssetRootDir(),
             targetAssetPath,
             modelPath.getFileName().toString()
                 .replace(".glb", "").replace(".GLB", "")
