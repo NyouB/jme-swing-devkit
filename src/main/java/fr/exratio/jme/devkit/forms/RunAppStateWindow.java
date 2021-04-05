@@ -81,7 +81,7 @@ public class RunAppStateWindow extends Tool {
   private JSplitPane noborderSpitPane;
 
   public RunAppStateWindow() {
-    super(RunAppStateWindow.class.getName(), TITLE, null, Zone.LEFT_BOTTOM, ViewMode.PIN, true);
+    super(RunAppStateWindow.class.getName(), TITLE, null, Zone.BOTTOM_LEFT, ViewMode.PIN, true);
     $$$setupUI$$$();
     initialize();
   }
@@ -89,7 +89,7 @@ public class RunAppStateWindow extends Tool {
   @Builder(builderMethodName = "appStateViewBuilder")
   public RunAppStateWindow(String id, String title, Icon icon,
       Zone zone, ViewMode viewMode, boolean isDisplayed) {
-    super(RunAppStateWindow.class.getName(), TITLE, null, Zone.LEFT_BOTTOM, ViewMode.PIN, true);
+    super(RunAppStateWindow.class.getName(), TITLE, null, Zone.BOTTOM_LEFT, ViewMode.PIN, true);
     $$$setupUI$$$();
     initialize();
   }

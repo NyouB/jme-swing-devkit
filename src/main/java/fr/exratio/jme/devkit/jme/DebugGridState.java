@@ -7,7 +7,6 @@ import com.jme3.asset.AssetManager;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.debug.Grid;
 import fr.exratio.jme.devkit.config.DevKitConfig;
-import fr.exratio.jme.devkit.config.SceneConfig;
 
 public class DebugGridState extends BaseAppState {
 
@@ -17,16 +16,14 @@ public class DebugGridState extends BaseAppState {
 
   private void createGrid(AssetManager assetManager) {
 
-    SceneConfig sceneConfig = DevKitConfig.getInstance().getSceneConfig();
-
-    Grid grid = new Grid((int) sceneConfig.getGridSize().x, (int) sceneConfig.getGridSize().y,
-        sceneConfig.getGridSize().z);
+    Grid grid = new Grid((int) DevKitConfig.getInstance().getGridSize().x, (int) DevKitConfig.getInstance().getGridSize().y,
+        DevKitConfig.getInstance().getGridSize().z);
     gridGeometry = new Geometry(DEBUG_GRID_NAME, grid);
 
     gridGeometry.setMaterial(assetManager.loadMaterial("Materials/GridMaterial.j3m"));
-    gridGeometry.getMaterial().setColor("Color", sceneConfig.getGridColor());
+    gridGeometry.getMaterial().setColor("Color", DevKitConfig.getInstance().getGridColor());
 
-    gridGeometry.setLocalTranslation(sceneConfig.getGridLocation());
+    gridGeometry.setLocalTranslation(DevKitConfig.getInstance().getGridLocation());
 
   }
 
@@ -38,20 +35,19 @@ public class DebugGridState extends BaseAppState {
    */
   public void refreshMesh(boolean refreshMesh, boolean refreshColor) {
 
-    SceneConfig sceneConfig = DevKitConfig.getInstance().getSceneConfig();
 
     if (refreshMesh) {
-      Grid grid = new Grid((int) sceneConfig.getGridSize().x, (int) sceneConfig.getGridSize().y,
-          sceneConfig.getGridSize().z);
+      Grid grid = new Grid((int) DevKitConfig.getInstance().getGridSize().x, (int) DevKitConfig.getInstance().getGridSize().y,
+          DevKitConfig.getInstance().getGridSize().z);
       gridGeometry.setMesh(grid);
       gridGeometry.updateModelBound();
     }
 
     if (refreshColor) {
-      gridGeometry.getMaterial().setColor("Color", sceneConfig.getGridColor());
+      gridGeometry.getMaterial().setColor("Color", DevKitConfig.getInstance().getGridColor());
     }
 
-    gridGeometry.setLocalTranslation(sceneConfig.getGridLocation());
+    gridGeometry.setLocalTranslation(DevKitConfig.getInstance().getGridLocation());
 
   }
 

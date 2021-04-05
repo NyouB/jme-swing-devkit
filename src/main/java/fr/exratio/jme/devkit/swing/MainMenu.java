@@ -89,27 +89,27 @@ public class MainMenu extends JMenuBar {
     JCheckBoxMenuItem camRotWidgetItem = (JCheckBoxMenuItem) viewMenu
         .add(new JCheckBoxMenuItem("Camera Rotation Widget"));
     camRotWidgetItem
-        .setSelected(DevKitConfig.getInstance().getSdkConfig().isShowCamRotationWidget());
+        .setSelected(DevKitConfig.getInstance().isShowCamRotationWidget());
     camRotWidgetItem.addActionListener(e -> {
       JCheckBoxMenuItem checkBoxMenuItem = (JCheckBoxMenuItem) e.getSource();
       final boolean isSelected = checkBoxMenuItem.isSelected();
 
       AppStateUtils.toggleAppState(CameraRotationWidgetState.class, isSelected);
 
-      DevKitConfig.getInstance().getSdkConfig().setShowCamRotationWidget(isSelected);
+      DevKitConfig.getInstance().setShowCamRotationWidget(isSelected);
       DevKitConfig.getInstance().save();
     });
 
     JCheckBoxMenuItem debugGridItem = (JCheckBoxMenuItem) viewMenu
         .add(new JCheckBoxMenuItem("Grid"));
-    debugGridItem.setSelected(DevKitConfig.getInstance().getSceneConfig().isShowGrid());
+    debugGridItem.setSelected(DevKitConfig.getInstance().isShowGrid());
     debugGridItem.addActionListener(e -> {
       JCheckBoxMenuItem checkBoxMenuItem = (JCheckBoxMenuItem) e.getSource();
       final boolean isSelected = checkBoxMenuItem.isSelected();
 
       AppStateUtils.toggleAppState(DebugGridState.class, isSelected);
 
-      DevKitConfig.getInstance().getSceneConfig().setShowGrid(isSelected);
+      DevKitConfig.getInstance().setShowGrid(isSelected);
       DevKitConfig.getInstance().save();
 
     });

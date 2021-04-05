@@ -54,7 +54,7 @@ public class ImportModel {
 
     browseAssetPathButton.addActionListener(e -> {
 
-      String assetRoot = DevKitConfig.getInstance().getProjectConfig().getAssetRootDir();
+      String assetRoot = DevKitConfig.getInstance().getAssetRootDir();
 
       JFileChooser chooser = new JFileChooser();
       chooser.setCurrentDirectory(new File(assetRoot));
@@ -75,7 +75,7 @@ public class ImportModel {
 
         } else {
           assetPathTextField.setText(chooser.getSelectedFile().getAbsolutePath()
-              .replace(DevKitConfig.getInstance().getProjectConfig().getAssetRootDir(), ""));
+              .replace(DevKitConfig.getInstance().getAssetRootDir(), ""));
         }
 
       }
@@ -104,7 +104,7 @@ public class ImportModel {
         File sourceModel = new File(modelPath);
         convert.setSourceRoot(sourceModel.getParentFile());
         convert.setTargetRoot(
-            new File(DevKitConfig.getInstance().getProjectConfig().getAssetRootDir()));
+            new File(DevKitConfig.getInstance().getAssetRootDir()));
         convert.setTargetAssetPath(assetPathTextField.getText());
 
         try {
@@ -124,12 +124,12 @@ public class ImportModel {
         }
 
         Path resultFile = Paths.get(
-            DevKitConfig.getInstance().getProjectConfig().getAssetRootDir(),
+            DevKitConfig.getInstance().getAssetRootDir(),
             assetPathTextField.getText(),
             sourceModel.getName() + ".j3o");
 
         Path extRemoved = Paths.get(
-            DevKitConfig.getInstance().getProjectConfig().getAssetRootDir(),
+            DevKitConfig.getInstance().getAssetRootDir(),
             assetPathTextField.getText(),
             sourceModel.getName()
                 .replace(".glb", "").replace(".GLB", "")
@@ -158,7 +158,7 @@ public class ImportModel {
         }
 
         String result = extRemoved.toString()
-            .replace(DevKitConfig.getInstance().getProjectConfig().getAssetRootDir(), "");
+            .replace(DevKitConfig.getInstance().getAssetRootDir(), "");
 
         // notify the user on the AWT Thread.
         SwingUtilities.invokeLater(() -> {

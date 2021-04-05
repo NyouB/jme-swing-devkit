@@ -6,7 +6,6 @@ import com.jme3.system.awt.AwtPanel;
 import com.jme3.system.awt.AwtPanelsContext;
 import com.jme3.system.awt.PaintMode;
 import com.jme3.util.MaterialDebugAppState;
-import fr.exratio.jme.devkit.config.CameraConfig;
 import fr.exratio.jme.devkit.config.DevKitConfig;
 import fr.exratio.jme.devkit.jme.CameraRotationWidgetState;
 import fr.exratio.jme.devkit.jme.DebugGridState;
@@ -47,11 +46,11 @@ public class JmeEngineServiceImpl extends JmeEngineService {
   @Override
   public void simpleInitApp() {
 
-    if (DevKitConfig.getInstance().getSdkConfig().isShowCamRotationWidget()) {
+    if (DevKitConfig.getInstance().isShowCamRotationWidget()) {
       stateManager.attach(new CameraRotationWidgetState());
     }
 
-    if (DevKitConfig.getInstance().getSceneConfig().isShowGrid()) {
+    if (DevKitConfig.getInstance().isShowGrid()) {
       stateManager.attach(new DebugGridState());
     }
 
@@ -79,9 +78,7 @@ public class JmeEngineServiceImpl extends JmeEngineService {
    */
   @Override
   public void applyCameraFrustumSizes() {
-
-    CameraConfig cameraConfig = DevKitConfig.getInstance().getCameraConfig();
-
+    
     float width, height;
 
     if (jmePanel != null) {
@@ -93,10 +90,10 @@ public class JmeEngineServiceImpl extends JmeEngineService {
     }
 
     viewPort.getCamera().setFrustumPerspective(
-        cameraConfig.getFieldOfView(),
+        DevKitConfig.getInstance().getFieldOfView(),
         width / height,
-        cameraConfig.getFrustumNear(),
-        cameraConfig.getFrustumFar());
+        DevKitConfig.getInstance().getFrustumNear(),
+        DevKitConfig.getInstance().getFrustumFar());
 
   }
 

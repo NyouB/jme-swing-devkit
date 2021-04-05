@@ -1,5 +1,7 @@
 package fr.exratio.jme.devkit.config;
 
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 import fr.exratio.jme.devkit.service.SceneTreeService;
 import java.awt.Dimension;
 import java.awt.Point;
@@ -21,24 +23,9 @@ public class SdkConfig {
   private HashMap<String, Point> windowLocations = new HashMap<>();
   private final Map<String, ToolsConfig> toolsConfigMap = new HashMap<>();
 
+  private Config conf = ConfigFactory.load();
+
   public SdkConfig() {
-    // default values
-
-    // Dimensions
-    windowDimensions.putIfAbsent(SceneTreeService.WINDOW_ID, new Dimension(250, 600));
-//    windowDimensions.putIfAbsent(PropertyInspectorTool.WINDOW_ID, new Dimension(250, 600));
-
-    // Locations
-    // The main window will be placed in the center of the screen..
-
-    // put the scene tree in the top left if there is no value.
-    windowLocations.putIfAbsent(SceneTreeService.WINDOW_ID, new Point(0, 0));
-
-    // put the propertyInspector in the top-right if there is no value.
-    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    int xPropInspector = (int) (screenSize.getWidth() - 250);
-
-//    windowLocations.putIfAbsent(PropertyInspectorTool.WINDOW_ID, new Point(xPropInspector, 0));
   }
 
   public String getTheme() {

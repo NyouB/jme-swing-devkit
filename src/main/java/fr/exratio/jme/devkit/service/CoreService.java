@@ -8,7 +8,6 @@ import fr.exratio.jme.devkit.forms.RunAppStateWindow;
 import fr.exratio.jme.devkit.main.MainPage;
 import fr.exratio.jme.devkit.service.inspector.PropertyInspectorTool;
 import fr.exratio.jme.devkit.swing.MainMenu;
-import fr.exratio.jme.devkit.swing.WindowLocationSaver;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.event.ComponentEvent;
@@ -51,11 +50,6 @@ public class CoreService implements Service {
 
         engineService.enqueue(engineService::applyCameraFrustumSizes);
 
-        JFrame frame = (JFrame) e.getSource();
-        Dimension newSize = frame.getSize();
-
-        DevKitConfig.getInstance().getSdkConfig()
-            .setWindowDimensions(MainPage.WINDOW_ID, newSize);
         DevKitConfig.getInstance().save();
 
       }
@@ -87,7 +81,7 @@ public class CoreService implements Service {
 
     AwtPanel jmePanel = ServiceManager.getService(JmeEngineService.class)
         .getAWTPanel();
-    jmePanel.setSize(DevKitConfig.getInstance().getCameraConfig().getCameraDimension());
+    jmePanel.setSize(DevKitConfig.getInstance().getCameraDimension());
     ImageIcon icon = new ImageIcon("images/middle.gif");
     mainPage.addTabCenterPanel("Canvas", jmePanel, icon);
 
@@ -96,8 +90,6 @@ public class CoreService implements Service {
 
     // save any changes of movement and size to the configuration.
     // frame.addComponentListener(new WindowSizeAndLocationSaver(MainPage.WINDOW_ID));
-    mainFrame.addComponentListener(new WindowLocationSaver(MainPage.WINDOW_ID));
-    //frame.addComponentListener(new WindowSizeSaver(MainPage.WINDOW_ID));
     mainFrame.pack();
     // show the window.
     mainFrame.setVisible(true);
@@ -128,10 +120,10 @@ public class CoreService implements Service {
   private void checkAssetRootDir(Frame frame) {
 
     // if the asset root dir is null, specify the default dir and notify the user.
-    if (DevKitConfig.getInstance().getProjectConfig().getAssetRootDir() == null) {
+    if (DevKitConfig.getInstance().getAssetRootDir() == null) {
 
       Path assetRoot = Paths.get("src", "main", "resources");
-      DevKitConfig.getInstance().getProjectConfig()
+      DevKitConfig.getInstance()
           .setAssetRootDir(assetRoot.toAbsolutePath().toString());
 
       // @TODO: ask the user if they want to change it and navigate directly to it for them if true.
@@ -148,7 +140,7 @@ public class CoreService implements Service {
     }
 
     // notify the user that the asset root dir doesn't exist.
-    if (!new File(DevKitConfig.getInstance().getProjectConfig().getAssetRootDir()).exists()) {
+    if (!new File(DevKitConfig.getInstance().getAssetRootDir()).exists()) {
 
       JOptionPane.showMessageDialog(frame,
           "The specified Asset Root directory does not exist. Please specify a valid Asset Root " +
@@ -162,7 +154,7 @@ public class CoreService implements Service {
 
       AssetManager assetManager = ServiceManager.getService(JmeEngineService.class)
           .getAssetManager();
-      String assetRoot = DevKitConfig.getInstance().getProjectConfig().getAssetRootDir();
+      String assetRoot = DevKitConfig.getInstance().getAssetRootDir();
 
       assetManager.registerLocator(assetRoot, FileLocator.class);
       LOGGER.info("Registered Asset Root Directory: " + assetRoot);

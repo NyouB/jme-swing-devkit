@@ -39,7 +39,7 @@ public class SaveSpatial {
     browseAssetDirButton.addActionListener(e -> {
 
       // String projectRoot = System.getProperty("user.dir");
-      String assetRoot = DevKitConfig.getInstance().getProjectConfig().getAssetRootDir();
+      String assetRoot = DevKitConfig.getInstance().getAssetRootDir();
 
       JFileChooser chooser = new JFileChooser();
       chooser.setCurrentDirectory(new File(assetRoot));
@@ -87,7 +87,7 @@ public class SaveSpatial {
         }
 
         File file = Paths
-            .get(DevKitConfig.getInstance().getProjectConfig().getAssetRootDir(), dir, name)
+            .get(DevKitConfig.getInstance().getAssetRootDir(), dir, name)
             .toFile();
 
         if (file.exists()) {
@@ -131,7 +131,7 @@ public class SaveSpatial {
         String responseString = "Saved successfully to:"
             + System.lineSeparator()
             + file.toString()
-            .replace(DevKitConfig.getInstance().getProjectConfig().getAssetRootDir(), "");
+            .replace(DevKitConfig.getInstance().getAssetRootDir(), "");
 
         JOptionPane.showMessageDialog(null,
             responseString,

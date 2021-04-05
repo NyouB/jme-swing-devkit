@@ -21,8 +21,8 @@ public class MinimalInitialization implements InitialisationTemplate {
     engineService.setShowSettings(false);
     AppSettings settings = new AppSettings(true);
     settings.setCustomRenderer(AwtPanelsContext.class);
-    settings.setWidth(DevKitConfig.getInstance().getCameraConfig().getCameraDimension().width);
-    settings.setHeight(DevKitConfig.getInstance().getCameraConfig().getCameraDimension().height);
+    settings.setWidth(DevKitConfig.getInstance().getCameraDimension().width);
+    settings.setHeight(DevKitConfig.getInstance().getCameraDimension().height);
     engineService.setSettings(settings);
 
     engineService.start(true);

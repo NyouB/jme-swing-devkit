@@ -4,6 +4,8 @@ import com.jme3.app.state.AppStateManager;
 import com.jme3.system.AppSettings;
 import com.jme3.system.JmeSystem;
 import com.jme3.system.awt.AwtPanelsContext;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 import devkit.appstate.tool.MouseOverAppState;
 import devkit.appstate.tool.SpatialMoveToolState;
 import devkit.appstate.tool.SpatialSelectorState;
@@ -38,16 +40,15 @@ public class Main {
     // System.setProperty("awt.useSystemAAFontSettings","on");
     // cleartype - I think this one looks better.
     System.setProperty("awt.useSystemAAFontSettings", "lcd");
-
     // set the theme.
-    SwingTheme.setTheme(DevKitConfig.getInstance().getSdkConfig().getTheme());
+    SwingTheme.setTheme(DevKitConfig.getInstance().getTheme());
 
     JmeEngineService engineService = ServiceManager.registerService(JmeEngineServiceImpl.class);
     engineService.setShowSettings(false);
     AppSettings settings = new AppSettings(true);
     settings.setCustomRenderer(AwtPanelsContext.class);
-    settings.setWidth(DevKitConfig.getInstance().getCameraConfig().getCameraDimension().width);
-    settings.setHeight(DevKitConfig.getInstance().getCameraConfig().getCameraDimension().height);
+    settings.setWidth(DevKitConfig.getInstance().getCameraDimension().width);
+    settings.setHeight(DevKitConfig.getInstance().getCameraDimension().height);
     engineService.setSettings(settings);
 
     engineService.start(true);

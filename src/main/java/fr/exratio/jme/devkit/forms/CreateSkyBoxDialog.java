@@ -107,7 +107,7 @@ public class CreateSkyBoxDialog {
 
     try {
       modelFiles = Files
-          .walk(new File(DevKitConfig.getInstance().getProjectConfig().getAssetRootDir()).toPath())
+          .walk(new File(DevKitConfig.getInstance().getAssetRootDir()).toPath())
           .filter(p -> {
             for (String ext : TextureImage.imageExtensions) {
               if (p.toString().endsWith(ext)) {
@@ -129,7 +129,7 @@ public class CreateSkyBoxDialog {
       for (Path path : modelFiles) {
 
         String relativePath = path.toString()
-            .replace(DevKitConfig.getInstance().getProjectConfig().getAssetRootDir(), "");
+            .replace(DevKitConfig.getInstance().getAssetRootDir(), "");
 
         // remove any trailing slashes.
         if (relativePath.startsWith("/") || relativePath.startsWith("\\")) {

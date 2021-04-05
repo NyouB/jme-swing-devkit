@@ -3,6 +3,7 @@ package fr.exratio.jme.devkit.registration.spatial;
 import com.jme3.app.SimpleApplication;
 import com.jme3.scene.AssetLinkNode;
 import com.jme3.scene.Node;
+import fr.exratio.jme.devkit.config.DevKitConfig;
 import fr.exratio.jme.devkit.forms.AddLinkedAsset;
 import fr.exratio.jme.devkit.forms.RemoveLinkedAsset;
 import fr.exratio.jme.devkit.service.JmeEngineService;
@@ -64,7 +65,7 @@ public class AssetLinkNodeRegistrar extends NodeRegistrar {
       JMenuItem addLinkedChildItem = getAddMenu().add(new JMenuItem("Linked Asset"));
       addLinkedChildItem.addActionListener(e -> {
 
-        AddLinkedAsset addLinkedAsset = new AddLinkedAsset(assetLinkNodeTreeNode);
+        AddLinkedAsset addLinkedAsset = new AddLinkedAsset(assetLinkNodeTreeNode, DevKitConfig.getInstance().getAssetRootDir());
 
         JFrame mainWindow = (JFrame) SwingUtilities
             .getWindowAncestor(ServiceManager.getService(JmeEngineService.class).getAWTPanel());

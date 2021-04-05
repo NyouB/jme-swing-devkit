@@ -101,32 +101,6 @@ public class ToolLocationService implements Service {
         .orElse(null);
   }
 
-  /**
-   * Sets the position of a window from saved data.
-   *
-   * @param window the window to position.
-   * @param name the name of the window.
-   */
-  public void positionWindowFromSavedPosition(Window window, String name) {
-    Point location = DevKitConfig.getInstance().getSdkConfig().getWindowLocation(name);
-    if (location != null) {
-      window.setLocation(location);
-    }
-  }
-
-  /**
-   * Resizes the window from saved data.
-   *
-   * @param window the window to resize.
-   * @param name the name of the window.
-   */
-  public void sizeWindowFromSavedSize(Window window, String name) {
-    Dimension dimension = DevKitConfig.getInstance().getSdkConfig().getWindowDimensions(name);
-    if (dimension != null) {
-      window.setSize(dimension);
-    }
-  }
-
   public JDialog createDialog(Frame parent, JComponent content, String title, boolean saveLocation,
       boolean saveSize) {
     JDialog dialog = new JDialog(parent, title);
@@ -210,7 +184,7 @@ public class ToolLocationService implements Service {
 
   @Override
   public void stop() {
-
+    DevKitConfig.getInstance().setToolConfiguration(toolSet.values());
   }
 
   public void changeToolViewMode(Tool toolView, ViewMode newViewMode) {
