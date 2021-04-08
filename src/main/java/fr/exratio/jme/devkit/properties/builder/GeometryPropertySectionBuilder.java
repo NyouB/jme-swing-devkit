@@ -6,13 +6,15 @@ import fr.exratio.jme.devkit.properties.PropertySection;
 import fr.exratio.jme.devkit.properties.component.bool.BooleanEditor;
 import fr.exratio.jme.devkit.properties.component.integer.IntegerEditor;
 import fr.exratio.jme.devkit.properties.component.material.MaterialChooserEditor;
-import fr.exratio.jme.devkit.service.JmeEngineService;
-import fr.exratio.jme.devkit.service.ServiceManager;
+import fr.exratio.jme.devkit.service.EditorJmeApplication;
 import fr.exratio.jme.devkit.service.inspector.PropertyInspectorTool;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class GeometryPropertySectionBuilder extends AbstractPropertySectionBuilder<Geometry> {
 
   public static final String LOCAL_SCALE = "localScale";
@@ -21,11 +23,29 @@ public class GeometryPropertySectionBuilder extends AbstractPropertySectionBuild
   public static final String LOD_LEVEL = "lodLevel";
   public static final String GEOMETRY = "Geometry";
   public static final String MATERIAL = "Material";
-  SpatialPropertySectionBuilder spatialPropertySectionBuilder;
+  private final EditorJmeApplication editorJmeApplication;
+  private final SpatialPropertySectionBuilder spatialPropertySectionBuilder;
+  private final MaterialPropertySectionBuilder materialPropertySectionBuilder;
+  private final PropertyInspectorTool propertyInspectorTool;
 
-  public GeometryPropertySectionBuilder(Geometry object) {
-    super(object);
-    spatialPropertySectionBuilder = new SpatialPropertySectionBuilder(object);
+
+  @Autowired
+  public GeometryPropertySectionBuilder(
+      EditorJmeApplication editorJmeApplication,
+      SpatialPropertySectionBuilder spatialPropertySectionBuilder,
+      MaterialPropertySectionBuilder materialPropertySectionBuilder,
+      PropertyInspectorTool propertyInspectorTool) {
+    this.editorJmeApplication = editorJmeApplication;
+    this.spatialPropertySectionBuilder = spatialPropertySectionBuilder;
+    this.materialPropertySectionBuilder = materialPropertySectionBuilder;
+    this.propertyInspectorTool = propertyInspectorTool;
+  }
+
+  @Override
+  public AbstractPropertySectionBuilder<Geometry> withObject(Geometry object) {
+    super.withObject(object);
+    spatialPropertySectionBuilder.withObject(object);
+    return this;
   }
 
   @Override
@@ -33,12 +53,9 @@ public class GeometryPropertySectionBuilder extends AbstractPropertySectionBuild
     List<PropertySection> propertySections = spatialPropertySectionBuilder.build();
     // Geometry-specific data
     PropertySection geometrySection = new PropertySection(GEOMETRY);
-    BooleanEditor ignoreTransform = new BooleanEditor(
-        object.isIgnoreTransform());
-    ignoreTransform.addPropertyChangeListener(
-        value -> ServiceManager.getService(JmeEngineService.class)
-            .enqueue(() -> object.setIgnoreTransform(
-                (Boolean) value.getNewValue())));
+    BooleanEditor ignoreTransform = new BooleanEditor(object.isIgnoreTransform());
+    ignoreTransform.addPropertyChangeListener(value -> editorJmeApplication
+        .enqueue(() -> object.setIgnoreTransform((Boolean) value.getNewValue())));
     geometrySection.addProperty(IGNORE_TRANSFORM, ignoreTransform.getCustomEditor());
 
     boolean isLODSet = object.getMesh().getNumLodLevels() == 0;
@@ -47,31 +64,29 @@ public class GeometryPropertySectionBuilder extends AbstractPropertySectionBuild
     if (isLODSet) {
       lodLevelpropertyName = LOD_LEVEL + " THE LOD LEVEL ARE SET";
       lodLevel.addPropertyChangeListener(
-          value -> ServiceManager.getService(JmeEngineService.class).enqueue(() ->
-              object.setLodLevel(
-                  (Integer) value.getNewValue())));
+          value -> editorJmeApplication
+              .enqueue(() -> object.setLodLevel((Integer) value.getNewValue())));
     }
     geometrySection.addProperty(lodLevelpropertyName, lodLevel.getCustomEditor());
 
     // Material chooser.
-    MaterialChooserEditor materialChooser = new MaterialChooserEditor(
-        object.getMaterial());
+    MaterialChooserEditor materialChooser = new MaterialChooserEditor(object.getMaterial(),
+        editorJmeApplication);
 
     // This listener trigger the update of material detail on material selection
     PropertyChangeListener materialChangeListener = evt -> {
       Material material = (Material) evt.getNewValue();
       List<PropertySection> sections = buildMaterialSection(material);
       if (!sections.isEmpty()) {
-        ServiceManager.getService(PropertyInspectorTool.class)
-            .updateSections(sections);
+        return;
       }
+      propertyInspectorTool.updateSections(sections);
     };
 
     materialChooser.addPropertyChangeListener(materialChangeListener);
     //this listener juste propagate the material change to the jmeEngine
     materialChooser.addPropertyChangeListener(
-        value -> ServiceManager.getService(JmeEngineService.class)
-            .enqueue(() -> object.setMaterial(
+        value -> editorJmeApplication.enqueue(() -> object.setMaterial(
                 (Material) value.getNewValue())));
 
     geometrySection.addProperty(MATERIAL, materialChooser.getCustomEditor());
@@ -92,9 +107,7 @@ public class GeometryPropertySectionBuilder extends AbstractPropertySectionBuild
   public List<PropertySection> buildMaterialSection(Material material) {
     List<PropertySection> sections = new ArrayList<>();
     if (material != null) {
-      MaterialPropertySectionBuilder materialComponentSetBuilder = new MaterialPropertySectionBuilder(
-          material);
-      sections = materialComponentSetBuilder.build();
+      sections = materialPropertySectionBuilder.withObject(material).build();
     }
     return sections;
   }

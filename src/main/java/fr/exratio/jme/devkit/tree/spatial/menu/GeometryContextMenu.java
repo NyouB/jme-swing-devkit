@@ -1,6 +1,6 @@
 package fr.exratio.jme.devkit.tree.spatial.menu;
 
-import fr.exratio.jme.devkit.service.MenuService;
+import fr.exratio.jme.devkit.service.MenuController;
 import fr.exratio.jme.devkit.service.ServiceManager;
 import fr.exratio.jme.devkit.tree.spatial.GeometryTreeNode;
 import java.awt.HeadlessException;
@@ -63,7 +63,7 @@ public class GeometryContextMenu extends SpatialContextMenu {
 //        });
 
     // Allow users to also add their options....
-    List<JMenuItem> customItems = ServiceManager.getService(MenuService.class)
+    List<JMenuItem> customItems = ServiceManager.getService(MenuController.class)
         .getCustomMenuItems(GeometryTreeNode.class);
 
     if (customItems != null && !customItems.isEmpty()) {

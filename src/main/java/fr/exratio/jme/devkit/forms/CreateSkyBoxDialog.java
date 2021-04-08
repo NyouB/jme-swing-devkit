@@ -12,7 +12,7 @@ import com.jme3.util.SkyFactory;
 import com.jme3.util.SkyFactory.EnvMapType;
 import fr.exratio.jme.devkit.config.DevKitConfig;
 import fr.exratio.jme.devkit.jme.TextureImage;
-import fr.exratio.jme.devkit.service.JmeEngineService;
+import fr.exratio.jme.devkit.service.EditorJmeApplication;
 import fr.exratio.jme.devkit.service.SceneGraphService;
 import fr.exratio.jme.devkit.service.ServiceManager;
 import fr.exratio.jme.devkit.swing.ComponentUtilities;
@@ -68,7 +68,7 @@ public class CreateSkyBoxDialog {
       // run this "later" so the disabled effect is visible.
       SwingUtilities.invokeLater(() -> {
 
-        AssetManager assetManager = ServiceManager.getService(JmeEngineService.class)
+        AssetManager assetManager = ServiceManager.getService(EditorJmeApplication.class)
             .getAssetManager();
         Texture texture = assetManager.loadTexture(texturePath);
 

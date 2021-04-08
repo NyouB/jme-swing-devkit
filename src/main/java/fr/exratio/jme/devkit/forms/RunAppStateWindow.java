@@ -18,7 +18,7 @@ import fr.exratio.jme.devkit.appstate.annotations.ListType;
 import fr.exratio.jme.devkit.core.ColorConverter;
 import fr.exratio.jme.devkit.core.DevkitPackages;
 import fr.exratio.jme.devkit.main.MainPage.Zone;
-import fr.exratio.jme.devkit.service.JmeEngineService;
+import fr.exratio.jme.devkit.service.EditorJmeApplication;
 import fr.exratio.jme.devkit.service.ServiceManager;
 import fr.exratio.jme.devkit.swing.JSplitPaneWithZeroSizeDivider;
 import fr.exratio.jme.devkit.tool.Tool;
@@ -68,7 +68,9 @@ import net.miginfocom.swing.MigLayout;
 import org.reflections8.Reflections;
 import org.reflections8.scanners.MethodAnnotationsScanner;
 import org.reflections8.util.ConfigurationBuilder;
+import org.springframework.stereotype.Controller;
 
+@Controller
 public class RunAppStateWindow extends Tool {
 
   public static final String TITLE = "Run AppState";
@@ -114,7 +116,7 @@ public class RunAppStateWindow extends Tool {
 
       if (selectedClass != null) {
 
-        boolean exists = ServiceManager.getService(JmeEngineService.class)
+        boolean exists = ServiceManager.getService(EditorJmeApplication.class)
             .getStateManager()
             .getState(selectedClass) != null;
 
@@ -125,7 +127,7 @@ public class RunAppStateWindow extends Tool {
             Constructor<? extends AppState> constructor = selectedClass.getConstructor();
             AppState appState = constructor.newInstance();
 
-            ServiceManager.getService(JmeEngineService.class)
+            ServiceManager.getService(EditorJmeApplication.class)
                 .getStateManager()
                 .attach(appState);
 
@@ -149,12 +151,12 @@ public class RunAppStateWindow extends Tool {
 
       if (selectedClass != null) {
 
-        AppState appState = ServiceManager.getService(JmeEngineService.class)
+        AppState appState = ServiceManager.getService(EditorJmeApplication.class)
             .getStateManager()
             .getState(selectedClass);
 
         if (appState != null) {
-          ServiceManager.getService(JmeEngineService.class)
+          ServiceManager.getService(EditorJmeApplication.class)
               .getStateManager()
               .detach(appState);
         }
@@ -174,7 +176,7 @@ public class RunAppStateWindow extends Tool {
       if (!e.getValueIsAdjusting()) {
         Class<? extends AppState> selectedClass = appstatesList.getSelectedValue();
 
-        AppState appState = ServiceManager.getService(JmeEngineService.class)
+        AppState appState = ServiceManager.getService(EditorJmeApplication.class)
             .getStateManager()
             .getState(selectedClass);
 
@@ -295,7 +297,7 @@ public class RunAppStateWindow extends Tool {
       ConcurrentHashMap<Class<? extends Annotation>, Map<Method, Optional<Object>>> allAnnotatedMethods = new ConcurrentHashMap<>();
 
       // we need to get the values from the JME thread.
-      ServiceManager.getService(JmeEngineService.class).enqueue(() -> {
+      ServiceManager.getService(EditorJmeApplication.class).enqueue(() -> {
 
         List<Class<? extends Annotation>> annotations = new ArrayList<>();
         Collections.addAll(annotations,
@@ -390,7 +392,7 @@ public class RunAppStateWindow extends Tool {
                   final float sliderVal = slider.getValue() / multiplier;
 
                   // invoke the method on the JME thread (it's an appstate, belongs to JME).
-                  ServiceManager.getService(JmeEngineService.class).enqueue(() -> {
+                  ServiceManager.getService(EditorJmeApplication.class).enqueue(() -> {
                     try {
                       setter.invoke(appState, sliderVal);
                     } catch (IllegalAccessException | InvocationTargetException e) {
@@ -430,7 +432,7 @@ public class RunAppStateWindow extends Tool {
                   final int sliderVal = slider.getValue();
 
                   // invoke the method on the JME thread (it's an appstate, belongs to JME).
-                  ServiceManager.getService(JmeEngineService.class).enqueue(() -> {
+                  ServiceManager.getService(EditorJmeApplication.class).enqueue(() -> {
                     try {
                       setter.invoke(appState, sliderVal);
                     } catch (IllegalAccessException | InvocationTargetException e) {
@@ -446,7 +448,7 @@ public class RunAppStateWindow extends Tool {
 
                 JButton button = new JButton(getter.getName());
                 button.addActionListener(
-                    e -> ServiceManager.getService(JmeEngineService.class).enqueue(() -> {
+                    e -> ServiceManager.getService(EditorJmeApplication.class).enqueue(() -> {
                       try {
                         getter.invoke(appState);
                       } catch (IllegalAccessException | InvocationTargetException illegalAccessException) {
@@ -485,7 +487,7 @@ public class RunAppStateWindow extends Tool {
                 comboBox.addActionListener(event -> {
 
                   final Enum<?> comboVal = (Enum<?>) comboBox.getSelectedItem();
-                  ServiceManager.getService(JmeEngineService.class).enqueue(() -> {
+                  ServiceManager.getService(EditorJmeApplication.class).enqueue(() -> {
 
                     try {
                       setter.invoke(appState, comboVal);
@@ -525,7 +527,7 @@ public class RunAppStateWindow extends Tool {
                   final ColorRGBA newColor = ColorConverter.toColorRGBA(jColorChooser.getColor());
 
                   // set the color in the JME thread.
-                  ServiceManager.getService(JmeEngineService.class).enqueue(() -> {
+                  ServiceManager.getService(EditorJmeApplication.class).enqueue(() -> {
                     try {
                       setter.invoke(appState, newColor);
                     } catch (IllegalAccessException | InvocationTargetException illegalAccessException) {
@@ -599,7 +601,7 @@ public class RunAppStateWindow extends Tool {
 
                       final int selectedValue = list.getSelectedIndex();
 
-                      ServiceManager.getService(JmeEngineService.class).enqueue(() -> {
+                      ServiceManager.getService(EditorJmeApplication.class).enqueue(() -> {
 
                         try {
                           listSetter.invoke(appState, selectedValue);
@@ -636,7 +638,7 @@ public class RunAppStateWindow extends Tool {
 
                     final int selectedValue = comboBox.getSelectedIndex();
 
-                    ServiceManager.getService(JmeEngineService.class).enqueue(() -> {
+                    ServiceManager.getService(EditorJmeApplication.class).enqueue(() -> {
 
                       try {
                         listSetter.invoke(appState, selectedValue);
@@ -682,7 +684,7 @@ public class RunAppStateWindow extends Tool {
                   final boolean checkBoxVal = checkBox.isSelected();
 
                   // invoke the method on the JME thread (it's an appstate, belongs to JME).
-                  ServiceManager.getService(JmeEngineService.class).enqueue(() -> {
+                  ServiceManager.getService(EditorJmeApplication.class).enqueue(() -> {
                     try {
                       setter.invoke(appState, checkBoxVal);
                     } catch (IllegalAccessException | InvocationTargetException e) {

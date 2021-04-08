@@ -1,5 +1,6 @@
 package devkit.appstate.tool;
 
+import com.google.common.eventbus.EventBus;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.input.InputManager;
@@ -20,8 +21,11 @@ import fr.exratio.jme.devkit.service.ServiceManager;
 import fr.exratio.jme.devkit.service.inspector.SpatialMoveEvent;
 import javax.swing.SwingUtilities;
 import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.units.qual.A;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
-
+@Controller
 public class SpatialMoveToolState extends AbstractSpatialToolState implements ActionListener,
     AnalogListener {
 
@@ -46,7 +50,9 @@ public class SpatialMoveToolState extends AbstractSpatialToolState implements Ac
   private MouseOverAppState mouseHoverAppState;
   private Geometry currentMouseHoverTool;
 
-  public SpatialMoveToolState() {
+  @Autowired
+  public SpatialMoveToolState(EventBus eventBus) {
+    super(eventBus);
     super.setEnabled(false);
   }
 
@@ -235,8 +241,7 @@ public class SpatialMoveToolState extends AbstractSpatialToolState implements Ac
         super.selectedSpatial.move(0, 0, -val);
       }
 
-      SwingUtilities.invokeLater(() -> ServiceManager.getService(EventService.class)
-          .post(new SpatialMoveEvent(selectedSpatial)));
+      SwingUtilities.invokeLater(() -> eventBus.post(new SpatialMoveEvent(selectedSpatial)));
 
 
     }

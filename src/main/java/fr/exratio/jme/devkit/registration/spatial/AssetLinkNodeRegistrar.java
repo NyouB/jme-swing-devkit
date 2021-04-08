@@ -6,7 +6,7 @@ import com.jme3.scene.Node;
 import fr.exratio.jme.devkit.config.DevKitConfig;
 import fr.exratio.jme.devkit.forms.AddLinkedAsset;
 import fr.exratio.jme.devkit.forms.RemoveLinkedAsset;
-import fr.exratio.jme.devkit.service.JmeEngineService;
+import fr.exratio.jme.devkit.service.EditorJmeApplication;
 import fr.exratio.jme.devkit.service.SceneTreeService;
 import fr.exratio.jme.devkit.service.ServiceManager;
 import fr.exratio.jme.devkit.tree.spatial.NodeTreeNode;
@@ -68,7 +68,7 @@ public class AssetLinkNodeRegistrar extends NodeRegistrar {
         AddLinkedAsset addLinkedAsset = new AddLinkedAsset(assetLinkNodeTreeNode, DevKitConfig.getInstance().getAssetRootDir());
 
         JFrame mainWindow = (JFrame) SwingUtilities
-            .getWindowAncestor(ServiceManager.getService(JmeEngineService.class).getAWTPanel());
+            .getWindowAncestor(ServiceManager.getService(EditorJmeApplication.class).getAWTPanel());
 
         JDialog dialog = new JDialog(mainWindow, "Add Linked Asset", true);
         dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -85,7 +85,7 @@ public class AssetLinkNodeRegistrar extends NodeRegistrar {
         RemoveLinkedAsset addLinkedAsset = new RemoveLinkedAsset(assetLinkNodeTreeNode);
 
         JFrame mainWindow = (JFrame) SwingUtilities
-            .getWindowAncestor(ServiceManager.getService(JmeEngineService.class).getAWTPanel());
+            .getWindowAncestor(ServiceManager.getService(EditorJmeApplication.class).getAWTPanel());
 
         JDialog dialog = new JDialog(mainWindow, "Remove Linked Asset", true);
         dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -100,7 +100,7 @@ public class AssetLinkNodeRegistrar extends NodeRegistrar {
       reloadAssets.addActionListener(e -> {
 
         // According to the JavaDoc this will reload all assets.
-        JmeEngineService engineService = ServiceManager.getService(JmeEngineService.class);
+        EditorJmeApplication engineService = ServiceManager.getService(EditorJmeApplication.class);
         engineService.enqueue(() -> {
           assetLinkNodeTreeNode.getUserObject()
               .attachLinkedChildren(engineService.getAssetManager());

@@ -7,7 +7,7 @@ import com.jme3.animation.AnimChannel;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.LoopMode;
 import fr.exratio.jme.devkit.properties.component.AbstractPropertyEditor;
-import fr.exratio.jme.devkit.service.JmeEngineService;
+import fr.exratio.jme.devkit.service.EditorJmeApplication;
 import fr.exratio.jme.devkit.service.ServiceManager;
 import java.awt.Insets;
 import java.awt.event.MouseAdapter;
@@ -48,7 +48,7 @@ public class AnimControlEditor extends AbstractPropertyEditor<AnimControl> {
   }
 
   public void cleanup() {
-    ServiceManager.getService(JmeEngineService.class).enqueue(value::clearChannels);
+    ServiceManager.getService(EditorJmeApplication.class).enqueue(value::clearChannels);
     timer.stop();
   }
 
@@ -138,7 +138,7 @@ public class AnimControlEditor extends AbstractPropertyEditor<AnimControl> {
   private void createUIComponents() {
 
     contentPanel = this;
-    final JmeEngineService engineService = ServiceManager.getService(JmeEngineService.class);
+    final EditorJmeApplication engineService = ServiceManager.getService(EditorJmeApplication.class);
 
     timeSlider = new JSlider();
     timeSlider.setModel(animTimelineModel);

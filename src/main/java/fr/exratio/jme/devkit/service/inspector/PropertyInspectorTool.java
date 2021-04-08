@@ -4,13 +4,12 @@
 
 package fr.exratio.jme.devkit.service.inspector;
 
+import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import fr.exratio.jme.devkit.event.SelectedItemEvent;
 import fr.exratio.jme.devkit.main.MainPage.Zone;
 import fr.exratio.jme.devkit.properties.PropertySection;
-import fr.exratio.jme.devkit.service.EventService;
-import fr.exratio.jme.devkit.service.Service;
-import fr.exratio.jme.devkit.service.ServiceManager;
+import fr.exratio.jme.devkit.service.RegistrationService;
 import fr.exratio.jme.devkit.tool.Tool;
 import fr.exratio.jme.devkit.tool.ViewMode;
 import java.awt.BorderLayout;
@@ -19,52 +18,56 @@ import java.awt.Component;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
-import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
-import lombok.Builder;
 import net.miginfocom.swing.MigLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
 
 /**
  * @author Quentin Raphaneau
  */
-public class PropertyInspectorTool extends Tool implements Service {
+@Controller
+public class PropertyInspectorTool extends Tool {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(PropertyInspectorTool.class);
   private static final String TITLE = "Property";
   private static final String NOTHING_LABEL = "Nothing Selected";
 
   private final JLabel nothingSelectedLabel = new JLabel(NOTHING_LABEL);
-  private final long threadId = Thread.currentThread().getId();
   private List<PropertySection> displayedSections;
   private PropertySectionListFinder propertySectionListBuilder;
+  private final RegistrationService registrationService;
+  private final EventBus eventBus;
+  private final ExactMatchFinder exactMatchFinder;
+  private final InheritedMatchFinder inheritedMatchFinder;
+  private final DefaultMatchFinder defaultMatchFinder;
 
-  public PropertyInspectorTool() {
+  public PropertyInspectorTool(
+      RegistrationService registrationService, EventBus eventBus,
+      ExactMatchFinder exactMatchFinder,
+      InheritedMatchFinder inheritedMatchFinder,
+      DefaultMatchFinder defaultMatchFinder) {
     super(PropertyInspectorTool.class.getName(), TITLE, null, Zone.RIGHT_TOP, ViewMode.PIN, true);
-    initComponents();
-    initialize();
-  }
-
-  @Builder(builderMethodName = "inspectorBuilder")
-  public PropertyInspectorTool(String id, String title, Icon icon,
-      Zone zone, ViewMode viewMode,
-      boolean isDisplayed) {
-    super(id, title, icon, zone, viewMode, isDisplayed);
+    this.registrationService = registrationService;
+    this.eventBus = eventBus;
+    this.exactMatchFinder = exactMatchFinder;
+    this.inheritedMatchFinder = inheritedMatchFinder;
+    this.defaultMatchFinder = defaultMatchFinder;
     initComponents();
     initialize();
   }
 
   private void initialize() {
     clearInspector();
-    propertySectionListBuilder = new ExactMatchFinder();
-    propertySectionListBuilder.chainWith(new InheritedMatchFinder())
-        .chainWith(new DefaultMatchFinder());
-    ServiceManager.getService(EventService.class).register(this);
+    propertySectionListBuilder = exactMatchFinder;
+    propertySectionListBuilder.chainWith(inheritedMatchFinder)
+        .chainWith(defaultMatchFinder);
+    eventBus.register(this);
   }
 
   private void initComponents() {
@@ -173,11 +176,8 @@ public class PropertyInspectorTool extends Tool implements Service {
   public void updateSections(Collection<PropertySection> updatedSections) {
 
     for (PropertySection updatedSection : updatedSections) {
-
       int index = -1;
-
       for (int i = 0; i < displayedSections.size(); i++) {
-
         PropertySection currentSection = displayedSections.get(i);
         if (currentSection.getTitle().equals(updatedSection.getTitle())) {
           index = i;
@@ -189,9 +189,7 @@ public class PropertyInspectorTool extends Tool implements Service {
         displayedSections.set(index, updatedSection);
         addSection(updatedSection);
       }
-
     }
-
   }
 
   private void cleanup() {
@@ -210,15 +208,6 @@ public class PropertyInspectorTool extends Tool implements Service {
     this.propertySectionListBuilder = propertySectionListBuilder;
   }
 
-  @Override
-  public long getThreadId() {
-    return threadId;
-  }
-
-  @Override
-  public void stop() {
-
-  }
 
   // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
   // Generated using JFormDesigner Evaluation license - Quentin Raphaneau

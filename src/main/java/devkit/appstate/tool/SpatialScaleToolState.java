@@ -5,6 +5,10 @@ import com.jme3.scene.Node;
 
 public class SpatialScaleToolState extends AbstractSpatialToolState {
 
+  public SpatialScaleToolState() {
+    super(eventBus);
+  }
+
   @Override
   protected void initialize(Application app) {
 

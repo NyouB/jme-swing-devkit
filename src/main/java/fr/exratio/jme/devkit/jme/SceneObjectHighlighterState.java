@@ -19,7 +19,7 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.debug.WireBox;
 import com.jme3.scene.debug.WireSphere;
 import com.jme3.scene.shape.Sphere;
-import fr.exratio.jme.devkit.service.JmeEngineService;
+import fr.exratio.jme.devkit.service.EditorJmeApplication;
 import fr.exratio.jme.devkit.service.ServiceManager;
 import java.util.HashMap;
 import java.util.Map;
@@ -201,7 +201,7 @@ public class SceneObjectHighlighterState extends BaseAppState {
       Sphere sphere = new Sphere(16, 16, 0.5f);
       Geometry probeCenter = new Geometry("Light Probe Center", sphere);
       probeCenter.setMaterial(
-          new Material(ServiceManager.getService(JmeEngineService.class).getAssetManager(),
+          new Material(ServiceManager.getService(EditorJmeApplication.class).getAssetManager(),
               "Common/MatDefs/Misc/reflect.j3md"));
       probeHighlighterNode.attachChild(probeCenter);
 

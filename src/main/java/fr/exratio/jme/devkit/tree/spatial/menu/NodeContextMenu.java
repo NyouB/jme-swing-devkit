@@ -18,8 +18,8 @@ import fr.exratio.jme.devkit.forms.CreateSkyBoxDialog;
 import fr.exratio.jme.devkit.registration.spatial.GeometryRegistrar;
 import fr.exratio.jme.devkit.registration.spatial.NodeRegistrar;
 import fr.exratio.jme.devkit.service.ClipboardService;
-import fr.exratio.jme.devkit.service.JmeEngineService;
-import fr.exratio.jme.devkit.service.MenuService;
+import fr.exratio.jme.devkit.service.EditorJmeApplication;
+import fr.exratio.jme.devkit.service.MenuController;
 import fr.exratio.jme.devkit.service.RegistrationService;
 import fr.exratio.jme.devkit.service.SceneGraphService;
 import fr.exratio.jme.devkit.service.ServiceManager;
@@ -57,7 +57,7 @@ public class NodeContextMenu extends SpatialContextMenu {
       AddModels addModels = new AddModels(nodeTreeNode);
 
       JFrame mainWindow = (JFrame) SwingUtilities
-          .getWindowAncestor(ServiceManager.getService(JmeEngineService.class).getAWTPanel());
+          .getWindowAncestor(ServiceManager.getService(EditorJmeApplication.class).getAWTPanel());
 
       JDialog dialog = new JDialog(mainWindow, "Add Model(s)", true);
       dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -76,7 +76,7 @@ public class NodeContextMenu extends SpatialContextMenu {
       CreateSkyBoxDialog createSkyBoxDialog = new CreateSkyBoxDialog(nodeTreeNode);
 
       JFrame mainWindow = (JFrame) SwingUtilities
-          .getWindowAncestor(ServiceManager.getService(JmeEngineService.class).getAWTPanel());
+          .getWindowAncestor(ServiceManager.getService(EditorJmeApplication.class).getAWTPanel());
 
       JDialog dialog = new JDialog(mainWindow, "Create SkyBox", true);
       dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -104,7 +104,7 @@ public class NodeContextMenu extends SpatialContextMenu {
 
         menuItem.addActionListener(e -> {
 
-          Node node = registrar.createInstance(ServiceManager.getService(JmeEngineService.class));
+          Node node = registrar.createInstance(ServiceManager.getService(EditorJmeApplication.class));
           ServiceManager.getService(SceneGraphService.class).addSpatial(node, nodeTreeNode.getUserObject());
 
         });
@@ -126,7 +126,7 @@ public class NodeContextMenu extends SpatialContextMenu {
         menuItem.addActionListener(e -> {
 
           Geometry geometry = registrar
-              .createInstance(ServiceManager.getService(JmeEngineService.class));
+              .createInstance(ServiceManager.getService(EditorJmeApplication.class));
           ServiceManager.getService(SceneGraphService.class).addSpatial(geometry, nodeTreeNode.getUserObject());
 
         });
@@ -149,7 +149,7 @@ public class NodeContextMenu extends SpatialContextMenu {
     });
 
     // Allow users to also add their options....
-    List<JMenuItem> customItems = ServiceManager.getService(MenuService.class)
+    List<JMenuItem> customItems = ServiceManager.getService(MenuController.class)
         .getCustomMenuItems(NodeTreeNode.class);
 
     if (customItems != null && !customItems.isEmpty()) {
@@ -199,7 +199,7 @@ public class NodeContextMenu extends SpatialContextMenu {
 
   private Geometry createShape(Mesh mesh, String name) {
 
-    JmeEngineService engineService = ServiceManager.getService(JmeEngineService.class);
+    EditorJmeApplication engineService = ServiceManager.getService(EditorJmeApplication.class);
 
     Geometry geometry = new Geometry(name, mesh);
 

@@ -7,8 +7,10 @@ import com.jme3.post.FilterPostProcessor;
 import com.jme3.system.awt.AwtPanel;
 import fr.exratio.jme.devkit.jme.EditorCameraState;
 import fr.exratio.jme.devkit.jme.SceneObjectHighlighterState;
+import org.springframework.stereotype.Service;
 
-public abstract class JmeEngineService extends SimpleApplication implements Service {
+@Service
+public abstract class JmeEngineService extends SimpleApplication {
 
   public JmeEngineService() {
     super(new AudioListenerState(),

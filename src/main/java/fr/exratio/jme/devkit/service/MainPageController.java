@@ -24,6 +24,7 @@ import javax.swing.JOptionPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@org.springframework.stereotype.Service
 public class CoreService implements Service {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(CoreService.class);

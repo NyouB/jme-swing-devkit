@@ -1,6 +1,5 @@
 package fr.exratio.jme.devkit.service;
 
-import fr.exratio.jme.devkit.config.DevKitConfig;
 import fr.exratio.jme.devkit.main.MainPage;
 import fr.exratio.jme.devkit.main.MainPage.Zone;
 import fr.exratio.jme.devkit.tool.Tool;
@@ -9,9 +8,10 @@ import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Frame;
-import java.awt.Point;
 import java.awt.Window;
 import java.awt.event.ItemEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -24,24 +24,28 @@ import javax.swing.JMenu;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
 /**
  * A simple service to set window positions and sizes from saved settings.
  */
-public class ToolLocationService implements Service {
+@Controller
+public class ToolLocationService {
 
   private final JFrame mainFrame;
   private final MainPage mainPage;
-  private final long threadId;
   private Map<Zone, List<Tool>> toolsZone;
   private final Map<String, Tool> toolSet = new HashMap<>();
   private final JMenu toolViewMenu = new JMenu("View");
+  private final MenuController menuController;
 
-  public ToolLocationService(JFrame mainFrame, MainPage mainPage) {
+  public ToolLocationService(@Autowired JFrame mainFrame, @Autowired MainPage mainPage,
+      @Autowired MenuController menuController) {
     this.mainFrame = mainFrame;
-    threadId = Thread.currentThread().getId();
     this.mainPage = mainPage;
-    ServiceManager.getService(MenuService.class).addPrimaryMenu(toolViewMenu);
+    this.menuController = menuController;
+    menuController.addPrimaryMenu(toolViewMenu);
     initializeMap();
   }
 
@@ -130,6 +134,10 @@ public class ToolLocationService implements Service {
       addViewMenuEntry(tool);
       toolSet.put(tool.getId(), tool);
       tool.setRegistered(true);
+      tool.addPropertyChangeListener(evt -> {
+        mainPage.revalidate();
+        mainPage.repaint();
+      });
     }
     tool.getZone().add(tool);
   }
@@ -149,7 +157,7 @@ public class ToolLocationService implements Service {
   }
 
   public void moveZone(Tool tool, Zone newZone) {
-    if (tool.getViewMode() != ViewMode.PIN){
+    if (tool.getViewMode() != ViewMode.PIN) {
       return;
     }
     removeTool(tool);
@@ -174,17 +182,6 @@ public class ToolLocationService implements Service {
     if (component.getParent() != null) {
       component.getParent().remove(component);
     }
-  }
-
-
-  @Override
-  public long getThreadId() {
-    return threadId;
-  }
-
-  @Override
-  public void stop() {
-    DevKitConfig.getInstance().setToolConfiguration(toolSet.values());
   }
 
   public void changeToolViewMode(Tool toolView, ViewMode newViewMode) {

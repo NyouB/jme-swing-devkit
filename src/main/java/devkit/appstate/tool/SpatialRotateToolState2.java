@@ -44,6 +44,7 @@ public class SpatialRotateToolState2 extends AbstractSpatialToolState implements
   private Geometry currentMouseHoverTool;
 
   public SpatialRotateToolState2() {
+    super(eventBus);
     super.setEnabled(false);
   }
 

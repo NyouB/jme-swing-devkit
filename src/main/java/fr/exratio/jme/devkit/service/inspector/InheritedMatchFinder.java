@@ -8,18 +8,26 @@ import java.util.List;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class InheritedMatchFinder extends PropertySectionListFinder {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(InheritedMatchFinder.class);
+
+  private final RegistrationService registrationService;
+
+  @Autowired
+  public InheritedMatchFinder(RegistrationService registrationService) {
+    this.registrationService = registrationService;
+  }
 
   @Override
   public List<PropertySection> find(Object object) {
 
     Class<?> registeredParentClass = findRegisteredParentClass(
         object);
-    RegistrationService registrationService = ServiceManager
-        .getService(RegistrationService.class);
     Class<? extends AbstractPropertySectionBuilder> sectionBuilderClass = registrationService
         .getPropertySectionBuilder(registeredParentClass);
     if (sectionBuilderClass != null) {
@@ -42,8 +50,6 @@ public class InheritedMatchFinder extends PropertySectionListFinder {
 
   public Class<?> findRegisteredParentClass(
       Object object) {
-    RegistrationService registrationService = ServiceManager
-        .getService(RegistrationService.class);
     Set<Class<?>> keySet = registrationService.getRegisteredClasses();
     return findClosestRegisteredParentClass(object.getClass(), keySet);
   }

@@ -1,7 +1,7 @@
 package fr.exratio.jme.devkit.jme;
 
 import com.jme3.app.state.AppState;
-import fr.exratio.jme.devkit.service.JmeEngineService;
+import fr.exratio.jme.devkit.service.EditorJmeApplication;
 import fr.exratio.jme.devkit.service.ServiceManager;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -11,7 +11,7 @@ public class AppStateUtils {
   public static void toggleAppState(final Class<? extends AppState> appstateClass,
       final boolean enabled) {
 
-    JmeEngineService engineService = ServiceManager.getService(JmeEngineService.class);
+    EditorJmeApplication engineService = ServiceManager.getService(EditorJmeApplication.class);
 
     engineService.enqueue(() -> {
 

@@ -6,23 +6,23 @@ import fr.exratio.jme.devkit.service.PluginService;
 import fr.exratio.jme.devkit.service.ServiceManager;
 import java.io.File;
 import java.nio.file.Paths;
+import org.springframework.stereotype.Component;
 
+@Component
 public abstract class DevKitPlugin {
 
   protected PluginConfiguration pluginConfiguration = new PluginConfiguration();
   private boolean enabled = false;
-  private PluginLogger logger;
+  private final PluginService pluginService;
 
-  public DevKitPlugin() {
-
+  public DevKitPlugin(PluginService pluginService) {
+    this.pluginService = pluginService;
   }
 
   /**
    * Called after the plugin has been constructed.
    */
   public void initialize() throws Exception {
-    this.logger = new PluginLogger(this);
-
     File storageDir = Paths
         .get(DevKitConfig.pluginStorageDir.toString(), getConfiguration().getId()).toFile();
     if (!storageDir.exists()) {
@@ -79,8 +79,6 @@ public abstract class DevKitPlugin {
 
     DevKitPlugin[] dependencies = new DevKitPlugin[pluginConfiguration.getDependencies().length];
 
-    PluginService pluginService = ServiceManager.getService(PluginService.class);
-
     for (int i = 0; i < dependencies.length; i++) {
       DevKitPlugin plugin = pluginService.getPlugin(pluginConfiguration.getDependencies()[i]);
       dependencies[i] = plugin;
@@ -102,8 +100,6 @@ public abstract class DevKitPlugin {
     DevKitPlugin[] softDependencies = new DevKitPlugin[pluginConfiguration
         .getSoftDependencies().length];
 
-    PluginService pluginService = ServiceManager.getService(PluginService.class);
-
     for (int i = 0; i < softDependencies.length; i++) {
       DevKitPlugin plugin = pluginService.getPlugin(pluginConfiguration.getDependencies()[i]);
       softDependencies[i] = plugin;
@@ -121,9 +117,4 @@ public abstract class DevKitPlugin {
   public File getStorageDir() {
     return Paths.get(DevKitConfig.pluginStorageDir.toString(), getConfiguration().getId()).toFile();
   }
-
-  public PluginLogger getLogger() {
-    return logger;
-  }
-
 }

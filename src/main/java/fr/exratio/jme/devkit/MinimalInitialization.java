@@ -3,9 +3,9 @@ package fr.exratio.jme.devkit;
 import com.jme3.system.AppSettings;
 import com.jme3.system.awt.AwtPanelsContext;
 import fr.exratio.jme.devkit.config.DevKitConfig;
-import fr.exratio.jme.devkit.service.JmeEngineService;
+import fr.exratio.jme.devkit.service.EditorJmeApplication;
 import fr.exratio.jme.devkit.service.ServiceManager;
-import fr.exratio.jme.devkit.service.impl.JmeEngineServiceImpl;
+import fr.exratio.jme.devkit.service.impl.EditorJmeApplicationImpl;
 import java.awt.Frame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +17,7 @@ public class MinimalInitialization implements InitialisationTemplate {
 
   @Override
   public void engineLoading() {
-    JmeEngineService engineService = ServiceManager.registerService(JmeEngineServiceImpl.class);
+    EditorJmeApplication engineService = ServiceManager.registerService(EditorJmeApplicationImpl.class);
     engineService.setShowSettings(false);
     AppSettings settings = new AppSettings(true);
     settings.setCustomRenderer(AwtPanelsContext.class);

@@ -1,5 +1,6 @@
 package fr.exratio.jme.devkit.properties.builder;
 
+import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
@@ -7,13 +8,14 @@ import com.jme3.scene.Spatial;
 import fr.exratio.jme.devkit.properties.PropertySection;
 import fr.exratio.jme.devkit.properties.component.quaternion.QuaternionEditor;
 import fr.exratio.jme.devkit.properties.component.vector3f.Vector3fEditor;
-import fr.exratio.jme.devkit.service.EventService;
-import fr.exratio.jme.devkit.service.JmeEngineService;
+import fr.exratio.jme.devkit.service.EditorJmeApplication;
 import fr.exratio.jme.devkit.service.ServiceManager;
 import fr.exratio.jme.devkit.service.inspector.SpatialMoveEvent;
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Getter
 public class TransformSection extends PropertySection {
 
   public static final String LOCAL_ROTATION = "localRotation";
@@ -31,26 +33,17 @@ public class TransformSection extends PropertySection {
   public TransformSection(Spatial spatial) {
     super(TITLE);
     this.spatial = spatial;
-    ServiceManager.getService(EventService.class).register(this);
     init();
   }
 
   public void init() {
     localTranslation = new Vector3fEditor(spatial.getLocalTranslation());
-    localTranslation.addPropertyChangeListener(
-        value -> ServiceManager.getService(JmeEngineService.class)
-            .enqueue(() -> spatial.setLocalTranslation((Vector3f) value.getNewValue())));
     addProperty(LOCAL_TRANSLATION, localTranslation.getCustomEditor());
 
     localRotation = new QuaternionEditor(spatial.getLocalRotation());
-    localRotation.addPropertyChangeListener(
-        value -> ServiceManager.getService(JmeEngineService.class)
-            .enqueue(() -> spatial.setLocalRotation((Quaternion) value.getNewValue())));
     addProperty(LOCAL_ROTATION, localRotation.getCustomEditor());
 
     localScale = new Vector3fEditor(spatial.getLocalScale());
-    localScale.addPropertyChangeListener(value -> ServiceManager.getService(JmeEngineService.class)
-        .enqueue(() -> spatial.setLocalScale((Vector3f) value.getNewValue())));
     addProperty(LOCAL_SCALE, localScale.getCustomEditor());
   }
 

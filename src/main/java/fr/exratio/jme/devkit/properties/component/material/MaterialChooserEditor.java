@@ -8,11 +8,10 @@ import com.jme3.material.Material;
 import com.jme3.util.MaterialDebugAppState;
 import fr.exratio.jme.devkit.config.DevKitConfig;
 import fr.exratio.jme.devkit.properties.component.AbstractPropertyEditor;
-import fr.exratio.jme.devkit.service.JmeEngineService;
+import fr.exratio.jme.devkit.service.EditorJmeApplication;
 import fr.exratio.jme.devkit.service.ServiceManager;
 import java.awt.Insets;
 import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -37,9 +36,12 @@ public class MaterialChooserEditor extends AbstractPropertyEditor<Material> {
   private JComboBox<String> materialsComboBox;
   private JPanel contentPanel;
   private JButton reloadMaterialButton;
+  private final EditorJmeApplication editorJmeApplication;
 
-  public MaterialChooserEditor(Material value) {
+  public MaterialChooserEditor(Material value,
+      EditorJmeApplication editorJmeApplication) {
     super(value);
+    this.editorJmeApplication = editorJmeApplication;
     $$$setupUI$$$();
     setTypedValue(value);
   }
@@ -57,8 +59,7 @@ public class MaterialChooserEditor extends AbstractPropertyEditor<Material> {
   protected Material computeValue() {
     String selectedMaterial = (String) materialsComboBox.getSelectedItem();
 
-    AssetManager assetManager = ServiceManager.getService(JmeEngineService.class)
-        .getAssetManager();
+    AssetManager assetManager = editorJmeApplication.getAssetManager();
     Material material = null;
 
     if (selectedMaterial != null) {
@@ -131,21 +132,18 @@ public class MaterialChooserEditor extends AbstractPropertyEditor<Material> {
 
     materialsComboBox = new JComboBox();
     materialsComboBox.setModel(model);
-
-    ItemListener itemListener = evt -> {
+    materialsComboBox.addItemListener(evt -> {
       if (evt.getStateChange() == ItemEvent.SELECTED) {
         setTypedValue(computeValue());
         firePropertyChange();
       }
-    };
-    materialsComboBox.addItemListener(itemListener);
+    });
 
     reloadMaterialButton = new JButton();
     reloadMaterialButton.addActionListener(e -> {
 
       if (value != null) {
-        JmeEngineService engineService = ServiceManager.getService(JmeEngineService.class);
-        engineService.enqueue(() -> engineService
+        editorJmeApplication.enqueue(() -> editorJmeApplication
             .getStateManager()
             .getState(MaterialDebugAppState.class)
             .reloadMaterial(value));

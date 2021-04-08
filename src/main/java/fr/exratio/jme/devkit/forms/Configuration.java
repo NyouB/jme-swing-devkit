@@ -17,7 +17,7 @@ import com.jme3.math.Vector3f;
 import fr.exratio.jme.devkit.config.DevKitConfig;
 import fr.exratio.jme.devkit.core.ColorConverter;
 import fr.exratio.jme.devkit.jme.DebugGridState;
-import fr.exratio.jme.devkit.service.JmeEngineService;
+import fr.exratio.jme.devkit.service.EditorJmeApplication;
 import fr.exratio.jme.devkit.service.ServiceManager;
 import fr.exratio.jme.devkit.swing.NumberFormatters;
 import fr.exratio.jme.devkit.swing.SwingTheme;
@@ -188,12 +188,12 @@ public class Configuration {
 
       if (!existingAssetRoot.equals(newAssetRoot)) {
 
-        ServiceManager.getService(JmeEngineService.class).getAssetManager()
+        ServiceManager.getService(EditorJmeApplication.class).getAssetManager()
             .unregisterLocator(existingAssetRoot, FileLocator.class);
         log.info("Unregistered Asset Root: " + existingAssetRoot);
 
         devKitConfig.setAssetRootDir(newAssetRoot);
-        ServiceManager.getService(JmeEngineService.class).getAssetManager()
+        ServiceManager.getService(EditorJmeApplication.class).getAssetManager()
             .registerLocator(newAssetRoot, FileLocator.class);
         log.info("Registering New Asset Root: " + newAssetRoot);
       }
@@ -232,7 +232,7 @@ public class Configuration {
 
       devKitConfig.save();
 
-      JmeEngineService engineService = ServiceManager.getService(JmeEngineService.class);
+      EditorJmeApplication engineService = ServiceManager.getService(EditorJmeApplication.class);
 
       engineService.enqueue(() -> {
 

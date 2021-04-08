@@ -9,12 +9,15 @@ import com.jme3.util.MaterialDebugAppState;
 import fr.exratio.jme.devkit.config.DevKitConfig;
 import fr.exratio.jme.devkit.jme.CameraRotationWidgetState;
 import fr.exratio.jme.devkit.jme.DebugGridState;
-import fr.exratio.jme.devkit.service.JmeEngineService;
+import fr.exratio.jme.devkit.service.EditorJmeApplication;
 import java.awt.Dimension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-public class JmeEngineServiceImpl extends JmeEngineService {
+@Service
+public class JmeEngineServiceImpl extends EditorJmeApplication {
 
   private static final Logger log = LoggerFactory.getLogger(JmeEngineServiceImpl.class);
   // let this service be accessed by any thread (so we can use .enqueue anywhere).
@@ -22,6 +25,12 @@ public class JmeEngineServiceImpl extends JmeEngineService {
   private FilterPostProcessor fpp;
   private AwtPanel jmePanel;
   private boolean initialised;
+  private DevKitConfig devKitConfig;
+
+  public JmeEngineServiceImpl(@Autowired DevKitConfig devKitConfig){
+    this.devKitConfig = devKitConfig;
+
+  }
 
   @Override
   public FilterPostProcessor getFilterPostProcessor() {

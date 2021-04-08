@@ -6,7 +6,9 @@ import fr.exratio.jme.devkit.tree.light.LightTreeNode;
 import fr.exratio.jme.devkit.tree.spatial.SpatialTreeNode;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+import org.springframework.stereotype.Component;
 
+@Component
 public abstract class LightContextMenu extends JPopupMenu {
 
   private final LightTreeNode lightTreeNode;

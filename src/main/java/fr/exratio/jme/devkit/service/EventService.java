@@ -3,27 +3,12 @@ package fr.exratio.jme.devkit.service;
 import com.google.common.eventbus.EventBus;
 import fr.exratio.jme.devkit.event.EventManager;
 
-public class EventService implements EventManager, Service {
 
-  // private final Thread primaryThread;
-  private final long threadId;
+public class EventService implements EventManager {
 
   private final EventBus eventBus = new EventBus();
 
-
   public EventService() {
-    threadId = Thread.currentThread().getId();
-  }
-
-
-  @Override
-  public long getThreadId() {
-    return threadId;
-  }
-
-  @Override
-  public void stop() {
-
   }
 
   @Override

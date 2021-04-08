@@ -5,7 +5,7 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 import com.jme3.scene.Spatial;
 import fr.exratio.jme.devkit.config.DevKitConfig;
-import fr.exratio.jme.devkit.service.JmeEngineService;
+import fr.exratio.jme.devkit.service.EditorJmeApplication;
 import fr.exratio.jme.devkit.service.SceneGraphService;
 import fr.exratio.jme.devkit.service.ServiceManager;
 import fr.exratio.jme.devkit.swing.ComponentUtilities;
@@ -80,7 +80,7 @@ public class AddModels {
         // then run this "later" so the GUI can display the "disabled" view now.
         SwingUtilities.invokeLater(() -> {
 
-          JmeEngineService engineService = ServiceManager.getService(JmeEngineService.class);
+          EditorJmeApplication engineService = ServiceManager.getService(EditorJmeApplication.class);
           SceneGraphService sceneGraphService = ServiceManager.getService(SceneGraphService.class);
 
           for (int index : indices) {

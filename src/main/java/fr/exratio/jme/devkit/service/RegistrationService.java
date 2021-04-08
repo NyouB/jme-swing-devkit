@@ -46,12 +46,14 @@ import java.util.Map;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
 
 /**
  * A service that binds types to components. Used for creating components from reflected values to
  * allow modifying the value.
  */
-public class RegistrationService implements Service {
+@Controller
+public class RegistrationService {
 
   private static final Logger LOGGER = LoggerFactory
       .getLogger(RegistrationService.class);
@@ -102,16 +104,6 @@ public class RegistrationService implements Service {
 
     controlRegistration.register(NoArgsControlRegistrar.create(BillboardControl.class));
 
-  }
-
-  @Override
-  public long getThreadId() {
-    return threadId;
-  }
-
-  @Override
-  public void stop() {
-    //throw new UnsupportedOperationException("THis method shouldn't be called");
   }
 
   /**

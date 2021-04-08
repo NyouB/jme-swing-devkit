@@ -11,7 +11,7 @@ import com.jme3.light.LightProbe.AreaType;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import fr.exratio.jme.devkit.service.JmeEngineService;
+import fr.exratio.jme.devkit.service.EditorJmeApplication;
 import fr.exratio.jme.devkit.service.SceneGraphService;
 import fr.exratio.jme.devkit.service.SceneTreeService;
 import fr.exratio.jme.devkit.service.ServiceManager;
@@ -75,7 +75,7 @@ public class GenerateLightProbeDialog {
       // disable the dialog
       ComponentUtilities.enableComponents(rootPanel, false);
 
-      JmeEngineService engineService = ServiceManager.getService(JmeEngineService.class);
+      EditorJmeApplication engineService = ServiceManager.getService(EditorJmeApplication.class);
 
       engineService.enqueue(() -> {
 
@@ -160,7 +160,7 @@ public class GenerateLightProbeDialog {
 
   private void recurse(SpatialTreeNode spatialTreeNode) {
 
-    JmeEngineService engineService = ServiceManager.getService(JmeEngineService.class);
+    EditorJmeApplication engineService = ServiceManager.getService(EditorJmeApplication.class);
 
     if (spatialTreeNode instanceof NodeTreeNode) {
 

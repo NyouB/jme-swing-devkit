@@ -26,7 +26,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
 
+@Component
 public class MaterialPropertySectionBuilder extends AbstractPropertySectionBuilder<Material> {
 
   //Build a lower case list of ignored properties
@@ -37,8 +40,7 @@ public class MaterialPropertySectionBuilder extends AbstractPropertySectionBuild
   private static final Logger LOGGER = LoggerFactory
       .getLogger(MaterialPropertySectionBuilder.class);
 
-  public MaterialPropertySectionBuilder(Material object) {
-    super(object);
+  public MaterialPropertySectionBuilder() {
   }
 
   @Override

@@ -1,5 +1,6 @@
 package fr.exratio.jme.devkit.service;
 
+import com.google.common.eventbus.EventBus;
 import com.jme3.light.Light;
 import com.jme3.light.PointLight;
 import com.jme3.material.Material;
@@ -16,14 +17,20 @@ import fr.exratio.jme.devkit.event.LightCreatedEvent;
 import fr.exratio.jme.devkit.event.LightRemovedEvent;
 import fr.exratio.jme.devkit.event.SpatialCreatedEvent;
 import fr.exratio.jme.devkit.event.SpatialRemovedEvent;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
-public class SceneGraphService implements Service {
+@Controller
+public class SceneGraphService {
 
-  JmeEngineService engineService;
+  private final EditorJmeApplication engineService;
+  private final EventBus eventBus;
 
 
-  public SceneGraphService() {
-    engineService = ServiceManager.getService(JmeEngineService.class);
+  public SceneGraphService(@Autowired EditorJmeApplication jmeEngineService,
+      @Autowired EventBus eventBus) {
+    this.engineService = jmeEngineService;
+    this.eventBus = eventBus;
   }
 
   /**
@@ -67,8 +74,7 @@ public class SceneGraphService implements Service {
       parent.attachChild(spatial);
 
     });
-    ServiceManager.getService(EventService.class)
-        .post(new SpatialCreatedEvent(spatial));
+    eventBus.post(new SpatialCreatedEvent(spatial));
   }
 
   private boolean isNodeInstanced(Node parent) {
@@ -93,9 +99,7 @@ public class SceneGraphService implements Service {
   public void addLight(Light light, Spatial parentNode) {
 
     // attach the light on the JME thread. The light no longer belongs to AWT at this point.
-    engineService.enqueue(() -> {
-
-      parentNode.addLight(light);
+    engineService.enqueue(() -> { parentNode.addLight(light);
 
       // Set the various configurations on the JME thread.
       // For example a point light needs a position so we position it at the camera position.
@@ -107,8 +111,7 @@ public class SceneGraphService implements Service {
       }
 
     });
-    ServiceManager.getService(EventService.class)
-        .post(new LightCreatedEvent(parentNode, light));
+    eventBus.post(new LightCreatedEvent(parentNode, light));
   }
 
   /**
@@ -123,8 +126,7 @@ public class SceneGraphService implements Service {
 
     // attach the light on the JME thread. The light no longer belongs to AWT at this point.
     engineService.enqueue(() -> parentNode.addControl(control));
-    ServiceManager.getService(EventService.class)
-        .post(new ControlCreatedEvent(control));
+    eventBus.post(new ControlCreatedEvent(control));
   }
 
   /**
@@ -134,13 +136,8 @@ public class SceneGraphService implements Service {
    * @param spatial the spatial to remove.
    */
   public void removeSpatial(Spatial spatial) {
-
-    ServiceManager.getService(JmeEngineService.class).enqueue(() ->
-        spatial.removeFromParent()
-    );
-
-    ServiceManager.getService(EventService.class)
-        .post(new SpatialRemovedEvent(spatial));
+    engineService.enqueue(() -> spatial.removeFromParent());
+    eventBus.post(new SpatialRemovedEvent(spatial));
   }
 
   /**
@@ -151,11 +148,8 @@ public class SceneGraphService implements Service {
    * @param parent The spatial that holds the light.
    */
   public void removeLight(Light light, Spatial parent) {
-
-    ServiceManager.getService(JmeEngineService.class).enqueue(() -> parent.removeLight(light));
-
-    ServiceManager.getService(EventService.class)
-        .post(new LightRemovedEvent(light));
+    engineService.enqueue(() -> parent.removeLight(light));
+    eventBus.post(new LightRemovedEvent(light));
   }
 
   /**
@@ -170,17 +164,7 @@ public class SceneGraphService implements Service {
       parent.removeControl(control);
     });
 
-    ServiceManager.getService(EventService.class)
-        .post(new ControlRemovedEvent(control));
+    eventBus.post(new ControlRemovedEvent(control));
   }
 
-  @Override
-  public long getThreadId() {
-    return -1;
-  }
-
-  @Override
-  public void stop() {
-
-  }
 }

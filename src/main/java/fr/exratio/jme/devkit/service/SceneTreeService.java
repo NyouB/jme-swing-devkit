@@ -1,5 +1,6 @@
 package fr.exratio.jme.devkit.service;
 
+import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.jme3.light.Light;
 import com.jme3.light.LightList;
@@ -39,7 +40,6 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.util.HashMap;
 import java.util.Map;
-import javax.swing.Icon;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
@@ -48,15 +48,17 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
-import lombok.Builder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
 /**
  * Provides a jMonkey Scene Tree visualised in a Swing JTree. This implementation does not reflect
  * any changes made by outside sources.
  */
-public class SceneTreeService extends Tool implements Service {
+@Controller
+public class SceneTreeService extends Tool {
 
   public static final String WINDOW_ID = "scene-tree";
   public static final String TITLE = "Project";
@@ -73,18 +75,26 @@ public class SceneTreeService extends Tool implements Service {
   private NodeTreeNode rootNodeTreeNode;
 
   private final Map<Object, DefaultMutableTreeNode> objectToNodeMap = new HashMap<>();
+  private final EventBus eventBus;
+  private final EditorJmeApplication editorJmeApplication;
+  private final RegistrationService registrationService;
+  private final SceneGraphService sceneGraphService;
+  private final PropertyInspectorTool propertyInspectorTool;
 
-  public SceneTreeService() {
+  @Autowired
+  public SceneTreeService(EventBus eventBus,
+      EditorJmeApplication editorJmeApplication,
+      RegistrationService registrationService,
+      SceneGraphService sceneGraphService,
+      PropertyInspectorTool propertyInspectorTool) {
     super(SceneTreeService.class.getName(), TITLE, null, Zone.LEFT_TOP, ViewMode.PIN, true);
+    this.eventBus = eventBus;
+    this.editorJmeApplication = editorJmeApplication;
+    this.registrationService = registrationService;
+    this.sceneGraphService = sceneGraphService;
+    this.propertyInspectorTool = propertyInspectorTool;
     initialize();
-  }
-
-  @Builder(builderMethodName = "treeBuilder")
-  public SceneTreeService(String id, String title, Icon icon,
-      Zone zone, ViewMode viewMode,
-      boolean isDisplayed) {
-    super(id, title, icon, zone, viewMode, isDisplayed);
-    initialize();
+    zone.add(this);
   }
 
   private void initialize() {
@@ -104,9 +114,7 @@ public class SceneTreeService extends Tool implements Service {
     tree.setRootVisible(false);
     tree.setModel(new DefaultTreeModel(treeRoot));
 
-    final JmeEngineService engineService = ServiceManager.getService(JmeEngineService.class);
-
-    engineService.enqueue(() -> {
+    editorJmeApplication.enqueue(() -> {
 
       // create the nodes on the JME thread.
       // These are "fake" nodes. They are added to their counterparts so we don't see things like "StatsAppState".
@@ -122,8 +130,8 @@ public class SceneTreeService extends Tool implements Service {
       guiNode.setUserData(TreeConstants.TREE_ROOT, TreeConstants.TREE_ROOT);
 
       // Attach them in the JME thread.
-      engineService.getGuiNode().attachChild(guiNode);
-      engineService.getRootNode().attachChild(rootNode);
+      editorJmeApplication.getGuiNode().attachChild(guiNode);
+      editorJmeApplication.getRootNode().attachChild(rootNode);
 
       SwingUtilities.invokeLater(() -> {
 
@@ -146,76 +154,73 @@ public class SceneTreeService extends Tool implements Service {
     tree.getSelectionModel().addTreeSelectionListener(e -> {
 
       TreePath[] paths = tree.getSelectionPaths();
-      SceneObjectHighlighterState highlighterState = engineService.getStateManager()
+      SceneObjectHighlighterState highlighterState = editorJmeApplication.getStateManager()
           .getState(SceneObjectHighlighterState.class);
 
       // highlighting
       // remove and rebuild all highlights.
       // we could probably not be so aggressive and remove items that are no longer selected.
       // lets just get this working for now.
-      engineService.enqueue(highlighterState::removeAllHighlights);
+      editorJmeApplication.enqueue(highlighterState::removeAllHighlights);
 
-      if (paths != null) {
+      if (paths == null) {
+        return;
+      }
+      // Property Inspector.
+      // We can only inspect one thing at a time, so choose the last selected object.
+      DefaultMutableTreeNode lastSelectedTreeNode = (DefaultMutableTreeNode) paths[
+          paths.length
+              - 1].getLastPathComponent();
 
-        // Property Inspector.
-        // We can only inspect one thing at a time, so choose the last selected object.
-        DefaultMutableTreeNode lastSelectedTreeNode = (DefaultMutableTreeNode) paths[
-            paths.length
-                - 1].getLastPathComponent();
+      propertyInspectorTool.inspect(lastSelectedTreeNode.getUserObject());
 
-        ServiceManager.getService(PropertyInspectorTool.class)
-            .inspect(lastSelectedTreeNode.getUserObject());
+      // highlighting
+      for (TreePath path : paths) {
+        DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) path
+            .getLastPathComponent();
 
-        // highlighting
-        for (TreePath path : paths) {
-          DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) path
-              .getLastPathComponent();
+        if (treeNode != null) {
 
-          if (treeNode != null) {
+          if (treeNode.getUserObject() instanceof Spatial) {
 
-            if (treeNode.getUserObject() instanceof Spatial) {
+            editorJmeApplication
+                .enqueue(() -> highlighterState
+                    .highlight((Spatial) treeNode.getUserObject()));
 
-              engineService
-                  .enqueue(() -> highlighterState
-                      .highlight((Spatial) treeNode.getUserObject()));
+          } else if (treeNode.getUserObject() instanceof Mesh) {
 
-            } else if (treeNode.getUserObject() instanceof Mesh) {
-
-              GeometryTreeNode parent = (GeometryTreeNode) treeNode.getParent();
-              engineService.enqueue(
-                  () -> highlighterState.highlightMesh(parent.getUserObject()));
+            GeometryTreeNode parent = (GeometryTreeNode) treeNode.getParent();
+            editorJmeApplication.enqueue(
+                () -> highlighterState.highlightMesh(parent.getUserObject()));
 
 
-            } else if (treeNode.getUserObject() instanceof LightProbe) {
+          } else if (treeNode.getUserObject() instanceof LightProbe) {
 
-              engineService
-                  .enqueue(() -> highlighterState
-                      .highlight((Light) treeNode.getUserObject()));
+            editorJmeApplication
+                .enqueue(() -> highlighterState
+                    .highlight((Light) treeNode.getUserObject()));
 
-            } else {
-              highlighterState.removeAllHighlights();
-            }
           } else {
             highlighterState.removeAllHighlights();
           }
-
+        } else {
+          highlighterState.removeAllHighlights();
         }
 
-        // fire an event that the scene tree item has changed.
-        if (lastSelectedTreeNode instanceof JmeTreeNode) {
-          ServiceManager.getService(EventService.class)
-              .post(
-                  new SceneTreeItemChangedEvent((JmeTreeNode) lastSelectedTreeNode));
-        }
       }
 
-    });
+      // fire an event that the scene tree item has changed.
+      if (lastSelectedTreeNode instanceof JmeTreeNode) {
+        eventBus.post(new SceneTreeItemChangedEvent((JmeTreeNode) lastSelectedTreeNode));
+      }
 
-    // register our listener
-    ServiceManager.getService(EventService.class).register(this);
 
+  });
 
-  }
+  // register our listener
+    eventBus.register(this);
+
+}
 
 
   /**
@@ -362,9 +367,7 @@ public class SceneTreeService extends Tool implements Service {
    * @param spatialTreeNode the treeNode to remove.
    */
   public void removeTreeNode(SpatialTreeNode spatialTreeNode) {
-    ServiceManager.getService(SceneGraphService.class)
-        .removeSpatial(spatialTreeNode.getUserObject());
-
+    sceneGraphService.removeSpatial(spatialTreeNode.getUserObject());
   }
 
   /**
@@ -378,7 +381,7 @@ public class SceneTreeService extends Tool implements Service {
 
     lightTreeNode.removeFromParent();
 
-    ServiceManager.getService(JmeEngineService.class).enqueue(() -> {
+    editorJmeApplication.enqueue(() -> {
 
       Spatial parentNode = parent.getUserObject();
       Light light = lightTreeNode.getUserObject();
@@ -390,8 +393,7 @@ public class SceneTreeService extends Tool implements Service {
 
     });
 
-    ServiceManager.getService(EventService.class)
-        .post(new LightRemovedEvent(lightTreeNode.getUserObject()));
+    eventBus.post(new LightRemovedEvent(lightTreeNode.getUserObject()));
   }
 
   /**
@@ -405,7 +407,7 @@ public class SceneTreeService extends Tool implements Service {
 
     controlTreeNode.removeFromParent();
 
-    ServiceManager.getService(JmeEngineService.class).enqueue(() -> {
+    editorJmeApplication.enqueue(() -> {
 
       Spatial parentNode = parent.getUserObject();
       Control control = controlTreeNode.getUserObject();
@@ -417,8 +419,7 @@ public class SceneTreeService extends Tool implements Service {
 
     });
 
-    ServiceManager.getService(EventService.class)
-        .post(new ControlRemovedEvent(controlTreeNode.getUserObject()));
+    eventBus.post(new ControlRemovedEvent(controlTreeNode.getUserObject()));
   }
 
   /**
@@ -476,10 +477,6 @@ public class SceneTreeService extends Tool implements Service {
    */
   private SpatialTreeNode createSpatialTreeNodeFrom(Spatial spatial) {
 
-    RegistrationService registrationService = ServiceManager
-        .getService(RegistrationService.class);
-    JmeEngineService engineService = ServiceManager.getService(JmeEngineService.class);
-
     SpatialTreeNode treeNode = null;
 
     if (spatial instanceof Node) {
@@ -489,7 +486,7 @@ public class SceneTreeService extends Tool implements Service {
 
       for (NodeRegistrar registrar : nodeRegistrar.getRegistrations()) {
         if (registrar.getRegisteredClass().equals(node.getClass())) {
-          treeNode = (SpatialTreeNode) registrar.createSceneTreeNode(node, engineService);
+          treeNode = (SpatialTreeNode) registrar.createSceneTreeNode(node, editorJmeApplication);
           break;
         }
       }
@@ -508,7 +505,7 @@ public class SceneTreeService extends Tool implements Service {
       for (GeometryRegistrar registrar : geometryRegistrar.getRegistrations()) {
         if (registrar.getRegisteredClass().equals(geometry.getClass())) {
           treeNode = (SpatialTreeNode) registrar
-              .createSceneTreeNode(geometry, engineService);
+              .createSceneTreeNode(geometry, editorJmeApplication);
           break;
         }
       }
@@ -544,16 +541,6 @@ public class SceneTreeService extends Tool implements Service {
   public void updateTreeNodeRepresentation(TreeNode treeNode) {
     DefaultTreeModel treeModel = (DefaultTreeModel) tree.getModel();
     treeModel.nodeChanged(treeNode);
-  }
-
-  @Override
-  public long getThreadId() {
-    return threadId;
-  }
-
-  @Override
-  public void stop() {
-    ServiceManager.getService(EventService.class).unregister(this);
   }
 
   /**

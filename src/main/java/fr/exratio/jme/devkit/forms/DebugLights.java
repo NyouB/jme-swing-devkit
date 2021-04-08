@@ -12,7 +12,7 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 import fr.exratio.jme.devkit.core.ColorConverter;
-import fr.exratio.jme.devkit.service.JmeEngineService;
+import fr.exratio.jme.devkit.service.EditorJmeApplication;
 import fr.exratio.jme.devkit.service.ServiceManager;
 import java.awt.Dimension;
 import java.awt.Insets;
@@ -73,7 +73,7 @@ public class DebugLights {
       JComboBox<DemoProbe> comboBox = (JComboBox<DemoProbe>) e.getSource();
       final DemoProbe demoProbe = (DemoProbe) comboBox.getSelectedItem();
 
-      JmeEngineService engineService = ServiceManager.getService(JmeEngineService.class);
+      EditorJmeApplication engineService = ServiceManager.getService(EditorJmeApplication.class);
 
       engineService.enqueue(() -> {
 
@@ -94,7 +94,7 @@ public class DebugLights {
       DefaultColorSelectionModel colorChooser = (DefaultColorSelectionModel) e.getSource();
       final ColorRGBA colorRGBA = ColorConverter.toColorRGBA(colorChooser.getSelectedColor());
 
-      ServiceManager.getService(JmeEngineService.class).enqueue(() -> {
+      ServiceManager.getService(EditorJmeApplication.class).enqueue(() -> {
 
         if (ambientLight != null) {
           ambientLight.setColor(colorRGBA);
@@ -108,7 +108,7 @@ public class DebugLights {
       DefaultColorSelectionModel colorChooser = (DefaultColorSelectionModel) e.getSource();
       final ColorRGBA colorRGBA = ColorConverter.toColorRGBA(colorChooser.getSelectedColor());
 
-      ServiceManager.getService(JmeEngineService.class).enqueue(() -> {
+      ServiceManager.getService(EditorJmeApplication.class).enqueue(() -> {
 
         if (directionalLight != null) {
           directionalLight.setColor(colorRGBA);
@@ -125,7 +125,7 @@ public class DebugLights {
       final boolean isSelected = checkBox.isSelected();
       final ColorRGBA colorRGBA = ColorConverter.toColorRGBA(ambientColorChooser.getColor());
 
-      final JmeEngineService engineService = ServiceManager.getService(JmeEngineService.class);
+      final EditorJmeApplication engineService = ServiceManager.getService(EditorJmeApplication.class);
 
       engineService.enqueue(() -> {
 
@@ -156,7 +156,7 @@ public class DebugLights {
       final boolean isSelected = checkBox.isSelected();
       final ColorRGBA colorRGBA = ColorConverter.toColorRGBA(directionalColorChooser.getColor());
 
-      final JmeEngineService engineService = ServiceManager.getService(JmeEngineService.class);
+      final EditorJmeApplication engineService = ServiceManager.getService(EditorJmeApplication.class);
 
       engineService.enqueue(() -> {
 
@@ -188,7 +188,7 @@ public class DebugLights {
       final boolean isSelected = checkBox.isSelected();
       final DemoProbe demoProbe = (DemoProbe) probesComboBox.getSelectedItem();
 
-      final JmeEngineService engineService = ServiceManager.getService(JmeEngineService.class);
+      final EditorJmeApplication engineService = ServiceManager.getService(EditorJmeApplication.class);
 
       engineService.enqueue(() -> {
 
@@ -219,7 +219,7 @@ public class DebugLights {
 
   private void querySceneForDebugLights() {
 
-    JmeEngineService engineService = ServiceManager.getService(JmeEngineService.class);
+    EditorJmeApplication engineService = ServiceManager.getService(EditorJmeApplication.class);
 
     engineService.enqueue(() -> {
 
@@ -410,7 +410,7 @@ public class DebugLights {
 
     public LightProbe extractProbe() {
 
-      Spatial probeHolder = ServiceManager.getService(JmeEngineService.class)
+      Spatial probeHolder = ServiceManager.getService(EditorJmeApplication.class)
           .getAssetManager()
           .loadModel(getResourcePath());
 

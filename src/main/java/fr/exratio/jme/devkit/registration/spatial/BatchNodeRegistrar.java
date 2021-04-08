@@ -3,7 +3,7 @@ package fr.exratio.jme.devkit.registration.spatial;
 import com.jme3.app.SimpleApplication;
 import com.jme3.scene.BatchNode;
 import com.jme3.scene.Node;
-import fr.exratio.jme.devkit.service.JmeEngineService;
+import fr.exratio.jme.devkit.service.EditorJmeApplication;
 import fr.exratio.jme.devkit.service.SceneTreeService;
 import fr.exratio.jme.devkit.service.ServiceManager;
 import fr.exratio.jme.devkit.tree.spatial.NodeTreeNode;
@@ -57,7 +57,7 @@ public class BatchNodeRegistrar extends NodeRegistrar {
 
       JMenuItem batchItem = add(new JMenuItem("Batch"));
       batchItem
-          .addActionListener(e -> ServiceManager.getService(JmeEngineService.class).enqueue(() -> {
+          .addActionListener(e -> ServiceManager.getService(EditorJmeApplication.class).enqueue(() -> {
             nodeTreeNode.getUserObject().batch();
             ServiceManager.getService(SceneTreeService.class).reloadTreeNode(nodeTreeNode);
           }));

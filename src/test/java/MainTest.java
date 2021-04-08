@@ -7,14 +7,14 @@ import devkit.appstate.tool.SpatialRotateToolState2;
 import devkit.appstate.tool.SpatialSelectorState;
 import fr.exratio.jme.devkit.config.DevKitConfig;
 import fr.exratio.jme.devkit.service.ClipboardService;
-import fr.exratio.jme.devkit.service.CoreService;
+import fr.exratio.jme.devkit.service.MainPageController;
 import fr.exratio.jme.devkit.service.EventService;
-import fr.exratio.jme.devkit.service.JmeEngineService;
+import fr.exratio.jme.devkit.service.EditorJmeApplication;
 import fr.exratio.jme.devkit.service.PluginService;
 import fr.exratio.jme.devkit.service.RegistrationService;
 import fr.exratio.jme.devkit.service.SceneGraphService;
 import fr.exratio.jme.devkit.service.ServiceManager;
-import fr.exratio.jme.devkit.service.impl.JmeEngineServiceImpl;
+import fr.exratio.jme.devkit.service.impl.EditorJmeApplicationImpl;
 import fr.exratio.jme.devkit.swing.SwingTheme;
 import java.io.File;
 import javax.swing.JPopupMenu;
@@ -40,7 +40,7 @@ public class MainTest {
     // set the theme.
     SwingTheme.setTheme(DevKitConfig.getInstance().getTheme());
 
-    JmeEngineService engineService = ServiceManager.registerService(JmeEngineServiceImpl.class);
+    EditorJmeApplication engineService = ServiceManager.registerService(EditorJmeApplicationImpl.class);
     engineService.setShowSettings(false);
     AppSettings settings = new AppSettings(true);
     settings.setCustomRenderer(AwtPanelsContext.class);
@@ -80,7 +80,7 @@ public class MainTest {
 
       // register all of our services...
       // All of these services are created on the AWT thread.
-      CoreService coreService = ServiceManager.registerService(CoreService.class, parentDirName);
+      MainPageController coreService = ServiceManager.registerService(MainPageController.class, parentDirName);
       //fix the node being display only on resizing
       coreService.getMainFrame().revalidate();
 
@@ -95,7 +95,7 @@ public class MainTest {
       SpatialRotateToolState2 spatialRotateToolState2 = new SpatialRotateToolState2();
       spatialRotateToolState2.setEnabled(true);
       engineService.getStateManager().attach(spatialRotateToolState2);
-      engineService.getStateManager().attach(new SpatialSelectorState());
+      engineService.getStateManager().attach(new SpatialSelectorState(eventBus));
       // load any available plugins.
       // I'm not sure where we should put this.
       ServiceManager.getService(PluginService.class).loadPlugins();

@@ -6,7 +6,7 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.jme3.asset.ModelKey;
 import com.jme3.scene.AssetLinkNode;
 import fr.exratio.jme.devkit.registration.spatial.AssetLinkNodeRegistrar.AssetLinkNodeTreeNode;
-import fr.exratio.jme.devkit.service.JmeEngineService;
+import fr.exratio.jme.devkit.service.EditorJmeApplication;
 import fr.exratio.jme.devkit.service.SceneTreeService;
 import fr.exratio.jme.devkit.service.ServiceManager;
 import fr.exratio.jme.devkit.swing.ComponentUtilities;
@@ -30,7 +30,7 @@ public class RemoveLinkedAsset {
 
   public RemoveLinkedAsset(AssetLinkNodeTreeNode assetLinkNodeTreeNode) {
 
-    JmeEngineService engineService = ServiceManager.getService(JmeEngineService.class);
+    EditorJmeApplication engineService = ServiceManager.getService(EditorJmeApplication.class);
 
     engineService.enqueue(() -> {
       final ImmutableList<ModelKey> modelKeys = ImmutableList

@@ -1,5 +1,6 @@
 package devkit.appstate.tool;
 
+import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.BaseAppState;
@@ -10,6 +11,7 @@ import com.jme3.scene.Spatial;
 import fr.exratio.jme.devkit.event.SelectedItemEvent;
 import fr.exratio.jme.devkit.service.EventService;
 import fr.exratio.jme.devkit.service.ServiceManager;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class AbstractSpatialToolState extends BaseAppState {
 
@@ -18,9 +20,12 @@ public abstract class AbstractSpatialToolState extends BaseAppState {
 
   protected boolean busy;
   protected float distance;
+  protected final EventBus eventBus;
 
-  public AbstractSpatialToolState() {
-    ServiceManager.getService(EventService.class).register(this);
+  @Autowired
+  public AbstractSpatialToolState(EventBus eventBus) {
+    this.eventBus = eventBus;
+    eventBus.register(this);
   }
 
   @Subscribe

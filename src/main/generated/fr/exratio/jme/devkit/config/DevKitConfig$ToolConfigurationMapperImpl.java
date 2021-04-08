@@ -3,12 +3,11 @@ package fr.exratio.jme.devkit.config;
 import fr.exratio.jme.devkit.config.DevKitConfig.ToolConfiguration;
 import fr.exratio.jme.devkit.config.DevKitConfig.ToolConfigurationMapper;
 import fr.exratio.jme.devkit.tool.Tool;
-import fr.exratio.jme.devkit.tool.Tool.ToolBuilder;
 import javax.annotation.processing.Generated;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2021-04-05T18:02:16+0200",
+    date = "2021-04-05T22:04:32+0200",
     comments = "version: 1.4.2.Final, compiler: javac, environment: Java 13.0.1 (Oracle Corporation)"
 )
 public class DevKitConfig$ToolConfigurationMapperImpl implements ToolConfigurationMapper {
@@ -30,8 +29,8 @@ public class DevKitConfig$ToolConfigurationMapperImpl implements ToolConfigurati
             return null;
         }
 
-        ToolBuilder tool = Tool.toolBuilder();
+        Tool tool = new Tool();
 
-        return tool.build();
+        return tool;
     }
 }

@@ -7,7 +7,7 @@ import com.jme3.anim.AnimClip;
 import com.jme3.anim.AnimComposer;
 import com.jme3.anim.tween.action.Action;
 import fr.exratio.jme.devkit.properties.component.AbstractPropertyEditor;
-import fr.exratio.jme.devkit.service.JmeEngineService;
+import fr.exratio.jme.devkit.service.EditorJmeApplication;
 import fr.exratio.jme.devkit.service.ServiceManager;
 import java.awt.Insets;
 import java.awt.event.MouseAdapter;
@@ -121,7 +121,7 @@ public class AnimComposerEditor extends AbstractPropertyEditor<AnimComposer> {
 
   private void createUIComponents() {
     contentPanel = this;
-    final JmeEngineService engineService = ServiceManager.getService(JmeEngineService.class);
+    final EditorJmeApplication engineService = ServiceManager.getService(EditorJmeApplication.class);
     timeSlider = new JSlider();
     timeSlider.setModel(animTimelineModel);
 

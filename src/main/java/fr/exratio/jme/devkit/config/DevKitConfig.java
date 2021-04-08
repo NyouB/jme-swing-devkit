@@ -29,7 +29,10 @@ import lombok.Setter;
 import org.apache.commons.lang3.builder.Builder;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 
+@Component
 public class DevKitConfig {
 
   public static final String SDK_CONFIG = "sdkConfig";
@@ -58,6 +61,7 @@ public class DevKitConfig {
   public static final String ASSET_DIRECTORY = "assetDirectory";
   public static final String SIZE = "size";
   public static final String GRID = "grid";
+  public static final String TITLE = "title";
   public static final char DOT = '.';
   public static final char X = 'x';
   public static final char Y = 'y';
@@ -269,6 +273,10 @@ public class DevKitConfig {
     for (Tool tool : tools) {
       setToolConfiguration(tool);
     }
+  }
+
+  public String getTitle() {
+    return conf.getString(TITLE);
   }
 
 

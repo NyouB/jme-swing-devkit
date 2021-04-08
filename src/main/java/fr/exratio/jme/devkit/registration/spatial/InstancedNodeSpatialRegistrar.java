@@ -3,7 +3,7 @@ package fr.exratio.jme.devkit.registration.spatial;
 import com.jme3.app.SimpleApplication;
 import com.jme3.scene.Node;
 import com.jme3.scene.instancing.InstancedNode;
-import fr.exratio.jme.devkit.service.JmeEngineService;
+import fr.exratio.jme.devkit.service.EditorJmeApplication;
 import fr.exratio.jme.devkit.service.ServiceManager;
 import fr.exratio.jme.devkit.tree.spatial.NodeTreeNode;
 import fr.exratio.jme.devkit.tree.spatial.menu.NodeContextMenu;
@@ -54,7 +54,7 @@ public class InstancedNodeSpatialRegistrar extends NodeRegistrar {
 
       JMenuItem instanceItem = add(new JMenuItem("Instance Items"));
       instanceItem.addActionListener(e -> {
-        ServiceManager.getService(JmeEngineService.class).enqueue(() -> {
+        ServiceManager.getService(EditorJmeApplication.class).enqueue(() -> {
 
           try {
             instancedNodeTreeNode.getUserObject().instance();

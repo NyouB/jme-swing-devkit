@@ -13,21 +13,19 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
+import lombok.NoArgsConstructor;
 import org.reflections8.Reflections;
 import org.reflections8.util.ConfigurationBuilder;
+import org.springframework.stereotype.Controller;
 
-public class PluginService implements Service {
+@NoArgsConstructor
+@Controller
+public class PluginService{
 
   private static final Logger log = Logger.getLogger(PluginService.class.getName());
   private static final Pattern ID_PATTERN = Pattern.compile("^[A-Za-z0-9 _.-]+$");
 
   private final List<DevKitPlugin> plugins = new ArrayList<>();
-
-  private final long threadId;
-
-  public PluginService() {
-    threadId = -1; // Thread.currentThread().getId();
-  }
 
   public void loadPlugins() {
 
@@ -281,17 +279,5 @@ public class PluginService implements Service {
     return plugins.toArray(new DevKitPlugin[0]);
   }
 
-  public Logger getLogger() {
-    return log;
-  }
 
-  @Override
-  public long getThreadId() {
-    return threadId;
-  }
-
-  @Override
-  public void stop() {
-
-  }
 }

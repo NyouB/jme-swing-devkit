@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author Quentin Raphaneau
@@ -31,6 +32,8 @@ public class Tool extends JPanel {
   protected ViewMode viewMode = ViewMode.PIN;
   protected boolean isDisplayed = true;
   protected boolean registered = false;
+  @Autowired
+  protected ToolLocationService toolLocationService;
 
   public Tool() {
     initComponents();
@@ -137,9 +140,9 @@ public class Tool extends JPanel {
   }
 
   public void setDisplayed(boolean displayed) {
+    boolean oldValue = this.isDisplayed;
     setVisible(displayed);
-    ServiceManager.getService(ToolLocationService.class).getMainPage().revalidate();
-    ServiceManager.getService(ToolLocationService.class).getMainPage().repaint();
+    firePropertyChange("isDisplayed", oldValue, displayed);
   }
 
   public void display(boolean b) {

@@ -2,7 +2,7 @@ package fr.exratio.jme.devkit.properties.builder;
 
 import fr.exratio.jme.devkit.properties.PropertySection;
 import fr.exratio.jme.devkit.properties.component.enumeration.EnumEditor;
-import fr.exratio.jme.devkit.service.JmeEngineService;
+import fr.exratio.jme.devkit.service.EditorJmeApplication;
 import fr.exratio.jme.devkit.service.ServiceManager;
 import fr.exratio.jme.devkit.service.inspector.ExactMatchFinder;
 import fr.exratio.jme.devkit.service.inspector.InheritedMatchFinder;
@@ -40,7 +40,7 @@ public class ReflectedPropertySectionBuilder extends AbstractPropertySectionBuil
     super(object);
     groupedDescriptors = getPropertyDescriptorGroupByClass(object);
     propertySectionListFinder = new ExactMatchFinder();
-    propertySectionListFinder.chainWith(new InheritedMatchFinder());
+    propertySectionListFinder.chainWith(new InheritedMatchFinder(registrationService));
   }
 
   public static Map<Class<?>, Set<PropertyDescriptor>> getPropertyDescriptorGroupByClass(
@@ -99,7 +99,7 @@ public class ReflectedPropertySectionBuilder extends AbstractPropertySectionBuil
               descriptor.getPropertyType(), descriptor.getName(), e);
           continue;
         }
-        editor.addPropertyChangeListener(evt -> ServiceManager.getService(JmeEngineService.class)
+        editor.addPropertyChangeListener(evt -> ServiceManager.getService(EditorJmeApplication.class)
             .enqueue(() -> {
               try {
                 descriptor.getWriteMethod().invoke(object, evt.getNewValue());

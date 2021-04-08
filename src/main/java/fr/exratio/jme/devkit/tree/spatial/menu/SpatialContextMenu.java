@@ -12,8 +12,8 @@ import fr.exratio.jme.devkit.forms.SaveSpatial;
 import fr.exratio.jme.devkit.jme.EditorCameraState;
 import fr.exratio.jme.devkit.registration.control.ControlRegistrar;
 import fr.exratio.jme.devkit.service.ClipboardService;
-import fr.exratio.jme.devkit.service.JmeEngineService;
-import fr.exratio.jme.devkit.service.MenuService;
+import fr.exratio.jme.devkit.service.EditorJmeApplication;
+import fr.exratio.jme.devkit.service.MenuController;
 import fr.exratio.jme.devkit.service.RegistrationService;
 import fr.exratio.jme.devkit.service.SceneGraphService;
 import fr.exratio.jme.devkit.service.SceneTreeService;
@@ -45,7 +45,7 @@ public class SpatialContextMenu extends JPopupMenu {
 
         JMenuItem lookAtItem = add(new JMenuItem("Look at Spatial"));
         lookAtItem.addActionListener(e -> {
-            JmeEngineService engineService = ServiceManager.getService(JmeEngineService.class);
+            EditorJmeApplication engineService = ServiceManager.getService(EditorJmeApplication.class);
             engineService.getStateManager().getState(EditorCameraState.class)
                 .lookAt(spatial.getWorldTranslation(), Vector3f.UNIT_Y);
         });
@@ -68,7 +68,7 @@ public class SpatialContextMenu extends JPopupMenu {
                 return;
             }
 
-            ServiceManager.getService(JmeEngineService.class).enqueue(() -> {
+            ServiceManager.getService(EditorJmeApplication.class).enqueue(() -> {
 
                 // Clone the spatial on the JME thread.
                 SpatialClipboardItem spatialClipboardItem = new SpatialClipboardItem(spatial);
@@ -96,7 +96,7 @@ public class SpatialContextMenu extends JPopupMenu {
             SaveSpatial saveSpatial = new SaveSpatial(spatial);
 
             JFrame mainWindow = (JFrame) SwingUtilities
-                .getWindowAncestor(ServiceManager.getService(JmeEngineService.class).getAWTPanel());
+                .getWindowAncestor(ServiceManager.getService(EditorJmeApplication.class).getAWTPanel());
 
             JDialog dialog = new JDialog(mainWindow, "Save Spatial", true);
             dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -115,7 +115,7 @@ public class SpatialContextMenu extends JPopupMenu {
         deleteItem.addActionListener(e -> {
 
             // we must only query scene object in the JME thread,
-            ServiceManager.getService(JmeEngineService.class).enqueue(() -> {
+            ServiceManager.getService(EditorJmeApplication.class).enqueue(() -> {
 
                 // verify we're allowed to delete this object.
                 final boolean isDeletable = spatial.getUserData(TreeConstants.UNDELETABLE_FLAG) == null;
@@ -153,7 +153,7 @@ public class SpatialContextMenu extends JPopupMenu {
             menuItem.addActionListener(e -> {
 
                 Control control = registrar
-                    .createInstance(ServiceManager.getService(JmeEngineService.class));
+                    .createInstance(ServiceManager.getService(EditorJmeApplication.class));
                 ServiceManager.getService(SceneGraphService.class).addControl(control, spatialTreeNode.getUserObject());
 
             });
@@ -161,7 +161,7 @@ public class SpatialContextMenu extends JPopupMenu {
         }
 
         // Allow users to also add their options....
-        List<JMenuItem> customItems = ServiceManager.getService(MenuService.class)
+        List<JMenuItem> customItems = ServiceManager.getService(MenuController.class)
             .getCustomMenuItems(SpatialTreeNode.class);
 
         if (customItems != null && !customItems.isEmpty()) {
@@ -228,7 +228,7 @@ public class SpatialContextMenu extends JPopupMenu {
                 spatialTreeNode);
 
             JFrame mainWindow = (JFrame) SwingUtilities
-                .getWindowAncestor(ServiceManager.getService(JmeEngineService.class).getAWTPanel());
+                .getWindowAncestor(ServiceManager.getService(EditorJmeApplication.class).getAWTPanel());
 
             JDialog dialog = new JDialog(mainWindow, "Generate LightProbe", true);
             dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -256,7 +256,7 @@ public class SpatialContextMenu extends JPopupMenu {
         JMenuItem cloneWithNewMaterial = menu.add(new JMenuItem("New Mesh(es), New Material(s)"));
         cloneWithNewMaterial.addActionListener(e -> {
 
-            ServiceManager.getService(JmeEngineService.class).enqueue(() -> {
+            ServiceManager.getService(EditorJmeApplication.class).enqueue(() -> {
                 SpatialClipboardItem spatialClipboardItem = new SpatialClipboardItem(spatial, true,
                     true);
                 SwingUtilities.invokeLater(() -> ServiceManager.getService(ClipboardService.class)
@@ -268,7 +268,7 @@ public class SpatialContextMenu extends JPopupMenu {
         JMenuItem cloneWithSameMaterial = menu.add(new JMenuItem("New Mesh(es), Same Material(s)"));
         cloneWithSameMaterial.addActionListener(e -> {
 
-            ServiceManager.getService(JmeEngineService.class).enqueue(() -> {
+            ServiceManager.getService(EditorJmeApplication.class).enqueue(() -> {
                 SpatialClipboardItem spatialClipboardItem = new SpatialClipboardItem(spatial, false,
                     true);
                 SwingUtilities.invokeLater(() -> ServiceManager.getService(ClipboardService.class)

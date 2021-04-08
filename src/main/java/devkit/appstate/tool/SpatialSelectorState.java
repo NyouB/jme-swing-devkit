@@ -1,5 +1,6 @@
 package devkit.appstate.tool;
 
+import com.google.common.eventbus.EventBus;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.BaseAppState;
@@ -22,20 +23,29 @@ import fr.exratio.jme.devkit.service.ServiceManager;
 import javax.swing.SwingUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
+@Controller
 public class SpatialSelectorState extends BaseAppState implements ActionListener {
 
   private final CollisionResults collisionResults = new CollisionResults();
   private final Ray ray = new Ray();
   private static final Logger LOGGER = LoggerFactory.getLogger(SpatialSelectorState.class);
+  private final EventBus eventBus;
 
-  public SpatialSelectorState() {}
+  @Autowired
+  public SpatialSelectorState(EventBus eventBus) {
+    this.eventBus = eventBus;
+  }
 
   @Override
-  protected void initialize(Application app) {}
+  protected void initialize(Application app) {
+  }
 
   @Override
-  protected void cleanup(Application app) {}
+  protected void cleanup(Application app) {
+  }
 
   @Override
   protected void onEnable() {
@@ -95,7 +105,7 @@ public class SpatialSelectorState extends BaseAppState implements ActionListener
         Geometry geometry = collisionResults.getClosestCollision().getGeometry();
         LOGGER.debug(">> onAction > collision geometry found: {}", geometry.toString());
 
-        SwingUtilities.invokeLater(() -> ServiceManager.getService(EventService.class).post(new SelectedItemEvent(geometry)));
+        SwingUtilities.invokeLater(() -> eventBus.post(new SelectedItemEvent(geometry)));
 
         collisionResults.clear();
       }

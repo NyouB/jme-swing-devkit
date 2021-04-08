@@ -1,18 +1,17 @@
 package fr.exratio.jme.devkit.service;
 
 import fr.exratio.jme.devkit.clipboard.SpatialClipboardItem;
+import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Controller;
 
 /**
  * Keeps a reference of a copied item. Currently only stores a single item.
  */
-public class ClipboardService implements Service {
+@Controller
+@NoArgsConstructor
+public class ClipboardService {
 
-  private final long threadId;
   private SpatialClipboardItem spatialClipboardItem;
-
-  public ClipboardService() {
-    threadId = Thread.currentThread().getId();
-  }
 
   public SpatialClipboardItem getSpatialClipboardItem() {
     return spatialClipboardItem;
@@ -24,17 +23,6 @@ public class ClipboardService implements Service {
 
   public boolean hasSpatialClipboardItem() {
     return spatialClipboardItem != null;
-  }
-
-  @Override
-  public long getThreadId() {
-    return threadId;
-  }
-
-  @Override
-  public void stop() {
-    // just remove the references to the objects.
-    spatialClipboardItem = null;
   }
 
 }

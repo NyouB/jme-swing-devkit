@@ -3,20 +3,13 @@ package fr.exratio.jme.devkit.swing;
 import com.jme3.app.StatsAppState;
 import fr.exratio.jme.devkit.config.DevKitConfig;
 import fr.exratio.jme.devkit.forms.Configuration;
-import fr.exratio.jme.devkit.forms.DebugLights;
 import fr.exratio.jme.devkit.forms.ImportModel;
-import fr.exratio.jme.devkit.forms.RunAppStateWindow;
 import fr.exratio.jme.devkit.jme.AppStateUtils;
 import fr.exratio.jme.devkit.jme.CameraRotationWidgetState;
 import fr.exratio.jme.devkit.jme.DebugGridState;
-import fr.exratio.jme.devkit.service.JmeEngineService;
+import fr.exratio.jme.devkit.service.EditorJmeApplication;
 import fr.exratio.jme.devkit.service.ServiceManager;
-import fr.exratio.jme.devkit.service.ToolLocationService;
-import java.awt.Dimension;
 import java.awt.Frame;
-import java.awt.Window;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JDialog;
 import javax.swing.JMenu;
@@ -24,7 +17,9 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
 import javax.swing.WindowConstants;
+import org.springframework.stereotype.Component;
 
+@Component
 public class MainMenu extends JMenuBar {
 
   JMenu fileMenu;
@@ -56,7 +51,7 @@ public class MainMenu extends JMenuBar {
 
     JMenuItem exitMenuItem = fileMenu.add(new JMenuItem("Exit"));
     exitMenuItem.addActionListener(e -> {
-      ServiceManager.getService(JmeEngineService.class).stop();
+      ServiceManager.getService(EditorJmeApplication.class).stop();
       frame.dispose();
     });
 
