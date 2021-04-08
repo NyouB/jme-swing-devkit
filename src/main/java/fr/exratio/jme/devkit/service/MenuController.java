@@ -1,5 +1,6 @@
 package fr.exratio.jme.devkit.service;
 
+import fr.exratio.jme.devkit.swing.MainMenu;
 import fr.exratio.jme.devkit.tree.JmeTreeNode;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,16 +9,17 @@ import java.util.Map;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 
-public class MenuService implements Service {
+@Controller
+public class MenuController {
 
-  private final JMenuBar primaryMenu;
+  private final MainMenu primaryMenu;
   private final Map<Class<? extends JmeTreeNode>, List<JMenuItem>> customMenuItems = new HashMap<>();
 
-  private final long threadId;
-
-  public MenuService(JMenuBar primaryMenu) {
-    this.threadId = Thread.currentThread().getId();
+  public MenuController(@Autowired MainMenu primaryMenu) {
     this.primaryMenu = primaryMenu;
   }
 
@@ -99,16 +101,6 @@ public class MenuService implements Service {
    */
   public List<JMenuItem> getCustomMenuItems(Class<? extends JmeTreeNode> treeNodeClass) {
     return customMenuItems.get(treeNodeClass);
-  }
-
-  @Override
-  public long getThreadId() {
-    return threadId;
-  }
-
-  @Override
-  public void stop() {
-
   }
 
 }

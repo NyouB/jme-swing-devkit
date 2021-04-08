@@ -1,11 +1,14 @@
 package fr.exratio.jme.devkit.service.impl;
 
+import com.google.common.eventbus.EventBus;
 import com.jme3.post.FilterPostProcessor;
 import com.jme3.post.filters.TranslucentBucketFilter;
 import com.jme3.system.awt.AwtPanel;
 import com.jme3.system.awt.AwtPanelsContext;
 import com.jme3.system.awt.PaintMode;
 import com.jme3.util.MaterialDebugAppState;
+import devkit.appstate.tool.SpatialMoveToolState;
+import devkit.appstate.tool.SpatialSelectorState;
 import fr.exratio.jme.devkit.config.DevKitConfig;
 import fr.exratio.jme.devkit.jme.CameraRotationWidgetState;
 import fr.exratio.jme.devkit.jme.DebugGridState;
@@ -17,19 +20,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class JmeEngineServiceImpl extends EditorJmeApplication {
+public class EditorJmeApplicationImpl extends EditorJmeApplication {
 
-  private static final Logger log = LoggerFactory.getLogger(JmeEngineServiceImpl.class);
+  private static final Logger log = LoggerFactory.getLogger(EditorJmeApplicationImpl.class);
   // let this service be accessed by any thread (so we can use .enqueue anywhere).
   private final long threadId = -1;
   private FilterPostProcessor fpp;
   private AwtPanel jmePanel;
   private boolean initialised;
   private DevKitConfig devKitConfig;
+  private final EventBus eventBus;
 
-  public JmeEngineServiceImpl(@Autowired DevKitConfig devKitConfig){
+  public EditorJmeApplicationImpl(@Autowired DevKitConfig devKitConfig, @Autowired EventBus eventBus){
     this.devKitConfig = devKitConfig;
-
+    this.eventBus = eventBus;
   }
 
   @Override
@@ -65,7 +69,8 @@ public class JmeEngineServiceImpl extends EditorJmeApplication {
 
     MaterialDebugAppState materialDebugAppState = new MaterialDebugAppState();
     stateManager.attach(materialDebugAppState);
-
+    stateManager.attach(new SpatialSelectorState(eventBus));
+    stateManager.attach(new SpatialMoveToolState(eventBus));
     applyCameraFrustumSizes();
 
     FilterPostProcessor fpp = new FilterPostProcessor(assetManager);
@@ -109,11 +114,6 @@ public class JmeEngineServiceImpl extends EditorJmeApplication {
   @Override
   public AwtPanel getAWTPanel() {
     return jmePanel;
-  }
-
-  @Override
-  public long getThreadId() {
-    return threadId;
   }
 
   public boolean isInitialised() {
