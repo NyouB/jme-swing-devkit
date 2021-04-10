@@ -65,7 +65,8 @@ public class AssetLinkNodeRegistrar extends NodeRegistrar {
       JMenuItem addLinkedChildItem = getAddMenu().add(new JMenuItem("Linked Asset"));
       addLinkedChildItem.addActionListener(e -> {
 
-        AddLinkedAsset addLinkedAsset = new AddLinkedAsset(assetLinkNodeTreeNode, DevKitConfig.getInstance().getAssetRootDir());
+        AddLinkedAsset addLinkedAsset = new AddLinkedAsset(assetLinkNodeTreeNode, DevKitConfig.getInstance().getAssetRootDir(),
+            editorJmeApplication, sceneTreeService);
 
         JFrame mainWindow = (JFrame) SwingUtilities
             .getWindowAncestor(ServiceManager.getService(EditorJmeApplication.class).getAWTPanel());

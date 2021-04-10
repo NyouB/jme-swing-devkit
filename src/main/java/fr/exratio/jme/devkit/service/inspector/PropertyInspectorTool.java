@@ -31,7 +31,6 @@ import org.springframework.stereotype.Controller;
 /**
  * @author Quentin Raphaneau
  */
-@Controller
 public class PropertyInspectorTool extends Tool {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(PropertyInspectorTool.class);

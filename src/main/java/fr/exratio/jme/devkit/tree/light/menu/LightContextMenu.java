@@ -8,7 +8,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import org.springframework.stereotype.Component;
 
-@Component
 public abstract class LightContextMenu extends JPopupMenu {
 
   private final LightTreeNode lightTreeNode;

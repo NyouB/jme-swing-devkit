@@ -7,15 +7,20 @@ import fr.exratio.jme.devkit.service.ServiceManager;
 import java.lang.reflect.Field;
 import java.util.List;
 import org.apache.commons.lang3.builder.Builder;
+import org.springframework.beans.factory.annotation.Autowired;
 
-public abstract class AbstractPropertySectionBuilder<T> implements Builder<List<PropertySection>> {
+public abstract class AbstractPropertySectionBuilder<G> implements Builder<List<PropertySection>> {
 
-  protected T object;
+  protected G object;
   protected List<Field> ignoredFields;
 
-  public AbstractPropertySectionBuilder<T> withObject(T object){
+  public AbstractPropertySectionBuilder<G> withObject(G object){
     this.object = object;
     return this;
   }
+
+  @Override
+  public abstract List<PropertySection> build();
+
 
 }

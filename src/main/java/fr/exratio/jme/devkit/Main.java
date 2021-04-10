@@ -6,15 +6,24 @@ import com.jme3.system.AppSettings;
 import com.jme3.system.JmeSystem;
 import com.jme3.system.awt.AwtPanelsContext;
 import fr.exratio.jme.devkit.config.DevKitConfig;
+import fr.exratio.jme.devkit.forms.RunAppStateWindow;
+import fr.exratio.jme.devkit.main.MainPage;
 import fr.exratio.jme.devkit.service.EditorJmeApplication;
 import fr.exratio.jme.devkit.service.MainPageController;
 import fr.exratio.jme.devkit.service.PluginService;
+import fr.exratio.jme.devkit.service.ServiceManager;
 import fr.exratio.jme.devkit.service.impl.EditorJmeApplicationImpl;
+import fr.exratio.jme.devkit.service.inspector.PropertyInspectorTool;
 import fr.exratio.jme.devkit.swing.SwingTheme;
 import java.awt.Frame;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
@@ -33,6 +42,7 @@ public class Main implements CommandLineRunner {
   private final DevKitConfig devKitConfig;
   private final PluginService pluginService;
   private final MainPageController mainPageController;
+  private final JFrame mainFrame;
 
   public static void main(String[] args) {
     new SpringApplicationBuilder(Main.class).headless(false).run(args);
@@ -45,6 +55,7 @@ public class Main implements CommandLineRunner {
     this.devKitConfig = devKitConfig;
     this.pluginService = pluginService;
     this.mainPageController = mainPageController;
+    mainFrame = new JFrame();
   }
 
   @Override
@@ -62,6 +73,7 @@ public class Main implements CommandLineRunner {
     SwingTheme.setTheme(DevKitConfig.getInstance().getTheme());
     configureJMEEngine();
     startEngine();
+    configureJFrame();
 
     // The first "pass" involves just setting up the environment. Do as little as possible just so we can get the
     // window visible.
@@ -80,9 +92,48 @@ public class Main implements CommandLineRunner {
       // I'm not sure where we should put this.
 
     });
+
+    mainFrame.pack();
+    // show the window.
+    mainFrame.setVisible(true);
     // verify that the asset root directory has been set properly.
     checkAssetRootDir(mainPageController.getMainFrame());
     pluginService.loadPlugins();
+  }
+
+  private void configureJFrame() {
+    mainFrame.setTitle("JmeDevKit: " + devKitConfig.getTitle());
+    mainFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    mainFrame.addWindowListener(new WindowAdapter() {
+      @Override
+      public void windowClosed(WindowEvent e) {
+        ServiceManager.stop();
+      }
+    });
+    mainFrame.addComponentListener(new ComponentListener() {
+      @Override
+      public void componentResized(ComponentEvent e) {
+        jmeEngineService.enqueue(jmeEngineService::applyCameraFrustumSizes);
+      }
+
+      @Override
+      public void componentMoved(ComponentEvent e) {
+
+      }
+
+      @Override
+      public void componentShown(ComponentEvent e) {
+
+      }
+
+      @Override
+      public void componentHidden(ComponentEvent e) {
+
+      }
+    });
+    MainPage mainPage = new MainPage();
+    mainFrame.setJMenuBar(mainMenu);
+    mainFrame.setContentPane(mainPage);
   }
 
   private void startEngine() {
@@ -108,6 +159,20 @@ public class Main implements CommandLineRunner {
     settings.setWidth(devKitConfig.getCameraDimension().width);
     settings.setHeight(devKitConfig.getCameraDimension().height);
     jmeEngineService.setSettings(settings);
+  }
+
+  private void registerTools() {
+    toolLocationService.registerTool(sceneTreeService);
+
+    RunAppStateWindow runAppStateWindow = new RunAppStateWindow();
+    toolLocationService.registerTool(runAppStateWindow);
+
+    PropertyInspectorTool propertyInspectorTool = new PropertyInspectorTool(registrationService,
+        eventBus, exactMatchFinder, inheritedMatchFinder, defaultMatchFinder);
+
+    ServiceManager.registerService(propertyInspectorTool);
+    toolLocationService.registerTool(propertyInspectorTool);
+
   }
 
   /**

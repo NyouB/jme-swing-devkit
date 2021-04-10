@@ -21,7 +21,6 @@ import org.springframework.stereotype.Controller;
 public class MainPageController {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MainPageController.class);
-  private final JFrame mainFrame;
   private final MainPage mainPage;
   private final EditorJmeApplication jmeEngineService;
   private final DevKitConfig devKitConfig;
@@ -31,7 +30,7 @@ public class MainPageController {
 
 
   public MainPageController(@Autowired EditorJmeApplication jmeEngineService,
-      @Autowired DevKitConfig devKitConfig, @Autowired JFrame jFrame, @Autowired MainMenu mainMenu,
+      @Autowired DevKitConfig devKitConfig, @Autowired MainMenu mainMenu,
       @Autowired ToolLocationService toolLocationService,
       @Autowired SceneTreeService sceneTreeService) {
     this.jmeEngineService = jmeEngineService;
@@ -39,45 +38,14 @@ public class MainPageController {
     this.mainMenu = mainMenu;
     this.toolLocationService = toolLocationService;
     this.sceneTreeService = sceneTreeService;
-    mainFrame = jFrame;
-    mainFrame.setTitle("JmeDevKit: " + devKitConfig.getTitle());
-    mainFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-    mainFrame.addWindowListener(new WindowAdapter() {
-      @Override
-      public void windowClosed(WindowEvent e) {
-        ServiceManager.stop();
-      }
-    });
-    mainFrame.addComponentListener(new ComponentListener() {
-      @Override
-      public void componentResized(ComponentEvent e) {
-        jmeEngineService.enqueue(jmeEngineService::applyCameraFrustumSizes);
-      }
 
-      @Override
-      public void componentMoved(ComponentEvent e) {
 
-      }
-
-      @Override
-      public void componentShown(ComponentEvent e) {
-
-      }
-
-      @Override
-      public void componentHidden(ComponentEvent e) {
-
-      }
-    });
-    mainPage = new MainPage();
-    mainFrame.setJMenuBar(mainMenu);
-    mainFrame.setContentPane(mainPage);
     registerTools();
 
     // position and size the jme panel
 
     AwtPanel jmePanel = jmeEngineService.getAWTPanel();
-    jmePanel.setSize(DevKitConfig.getInstance().getCameraDimension());
+    jmePanel.setSize(devKitConfig.getCameraDimension());
     ImageIcon icon = new ImageIcon("images/middle.gif");
     mainPage.addTabCenterPanel("Canvas", jmePanel, icon);
 
@@ -86,9 +54,6 @@ public class MainPageController {
 
     // save any changes of movement and size to the configuration.
     // frame.addComponentListener(new WindowSizeAndLocationSaver(MainPage.WINDOW_ID));
-    mainFrame.pack();
-    // show the window.
-    mainFrame.setVisible(true);
 
   }
 

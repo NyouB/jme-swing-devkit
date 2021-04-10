@@ -8,7 +8,6 @@ import fr.exratio.jme.devkit.config.DevKitConfig;
 import fr.exratio.jme.devkit.registration.spatial.AssetLinkNodeRegistrar.AssetLinkNodeTreeNode;
 import fr.exratio.jme.devkit.service.EditorJmeApplication;
 import fr.exratio.jme.devkit.service.SceneTreeService;
-import fr.exratio.jme.devkit.service.ServiceManager;
 import fr.exratio.jme.devkit.swing.ComponentUtilities;
 import java.awt.Insets;
 import java.awt.Window;
@@ -29,11 +28,19 @@ import javax.swing.SwingUtilities;
 
 public class AddLinkedAsset {
 
+  private final EditorJmeApplication editorJmeApplication;
+  private final SceneTreeService sceneTreeService;
+
   private JPanel rootPanel;
   private JList<String> modelsList;
   private JButton addLinkedAssetButton;
 
-  public AddLinkedAsset(final AssetLinkNodeTreeNode assetLinkNodeTreeNode, String assetRootDirectory) {
+  public AddLinkedAsset(final AssetLinkNodeTreeNode assetLinkNodeTreeNode,
+      String assetRootDirectory,
+      EditorJmeApplication editorJmeApplication,
+      SceneTreeService sceneTreeService) {
+    this.editorJmeApplication = editorJmeApplication;
+    this.sceneTreeService = sceneTreeService;
 
     List<Path> modelFiles = null;
 
@@ -85,9 +92,7 @@ public class AddLinkedAsset {
             modelPaths.add(modelsList.getModel().getElementAt(index));
           }
 
-          EditorJmeApplication engineService = ServiceManager.getService(EditorJmeApplication.class);
-
-          engineService.enqueue(() -> {
+          editorJmeApplication.enqueue(() -> {
 
             AssetLinkNode assetLinkNode = assetLinkNodeTreeNode.getUserObject();
 
@@ -96,14 +101,13 @@ public class AddLinkedAsset {
               assetLinkNode.addLinkedChild(new ModelKey(assetPath));
             }
 
-            assetLinkNode.attachLinkedChildren(engineService.getAssetManager());
+            assetLinkNode.attachLinkedChildren(editorJmeApplication.getAssetManager());
 
             // close the window on the AWT thread.
             SwingUtilities.invokeLater(() -> {
 
               // ServiceManager.getService(SceneTreeService.class).reloadTree();
-              ServiceManager.getService(SceneTreeService.class)
-                  .reloadTreeNode(assetLinkNodeTreeNode);
+              this.sceneTreeService.reloadTreeNode(assetLinkNodeTreeNode);
 
               JButton button = (JButton) e.getSource();
               Window window = SwingUtilities.getWindowAncestor(button);
