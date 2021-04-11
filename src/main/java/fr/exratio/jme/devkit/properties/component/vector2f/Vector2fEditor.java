@@ -99,9 +99,7 @@ public class Vector2fEditor extends AbstractPropertyEditor<Vector2f> {
         GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
   }
 
-  /**
-   * @noinspection ALL
-   */
+
   public JComponent $$$getRootComponent$$$() {
     return contentPanel;
   }

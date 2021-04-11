@@ -127,9 +127,7 @@ public class AnimControlEditor extends AbstractPropertyEditor<AnimControl> {
     scrollPane1.setViewportView(animationsList);
   }
 
-  /**
-   * @noinspection ALL
-   */
+
   public JComponent $$$getRootComponent$$$() {
     return contentPanel;
   }
