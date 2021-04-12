@@ -4,6 +4,8 @@ import com.jme3.scene.Geometry;
 import com.jme3.ui.Picture;
 import fr.exratio.jme.devkit.properties.PropertySection;
 import fr.exratio.jme.devkit.properties.component.AbstractJmeDevKitTest;
+import fr.exratio.jme.devkit.service.EventService;
+import fr.exratio.jme.devkit.service.ServiceManager;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,6 +16,7 @@ class InheritedMatchFinderTest extends AbstractJmeDevKitTest {
 
   @Test
   void find() {
+    ServiceManager.registerService(EventService.class);
     Picture picture = new Picture("myTestGeometry");
     InheritedMatchFinder finder = new InheritedMatchFinder();
     List<PropertySection> res = finder.find(picture);
