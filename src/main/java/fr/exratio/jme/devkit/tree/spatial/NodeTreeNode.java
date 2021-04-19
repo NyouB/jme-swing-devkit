@@ -18,7 +18,8 @@ public class NodeTreeNode extends SpatialTreeNode {
 
   @Override
   public JPopupMenu getContextMenu() {
-    return new NodeContextMenu(this);
+    return new NodeContextMenu(this, createCylinderAction, createDomeAction, createQuadAction,
+        createSphereAction);
   }
 
 }

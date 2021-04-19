@@ -25,6 +25,7 @@ public class SceneGraphService {
 
   private final EditorJmeApplication engineService;
   private final EventBus eventBus;
+  private Object selectedObject;
 
 
   public SceneGraphService(@Autowired EditorJmeApplication jmeEngineService,
@@ -99,7 +100,8 @@ public class SceneGraphService {
   public void addLight(Light light, Spatial parentNode) {
 
     // attach the light on the JME thread. The light no longer belongs to AWT at this point.
-    engineService.enqueue(() -> { parentNode.addLight(light);
+    engineService.enqueue(() -> {
+      parentNode.addLight(light);
 
       // Set the various configurations on the JME thread.
       // For example a point light needs a position so we position it at the camera position.
@@ -160,11 +162,33 @@ public class SceneGraphService {
    * @param parent The Spatial that holds the light.
    */
   public void removeTreeNode(Control control, Spatial parent) {
+    engineService.enqueue(() -> parent.removeControl(control));
+
+    eventBus.post(new ControlRemovedEvent(control));
+  }
+
+  /**
+   * Removes the selected control from the tree and scene. This method **must** be called from the
+   * AWT thread. Fire a @see ControlRemovedEvent on creation.
+   *
+   * @param selectedObject the object selected
+   */
+  public void selectObject(Object selectedObject) {
     engineService.enqueue(() -> {
       parent.removeControl(control);
     });
 
     eventBus.post(new ControlRemovedEvent(control));
+  }
+
+  /**
+   * Removes the selected control from the tree and scene. This method **must** be called from the
+   * AWT thread. Fire a @see ControlRemovedEvent on creation.
+   *
+   * @param selectedObject the object selected
+   */
+  public Object getSelectedObject() {
+    return selectedObject;
   }
 
 }

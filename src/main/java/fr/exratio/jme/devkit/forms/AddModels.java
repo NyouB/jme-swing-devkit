@@ -11,6 +11,7 @@ import fr.exratio.jme.devkit.service.ServiceManager;
 import fr.exratio.jme.devkit.swing.ComponentUtilities;
 import fr.exratio.jme.devkit.tree.spatial.NodeTreeNode;
 import java.awt.Insets;
+import java.awt.PopupMenu;
 import java.awt.Window;
 import java.io.File;
 import java.io.IOException;

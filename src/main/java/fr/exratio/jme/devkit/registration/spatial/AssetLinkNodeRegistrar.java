@@ -58,7 +58,8 @@ public class AssetLinkNodeRegistrar extends NodeRegistrar {
 
     public AssetLinkNodeContextMenu(AssetLinkNodeTreeNode assetLinkNodeTreeNode)
         throws HeadlessException {
-      super(assetLinkNodeTreeNode);
+      super(assetLinkNodeTreeNode, createCylinderAction, createDomeAction, createQuadAction,
+          createSphereAction);
 
       add(new JSeparator());
 

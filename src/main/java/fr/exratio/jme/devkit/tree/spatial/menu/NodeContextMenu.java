@@ -9,10 +9,11 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.shape.Cylinder;
-import com.jme3.scene.shape.Dome;
-import com.jme3.scene.shape.Quad;
-import com.jme3.scene.shape.Sphere;
+import fr.exratio.jme.devkit.action.CreateBoxAction;
+import fr.exratio.jme.devkit.action.CreateCylinderAction;
+import fr.exratio.jme.devkit.action.CreateDomeAction;
+import fr.exratio.jme.devkit.action.CreateQuadAction;
+import fr.exratio.jme.devkit.action.CreateSphereAction;
 import fr.exratio.jme.devkit.forms.AddModels;
 import fr.exratio.jme.devkit.forms.CreateSkyBoxDialog;
 import fr.exratio.jme.devkit.registration.spatial.GeometryRegistrar;
@@ -38,13 +39,23 @@ import javax.swing.WindowConstants;
 
 public class NodeContextMenu extends SpatialContextMenu {
 
-  private final NodeTreeNode nodeTreeNode;
+  private final CreateBoxAction createBoxAction;
+  private final CreateCylinderAction createCylinderAction;
+  private final CreateDomeAction createDomeAction;
+  private final CreateQuadAction createQuadAction;
+  private final CreateSphereAction createSphereAction;
 
-  public NodeContextMenu(NodeTreeNode nodeTreeNode) throws HeadlessException {
-    super(nodeTreeNode);
-
-    this.nodeTreeNode = nodeTreeNode;
-
+  public NodeContextMenu(CreateBoxAction createBoxAction,
+      CreateCylinderAction createCylinderAction,
+      CreateDomeAction createDomeAction,
+      CreateQuadAction createQuadAction,
+      CreateSphereAction createSphereAction) throws HeadlessException {
+    super();
+    this.createBoxAction = createBoxAction;
+    this.createCylinderAction = createCylinderAction;
+    this.createDomeAction = createDomeAction;
+    this.createQuadAction = createQuadAction;
+    this.createSphereAction = createSphereAction;
     // Add -> Shape
     JMenu addShapeMenu = (JMenu) getAddMenu().add(new JMenu("Shape..."));
     addShapes(addShapeMenu);
@@ -72,7 +83,6 @@ public class NodeContextMenu extends SpatialContextMenu {
     // Add -> SkyBox...
     JMenuItem genSkyBoxItem = getAddMenu().add(new JMenuItem("SkyBox..."));
     genSkyBoxItem.addActionListener(e -> {
-
       CreateSkyBoxDialog createSkyBoxDialog = new CreateSkyBoxDialog(nodeTreeNode);
 
       JFrame mainWindow = (JFrame) SwingUtilities
@@ -84,7 +94,6 @@ public class NodeContextMenu extends SpatialContextMenu {
       dialog.pack();
       dialog.setLocationRelativeTo(mainWindow);
       dialog.setVisible(true);
-
     });
     genSkyBoxItem.setMnemonic('K');
 
@@ -165,50 +174,6 @@ public class NodeContextMenu extends SpatialContextMenu {
 
   private void addShapes(JMenu parent) {
 
-    JMenuItem cubeItem = parent.add(new JMenuItem("Cube"));
-    cubeItem.addActionListener(e -> {
-      ServiceManager.getService(SceneGraphService.class).addSpatial(
-          createShape(new com.jme3.scene.shape.Box(1, 1, 1), "Cube"), nodeTreeNode.getUserObject());
-    });
-
-    JMenuItem cylinderItem = parent.add(new JMenuItem("Cylinder"));
-    cylinderItem.addActionListener(e -> {
-      ServiceManager.getService(SceneGraphService.class).addSpatial(
-          createShape(new Cylinder(32, 32, 1.0f, 1.0f, true), "Cylinder"), nodeTreeNode.getUserObject());
-    });
-
-    JMenuItem domeItem = parent.add(new JMenuItem("Dome"));
-    domeItem.addActionListener(e -> {
-      ServiceManager.getService(SceneGraphService.class).addSpatial(
-          createShape(new Dome(32, 32, 1.0f), "Dome"), nodeTreeNode.getUserObject());
-    });
-
-    JMenuItem quadItem = parent.add(new JMenuItem("Quad"));
-    quadItem.addActionListener(e -> {
-      ServiceManager.getService(SceneGraphService.class).addSpatial(
-          createShape(new Quad(1.0f, 1.0f), "Quad"), nodeTreeNode.getUserObject());
-    });
-
-    JMenuItem sphereItem = parent.add(new JMenuItem("Sphere"));
-    sphereItem.addActionListener(e -> {
-      ServiceManager.getService(SceneGraphService.class).addSpatial(
-          createShape(new Sphere(32, 32, 1.0f), "Sphere"), nodeTreeNode.getUserObject());
-    });
 
   }
-
-  private Geometry createShape(Mesh mesh, String name) {
-
-    EditorJmeApplication engineService = ServiceManager.getService(EditorJmeApplication.class);
-
-    Geometry geometry = new Geometry(name, mesh);
-
-    Material material = new Material(engineService.getAssetManager(), MAT_DEF);
-    geometry.setMaterial(material);
-
-    material.setColor(COLOR, ColorRGBA.Blue);
-
-    return geometry;
-  }
-
 }

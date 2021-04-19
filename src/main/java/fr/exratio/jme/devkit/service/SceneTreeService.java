@@ -10,6 +10,8 @@ import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
+import fr.exratio.jme.devkit.action.HighLightAction;
+import fr.exratio.jme.devkit.action.RemoveHighLightAction;
 import fr.exratio.jme.devkit.event.ControlCreatedEvent;
 import fr.exratio.jme.devkit.event.ControlRemovedEvent;
 import fr.exratio.jme.devkit.event.LightCreatedEvent;
@@ -17,7 +19,6 @@ import fr.exratio.jme.devkit.event.LightRemovedEvent;
 import fr.exratio.jme.devkit.event.SpatialCreatedEvent;
 import fr.exratio.jme.devkit.event.SpatialNameChangedEvent;
 import fr.exratio.jme.devkit.event.SpatialRemovedEvent;
-import fr.exratio.jme.devkit.jme.SceneObjectHighlighterState;
 import fr.exratio.jme.devkit.main.MainPage.Zone;
 import fr.exratio.jme.devkit.registration.Registrar;
 import fr.exratio.jme.devkit.registration.spatial.GeometryRegistrar;
@@ -38,6 +39,7 @@ import fr.exratio.jme.devkit.tree.spatial.SpatialTreeNode;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JScrollPane;
@@ -67,12 +69,12 @@ public class SceneTreeService extends Tool {
   private final long threadId = Thread.currentThread().getId();
   // These are "fake" nodes. They are added to their counterparts so we don't see things like "statsappstate".
   // These nodes are created, queried and modified on the JME thread ONLY.
-  private Node guiNode;
-  private Node rootNode;
+  private Node jmeGuiNode;
+  private Node jmeRootNode;
   // Our "root" nodes. These nodes are not deletable.
-  private NodeTreeNode guiNodeTreeNode;
+  private NodeTreeNode editorGuiNode;
   // private final SceneObjectHighlighter sceneObjectHighlighter = new SceneObjectHighlighter();
-  private NodeTreeNode rootNodeTreeNode;
+  private NodeTreeNode editorRootNode;
 
   private final Map<Object, DefaultMutableTreeNode> objectToNodeMap = new HashMap<>();
   private final EventBus eventBus;
@@ -80,19 +82,28 @@ public class SceneTreeService extends Tool {
   private final RegistrationService registrationService;
   private final SceneGraphService sceneGraphService;
   private final PropertyInspectorTool propertyInspectorTool;
+  private final HighLightSpatialAction highLightSpatialAction;
+  private final HighLightLightAction highLightLightAction;
+  private final RemoveHighLightAction removeHighLightAction;
 
   @Autowired
   public SceneTreeService(EventBus eventBus,
       EditorJmeApplication editorJmeApplication,
       RegistrationService registrationService,
       SceneGraphService sceneGraphService,
-      PropertyInspectorTool propertyInspectorTool) {
+      PropertyInspectorTool propertyInspectorTool,
+      HighLightSpatialAction highLightSpatialAction,
+      HighLightLightAction highLightLightAction,
+      RemoveHighLightAction removeHighLightAction) {
     super(SceneTreeService.class.getName(), TITLE, null, Zone.LEFT_TOP, ViewMode.PIN, true);
     this.eventBus = eventBus;
     this.editorJmeApplication = editorJmeApplication;
     this.registrationService = registrationService;
     this.sceneGraphService = sceneGraphService;
     this.propertyInspectorTool = propertyInspectorTool;
+    this.highLightSpatialAction = highLightSpatialAction;
+    this.highLightLightAction = highLightLightAction;
+    this.removeHighLightAction = removeHighLightAction;
     initialize();
     zone.add(this);
   }
@@ -118,32 +129,32 @@ public class SceneTreeService extends Tool {
 
       // create the nodes on the JME thread.
       // These are "fake" nodes. They are added to their counterparts so we don't see things like "StatsAppState".
-      guiNode = new Node("Gui Node");
-      rootNode = new Node("Root Node");
+      jmeGuiNode = new Node("Gui Node");
+      jmeRootNode = new Node("Root Node");
 
       // put the "not deletable" in the "root" nodes so we can reject deleting them.
-      guiNode.setUserData(TreeConstants.UNDELETABLE_FLAG, TreeConstants.UNDELETABLE_FLAG);
-      rootNode.setUserData(TreeConstants.UNDELETABLE_FLAG, TreeConstants.UNDELETABLE_FLAG);
+      jmeGuiNode.setUserData(TreeConstants.UNDELETABLE_FLAG, TreeConstants.UNDELETABLE_FLAG);
+      jmeRootNode.setUserData(TreeConstants.UNDELETABLE_FLAG, TreeConstants.UNDELETABLE_FLAG);
 
       // put the "root node" flag in the "root" nodes so we know when we've hit our fake nodes.
-      rootNode.setUserData(TreeConstants.TREE_ROOT, TreeConstants.TREE_ROOT);
-      guiNode.setUserData(TreeConstants.TREE_ROOT, TreeConstants.TREE_ROOT);
+      jmeRootNode.setUserData(TreeConstants.TREE_ROOT, TreeConstants.TREE_ROOT);
+      jmeGuiNode.setUserData(TreeConstants.TREE_ROOT, TreeConstants.TREE_ROOT);
 
       // Attach them in the JME thread.
-      editorJmeApplication.getGuiNode().attachChild(guiNode);
-      editorJmeApplication.getRootNode().attachChild(rootNode);
+      editorJmeApplication.getGuiNode().attachChild(jmeGuiNode);
+      editorJmeApplication.getRootNode().attachChild(jmeRootNode);
 
       SwingUtilities.invokeLater(() -> {
 
         // create the TreeItems on the Swing thread.
-        guiNodeTreeNode = new NodeTreeNode(guiNode);
-        rootNodeTreeNode = new NodeTreeNode(rootNode);
+        editorGuiNode = new NodeTreeNode(jmeGuiNode);
+        editorRootNode = new NodeTreeNode(jmeRootNode);
 
-        objectToNodeMap.put(guiNode, guiNodeTreeNode);
-        objectToNodeMap.put(rootNode, rootNodeTreeNode);
+        objectToNodeMap.put(jmeGuiNode, editorGuiNode);
+        objectToNodeMap.put(jmeRootNode, editorRootNode);
 
-        treeRoot.add(guiNodeTreeNode);
-        treeRoot.add(rootNodeTreeNode);
+        treeRoot.add(editorGuiNode);
+        treeRoot.add(editorRootNode);
 
         // update the tree to reflect any changes made.
         reloadTree();
@@ -154,14 +165,7 @@ public class SceneTreeService extends Tool {
     tree.getSelectionModel().addTreeSelectionListener(e -> {
 
       TreePath[] paths = tree.getSelectionPaths();
-      SceneObjectHighlighterState highlighterState = editorJmeApplication.getStateManager()
-          .getState(SceneObjectHighlighterState.class);
-
-      // highlighting
-      // remove and rebuild all highlights.
-      // we could probably not be so aggressive and remove items that are no longer selected.
-      // lets just get this working for now.
-      editorJmeApplication.enqueue(highlighterState::removeAllHighlights);
+      removeHighLightAction.actionPerformed(new ActionEvent(tree, 0, HighLightAction.HIGHLIGHT_ACTION));
 
       if (paths == null) {
         return;
@@ -183,15 +187,11 @@ public class SceneTreeService extends Tool {
 
           if (treeNode.getUserObject() instanceof Spatial) {
 
-            editorJmeApplication
-                .enqueue(() -> highlighterState
-                    .highlight((Spatial) treeNode.getUserObject()));
+            highLightSpatialAction.actionPerformed(null);
 
           } else if (treeNode.getUserObject() instanceof Mesh) {
 
-            GeometryTreeNode parent = (GeometryTreeNode) treeNode.getParent();
-            editorJmeApplication.enqueue(
-                () -> highlighterState.highlightMesh(parent.getUserObject()));
+            highLightSpatialAction.actionPerformed();
 
 
           } else if (treeNode.getUserObject() instanceof LightProbe) {
@@ -229,8 +229,8 @@ public class SceneTreeService extends Tool {
    *
    * @return the Scene Tree RootNode
    */
-  public Node getRootNode() {
-    return rootNode;
+  public Node getJmeRootNode() {
+    return jmeRootNode;
   }
 
   /**
@@ -238,8 +238,8 @@ public class SceneTreeService extends Tool {
    *
    * @return the root node tree element.
    */
-  public NodeTreeNode getRootNodeTreeNode() {
-    return rootNodeTreeNode;
+  public NodeTreeNode getEditorRootNode() {
+    return editorRootNode;
   }
 
   /**
@@ -248,8 +248,8 @@ public class SceneTreeService extends Tool {
    *
    * @return the Scene Tree GuiNode
    */
-  public Node getGuiNode() {
-    return guiNode;
+  public Node getJmeGuiNode() {
+    return jmeGuiNode;
   }
 
   /**
@@ -257,8 +257,8 @@ public class SceneTreeService extends Tool {
    *
    * @return the gui node tree element.
    */
-  public NodeTreeNode getGuiNodeTreeNode() {
-    return guiNodeTreeNode;
+  public NodeTreeNode getEditorGuiNode() {
+    return editorGuiNode;
   }
 
   /**
@@ -287,7 +287,7 @@ public class SceneTreeService extends Tool {
   @Subscribe
   public void onSpatialCreatedEvent(SpatialCreatedEvent event) {
     Spatial spatial = event.getSpatial();
-    Spatial parent = spatial.getParent() == null ? rootNode : spatial.getParent();
+    Spatial parent = spatial.getParent() == null ? jmeRootNode : spatial.getParent();
     if (spatial == null) {
       LOGGER.warn(
           "-- onSpatialCreatedEvent() the spatial contained in the event is null. Doing nothing");
@@ -301,7 +301,7 @@ public class SceneTreeService extends Tool {
   @Subscribe
   public void onControlCreatedEvent(ControlCreatedEvent event) {
     Control control = event.getControl();
-    Spatial parent = event.getParent() == null ? rootNode : event.getParent();
+    Spatial parent = event.getParent() == null ? jmeRootNode : event.getParent();
     if (control == null) {
       LOGGER.warn(
           "-- onControlCreatedEvent() the control contained in the event is null. Doing nothing");
@@ -315,7 +315,7 @@ public class SceneTreeService extends Tool {
   @Subscribe
   public void onLightCreatedEvent(LightCreatedEvent event) {
     Light light = event.getLight();
-    Spatial parent = event.getParent() == null ? rootNode : event.getParent();
+    Spatial parent = event.getParent() == null ? jmeRootNode : event.getParent();
     if (light == null) {
       LOGGER.warn(
           "-- onLightCreatedEvent() the light contained in the event is null. Doing nothing");

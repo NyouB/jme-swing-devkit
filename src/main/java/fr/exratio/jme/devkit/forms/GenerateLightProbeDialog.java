@@ -145,8 +145,8 @@ public class GenerateLightProbeDialog {
     DefaultMutableTreeNode treeRoot = new DefaultMutableTreeNode("Root");
     sceneTree.setModel(new DefaultTreeModel(treeRoot));
 
-    NodeTreeNode guiNode = new NodeTreeNode(sceneTreeService.getGuiNode());
-    NodeTreeNode rootNode = new NodeTreeNode(sceneTreeService.getRootNode());
+    NodeTreeNode guiNode = new NodeTreeNode(sceneTreeService.getJmeGuiNode());
+    NodeTreeNode rootNode = new NodeTreeNode(sceneTreeService.getJmeRootNode());
 
     treeRoot.add(guiNode);
     treeRoot.add(rootNode);

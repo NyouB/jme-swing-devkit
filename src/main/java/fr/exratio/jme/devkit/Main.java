@@ -14,8 +14,8 @@ import fr.exratio.jme.devkit.service.PluginService;
 import fr.exratio.jme.devkit.service.ServiceManager;
 import fr.exratio.jme.devkit.service.impl.EditorJmeApplicationImpl;
 import fr.exratio.jme.devkit.service.inspector.PropertyInspectorTool;
+import fr.exratio.jme.devkit.swing.MainMenu;
 import fr.exratio.jme.devkit.swing.SwingTheme;
-import java.awt.Frame;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.WindowAdapter;
@@ -30,12 +30,9 @@ import javax.swing.SwingUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-@SpringBootApplication
-public class Main implements CommandLineRunner {
+public class Main {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
   private final EditorJmeApplication jmeEngineService;
@@ -43,22 +40,28 @@ public class Main implements CommandLineRunner {
   private final PluginService pluginService;
   private final MainPageController mainPageController;
   private final JFrame mainFrame;
+  private final MainMenu mainMenu;
 
   public static void main(String[] args) {
-    new SpringApplicationBuilder(Main.class).headless(false).run(args);
+    AnnotationConfigApplicationContext context =
+        new AnnotationConfigApplicationContext(SpringConfiguration.class);
+    Main bean = context.getBean(Main.class);
+    bean.run(args);
   }
 
-  public Main(@Autowired EditorJmeApplicationImpl jmeEngineService,
-      @Autowired DevKitConfig devKitConfig,
-      @Autowired PluginService pluginService, @Autowired MainPageController mainPageController) {
+  @Autowired
+  public Main(EditorJmeApplicationImpl jmeEngineService,
+      DevKitConfig devKitConfig,
+      PluginService pluginService, MainPageController mainPageController,
+      MainMenu mainMenu) {
     this.jmeEngineService = jmeEngineService;
     this.devKitConfig = devKitConfig;
     this.pluginService = pluginService;
     this.mainPageController = mainPageController;
+    this.mainMenu = mainMenu;
     mainFrame = new JFrame();
   }
 
-  @Override
   public void run(String... args) {
 
     LOGGER.info("Engine Version: {}", JmeSystem.getFullName());
@@ -78,26 +81,19 @@ public class Main implements CommandLineRunner {
     // The first "pass" involves just setting up the environment. Do as little as possible just so we can get the
     // window visible.
     SwingUtilities.invokeLater(() -> {
-
-      // register all of our services...
-      // All of these services are created on the AWT thread.
       // Why is this being set?
       JPopupMenu.setDefaultLightWeightPopupEnabled(false);
-
-      // now we have the window visible we can display progress data and load anything else we need.
-
       //fix the node being display only on resizing
-      mainPageController.getMainFrame().revalidate();
-      // load any available plugins.
-      // I'm not sure where we should put this.
-
+      mainFrame.revalidate();
+      mainFrame.pack();
+      // show the window.
+      mainFrame.setVisible(true);
     });
 
-    mainFrame.pack();
-    // show the window.
-    mainFrame.setVisible(true);
     // verify that the asset root directory has been set properly.
-    checkAssetRootDir(mainPageController.getMainFrame());
+    checkAssetRootDir();
+    // load any available plugins.
+    // I'm not sure where we should put this.
     pluginService.loadPlugins();
   }
 
@@ -175,11 +171,12 @@ public class Main implements CommandLineRunner {
 
   }
 
+
   /**
    * Verifies the Asset Root directory. If an asset root has not been specified, it is defaulted to
    * "src/main/resources". A warning is displayed if the asset root directory does not exist.
    */
-  private void checkAssetRootDir(Frame frame) {
+  private void checkAssetRootDir() {
 
     // if the asset root dir is null, specify the default dir and notify the user.
     if (devKitConfig.getAssetRootDir() == null) {
@@ -187,7 +184,7 @@ public class Main implements CommandLineRunner {
       Path assetRoot = Paths.get("src", "main", "resources");
       devKitConfig.setAssetRootDir(assetRoot.toAbsolutePath().toString());
 
-      JOptionPane.showMessageDialog(frame,
+      JOptionPane.showMessageDialog(mainFrame,
           "Your Asset Root directory has not been set and has been assigned a default value " +
               "of ./src/main/resources/"
               + System.lineSeparator()
@@ -199,7 +196,7 @@ public class Main implements CommandLineRunner {
     // notify the user that the asset root dir doesn't exist.
     if (!new File(devKitConfig.getAssetRootDir()).exists()) {
 
-      JOptionPane.showMessageDialog(frame,
+      JOptionPane.showMessageDialog(mainFrame,
           "The specified Asset Root directory does not exist. Please specify a valid Asset Root " +
               "directory by navigating to Edit - Configuration",
           "Invalid Asset Root",

@@ -50,7 +50,8 @@ public class InstancedNodeSpatialRegistrar extends NodeRegistrar {
 
     public InstancedNodeContextMenu(InstancedNodeTreeNode instancedNodeTreeNode)
         throws HeadlessException {
-      super(instancedNodeTreeNode);
+      super(instancedNodeTreeNode, createCylinderAction, createDomeAction, createQuadAction,
+          createSphereAction);
 
       JMenuItem instanceItem = add(new JMenuItem("Instance Items"));
       instanceItem.addActionListener(e -> {

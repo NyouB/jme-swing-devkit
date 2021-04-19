@@ -51,7 +51,8 @@ public class BatchNodeRegistrar extends NodeRegistrar {
   public static class BatchNodeContextMenu extends NodeContextMenu {
 
     public BatchNodeContextMenu(BatchNodeTreeNode nodeTreeNode) throws HeadlessException {
-      super(nodeTreeNode);
+      super(nodeTreeNode, createCylinderAction, createDomeAction, createQuadAction,
+          createSphereAction);
 
       add(new JSeparator());
 

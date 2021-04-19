@@ -37,7 +37,7 @@ public class SpatialContextMenu extends JPopupMenu {
     private final JMenu addMenu;
     SpatialTreeNode spatialTreeNode;
 
-    public SpatialContextMenu(final SpatialTreeNode spatialTreeNode) {
+    public SpatialContextMenu() {
         super();
 
         this.spatialTreeNode = spatialTreeNode;

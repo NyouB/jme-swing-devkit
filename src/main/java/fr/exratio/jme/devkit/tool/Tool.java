@@ -7,15 +7,12 @@ package fr.exratio.jme.devkit.tool;
 import com.jformdesigner.annotations.BeanInfo;
 import fr.exratio.jme.devkit.main.MainPage;
 import fr.exratio.jme.devkit.main.MainPage.Zone;
-import fr.exratio.jme.devkit.service.ServiceManager;
-import fr.exratio.jme.devkit.service.ToolLocationService;
 import java.awt.BorderLayout;
 import javax.swing.Icon;
 import javax.swing.JPanel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author Quentin Raphaneau
@@ -32,8 +29,6 @@ public class Tool extends JPanel {
   protected ViewMode viewMode = ViewMode.PIN;
   protected boolean isDisplayed = true;
   protected boolean registered = false;
-  @Autowired
-  protected ToolLocationService toolLocationService;
 
   public Tool() {
     initComponents();
@@ -107,7 +102,7 @@ public class Tool extends JPanel {
   }
 
   public void setZone(Zone newZone) {
-    //to prevent the tool to be docked if the zone is changed while the voiewmode is window
+    //to prevent the tool to be docked if the zone is changed while the viewmode is window
     if (viewMode == ViewMode.WINDOW) {
       this.zone = newZone;
       return;

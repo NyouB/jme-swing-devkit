@@ -7,8 +7,7 @@ import fr.exratio.jme.devkit.forms.ImportModel;
 import fr.exratio.jme.devkit.jme.AppStateUtils;
 import fr.exratio.jme.devkit.jme.CameraRotationWidgetState;
 import fr.exratio.jme.devkit.jme.DebugGridState;
-import fr.exratio.jme.devkit.service.EditorJmeApplication;
-import fr.exratio.jme.devkit.service.ServiceManager;
+import fr.exratio.jme.devkit.lifecycle.ExitAction;
 import java.awt.Frame;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JDialog;
@@ -28,46 +27,40 @@ public class MainMenu extends JMenuBar {
   JMenuItem configItem;
   JMenu viewMenu;
   JMenu windowItem;
+  private final ExitAction exitAction;
+  private final DevKitConfig devKitConfig;
 
-  public MainMenu(Frame frame) {
+  public MainMenu(ExitAction exitAction, DevKitConfig devKitConfig) {
+    this.exitAction = exitAction;
+    this.devKitConfig = devKitConfig;
     // FILE menu
     fileMenu = add(new JMenu("File"));
 
     importModelItem = fileMenu.add(new JMenuItem("Import Model..."));
     importModelItem.addActionListener(e -> {
-
       ImportModel importModel = new ImportModel();
-      JDialog importModelDialog = new JDialog(frame, "Import Model", true);
+      JDialog importModelDialog = new JDialog((Frame) null, "Import Model", true);
       importModelDialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
       importModelDialog.setContentPane(importModel.$$$getRootComponent$$$());
       importModelDialog.pack();
-      importModelDialog.setLocationRelativeTo(frame);
-
       importModelDialog.setVisible(true);
-
     });
 
     fileMenu.add(new JSeparator());
 
     JMenuItem exitMenuItem = fileMenu.add(new JMenuItem("Exit"));
-    exitMenuItem.addActionListener(e -> {
-      ServiceManager.getService(EditorJmeApplication.class).stop();
-      frame.dispose();
-    });
+    exitMenuItem.setAction(exitAction);
 
     // EDIT menu
     editMenu = add(new JMenu("Edit"));
 
     configItem = editMenu.add(new JMenuItem("Configuration..."));
     configItem.addActionListener(e -> {
-
       Configuration configuration = new Configuration();
-
-      JDialog configDialog = new JDialog(frame, Configuration.WINDOW_ID, true);
+      JDialog configDialog = new JDialog((Frame) null, Configuration.WINDOW_ID, true);
       configDialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
       configDialog.setContentPane(configuration.$$$getRootComponent$$$());
       configDialog.pack();
-      configDialog.setLocationRelativeTo(frame);
       configDialog.setVisible(true);
 
     });
@@ -84,38 +77,33 @@ public class MainMenu extends JMenuBar {
     JCheckBoxMenuItem camRotWidgetItem = (JCheckBoxMenuItem) viewMenu
         .add(new JCheckBoxMenuItem("Camera Rotation Widget"));
     camRotWidgetItem
-        .setSelected(DevKitConfig.getInstance().isShowCamRotationWidget());
+        .setSelected(devKitConfig.isShowCamRotationWidget());
     camRotWidgetItem.addActionListener(e -> {
       JCheckBoxMenuItem checkBoxMenuItem = (JCheckBoxMenuItem) e.getSource();
       final boolean isSelected = checkBoxMenuItem.isSelected();
 
       AppStateUtils.toggleAppState(CameraRotationWidgetState.class, isSelected);
 
-      DevKitConfig.getInstance().setShowCamRotationWidget(isSelected);
-      DevKitConfig.getInstance().save();
+      devKitConfig.setShowCamRotationWidget(isSelected);
+      devKitConfig.save();
     });
 
     JCheckBoxMenuItem debugGridItem = (JCheckBoxMenuItem) viewMenu
         .add(new JCheckBoxMenuItem("Grid"));
-    debugGridItem.setSelected(DevKitConfig.getInstance().isShowGrid());
+    debugGridItem.setSelected(devKitConfig.isShowGrid());
     debugGridItem.addActionListener(e -> {
       JCheckBoxMenuItem checkBoxMenuItem = (JCheckBoxMenuItem) e.getSource();
       final boolean isSelected = checkBoxMenuItem.isSelected();
 
       AppStateUtils.toggleAppState(DebugGridState.class, isSelected);
 
-      DevKitConfig.getInstance().setShowGrid(isSelected);
-      DevKitConfig.getInstance().save();
+      devKitConfig.setShowGrid(isSelected);
+      devKitConfig.save();
 
     });
 
     // WINDOW menu
     windowItem = add(new JMenu("Window"));
-
-
-
-
-
   }
 
 }

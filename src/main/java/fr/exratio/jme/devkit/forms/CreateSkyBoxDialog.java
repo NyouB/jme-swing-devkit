@@ -7,16 +7,14 @@ import com.jme3.asset.AssetManager;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.Node;
 import com.jme3.texture.Texture;
 import com.jme3.util.SkyFactory;
 import com.jme3.util.SkyFactory.EnvMapType;
 import fr.exratio.jme.devkit.config.DevKitConfig;
 import fr.exratio.jme.devkit.jme.TextureImage;
-import fr.exratio.jme.devkit.service.EditorJmeApplication;
 import fr.exratio.jme.devkit.service.SceneGraphService;
-import fr.exratio.jme.devkit.service.ServiceManager;
 import fr.exratio.jme.devkit.swing.ComponentUtilities;
-import fr.exratio.jme.devkit.tree.spatial.NodeTreeNode;
 import java.awt.Insets;
 import java.awt.Window;
 import java.io.File;
@@ -30,6 +28,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -39,7 +38,8 @@ import javax.swing.SwingUtilities;
 /**
  * Generates a SkyBox and adds it to the given node.
  */
-public class CreateSkyBoxDialog {
+
+public class CreateSkyBoxDialog extends JDialog {
 
   private JPanel rootPanel;
   private JComboBox<EnvMapType> comboBox1;
@@ -47,7 +47,7 @@ public class CreateSkyBoxDialog {
   private JButton cancelButton;
   private JList<String> assetsList;
 
-  public CreateSkyBoxDialog(NodeTreeNode parentNode) {
+  public CreateSkyBoxDialog(AssetManager assetManager, SceneGraphService sceneGraphService) {
 
     populateListWithResources();
     populateComboBoxWithEnvMapTypes();
@@ -68,8 +68,6 @@ public class CreateSkyBoxDialog {
       // run this "later" so the disabled effect is visible.
       SwingUtilities.invokeLater(() -> {
 
-        AssetManager assetManager = ServiceManager.getService(EditorJmeApplication.class)
-            .getAssetManager();
         Texture texture = assetManager.loadTexture(texturePath);
 
         // we're safe calling this from the AWT thread.
@@ -80,8 +78,7 @@ public class CreateSkyBoxDialog {
         sky.setQueueBucket(Bucket.Sky);
 
         // add it to the scene tree. This will also safely add it to the scene.
-        ServiceManager.getService(SceneGraphService.class)
-            .addSpatial(sky, parentNode.getUserObject());
+        sceneGraphService.addSpatial(sky, (Node) sceneGraphService.getSelectedObject());
 
         JButton button = (JButton) e.getSource();
         Window window = SwingUtilities.getWindowAncestor(button);

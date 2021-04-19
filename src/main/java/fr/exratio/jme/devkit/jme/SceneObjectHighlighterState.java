@@ -3,6 +3,7 @@ package fr.exratio.jme.devkit.jme;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.BaseAppState;
+import com.jme3.asset.AssetManager;
 import com.jme3.bounding.BoundingBox;
 import com.jme3.bounding.BoundingSphere;
 import com.jme3.light.Light;
@@ -14,6 +15,7 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.debug.WireBox;
@@ -21,6 +23,7 @@ import com.jme3.scene.debug.WireSphere;
 import com.jme3.scene.shape.Sphere;
 import fr.exratio.jme.devkit.service.EditorJmeApplication;
 import fr.exratio.jme.devkit.service.ServiceManager;
+import fr.exratio.jme.devkit.tree.spatial.menu.SpatialContextMenu;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -40,7 +43,9 @@ public class SceneObjectHighlighterState extends BaseAppState {
   // we have the ability to highlight multiple objects.
   private final Map<Spatial, Spatial> highlightedSpatials = new HashMap<>(); // Map<SceneSpatial, HighlighterSpatial>
   private final Map<Light, Spatial> highlightedLights = new HashMap<>(); // Map<SceneLight, HighlighterSpatial>
+  private AssetManager assetManager;
   private Material highlightMaterial;
+
 
   public SceneObjectHighlighterState() {
 
@@ -53,6 +58,7 @@ public class SceneObjectHighlighterState extends BaseAppState {
     highlightMaterial = getApplication().getAssetManager()
         .loadMaterial("Materials/HighlightMaterial.j3m");
     ((SimpleApplication) app).getRootNode().attachChild(highlighterNode);
+    assetManager = app.getAssetManager();
 
   }
 
@@ -68,6 +74,13 @@ public class SceneObjectHighlighterState extends BaseAppState {
   protected void onDisable() {
   }
 
+  public void highlight(Object object) {
+    if(object instanceof Spatial){
+      highlight((Spatial) object);
+    }else if (object instanceof Light){
+      highlight((Light) object);
+    }
+  }
 
   public void highlight(Spatial spatial) {
 
@@ -90,7 +103,7 @@ public class SceneObjectHighlighterState extends BaseAppState {
     }
   }
 
-  public void highlightMesh(Geometry geometry) {
+  public void highlight(Geometry geometry) {
 
     // if we clone the geometry we also get all of the controls, which we don't think we want.
     // We use our own material, and sometimes the control changes material values that don't exist.
@@ -201,7 +214,7 @@ public class SceneObjectHighlighterState extends BaseAppState {
       Sphere sphere = new Sphere(16, 16, 0.5f);
       Geometry probeCenter = new Geometry("Light Probe Center", sphere);
       probeCenter.setMaterial(
-          new Material(ServiceManager.getService(EditorJmeApplication.class).getAssetManager(),
+          new Material(assetManager,
               "Common/MatDefs/Misc/reflect.j3md"));
       probeHighlighterNode.attachChild(probeCenter);
 
