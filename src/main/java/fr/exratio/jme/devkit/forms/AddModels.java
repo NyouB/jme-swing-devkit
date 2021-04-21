@@ -3,15 +3,13 @@ package fr.exratio.jme.devkit.forms;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
+import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import fr.exratio.jme.devkit.config.DevKitConfig;
 import fr.exratio.jme.devkit.service.EditorJmeApplication;
 import fr.exratio.jme.devkit.service.SceneGraphService;
-import fr.exratio.jme.devkit.service.ServiceManager;
 import fr.exratio.jme.devkit.swing.ComponentUtilities;
-import fr.exratio.jme.devkit.tree.spatial.NodeTreeNode;
 import java.awt.Insets;
-import java.awt.PopupMenu;
 import java.awt.Window;
 import java.io.File;
 import java.io.IOException;
@@ -26,14 +24,23 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class AddModels {
 
   private JList<String> modelsList;
   private JButton addModelsButton;
   private JPanel rootPanel;
+  private final SceneGraphService sceneGraphService;
+  private final EditorJmeApplication editorJmeApplication;
 
-  public AddModels(final NodeTreeNode nodeTreeNode) {
+  @Autowired
+  public AddModels(SceneGraphService sceneGraphService,
+      EditorJmeApplication editorJmeApplication) {
+    this.sceneGraphService = sceneGraphService;
+    this.editorJmeApplication = editorJmeApplication;
 
     List<Path> modelFiles = null;
 
@@ -47,6 +54,7 @@ public class AddModels {
       e.printStackTrace();
     }
 
+    //TODO : this relativisation may be simplify or move in utils. already done in apache commons?
     if (modelFiles != null) {
 
       DefaultListModel<String> listModel = new DefaultListModel<>();
@@ -81,16 +89,13 @@ public class AddModels {
         // then run this "later" so the GUI can display the "disabled" view now.
         SwingUtilities.invokeLater(() -> {
 
-          EditorJmeApplication engineService = ServiceManager.getService(EditorJmeApplication.class);
-          SceneGraphService sceneGraphService = ServiceManager.getService(SceneGraphService.class);
-
           for (int index : indices) {
 
             String assetPath = modelsList.getModel().getElementAt(index);
 
-            Spatial model = engineService.getAssetManager().loadModel(assetPath);
+            Spatial model = editorJmeApplication.getAssetManager().loadModel(assetPath);
 
-            sceneGraphService.addSpatial(model, nodeTreeNode.getUserObject());
+            sceneGraphService.add(model, (Node) sceneGraphService.getSelectedObject());
 
           }
 

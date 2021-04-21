@@ -1,11 +1,14 @@
 package devkit.appstate.tool;
 
+import com.google.common.eventbus.EventBus;
 import com.jme3.app.Application;
 import com.jme3.scene.Node;
+import org.springframework.stereotype.Component;
 
+@Component
 public class SpatialScaleToolState extends AbstractSpatialToolState {
 
-  public SpatialScaleToolState() {
+  public SpatialScaleToolState(EventBus eventBus) {
     super(eventBus);
   }
 
@@ -19,15 +22,15 @@ public class SpatialScaleToolState extends AbstractSpatialToolState {
   @Override
   protected void cleanup(Application app) {
 
-    }
+  }
 
-    @Override
-    protected void onEnable() {
+  @Override
+  protected void onEnable() {
 
-    }
+  }
 
-    @Override
-    protected void onDisable() {
+  @Override
+  protected void onDisable() {
 
-    }
+  }
 }

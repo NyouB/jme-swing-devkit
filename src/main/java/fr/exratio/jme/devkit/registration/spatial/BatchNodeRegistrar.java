@@ -33,7 +33,7 @@ public class BatchNodeRegistrar extends NodeRegistrar {
   public static class BatchNodeTreeNode extends NodeTreeNode {
 
     public BatchNodeTreeNode(BatchNode node) {
-      super(node);
+      super(node, nodeContextMenu);
     }
 
     @Override
@@ -52,7 +52,9 @@ public class BatchNodeRegistrar extends NodeRegistrar {
 
     public BatchNodeContextMenu(BatchNodeTreeNode nodeTreeNode) throws HeadlessException {
       super(nodeTreeNode, createCylinderAction, createDomeAction, createQuadAction,
-          createSphereAction);
+          createSphereAction, removeItemAction, addModels, createSkyBoxDialog, registrationService,
+          sceneGraphService, editorJmeApplication, clipboardService, menuController,
+          sceneTreeService);
 
       add(new JSeparator());
 

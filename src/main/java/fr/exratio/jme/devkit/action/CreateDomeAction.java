@@ -16,7 +16,7 @@ public class CreateDomeAction extends CreateShapeAction {
   @Override
   public void actionPerformed(ActionEvent e) {
     sceneGraphService
-        .addSpatial(createShape(new Dome(32, 32, 1.0f), "Dome"),
+        .add(createShape(new Dome(32, 32, 1.0f), "Dome"),
             (Node) sceneGraphService.getSelectedObject());
   }
 

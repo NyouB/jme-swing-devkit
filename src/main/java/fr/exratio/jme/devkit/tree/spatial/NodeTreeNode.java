@@ -6,9 +6,12 @@ import javax.swing.JPopupMenu;
 
 public class NodeTreeNode extends SpatialTreeNode {
 
-  public NodeTreeNode(Node node) {
-    super(node);
+  private final NodeContextMenu nodeContextMenu;
 
+  public NodeTreeNode(Node node,
+      NodeContextMenu nodeContextMenu) {
+    super(node);
+    this.nodeContextMenu = nodeContextMenu;
   }
 
   @Override
@@ -18,8 +21,7 @@ public class NodeTreeNode extends SpatialTreeNode {
 
   @Override
   public JPopupMenu getContextMenu() {
-    return new NodeContextMenu(this, createCylinderAction, createDomeAction, createQuadAction,
-        createSphereAction);
+    return nodeContextMenu;
   }
 
 }

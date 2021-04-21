@@ -5,11 +5,13 @@ import devkit.appstate.tool.MouseOverAppState;
 import devkit.appstate.tool.SpatialMoveToolState;
 import devkit.appstate.tool.SpatialRotateToolState2;
 import devkit.appstate.tool.SpatialSelectorState;
+import fr.exratio.jme.devkit.Main;
+import fr.exratio.jme.devkit.SpringConfiguration;
 import fr.exratio.jme.devkit.config.DevKitConfig;
 import fr.exratio.jme.devkit.service.ClipboardService;
-import fr.exratio.jme.devkit.service.MainPageController;
-import fr.exratio.jme.devkit.service.EventService;
 import fr.exratio.jme.devkit.service.EditorJmeApplication;
+import fr.exratio.jme.devkit.service.EventService;
+import fr.exratio.jme.devkit.service.MainPageController;
 import fr.exratio.jme.devkit.service.PluginService;
 import fr.exratio.jme.devkit.service.RegistrationService;
 import fr.exratio.jme.devkit.service.SceneGraphService;
@@ -21,10 +23,18 @@ import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 public class MainTest {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MainTest.class);
+
+  public static void main(String[] args) {
+    AnnotationConfigApplicationContext context =
+        new AnnotationConfigApplicationContext(SpringConfiguration.class);
+    Main bean = context.getBean(Main.class);
+    bean.run(args);
+  }
 
   public static void main(String[] args) {
 
@@ -92,7 +102,7 @@ public class MainTest {
       SpatialMoveToolState spatialMoveToolState = new SpatialMoveToolState();
       spatialMoveToolState.setEnabled(true);
       engineService.getStateManager().attach(spatialMoveToolState);
-      SpatialRotateToolState2 spatialRotateToolState2 = new SpatialRotateToolState2();
+      SpatialRotateToolState2 spatialRotateToolState2 = new SpatialRotateToolState2(even);
       spatialRotateToolState2.setEnabled(true);
       engineService.getStateManager().attach(spatialRotateToolState2);
       engineService.getStateManager().attach(new SpatialSelectorState(eventBus));

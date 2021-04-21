@@ -11,7 +11,8 @@ import javax.swing.JSeparator;
 public class GeometryContextMenu extends SpatialContextMenu {
 
   public GeometryContextMenu(GeometryTreeNode geometryTreeNode) throws HeadlessException {
-    super(geometryTreeNode);
+    super(geometryTreeNode, sceneTreeService, sceneGraphService, clipboardService,
+        registrationService, menuController);
 
 //        // Determine if the geometry of this mesh is a child of an InstancedNode
 //        // If it is, give the user the option to create an instance based on this mesh.

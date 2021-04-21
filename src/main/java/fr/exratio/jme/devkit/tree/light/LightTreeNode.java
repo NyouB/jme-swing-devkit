@@ -5,13 +5,11 @@ import com.jme3.light.DirectionalLight;
 import com.jme3.light.Light;
 import com.jme3.light.LightProbe;
 import com.jme3.light.PointLight;
-import fr.exratio.jme.devkit.service.SceneTreeService;
-import fr.exratio.jme.devkit.tree.TreeContextMenu;
 import javax.swing.tree.DefaultMutableTreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class LightTreeNode extends DefaultMutableTreeNode implements TreeContextMenu {
+public abstract class LightTreeNode extends DefaultMutableTreeNode {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(LightTreeNode.class);
 
@@ -19,7 +17,7 @@ public abstract class LightTreeNode extends DefaultMutableTreeNode implements Tr
     super(light);
   }
 
-  public static LightTreeNode fromLight(Light light){
+  public static LightTreeNode fromLight(Light light) {
     if (light instanceof AmbientLight) {
       return new AmbientLightTreeNode((AmbientLight) light);
     } else if (light instanceof DirectionalLight) {

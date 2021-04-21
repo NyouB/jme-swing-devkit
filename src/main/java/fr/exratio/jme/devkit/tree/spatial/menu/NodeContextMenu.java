@@ -1,12 +1,6 @@
 package fr.exratio.jme.devkit.tree.spatial.menu;
 
-import static devkit.appstate.tool.SpatialMoveToolState.COLOR;
-import static devkit.appstate.tool.SpatialMoveToolState.MAT_DEF;
-
-import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Geometry;
-import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import fr.exratio.jme.devkit.action.CreateBoxAction;
@@ -14,6 +8,7 @@ import fr.exratio.jme.devkit.action.CreateCylinderAction;
 import fr.exratio.jme.devkit.action.CreateDomeAction;
 import fr.exratio.jme.devkit.action.CreateQuadAction;
 import fr.exratio.jme.devkit.action.CreateSphereAction;
+import fr.exratio.jme.devkit.action.RemoveItemAction;
 import fr.exratio.jme.devkit.forms.AddModels;
 import fr.exratio.jme.devkit.forms.CreateSkyBoxDialog;
 import fr.exratio.jme.devkit.registration.spatial.GeometryRegistrar;
@@ -23,20 +18,21 @@ import fr.exratio.jme.devkit.service.EditorJmeApplication;
 import fr.exratio.jme.devkit.service.MenuController;
 import fr.exratio.jme.devkit.service.RegistrationService;
 import fr.exratio.jme.devkit.service.SceneGraphService;
-import fr.exratio.jme.devkit.service.ServiceManager;
+import fr.exratio.jme.devkit.service.SceneTreeService;
 import fr.exratio.jme.devkit.tree.spatial.NodeTreeNode;
+import fr.exratio.jme.devkit.util.GUIUtils;
 import java.awt.HeadlessException;
 import java.util.List;
 import java.util.Set;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
 import javax.swing.SwingUtilities;
-import javax.swing.WindowConstants;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 
+@Component
 public class NodeContextMenu extends SpatialContextMenu {
 
   private final CreateBoxAction createBoxAction;
@@ -44,18 +40,46 @@ public class NodeContextMenu extends SpatialContextMenu {
   private final CreateDomeAction createDomeAction;
   private final CreateQuadAction createQuadAction;
   private final CreateSphereAction createSphereAction;
+  private final RemoveItemAction removeItemAction;
+  private final AddModels addModels;
+  private final CreateSkyBoxDialog createSkyBoxDialog;
+  private final RegistrationService registrationService;
+  private final SceneGraphService sceneGraphService;
+  private final EditorJmeApplication editorJmeApplication;
+  private final ClipboardService clipboardService;
+  private final MenuController menuController;
+  private final SceneTreeService sceneTreeService;
 
+  @Autowired
   public NodeContextMenu(CreateBoxAction createBoxAction,
       CreateCylinderAction createCylinderAction,
       CreateDomeAction createDomeAction,
       CreateQuadAction createQuadAction,
-      CreateSphereAction createSphereAction) throws HeadlessException {
-    super();
+      CreateSphereAction createSphereAction,
+      RemoveItemAction removeItemAction, AddModels addModels,
+      CreateSkyBoxDialog createSkyBoxDialog,
+      RegistrationService registrationService,
+      SceneGraphService sceneGraphService,
+      EditorJmeApplication editorJmeApplication,
+      ClipboardService clipboardService,
+      MenuController menuController,
+      SceneTreeService sceneTreeService) throws HeadlessException {
+    super(editorJmeApplication, sceneTreeService, sceneGraphService, clipboardService,
+        registrationService, menuController);
     this.createBoxAction = createBoxAction;
     this.createCylinderAction = createCylinderAction;
     this.createDomeAction = createDomeAction;
     this.createQuadAction = createQuadAction;
     this.createSphereAction = createSphereAction;
+    this.removeItemAction = removeItemAction;
+    this.addModels = addModels;
+    this.createSkyBoxDialog = createSkyBoxDialog;
+    this.registrationService = registrationService;
+    this.sceneGraphService = sceneGraphService;
+    this.editorJmeApplication = editorJmeApplication;
+    this.clipboardService = clipboardService;
+    this.menuController = menuController;
+    this.sceneTreeService = sceneTreeService;
     // Add -> Shape
     JMenu addShapeMenu = (JMenu) getAddMenu().add(new JMenu("Shape..."));
     addShapes(addShapeMenu);
@@ -63,42 +87,17 @@ public class NodeContextMenu extends SpatialContextMenu {
 
     // Add -> Model(s)...
     JMenuItem addModelsItem = getAddMenu().add(new JMenuItem("Model(s)..."));
-    addModelsItem.addActionListener(e -> {
-
-      AddModels addModels = new AddModels(nodeTreeNode);
-
-      JFrame mainWindow = (JFrame) SwingUtilities
-          .getWindowAncestor(ServiceManager.getService(EditorJmeApplication.class).getAWTPanel());
-
-      JDialog dialog = new JDialog(mainWindow, "Add Model(s)", true);
-      dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-      dialog.setContentPane(addModels.$$$getRootComponent$$$());
-      dialog.pack();
-      dialog.setLocationRelativeTo(mainWindow);
-      dialog.setVisible(true);
-
-    });
+    addModelsItem.addActionListener(e -> GUIUtils.createDialog(SwingUtilities
+        .getWindowAncestor(this), addModels.$$$getRootComponent$$$(), "Add Model(s)"));
     addModelsItem.setMnemonic('M');
 
     // Add -> SkyBox...
     JMenuItem genSkyBoxItem = getAddMenu().add(new JMenuItem("SkyBox..."));
-    genSkyBoxItem.addActionListener(e -> {
-      CreateSkyBoxDialog createSkyBoxDialog = new CreateSkyBoxDialog(nodeTreeNode);
-
-      JFrame mainWindow = (JFrame) SwingUtilities
-          .getWindowAncestor(ServiceManager.getService(EditorJmeApplication.class).getAWTPanel());
-
-      JDialog dialog = new JDialog(mainWindow, "Create SkyBox", true);
-      dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-      dialog.setContentPane(createSkyBoxDialog.$$$getRootComponent$$$());
-      dialog.pack();
-      dialog.setLocationRelativeTo(mainWindow);
-      dialog.setVisible(true);
-    });
+    genSkyBoxItem.addActionListener(e -> GUIUtils.createDialog(SwingUtilities
+        .getWindowAncestor(this), createSkyBoxDialog.$$$getRootComponent$$$(), "Create SkyBox"));
     genSkyBoxItem.setMnemonic('K');
 
     // Add -> Registered Spatials
-    RegistrationService registrationService = ServiceManager.getService(RegistrationService.class);
     Set<NodeRegistrar> nodeRegistrars = registrationService.getNodeRegistration()
         .getRegistrations();
 
@@ -112,9 +111,9 @@ public class NodeContextMenu extends SpatialContextMenu {
             .add(new JMenuItem(registrar.getRegisteredClass().getSimpleName()));
 
         menuItem.addActionListener(e -> {
-
-          Node node = registrar.createInstance(ServiceManager.getService(EditorJmeApplication.class));
-          ServiceManager.getService(SceneGraphService.class).addSpatial(node, nodeTreeNode.getUserObject());
+//todo make a command for node creation or move node creation to a specific view like in godot
+          Node node = registrar.createInstance(editorJmeApplication);
+          sceneGraphService.add(node, (Node) sceneGraphService.getSelectedObject());
 
         });
 
@@ -133,10 +132,8 @@ public class NodeContextMenu extends SpatialContextMenu {
             .add(new JMenuItem(registrar.getRegisteredClass().getSimpleName()));
 
         menuItem.addActionListener(e -> {
-
-          Geometry geometry = registrar
-              .createInstance(ServiceManager.getService(EditorJmeApplication.class));
-          ServiceManager.getService(SceneGraphService.class).addSpatial(geometry, nodeTreeNode.getUserObject());
+          Geometry geometry = registrar.createInstance(editorJmeApplication);
+          sceneGraphService.add(geometry, (Node) sceneGraphService.getSelectedObject());
 
         });
 
@@ -148,18 +145,16 @@ public class NodeContextMenu extends SpatialContextMenu {
 
     JMenuItem pasteItem = add(new JMenuItem("Paste"));
     pasteItem
-        .setEnabled(ServiceManager.getService(ClipboardService.class).hasSpatialClipboardItem());
+        .setEnabled(clipboardService.hasSpatialClipboardItem());
     pasteItem.addActionListener(e -> {
 
-      Spatial clonedSpatial = ServiceManager.getService(ClipboardService.class)
-          .getSpatialClipboardItem().getClonedCopy();
-      ServiceManager.getService(SceneGraphService.class).addSpatial(clonedSpatial, nodeTreeNode.getUserObject());
+      Spatial clonedSpatial = clipboardService.getSpatialClipboardItem().getClonedCopy();
+      sceneGraphService.add(clonedSpatial, (Node) sceneGraphService.getSelectedObject());
 
     });
 
     // Allow users to also add their options....
-    List<JMenuItem> customItems = ServiceManager.getService(MenuController.class)
-        .getCustomMenuItems(NodeTreeNode.class);
+    List<JMenuItem> customItems = menuController.getCustomMenuItems(NodeTreeNode.class);
 
     if (customItems != null && !customItems.isEmpty()) {
 
@@ -170,10 +165,12 @@ public class NodeContextMenu extends SpatialContextMenu {
         add(customItem);
       }
     }
+
+    JMenuItem deleteItem = add(new JMenuItem("Delete"));
+    deleteItem.setAction(removeItemAction);
   }
 
   private void addShapes(JMenu parent) {
-
 
   }
 }

@@ -138,7 +138,8 @@ public class AnimControlEditor extends AbstractPropertyEditor<AnimControl> {
   private void createUIComponents() {
 
     contentPanel = this;
-    final EditorJmeApplication engineService = ServiceManager.getService(EditorJmeApplication.class);
+    final EditorJmeApplication engineService = ServiceManager
+        .getService(EditorJmeApplication.class);
 
     timeSlider = new JSlider();
     timeSlider.setModel(animTimelineModel);

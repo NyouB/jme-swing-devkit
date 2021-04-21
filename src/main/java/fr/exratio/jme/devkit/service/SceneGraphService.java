@@ -15,8 +15,10 @@ import fr.exratio.jme.devkit.event.ControlCreatedEvent;
 import fr.exratio.jme.devkit.event.ControlRemovedEvent;
 import fr.exratio.jme.devkit.event.LightCreatedEvent;
 import fr.exratio.jme.devkit.event.LightRemovedEvent;
+import fr.exratio.jme.devkit.event.SelectedItemEvent;
 import fr.exratio.jme.devkit.event.SpatialCreatedEvent;
 import fr.exratio.jme.devkit.event.SpatialRemovedEvent;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -42,7 +44,7 @@ public class SceneGraphService {
    * @param spatial the spatial to add.
    * @param parentNode the treeNode to add the spatial.
    */
-  public void addSpatial(Spatial spatial, Node parentNode) {
+  public void add(Spatial spatial, Node parentNode) {
 
     // traverse all the way back to beginning to check if this a child of an instancedNode.
     // if it is we need to set "UseInstancing" to "true" before we add it.
@@ -97,7 +99,7 @@ public class SceneGraphService {
    * @param light the light to add.
    * @param parentNode the treeNode to add the spatial.
    */
-  public void addLight(Light light, Spatial parentNode) {
+  public void add(Light light, Spatial parentNode) {
 
     // attach the light on the JME thread. The light no longer belongs to AWT at this point.
     engineService.enqueue(() -> {
@@ -124,7 +126,7 @@ public class SceneGraphService {
    * @param control the control to add.
    * @param parentNode the treeNode to add the control.
    */
-  public void addControl(Control control, Spatial parentNode) {
+  public void add(Control control, Spatial parentNode) {
 
     // attach the light on the JME thread. The light no longer belongs to AWT at this point.
     engineService.enqueue(() -> parentNode.addControl(control));
@@ -137,7 +139,7 @@ public class SceneGraphService {
    *
    * @param spatial the spatial to remove.
    */
-  public void removeSpatial(Spatial spatial) {
+  public void remove(Spatial spatial) {
     engineService.enqueue(() -> spatial.removeFromParent());
     eventBus.post(new SpatialRemovedEvent(spatial));
   }
@@ -149,7 +151,7 @@ public class SceneGraphService {
    * @param light The light to remove
    * @param parent The spatial that holds the light.
    */
-  public void removeLight(Light light, Spatial parent) {
+  public void remove(Light light, Spatial parent) {
     engineService.enqueue(() -> parent.removeLight(light));
     eventBus.post(new LightRemovedEvent(light));
   }
@@ -161,9 +163,8 @@ public class SceneGraphService {
    * @param control The Control to remove
    * @param parent The Spatial that holds the light.
    */
-  public void removeTreeNode(Control control, Spatial parent) {
+  public void remove(Control control, Spatial parent) {
     engineService.enqueue(() -> parent.removeControl(control));
-
     eventBus.post(new ControlRemovedEvent(control));
   }
 
@@ -174,21 +175,37 @@ public class SceneGraphService {
    * @param selectedObject the object selected
    */
   public void selectObject(Object selectedObject) {
-    engineService.enqueue(() -> {
-      parent.removeControl(control);
-    });
-
-    eventBus.post(new ControlRemovedEvent(control));
+    this.selectedObject = selectedObject;
+    eventBus.post(new SelectedItemEvent(selectedObject));
   }
 
   /**
    * Removes the selected control from the tree and scene. This method **must** be called from the
    * AWT thread. Fire a @see ControlRemovedEvent on creation.
-   *
-   * @param selectedObject the object selected
    */
   public Object getSelectedObject() {
     return selectedObject;
   }
 
+  public Spatial getParentOf(Object object) {
+    return getParentOf(object, engineService.getRootNode());
+  }
+
+  private Spatial getParentOf(Object object, Node parent) {
+    List<Spatial> childrens = parent.getChildren();
+    if (childrens.contains(object)) {
+      return parent;
+    }
+    for (Spatial children : childrens) {
+      for (Light light : children.getLocalLightList()) {
+        if (light.equals(object)) {
+          return children;
+        }
+      }
+      if (children instanceof Node) {
+        return getParentOf(object, (Node) children);
+      }
+    }
+    return null;
+  }
 }

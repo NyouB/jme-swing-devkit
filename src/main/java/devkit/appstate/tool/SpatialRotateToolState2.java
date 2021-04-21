@@ -1,5 +1,6 @@
 package devkit.appstate.tool;
 
+import com.google.common.eventbus.EventBus;
 import com.jme3.app.Application;
 import com.jme3.app.SimpleApplication;
 import com.jme3.input.InputManager;
@@ -43,7 +44,7 @@ public class SpatialRotateToolState2 extends AbstractSpatialToolState implements
   private MouseOverAppState mouseHoverAppState;
   private Geometry currentMouseHoverTool;
 
-  public SpatialRotateToolState2() {
+  public SpatialRotateToolState2(EventBus eventBus) {
     super(eventBus);
     super.setEnabled(false);
   }

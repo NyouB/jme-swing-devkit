@@ -14,7 +14,6 @@ import com.jme3.scene.Spatial;
 import fr.exratio.jme.devkit.service.EditorJmeApplication;
 import fr.exratio.jme.devkit.service.SceneGraphService;
 import fr.exratio.jme.devkit.service.SceneTreeService;
-import fr.exratio.jme.devkit.service.ServiceManager;
 import fr.exratio.jme.devkit.swing.ComponentUtilities;
 import fr.exratio.jme.devkit.swing.NumberFormatters;
 import fr.exratio.jme.devkit.tree.spatial.NodeTreeNode;
@@ -42,6 +41,10 @@ import javax.swing.tree.DefaultTreeModel;
  */
 public class GenerateLightProbeDialog {
 
+  private final EditorJmeApplication editorJmeApplication;
+  private final SceneGraphService sceneGraphService;
+  private final SceneTreeService sceneTreeService;
+
   private JPanel rootPanel;
   private JTree sceneTree;
   private JComboBox<AreaType> areaTypeComboBox;
@@ -49,7 +52,13 @@ public class GenerateLightProbeDialog {
   private JButton generateButton;
   private JButton cancelButton;
 
-  public GenerateLightProbeDialog(final SpatialTreeNode spatialTreeNode) {
+  public GenerateLightProbeDialog(
+      EditorJmeApplication editorJmeApplication,
+      SceneGraphService sceneGraphService,
+      SceneTreeService sceneTreeService) {
+    this.editorJmeApplication = editorJmeApplication;
+    this.sceneGraphService = sceneGraphService;
+    this.sceneTreeService = sceneTreeService;
 
     $$$setupUI$$$();
 
@@ -75,13 +84,11 @@ public class GenerateLightProbeDialog {
       // disable the dialog
       ComponentUtilities.enableComponents(rootPanel, false);
 
-      EditorJmeApplication engineService = ServiceManager.getService(EditorJmeApplication.class);
+      editorJmeApplication.enqueue(() -> {
 
-      engineService.enqueue(() -> {
+        Vector3f cameraLocation = editorJmeApplication.getCamera().getLocation();
 
-        Vector3f cameraLocation = engineService.getCamera().getLocation();
-
-        EnvironmentCamera environmentCamera = engineService.getStateManager()
+        EnvironmentCamera environmentCamera = editorJmeApplication.getStateManager()
             .getState(EnvironmentCamera.class);
         environmentCamera.setPosition(cameraLocation);
 
@@ -112,8 +119,7 @@ public class GenerateLightProbeDialog {
                 SwingUtilities.invokeLater(() -> {
 
                   // add the light to the treenode we selected when we cliked "generate lightprobe".
-                  ServiceManager.getService(SceneGraphService.class)
-                      .addLight(result, spatialTreeNode.getUserObject());
+                  sceneGraphService.add(result, (Spatial) sceneGraphService.getSelectedObject());
 
                   JButton button = (JButton) e.getSource();
                   Window window = SwingUtilities.getWindowAncestor(button);
@@ -139,14 +145,13 @@ public class GenerateLightProbeDialog {
   private void recurseSceneForNodes() {
 
     // create the tree on the JME thread, then pass it to swing.
-    SceneTreeService sceneTreeService = ServiceManager.getService(SceneTreeService.class);
 
     // NodeTreeNode treeRoot = new NodeTreeNode(sceneTreeService.getRootNode());
     DefaultMutableTreeNode treeRoot = new DefaultMutableTreeNode("Root");
     sceneTree.setModel(new DefaultTreeModel(treeRoot));
 
-    NodeTreeNode guiNode = new NodeTreeNode(sceneTreeService.getJmeGuiNode());
-    NodeTreeNode rootNode = new NodeTreeNode(sceneTreeService.getJmeRootNode());
+    NodeTreeNode guiNode = new NodeTreeNode(sceneTreeService.getJmeGuiNode(), nodeContextMenu);
+    NodeTreeNode rootNode = new NodeTreeNode(sceneTreeService.getJmeRootNode(), nodeContextMenu);
 
     treeRoot.add(guiNode);
     treeRoot.add(rootNode);
@@ -160,12 +165,11 @@ public class GenerateLightProbeDialog {
 
   private void recurse(SpatialTreeNode spatialTreeNode) {
 
-    EditorJmeApplication engineService = ServiceManager.getService(EditorJmeApplication.class);
 
     if (spatialTreeNode instanceof NodeTreeNode) {
 
       // query the node on the JME thread.
-      engineService.enqueue(() -> {
+      editorJmeApplication.enqueue(() -> {
 
         Node node = (Node) spatialTreeNode.getUserObject();
         List<Spatial> children = node.getChildren();
@@ -176,7 +180,7 @@ public class GenerateLightProbeDialog {
             // add nodes on the AWT thread.
             SwingUtilities.invokeLater(() -> {
 
-              NodeTreeNode childNode = new NodeTreeNode((Node) child);
+              NodeTreeNode childNode = new NodeTreeNode((Node) child, nodeContextMenu);
               spatialTreeNode.add(childNode);
 
               // its a bit annoying, but we don't really have a way of determining when this is finished

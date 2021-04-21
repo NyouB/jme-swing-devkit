@@ -32,7 +32,7 @@ public class InstancedNodeSpatialRegistrar extends NodeRegistrar {
   public static class InstancedNodeTreeNode extends NodeTreeNode {
 
     public InstancedNodeTreeNode(InstancedNode instancedNode) {
-      super(instancedNode);
+      super(instancedNode, nodeContextMenu);
     }
 
     @Override
@@ -51,7 +51,9 @@ public class InstancedNodeSpatialRegistrar extends NodeRegistrar {
     public InstancedNodeContextMenu(InstancedNodeTreeNode instancedNodeTreeNode)
         throws HeadlessException {
       super(instancedNodeTreeNode, createCylinderAction, createDomeAction, createQuadAction,
-          createSphereAction);
+          createSphereAction, removeItemAction, addModels, createSkyBoxDialog, registrationService,
+          sceneGraphService, editorJmeApplication, clipboardService, menuController,
+          sceneTreeService);
 
       JMenuItem instanceItem = add(new JMenuItem("Instance Items"));
       instanceItem.addActionListener(e -> {

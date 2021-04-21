@@ -125,7 +125,8 @@ public class DebugLights {
       final boolean isSelected = checkBox.isSelected();
       final ColorRGBA colorRGBA = ColorConverter.toColorRGBA(ambientColorChooser.getColor());
 
-      final EditorJmeApplication engineService = ServiceManager.getService(EditorJmeApplication.class);
+      final EditorJmeApplication engineService = ServiceManager
+          .getService(EditorJmeApplication.class);
 
       engineService.enqueue(() -> {
 
@@ -156,7 +157,8 @@ public class DebugLights {
       final boolean isSelected = checkBox.isSelected();
       final ColorRGBA colorRGBA = ColorConverter.toColorRGBA(directionalColorChooser.getColor());
 
-      final EditorJmeApplication engineService = ServiceManager.getService(EditorJmeApplication.class);
+      final EditorJmeApplication engineService = ServiceManager
+          .getService(EditorJmeApplication.class);
 
       engineService.enqueue(() -> {
 
@@ -188,7 +190,8 @@ public class DebugLights {
       final boolean isSelected = checkBox.isSelected();
       final DemoProbe demoProbe = (DemoProbe) probesComboBox.getSelectedItem();
 
-      final EditorJmeApplication engineService = ServiceManager.getService(EditorJmeApplication.class);
+      final EditorJmeApplication engineService = ServiceManager
+          .getService(EditorJmeApplication.class);
 
       engineService.enqueue(() -> {
 

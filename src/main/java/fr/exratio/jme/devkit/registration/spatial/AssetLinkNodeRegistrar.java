@@ -40,7 +40,7 @@ public class AssetLinkNodeRegistrar extends NodeRegistrar {
   public static class AssetLinkNodeTreeNode extends NodeTreeNode {
 
     public AssetLinkNodeTreeNode(Node node) {
-      super(node);
+      super(node, nodeContextMenu);
     }
 
     @Override
@@ -59,7 +59,9 @@ public class AssetLinkNodeRegistrar extends NodeRegistrar {
     public AssetLinkNodeContextMenu(AssetLinkNodeTreeNode assetLinkNodeTreeNode)
         throws HeadlessException {
       super(assetLinkNodeTreeNode, createCylinderAction, createDomeAction, createQuadAction,
-          createSphereAction);
+          createSphereAction, removeItemAction, addModels, createSkyBoxDialog, registrationService,
+          sceneGraphService, editorJmeApplication, clipboardService, menuController,
+          sceneTreeService);
 
       add(new JSeparator());
 

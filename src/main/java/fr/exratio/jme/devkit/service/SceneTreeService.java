@@ -4,9 +4,7 @@ import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.jme3.light.Light;
 import com.jme3.light.LightList;
-import com.jme3.light.LightProbe;
 import com.jme3.scene.Geometry;
-import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
@@ -36,6 +34,7 @@ import fr.exratio.jme.devkit.tree.spatial.GeometryTreeNode;
 import fr.exratio.jme.devkit.tree.spatial.MeshTreeNode;
 import fr.exratio.jme.devkit.tree.spatial.NodeTreeNode;
 import fr.exratio.jme.devkit.tree.spatial.SpatialTreeNode;
+import fr.exratio.jme.devkit.tree.spatial.menu.NodeContextMenu;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -82,9 +81,8 @@ public class SceneTreeService extends Tool {
   private final RegistrationService registrationService;
   private final SceneGraphService sceneGraphService;
   private final PropertyInspectorTool propertyInspectorTool;
-  private final HighLightSpatialAction highLightSpatialAction;
-  private final HighLightLightAction highLightLightAction;
   private final RemoveHighLightAction removeHighLightAction;
+  private final NodeContextMenu nodeContextMenu;
 
   @Autowired
   public SceneTreeService(EventBus eventBus,
@@ -92,18 +90,16 @@ public class SceneTreeService extends Tool {
       RegistrationService registrationService,
       SceneGraphService sceneGraphService,
       PropertyInspectorTool propertyInspectorTool,
-      HighLightSpatialAction highLightSpatialAction,
-      HighLightLightAction highLightLightAction,
-      RemoveHighLightAction removeHighLightAction) {
+      RemoveHighLightAction removeHighLightAction,
+      NodeContextMenu nodeContextMenu) {
     super(SceneTreeService.class.getName(), TITLE, null, Zone.LEFT_TOP, ViewMode.PIN, true);
     this.eventBus = eventBus;
     this.editorJmeApplication = editorJmeApplication;
     this.registrationService = registrationService;
     this.sceneGraphService = sceneGraphService;
     this.propertyInspectorTool = propertyInspectorTool;
-    this.highLightSpatialAction = highLightSpatialAction;
-    this.highLightLightAction = highLightLightAction;
     this.removeHighLightAction = removeHighLightAction;
+    this.nodeContextMenu = nodeContextMenu;
     initialize();
     zone.add(this);
   }
@@ -121,7 +117,7 @@ public class SceneTreeService extends Tool {
     // The tree root is never visible.
     DefaultMutableTreeNode treeRoot = new DefaultMutableTreeNode("Root");
 
-    tree.addMouseListener(new SceneTreeMouseListener());
+    tree.addMouseListener(new SceneTreeMouseListener(nodeContextMenu));
     tree.setRootVisible(false);
     tree.setModel(new DefaultTreeModel(treeRoot));
 
@@ -147,8 +143,8 @@ public class SceneTreeService extends Tool {
       SwingUtilities.invokeLater(() -> {
 
         // create the TreeItems on the Swing thread.
-        editorGuiNode = new NodeTreeNode(jmeGuiNode);
-        editorRootNode = new NodeTreeNode(jmeRootNode);
+        editorGuiNode = new NodeTreeNode(jmeGuiNode, nodeContextMenu);
+        editorRootNode = new NodeTreeNode(jmeRootNode, nodeContextMenu);
 
         objectToNodeMap.put(jmeGuiNode, editorGuiNode);
         objectToNodeMap.put(jmeRootNode, editorRootNode);
@@ -182,31 +178,9 @@ public class SceneTreeService extends Tool {
       for (TreePath path : paths) {
         DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) path
             .getLastPathComponent();
-
         if (treeNode != null) {
-
-          if (treeNode.getUserObject() instanceof Spatial) {
-
-            highLightSpatialAction.actionPerformed(null);
-
-          } else if (treeNode.getUserObject() instanceof Mesh) {
-
-            highLightSpatialAction.actionPerformed();
-
-
-          } else if (treeNode.getUserObject() instanceof LightProbe) {
-
-            editorJmeApplication
-                .enqueue(() -> highlighterState
-                    .highlight((Light) treeNode.getUserObject()));
-
-          } else {
-            highlighterState.removeAllHighlights();
-          }
-        } else {
-          highlighterState.removeAllHighlights();
+          sceneGraphService.selectObject(treeNode.getUserObject());
         }
-
       }
 
       // fire an event that the scene tree item has changed.
@@ -367,7 +341,7 @@ public class SceneTreeService extends Tool {
    * @param spatialTreeNode the treeNode to remove.
    */
   public void removeTreeNode(SpatialTreeNode spatialTreeNode) {
-    sceneGraphService.removeSpatial(spatialTreeNode.getUserObject());
+    sceneGraphService.remove(spatialTreeNode.getUserObject());
   }
 
   /**
@@ -494,7 +468,7 @@ public class SceneTreeService extends Tool {
       if (treeNode == null) {
         LOGGER.trace("No TreeNode associated with object: {}, using default NodeTreeNode.",
             spatial.getClass());
-        treeNode = new NodeTreeNode(node);
+        treeNode = new NodeTreeNode(node, nodeContextMenu);
       }
     } else if (spatial instanceof Geometry) {
 

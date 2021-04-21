@@ -28,26 +28,32 @@ import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
+import org.springframework.stereotype.Component;
 
 /**
  * Generates a SkyBox and adds it to the given node.
  */
 
-public class CreateSkyBoxDialog extends JDialog {
+@Component
+public class CreateSkyBoxDialog {
 
   private JPanel rootPanel;
   private JComboBox<EnvMapType> comboBox1;
   private JButton createButton;
   private JButton cancelButton;
   private JList<String> assetsList;
+  private final AssetManager assetManager;
+  private final SceneGraphService sceneGraphService;
 
-  public CreateSkyBoxDialog(AssetManager assetManager, SceneGraphService sceneGraphService) {
+  public CreateSkyBoxDialog(SceneGraphService sceneGraphService,
+      AssetManager assetManager) {
+    this.assetManager = assetManager;
+    this.sceneGraphService = sceneGraphService;
 
     populateListWithResources();
     populateComboBoxWithEnvMapTypes();
@@ -78,7 +84,7 @@ public class CreateSkyBoxDialog extends JDialog {
         sky.setQueueBucket(Bucket.Sky);
 
         // add it to the scene tree. This will also safely add it to the scene.
-        sceneGraphService.addSpatial(sky, (Node) sceneGraphService.getSelectedObject());
+        sceneGraphService.add(sky, (Node) sceneGraphService.getSelectedObject());
 
         JButton button = (JButton) e.getSource();
         Window window = SwingUtilities.getWindowAncestor(button);

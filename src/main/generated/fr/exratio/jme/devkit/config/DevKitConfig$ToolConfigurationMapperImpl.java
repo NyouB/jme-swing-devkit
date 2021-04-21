@@ -7,7 +7,7 @@ import javax.annotation.processing.Generated;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2021-04-05T22:04:32+0200",
+    date = "2021-04-21T21:28:45+0200",
     comments = "version: 1.4.2.Final, compiler: javac, environment: Java 13.0.1 (Oracle Corporation)"
 )
 public class DevKitConfig$ToolConfigurationMapperImpl implements ToolConfigurationMapper {

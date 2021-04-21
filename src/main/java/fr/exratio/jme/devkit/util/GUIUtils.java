@@ -3,7 +3,6 @@ package fr.exratio.jme.devkit.util;
 import fr.exratio.jme.devkit.tool.Tool;
 import fr.exratio.jme.devkit.tool.ViewMode;
 import java.awt.Dimension;
-import java.awt.Frame;
 import java.awt.Window;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -34,11 +33,13 @@ public class GUIUtils {
     return window;
   }
 
-  private static JDialog createDialog(Frame parent, JComponent content, String title) {
+  public static JDialog createDialog(Window parent, JComponent content, String title) {
     JDialog dialog = new JDialog(parent, title);
     dialog.setContentPane(content);
-    dialog.pack();
     dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+    dialog.pack();
+    dialog.setLocationRelativeTo(parent);
+    dialog.setVisible(true);
     return dialog;
 
   }

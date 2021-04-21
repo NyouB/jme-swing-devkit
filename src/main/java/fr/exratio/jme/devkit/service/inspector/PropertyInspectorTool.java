@@ -26,7 +26,7 @@ import javax.swing.SwingConstants;
 import net.miginfocom.swing.MigLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Controller;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author Quentin Raphaneau
@@ -46,6 +46,7 @@ public class PropertyInspectorTool extends Tool {
   private final InheritedMatchFinder inheritedMatchFinder;
   private final DefaultMatchFinder defaultMatchFinder;
 
+  @Autowired
   public PropertyInspectorTool(
       RegistrationService registrationService, EventBus eventBus,
       ExactMatchFinder exactMatchFinder,
