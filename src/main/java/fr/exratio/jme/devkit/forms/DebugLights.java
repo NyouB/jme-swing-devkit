@@ -13,7 +13,6 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
 import fr.exratio.jme.devkit.core.ColorConverter;
 import fr.exratio.jme.devkit.service.EditorJmeApplication;
-import fr.exratio.jme.devkit.service.ServiceManager;
 import java.awt.Dimension;
 import java.awt.Insets;
 import javax.swing.DefaultComboBoxModel;
@@ -26,7 +25,9 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import javax.swing.colorchooser.DefaultColorSelectionModel;
+import org.springframework.stereotype.Controller;
 
+@Controller
 public class DebugLights {
 
   public static final String DEBUG_LIGHTS_WINDOW_TITLE = "Debug Lights";
@@ -43,8 +44,10 @@ public class DebugLights {
   private AmbientLight ambientLight;
   private DirectionalLight directionalLight;
   private LightProbe lightProbe;
+  private final EditorJmeApplication editorJmeApplication;
 
-  public DebugLights() {
+  public DebugLights(EditorJmeApplication editorJmeApplication) {
+    this.editorJmeApplication = editorJmeApplication;
 
     // we don't want preview panels.
     ambientColorChooser.setPreviewPanel(new JPanel());
@@ -73,17 +76,15 @@ public class DebugLights {
       JComboBox<DemoProbe> comboBox = (JComboBox<DemoProbe>) e.getSource();
       final DemoProbe demoProbe = (DemoProbe) comboBox.getSelectedItem();
 
-      EditorJmeApplication engineService = ServiceManager.getService(EditorJmeApplication.class);
-
-      engineService.enqueue(() -> {
+      editorJmeApplication.enqueue(() -> {
 
         if (lightProbe != null) {
-          engineService.getRootNode().removeLight(lightProbe);
+          editorJmeApplication.getRootNode().removeLight(lightProbe);
         }
 
         if (isSelected && demoProbe != null) {
-          lightProbe = demoProbe.extractProbe();
-          engineService.getRootNode().addLight(lightProbe);
+          lightProbe = extractProbe(demoProbe);
+          editorJmeApplication.getRootNode().addLight(lightProbe);
         }
 
       });
@@ -94,7 +95,7 @@ public class DebugLights {
       DefaultColorSelectionModel colorChooser = (DefaultColorSelectionModel) e.getSource();
       final ColorRGBA colorRGBA = ColorConverter.toColorRGBA(colorChooser.getSelectedColor());
 
-      ServiceManager.getService(EditorJmeApplication.class).enqueue(() -> {
+      editorJmeApplication.enqueue(() -> {
 
         if (ambientLight != null) {
           ambientLight.setColor(colorRGBA);
@@ -108,7 +109,7 @@ public class DebugLights {
       DefaultColorSelectionModel colorChooser = (DefaultColorSelectionModel) e.getSource();
       final ColorRGBA colorRGBA = ColorConverter.toColorRGBA(colorChooser.getSelectedColor());
 
-      ServiceManager.getService(EditorJmeApplication.class).enqueue(() -> {
+      editorJmeApplication.enqueue(() -> {
 
         if (directionalLight != null) {
           directionalLight.setColor(colorRGBA);
@@ -125,23 +126,20 @@ public class DebugLights {
       final boolean isSelected = checkBox.isSelected();
       final ColorRGBA colorRGBA = ColorConverter.toColorRGBA(ambientColorChooser.getColor());
 
-      final EditorJmeApplication engineService = ServiceManager
-          .getService(EditorJmeApplication.class);
-
-      engineService.enqueue(() -> {
+      editorJmeApplication.enqueue(() -> {
 
         if (isSelected) {
 
           if (ambientLight == null) {
             ambientLight = new AmbientLight(colorRGBA);
-            engineService.getRootNode().addLight(ambientLight);
+            editorJmeApplication.getRootNode().addLight(ambientLight);
           } else {
             ambientLight.setColor(colorRGBA);
           }
         } else {
 
           if (ambientLight != null) {
-            engineService.getRootNode().removeLight(ambientLight);
+            editorJmeApplication.getRootNode().removeLight(ambientLight);
             ambientLight = null;
           }
         }
@@ -157,24 +155,21 @@ public class DebugLights {
       final boolean isSelected = checkBox.isSelected();
       final ColorRGBA colorRGBA = ColorConverter.toColorRGBA(directionalColorChooser.getColor());
 
-      final EditorJmeApplication engineService = ServiceManager
-          .getService(EditorJmeApplication.class);
-
-      engineService.enqueue(() -> {
+      editorJmeApplication.enqueue(() -> {
 
         if (isSelected) {
 
           if (directionalLight == null) {
             directionalLight = new DirectionalLight(new Vector3f(-1, -1, -1).normalizeLocal(),
                 colorRGBA);
-            engineService.getRootNode().addLight(directionalLight);
+            editorJmeApplication.getRootNode().addLight(directionalLight);
           } else {
             directionalLight.setColor(colorRGBA);
           }
         } else {
 
           if (directionalLight != null) {
-            engineService.getRootNode().removeLight(directionalLight);
+            editorJmeApplication.getRootNode().removeLight(directionalLight);
             directionalLight = null;
           }
         }
@@ -190,25 +185,22 @@ public class DebugLights {
       final boolean isSelected = checkBox.isSelected();
       final DemoProbe demoProbe = (DemoProbe) probesComboBox.getSelectedItem();
 
-      final EditorJmeApplication engineService = ServiceManager
-          .getService(EditorJmeApplication.class);
-
-      engineService.enqueue(() -> {
+      editorJmeApplication.enqueue(() -> {
 
         if (isSelected) {
 
           if (lightProbe != null) {
-            engineService.getRootNode().removeLight(lightProbe);
+            editorJmeApplication.getRootNode().removeLight(lightProbe);
           }
 
           if (demoProbe != null) {
-            lightProbe = demoProbe.extractProbe();
-            engineService.getRootNode().addLight(lightProbe);
+            lightProbe = extractProbe(demoProbe);
+            editorJmeApplication.getRootNode().addLight(lightProbe);
           }
 
         } else {
           if (lightProbe != null) {
-            engineService.getRootNode().removeLight(lightProbe);
+            editorJmeApplication.getRootNode().removeLight(lightProbe);
             lightProbe = null;
           }
         }
@@ -220,14 +212,26 @@ public class DebugLights {
     querySceneForDebugLights();
   }
 
+  public LightProbe extractProbe(DemoProbe demoProbe) {
+
+    Spatial probeHolder = editorJmeApplication.getAssetManager()
+        .loadModel(demoProbe.getResourcePath());
+
+    LightProbe lightProbe = (LightProbe) probeHolder.getLocalLightList().get(0);
+    probeHolder.removeLight(lightProbe);
+
+    lightProbe.getArea().setRadius(500);
+    lightProbe.setName(demoProbe.resourcePath);
+
+    return lightProbe;
+  }
+
   private void querySceneForDebugLights() {
 
-    EditorJmeApplication engineService = ServiceManager.getService(EditorJmeApplication.class);
-
-    engineService.enqueue(() -> {
+    editorJmeApplication.enqueue(() -> {
 
       // read the lights from the JME thread.
-      LightList lights = engineService.getRootNode().getLocalLightList();
+      LightList lights = editorJmeApplication.getRootNode().getLocalLightList();
 
       for (Light light : lights) {
 
@@ -409,21 +413,6 @@ public class DebugLights {
 
     public String getResourcePath() {
       return resourcePath;
-    }
-
-    public LightProbe extractProbe() {
-
-      Spatial probeHolder = ServiceManager.getService(EditorJmeApplication.class)
-          .getAssetManager()
-          .loadModel(getResourcePath());
-
-      LightProbe lightProbe = (LightProbe) probeHolder.getLocalLightList().get(0);
-      probeHolder.removeLight(lightProbe);
-
-      lightProbe.getArea().setRadius(500);
-      lightProbe.setName(resourcePath);
-
-      return lightProbe;
     }
 
   }

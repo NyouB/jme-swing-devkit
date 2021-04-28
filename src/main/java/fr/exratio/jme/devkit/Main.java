@@ -11,6 +11,7 @@ import fr.exratio.jme.devkit.main.MainPage;
 import fr.exratio.jme.devkit.service.EditorJmeApplication;
 import fr.exratio.jme.devkit.service.MainPageController;
 import fr.exratio.jme.devkit.service.PluginService;
+import fr.exratio.jme.devkit.service.SceneTreeService;
 import fr.exratio.jme.devkit.service.ServiceManager;
 import fr.exratio.jme.devkit.service.impl.EditorJmeApplicationImpl;
 import fr.exratio.jme.devkit.service.inspector.PropertyInspectorTool;
@@ -36,9 +37,12 @@ public class Main {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
   private final EditorJmeApplication jmeEngineService;
+  private final SceneTreeService sceneTreeService;
+  private final PropertyInspectorTool propertyInspectorTool;
   private final DevKitConfig devKitConfig;
   private final PluginService pluginService;
   private final MainPageController mainPageController;
+  private final RunAppStateWindow runAppStateWindow;
   private final JFrame mainFrame;
   private final MainMenu mainMenu;
 
@@ -51,13 +55,18 @@ public class Main {
 
   @Autowired
   public Main(EditorJmeApplicationImpl jmeEngineService,
+      SceneTreeService sceneTreeService,
+      PropertyInspectorTool propertyInspectorTool,
       DevKitConfig devKitConfig,
       PluginService pluginService, MainPageController mainPageController,
-      MainMenu mainMenu) {
+      RunAppStateWindow runAppStateWindow, MainMenu mainMenu) {
     this.jmeEngineService = jmeEngineService;
+    this.sceneTreeService = sceneTreeService;
+    this.propertyInspectorTool = propertyInspectorTool;
     this.devKitConfig = devKitConfig;
     this.pluginService = pluginService;
     this.mainPageController = mainPageController;
+    this.runAppStateWindow = runAppStateWindow;
     this.mainMenu = mainMenu;
     mainFrame = new JFrame();
   }
@@ -158,16 +167,9 @@ public class Main {
   }
 
   private void registerTools() {
-    toolLocationService.registerTool(sceneTreeService);
-
-    RunAppStateWindow runAppStateWindow = new RunAppStateWindow();
-    toolLocationService.registerTool(runAppStateWindow);
-
-    PropertyInspectorTool propertyInspectorTool = new PropertyInspectorTool(registrationService,
-        eventBus, exactMatchFinder, inheritedMatchFinder, defaultMatchFinder);
-
-    ServiceManager.registerService(propertyInspectorTool);
-    toolLocationService.registerTool(propertyInspectorTool);
+    mainPageController.registerTool(sceneTreeService);
+    mainPageController.registerTool(runAppStateWindow);
+    mainPageController.registerTool(propertyInspectorTool);
 
   }
 

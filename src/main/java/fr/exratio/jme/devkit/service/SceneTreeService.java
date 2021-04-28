@@ -27,6 +27,7 @@ import fr.exratio.jme.devkit.tool.ViewMode;
 import fr.exratio.jme.devkit.tree.JmeTreeNode;
 import fr.exratio.jme.devkit.tree.SceneTreeMouseListener;
 import fr.exratio.jme.devkit.tree.TreeConstants;
+import fr.exratio.jme.devkit.tree.control.ControlContextMenu;
 import fr.exratio.jme.devkit.tree.control.ControlTreeNode;
 import fr.exratio.jme.devkit.tree.event.SceneTreeItemChangedEvent;
 import fr.exratio.jme.devkit.tree.light.LightTreeNode;
@@ -34,7 +35,8 @@ import fr.exratio.jme.devkit.tree.spatial.GeometryTreeNode;
 import fr.exratio.jme.devkit.tree.spatial.MeshTreeNode;
 import fr.exratio.jme.devkit.tree.spatial.NodeTreeNode;
 import fr.exratio.jme.devkit.tree.spatial.SpatialTreeNode;
-import fr.exratio.jme.devkit.tree.spatial.menu.NodeContextMenu;
+import fr.exratio.jme.devkit.tree.spatial.menu.GeometryContextMenu;
+import fr.exratio.jme.devkit.tree.spatial.menu.SpatialContextMenu;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -82,7 +84,9 @@ public class SceneTreeService extends Tool {
   private final SceneGraphService sceneGraphService;
   private final PropertyInspectorTool propertyInspectorTool;
   private final RemoveHighLightAction removeHighLightAction;
-  private final NodeContextMenu nodeContextMenu;
+  private final SpatialContextMenu nodeContextMenu;
+  private final ControlContextMenu controlContextMenu;
+  private final GeometryContextMenu geometryContextMenu;
 
   @Autowired
   public SceneTreeService(EventBus eventBus,
@@ -91,7 +95,9 @@ public class SceneTreeService extends Tool {
       SceneGraphService sceneGraphService,
       PropertyInspectorTool propertyInspectorTool,
       RemoveHighLightAction removeHighLightAction,
-      NodeContextMenu nodeContextMenu) {
+      SpatialContextMenu nodeContextMenu,
+      ControlContextMenu controlContextMenu,
+      GeometryContextMenu geometryContextMenu) {
     super(SceneTreeService.class.getName(), TITLE, null, Zone.LEFT_TOP, ViewMode.PIN, true);
     this.eventBus = eventBus;
     this.editorJmeApplication = editorJmeApplication;
@@ -100,6 +106,8 @@ public class SceneTreeService extends Tool {
     this.propertyInspectorTool = propertyInspectorTool;
     this.removeHighLightAction = removeHighLightAction;
     this.nodeContextMenu = nodeContextMenu;
+    this.controlContextMenu = controlContextMenu;
+    this.geometryContextMenu = geometryContextMenu;
     initialize();
     zone.add(this);
   }
@@ -281,7 +289,7 @@ public class SceneTreeService extends Tool {
           "-- onControlCreatedEvent() the control contained in the event is null. Doing nothing");
       return;
     }
-    ControlTreeNode newNode = new ControlTreeNode(control);
+    ControlTreeNode newNode = new ControlTreeNode(control, controlContextMenu);
     objectToNodeMap.put(control, newNode);
     objectToNodeMap.get(parent).add(newNode);
   }
@@ -309,6 +317,7 @@ public class SceneTreeService extends Tool {
       return;
     }
     objectToNodeMap.get(spatial).removeFromParent();
+    objectToNodeMap.remove(spatial);
   }
 
   @Subscribe
@@ -320,6 +329,7 @@ public class SceneTreeService extends Tool {
       return;
     }
     objectToNodeMap.get(control).removeFromParent();
+    objectToNodeMap.remove(control);
   }
 
   @Subscribe
@@ -331,6 +341,7 @@ public class SceneTreeService extends Tool {
       return;
     }
     objectToNodeMap.get(light).removeFromParent();
+    objectToNodeMap.remove(light);
   }
 
 
@@ -438,7 +449,7 @@ public class SceneTreeService extends Tool {
     int controlCount = treeNode.getUserObject().getNumControls();
     for (int i = 0; i < controlCount; i++) {
       Control control = treeNode.getUserObject().getControl(i);
-      treeNode.add(new ControlTreeNode(control));
+      treeNode.add(new ControlTreeNode(control, controlContextMenu));
     }
 
   }
@@ -487,7 +498,7 @@ public class SceneTreeService extends Tool {
       if (treeNode == null) {
         LOGGER.trace("No TreeNode associated with object: {}, using default GeometryTreeNode.",
             spatial.getClass());
-        treeNode = new GeometryTreeNode(geometry);
+        treeNode = new GeometryTreeNode(geometry, geometryContextMenu);
       }
 
     }

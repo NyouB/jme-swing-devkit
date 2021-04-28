@@ -33,7 +33,7 @@ import fr.exratio.jme.devkit.properties.component.vector3f.Vector3fEditor;
 import fr.exratio.jme.devkit.properties.component.vector4f.Vector4fEditor;
 import fr.exratio.jme.devkit.registration.Registrar;
 import fr.exratio.jme.devkit.registration.control.ControlRegistrar;
-import fr.exratio.jme.devkit.registration.control.NoArgsControlRegistrar;
+import fr.exratio.jme.devkit.registration.control.NoArgsControlRegistrarFactory;
 import fr.exratio.jme.devkit.registration.spatial.AssetLinkNodeRegistrar;
 import fr.exratio.jme.devkit.registration.spatial.BatchNodeRegistrar;
 import fr.exratio.jme.devkit.registration.spatial.GeometryRegistrar;
@@ -46,13 +46,14 @@ import java.util.Map;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Controller;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * A service that binds types to components. Used for creating components from reflected values to
  * allow modifying the value.
  */
-@Controller
+@Service
 public class RegistrationService {
 
   private static final Logger LOGGER = LoggerFactory
@@ -67,10 +68,17 @@ public class RegistrationService {
   private final Registrar<ControlRegistrar> controlRegistration = new Registrar<>(
       ControlRegistrar.class);
 
+  private final NoArgsControlRegistrarFactory registrarFactory;
+  private final AssetLinkNodeRegistrar assetLinkNodeRegistrar;
+
   private final long threadId;
 
-
-  public RegistrationService() {
+  @Autowired
+  public RegistrationService(
+      NoArgsControlRegistrarFactory registrarFactory,
+      AssetLinkNodeRegistrar assetLinkNodeRegistrar) {
+    this.registrarFactory = registrarFactory;
+    this.assetLinkNodeRegistrar = assetLinkNodeRegistrar;
 
     threadId = Thread.currentThread().getId();
     PropertyEditorManager.registerEditor(Boolean.class, BooleanEditor.class);
@@ -96,13 +104,13 @@ public class RegistrationService {
     registerPropertySectionBuilder(Material.class, MaterialPropertySectionBuilder.class);
 
     nodeRegistration.register(new NoArgsSpatialRegistrar(Node.class));
-    nodeRegistration.register(new AssetLinkNodeRegistrar());
+    nodeRegistration.register(assetLinkNodeRegistrar);
     nodeRegistration.register(new BatchNodeRegistrar());
     nodeRegistration.register(new InstancedNodeSpatialRegistrar());
 
     // geometryRegistration.register(new ParticleEmitterSpatialRegistrar());
 
-    controlRegistration.register(NoArgsControlRegistrar.create(BillboardControl.class));
+    controlRegistration.register(registrarFactory.create(BillboardControl.class));
 
   }
 

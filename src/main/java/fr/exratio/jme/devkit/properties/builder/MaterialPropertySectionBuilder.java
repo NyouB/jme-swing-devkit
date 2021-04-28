@@ -27,7 +27,6 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Controller;
 
 @Component
 public class MaterialPropertySectionBuilder extends AbstractPropertySectionBuilder<Material> {
@@ -95,7 +94,7 @@ public class MaterialPropertySectionBuilder extends AbstractPropertySectionBuild
 
   private List<PropertySection> createAdditionalRenderStateSection() {
     ReflectedPropertySectionBuilder renderStateBuilder = new ReflectedPropertySectionBuilder(
-        object.getAdditionalRenderState());
+        object.getAdditionalRenderState(), exactMatchFinder);
     return renderStateBuilder.build();
   }
 

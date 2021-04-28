@@ -18,7 +18,6 @@ import fr.exratio.jme.devkit.config.DevKitConfig;
 import fr.exratio.jme.devkit.core.ColorConverter;
 import fr.exratio.jme.devkit.jme.DebugGridState;
 import fr.exratio.jme.devkit.service.EditorJmeApplication;
-import fr.exratio.jme.devkit.service.ServiceManager;
 import fr.exratio.jme.devkit.swing.NumberFormatters;
 import fr.exratio.jme.devkit.swing.SwingTheme;
 import fr.exratio.jme.devkit.swing.ThemeComboBoxCellRenderer;
@@ -42,7 +41,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import org.springframework.stereotype.Service;
 
+@Service
 public class Configuration {
 
   public static final String WINDOW_ID = "Configuration";
@@ -66,8 +67,10 @@ public class Configuration {
   private JTextField assetRootTextField;
   private JComboBox<Class<? extends Theme>> themeComboBox;
   private JComboBox<String> defaultMaterialComboBox;
+  private final EditorJmeApplication editorJmeApplication;
 
-  public Configuration() {
+  public Configuration(EditorJmeApplication editorJmeApplication) {
+    this.editorJmeApplication = editorJmeApplication;
 
     $$$setupUI$$$();
 
@@ -188,12 +191,12 @@ public class Configuration {
 
       if (!existingAssetRoot.equals(newAssetRoot)) {
 
-        ServiceManager.getService(EditorJmeApplication.class).getAssetManager()
+        editorJmeApplication.getAssetManager()
             .unregisterLocator(existingAssetRoot, FileLocator.class);
         log.info("Unregistered Asset Root: " + existingAssetRoot);
 
         devKitConfig.setAssetRootDir(newAssetRoot);
-        ServiceManager.getService(EditorJmeApplication.class).getAssetManager()
+        editorJmeApplication.getAssetManager()
             .registerLocator(newAssetRoot, FileLocator.class);
         log.info("Registering New Asset Root: " + newAssetRoot);
       }
@@ -232,17 +235,15 @@ public class Configuration {
 
       devKitConfig.save();
 
-      EditorJmeApplication engineService = ServiceManager.getService(EditorJmeApplication.class);
-
-      engineService.enqueue(() -> {
+      editorJmeApplication.enqueue(() -> {
 
         // apply viewport settongs
-        engineService.applyCameraFrustumSizes();
-        engineService.getViewPort()
+        editorJmeApplication.applyCameraFrustumSizes();
+        editorJmeApplication.getViewPort()
             .setBackgroundColor(devKitConfig.getViewportColor());
 
         // apply grid settings
-        DebugGridState debugGridState = engineService.getStateManager()
+        DebugGridState debugGridState = editorJmeApplication.getStateManager()
             .getState(DebugGridState.class);
 
         if (debugGridState != null) {

@@ -1,5 +1,6 @@
 package fr.exratio.jme.devkit.tree.spatial.menu;
 
+import com.jme3.scene.BatchNode;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -168,9 +169,22 @@ public class NodeContextMenu extends SpatialContextMenu {
 
     JMenuItem deleteItem = add(new JMenuItem("Delete"));
     deleteItem.setAction(removeItemAction);
+
+    add(new JSeparator());
+
+    JMenuItem batchItem = add(new JMenuItem("Batch"));
+    batchItem
+        .addActionListener(e -> editorJmeApplication.enqueue(() -> {
+          ((BatchNode) sceneGraphService.getSelectedObject()).batch();
+          sceneTreeService.reloadTreeNode(
+              sceneTreeService.jmeObjectToNode(sceneGraphService.getSelectedObject()));
+        }));
+
   }
 
   private void addShapes(JMenu parent) {
 
   }
+
+
 }

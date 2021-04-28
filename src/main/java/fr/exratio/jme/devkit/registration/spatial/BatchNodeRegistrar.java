@@ -3,15 +3,9 @@ package fr.exratio.jme.devkit.registration.spatial;
 import com.jme3.app.SimpleApplication;
 import com.jme3.scene.BatchNode;
 import com.jme3.scene.Node;
-import fr.exratio.jme.devkit.service.EditorJmeApplication;
-import fr.exratio.jme.devkit.service.SceneTreeService;
-import fr.exratio.jme.devkit.service.ServiceManager;
 import fr.exratio.jme.devkit.tree.spatial.NodeTreeNode;
-import fr.exratio.jme.devkit.tree.spatial.menu.NodeContextMenu;
-import java.awt.HeadlessException;
-import javax.swing.JMenuItem;
+import fr.exratio.jme.devkit.tree.spatial.menu.SpatialContextMenu;
 import javax.swing.JPopupMenu;
-import javax.swing.JSeparator;
 import javax.swing.tree.TreeNode;
 
 public class BatchNodeRegistrar extends NodeRegistrar {
@@ -32,7 +26,9 @@ public class BatchNodeRegistrar extends NodeRegistrar {
 
   public static class BatchNodeTreeNode extends NodeTreeNode {
 
-    public BatchNodeTreeNode(BatchNode node) {
+    SpatialContextMenu nodeContextMenu;
+
+    public BatchNodeTreeNode(BatchNode node, SpatialContextMenu nodeContextMenu) {
       super(node, nodeContextMenu);
     }
 
@@ -43,28 +39,7 @@ public class BatchNodeRegistrar extends NodeRegistrar {
 
     @Override
     public JPopupMenu getContextMenu() {
-      return new BatchNodeContextMenu(this);
-    }
-
-  }
-
-  public static class BatchNodeContextMenu extends NodeContextMenu {
-
-    public BatchNodeContextMenu(BatchNodeTreeNode nodeTreeNode) throws HeadlessException {
-      super(nodeTreeNode, createCylinderAction, createDomeAction, createQuadAction,
-          createSphereAction, removeItemAction, addModels, createSkyBoxDialog, registrationService,
-          sceneGraphService, editorJmeApplication, clipboardService, menuController,
-          sceneTreeService);
-
-      add(new JSeparator());
-
-      JMenuItem batchItem = add(new JMenuItem("Batch"));
-      batchItem
-          .addActionListener(e -> ServiceManager.getService(EditorJmeApplication.class).enqueue(() -> {
-            nodeTreeNode.getUserObject().batch();
-            ServiceManager.getService(SceneTreeService.class).reloadTreeNode(nodeTreeNode);
-          }));
-
+      return nodeContextMenu;
     }
 
   }

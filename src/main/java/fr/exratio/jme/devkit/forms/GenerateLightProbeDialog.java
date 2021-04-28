@@ -18,6 +18,7 @@ import fr.exratio.jme.devkit.swing.ComponentUtilities;
 import fr.exratio.jme.devkit.swing.NumberFormatters;
 import fr.exratio.jme.devkit.tree.spatial.NodeTreeNode;
 import fr.exratio.jme.devkit.tree.spatial.SpatialTreeNode;
+import fr.exratio.jme.devkit.tree.spatial.menu.SpatialContextMenu;
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.Window;
@@ -44,6 +45,7 @@ public class GenerateLightProbeDialog {
   private final EditorJmeApplication editorJmeApplication;
   private final SceneGraphService sceneGraphService;
   private final SceneTreeService sceneTreeService;
+  private final SpatialContextMenu nodeContextMenu;
 
   private JPanel rootPanel;
   private JTree sceneTree;
@@ -55,10 +57,12 @@ public class GenerateLightProbeDialog {
   public GenerateLightProbeDialog(
       EditorJmeApplication editorJmeApplication,
       SceneGraphService sceneGraphService,
-      SceneTreeService sceneTreeService) {
+      SceneTreeService sceneTreeService,
+      SpatialContextMenu nodeContextMenu) {
     this.editorJmeApplication = editorJmeApplication;
     this.sceneGraphService = sceneGraphService;
     this.sceneTreeService = sceneTreeService;
+    this.nodeContextMenu = nodeContextMenu;
 
     $$$setupUI$$$();
 

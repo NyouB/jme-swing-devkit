@@ -43,8 +43,6 @@ public class SpatialContextMenu extends JPopupMenu {
   private final SceneTreeService sceneTreeService;
   private final SceneGraphService sceneGraphService;
   private final ClipboardService clipboardService;
-  private final RegistrationService registrationService;
-  private final MenuController menuController;
 
   @Autowired
   public SpatialContextMenu(
@@ -59,9 +57,7 @@ public class SpatialContextMenu extends JPopupMenu {
     this.sceneTreeService = sceneTreeService;
     this.sceneGraphService = sceneGraphService;
     this.clipboardService = clipboardService;
-    this.registrationService = registrationService;
     this.spatial = (Spatial) sceneGraphService.getSelectedObject();
-    this.menuController = menuController;
 
     JMenuItem lookAtItem = add(new JMenuItem("Look at Spatial"));
     lookAtItem.addActionListener(e -> {
@@ -232,7 +228,7 @@ public class SpatialContextMenu extends JPopupMenu {
 
     });
     GenerateLightProbeDialog generateLightProbeDialog = new GenerateLightProbeDialog(
-        editorJmeApplication, sceneGraphService, sceneTreeService);
+        editorJmeApplication, sceneGraphService, sceneTreeService, this);
     JMenuItem probeLight = menu.add(new JMenuItem("Generate LightProbe..."));
     probeLight.addActionListener(e -> GUIUtils.createDialog(SwingUtilities
             .getWindowAncestor(this), generateLightProbeDialog.$$$getRootComponent$$$(),

@@ -19,7 +19,6 @@ import fr.exratio.jme.devkit.core.ColorConverter;
 import fr.exratio.jme.devkit.core.DevkitPackages;
 import fr.exratio.jme.devkit.main.MainPage.Zone;
 import fr.exratio.jme.devkit.service.EditorJmeApplication;
-import fr.exratio.jme.devkit.service.ServiceManager;
 import fr.exratio.jme.devkit.swing.JSplitPaneWithZeroSizeDivider;
 import fr.exratio.jme.devkit.tool.Tool;
 import fr.exratio.jme.devkit.tool.ViewMode;
@@ -46,7 +45,6 @@ import javax.swing.BorderFactory;
 import javax.swing.DefaultBoundedRangeModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
-import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
@@ -63,11 +61,11 @@ import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
-import lombok.Builder;
 import net.miginfocom.swing.MigLayout;
 import org.reflections8.Reflections;
 import org.reflections8.scanners.MethodAnnotationsScanner;
 import org.reflections8.util.ConfigurationBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 @Controller
@@ -75,23 +73,19 @@ public class RunAppStateWindow extends Tool {
 
   public static final String TITLE = "Run AppState";
   private static final Logger log = Logger.getLogger(RunAppStateWindow.class.getName());
+
   private JPanel rootPane;
   private JList<Class<? extends AppState>> appstatesList;
   private JPanel appstatePropertiesPanel;
   private JButton runButton;
   private JButton stopButton;
   private JSplitPane noborderSpitPane;
+  private final EditorJmeApplication editorJmeApplication;
 
-  public RunAppStateWindow() {
+  @Autowired
+  public RunAppStateWindow(EditorJmeApplication editorJmeApplication) {
     super(RunAppStateWindow.class.getName(), TITLE, null, Zone.BOTTOM_LEFT, ViewMode.PIN, true);
-    $$$setupUI$$$();
-    initialize();
-  }
-
-  @Builder(builderMethodName = "appStateViewBuilder")
-  public RunAppStateWindow(String id, String title, Icon icon,
-      Zone zone, ViewMode viewMode, boolean isDisplayed) {
-    super(RunAppStateWindow.class.getName(), TITLE, null, Zone.BOTTOM_LEFT, ViewMode.PIN, true);
+    this.editorJmeApplication = editorJmeApplication;
     $$$setupUI$$$();
     initialize();
   }
@@ -116,7 +110,7 @@ public class RunAppStateWindow extends Tool {
 
       if (selectedClass != null) {
 
-        boolean exists = ServiceManager.getService(EditorJmeApplication.class)
+        boolean exists = editorJmeApplication
             .getStateManager()
             .getState(selectedClass) != null;
 
@@ -127,9 +121,7 @@ public class RunAppStateWindow extends Tool {
             Constructor<? extends AppState> constructor = selectedClass.getConstructor();
             AppState appState = constructor.newInstance();
 
-            ServiceManager.getService(EditorJmeApplication.class)
-                .getStateManager()
-                .attach(appState);
+            editorJmeApplication.getStateManager().attach(appState);
 
             populateStateProperties(appState);
 
@@ -151,12 +143,10 @@ public class RunAppStateWindow extends Tool {
 
       if (selectedClass != null) {
 
-        AppState appState = ServiceManager.getService(EditorJmeApplication.class)
-            .getStateManager()
-            .getState(selectedClass);
+        AppState appState = editorJmeApplication.getStateManager().getState(selectedClass);
 
         if (appState != null) {
-          ServiceManager.getService(EditorJmeApplication.class)
+          editorJmeApplication
               .getStateManager()
               .detach(appState);
         }
@@ -176,9 +166,7 @@ public class RunAppStateWindow extends Tool {
       if (!e.getValueIsAdjusting()) {
         Class<? extends AppState> selectedClass = appstatesList.getSelectedValue();
 
-        AppState appState = ServiceManager.getService(EditorJmeApplication.class)
-            .getStateManager()
-            .getState(selectedClass);
+        AppState appState = editorJmeApplication.getStateManager().getState(selectedClass);
 
         if (appState != null) {
           runButton.setEnabled(false);
@@ -297,7 +285,7 @@ public class RunAppStateWindow extends Tool {
       ConcurrentHashMap<Class<? extends Annotation>, Map<Method, Optional<Object>>> allAnnotatedMethods = new ConcurrentHashMap<>();
 
       // we need to get the values from the JME thread.
-      ServiceManager.getService(EditorJmeApplication.class).enqueue(() -> {
+      editorJmeApplication.enqueue(() -> {
 
         List<Class<? extends Annotation>> annotations = new ArrayList<>();
         Collections.addAll(annotations,
@@ -392,7 +380,7 @@ public class RunAppStateWindow extends Tool {
                   final float sliderVal = slider.getValue() / multiplier;
 
                   // invoke the method on the JME thread (it's an appstate, belongs to JME).
-                  ServiceManager.getService(EditorJmeApplication.class).enqueue(() -> {
+                  editorJmeApplication.enqueue(() -> {
                     try {
                       setter.invoke(appState, sliderVal);
                     } catch (IllegalAccessException | InvocationTargetException e) {
@@ -432,7 +420,7 @@ public class RunAppStateWindow extends Tool {
                   final int sliderVal = slider.getValue();
 
                   // invoke the method on the JME thread (it's an appstate, belongs to JME).
-                  ServiceManager.getService(EditorJmeApplication.class).enqueue(() -> {
+                  editorJmeApplication.enqueue(() -> {
                     try {
                       setter.invoke(appState, sliderVal);
                     } catch (IllegalAccessException | InvocationTargetException e) {
@@ -448,7 +436,7 @@ public class RunAppStateWindow extends Tool {
 
                 JButton button = new JButton(getter.getName());
                 button.addActionListener(
-                    e -> ServiceManager.getService(EditorJmeApplication.class).enqueue(() -> {
+                    e -> editorJmeApplication.enqueue(() -> {
                       try {
                         getter.invoke(appState);
                       } catch (IllegalAccessException | InvocationTargetException illegalAccessException) {
@@ -487,7 +475,7 @@ public class RunAppStateWindow extends Tool {
                 comboBox.addActionListener(event -> {
 
                   final Enum<?> comboVal = (Enum<?>) comboBox.getSelectedItem();
-                  ServiceManager.getService(EditorJmeApplication.class).enqueue(() -> {
+                  editorJmeApplication.enqueue(() -> {
 
                     try {
                       setter.invoke(appState, comboVal);
@@ -527,7 +515,7 @@ public class RunAppStateWindow extends Tool {
                   final ColorRGBA newColor = ColorConverter.toColorRGBA(jColorChooser.getColor());
 
                   // set the color in the JME thread.
-                  ServiceManager.getService(EditorJmeApplication.class).enqueue(() -> {
+                  editorJmeApplication.enqueue(() -> {
                     try {
                       setter.invoke(appState, newColor);
                     } catch (IllegalAccessException | InvocationTargetException illegalAccessException) {
@@ -601,7 +589,7 @@ public class RunAppStateWindow extends Tool {
 
                       final int selectedValue = list.getSelectedIndex();
 
-                      ServiceManager.getService(EditorJmeApplication.class).enqueue(() -> {
+                      editorJmeApplication.enqueue(() -> {
 
                         try {
                           listSetter.invoke(appState, selectedValue);
@@ -638,7 +626,7 @@ public class RunAppStateWindow extends Tool {
 
                     final int selectedValue = comboBox.getSelectedIndex();
 
-                    ServiceManager.getService(EditorJmeApplication.class).enqueue(() -> {
+                    editorJmeApplication.enqueue(() -> {
 
                       try {
                         listSetter.invoke(appState, selectedValue);
@@ -684,7 +672,7 @@ public class RunAppStateWindow extends Tool {
                   final boolean checkBoxVal = checkBox.isSelected();
 
                   // invoke the method on the JME thread (it's an appstate, belongs to JME).
-                  ServiceManager.getService(EditorJmeApplication.class).enqueue(() -> {
+                  editorJmeApplication.enqueue(() -> {
                     try {
                       setter.invoke(appState, checkBoxVal);
                     } catch (IllegalAccessException | InvocationTargetException e) {
@@ -737,9 +725,7 @@ public class RunAppStateWindow extends Tool {
 
               rootPane.revalidate();
               rootPane.repaint();
-
             }
-
           }
 
           // Add the tabbedPane (if it exists) last.
@@ -751,17 +737,11 @@ public class RunAppStateWindow extends Tool {
           // we've added all the controls, so we can finally repaint the surface.
           rootPane.revalidate();
           rootPane.repaint();
-
         });
-
-
       });
-
     }
-
     rootPane.revalidate();
     rootPane.repaint();
-
   }
 
   @SuppressWarnings("unchecked")

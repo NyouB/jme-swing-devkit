@@ -4,17 +4,21 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.scene.Node;
 import com.jme3.scene.instancing.InstancedNode;
 import fr.exratio.jme.devkit.service.EditorJmeApplication;
-import fr.exratio.jme.devkit.service.ServiceManager;
+import fr.exratio.jme.devkit.service.SceneGraphService;
 import fr.exratio.jme.devkit.tree.spatial.NodeTreeNode;
-import fr.exratio.jme.devkit.tree.spatial.menu.NodeContextMenu;
 import java.awt.HeadlessException;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.tree.TreeNode;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 
+@Service
 public class InstancedNodeSpatialRegistrar extends NodeRegistrar {
 
+  @Autowired
   public InstancedNodeSpatialRegistrar() {
     super(InstancedNode.class);
   }
@@ -31,8 +35,9 @@ public class InstancedNodeSpatialRegistrar extends NodeRegistrar {
 
   public static class InstancedNodeTreeNode extends NodeTreeNode {
 
-    public InstancedNodeTreeNode(InstancedNode instancedNode) {
-      super(instancedNode, nodeContextMenu);
+    public InstancedNodeTreeNode(InstancedNode instancedNode,
+        InstancedNodeContextMenu instancedNodeContextMenu) {
+      super(instancedNode, instancedNodeContextMenu);
     }
 
     @Override
@@ -40,38 +45,37 @@ public class InstancedNodeSpatialRegistrar extends NodeRegistrar {
       return (InstancedNode) super.getUserObject();
     }
 
-    @Override
-    public JPopupMenu getContextMenu() {
-      return new InstancedNodeContextMenu(this);
-    }
   }
 
-  public static class InstancedNodeContextMenu extends NodeContextMenu {
+  @Controller
+  public static class InstancedNodeContextMenu extends JPopupMenu {
 
-    public InstancedNodeContextMenu(InstancedNodeTreeNode instancedNodeTreeNode)
+    private final EditorJmeApplication editorJmeApplication;
+    private final SceneGraphService sceneGraphService;
+
+    @Autowired
+    public InstancedNodeContextMenu(EditorJmeApplication editorJmeApplication,
+        SceneGraphService sceneGraphService)
         throws HeadlessException {
-      super(instancedNodeTreeNode, createCylinderAction, createDomeAction, createQuadAction,
-          createSphereAction, removeItemAction, addModels, createSkyBoxDialog, registrationService,
-          sceneGraphService, editorJmeApplication, clipboardService, menuController,
-          sceneTreeService);
+      this.editorJmeApplication = editorJmeApplication;
+      this.sceneGraphService = sceneGraphService;
 
       JMenuItem instanceItem = add(new JMenuItem("Instance Items"));
-      instanceItem.addActionListener(e -> {
-        ServiceManager.getService(EditorJmeApplication.class).enqueue(() -> {
+      instanceItem.addActionListener(e -> editorJmeApplication.enqueue(() -> {
 
-          try {
-            instancedNodeTreeNode.getUserObject().instance();
-          } catch (IllegalStateException ex) {
+        try {
+          ((InstancedNodeTreeNode) sceneGraphService.getSelectedObject()).getUserObject()
+              .instance();
+        } catch (IllegalStateException ex) {
 
-            JOptionPane.showMessageDialog(null,
-                ex.getMessage(),
-                "Instancing Error",
-                JOptionPane.ERROR_MESSAGE);
+          JOptionPane.showMessageDialog(null,
+              ex.getMessage(),
+              "Instancing Error",
+              JOptionPane.ERROR_MESSAGE);
 
-          }
+        }
 
-        });
-      });
+      }));
 
     }
 

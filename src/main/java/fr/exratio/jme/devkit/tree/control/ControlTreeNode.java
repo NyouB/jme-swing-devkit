@@ -7,8 +7,12 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 public class ControlTreeNode extends DefaultMutableTreeNode implements TreeContextMenu {
 
-  public ControlTreeNode(Control control) {
+  private final ControlContextMenu controlContextMenu;
+
+  public ControlTreeNode(Control control,
+      ControlContextMenu controlContextMenu) {
     super(control);
+    this.controlContextMenu = controlContextMenu;
   }
 
   @Override
@@ -18,7 +22,7 @@ public class ControlTreeNode extends DefaultMutableTreeNode implements TreeConte
 
   @Override
   public JPopupMenu getContextMenu() {
-    return new ControlContextMenu(this);
+    return controlContextMenu;
   }
 
 }

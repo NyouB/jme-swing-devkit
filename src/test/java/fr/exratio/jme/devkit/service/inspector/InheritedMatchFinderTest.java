@@ -16,7 +16,8 @@ class InheritedMatchFinderTest extends AbstractJmeDevKitTest {
   @Test
   void find() {
     Picture picture = new Picture("myTestGeometry");
-    InheritedMatchFinder finder = new InheritedMatchFinder(new RegistrationService());
+    InheritedMatchFinder finder = new InheritedMatchFinder(new RegistrationService(registrarFactory,
+        assetLinkNodeRegistrar));
     List<PropertySection> res = finder.find(picture);
     Assertions.assertEquals(3, res.size());
     Assertions.assertTrue(res.stream().map(propertySection -> propertySection.getTitle()).collect(
@@ -26,7 +27,8 @@ class InheritedMatchFinderTest extends AbstractJmeDevKitTest {
   @Test
   void findParentClassBuilder() {
     Picture picture = new Picture("myTestPicture");
-    InheritedMatchFinder finder = new InheritedMatchFinder(new RegistrationService());
+    InheritedMatchFinder finder = new InheritedMatchFinder(new RegistrationService(registrarFactory,
+        assetLinkNodeRegistrar));
     Class<?> registeredParentClass = finder
         .findRegisteredParentClass(picture);
     Assertions.assertEquals(Geometry.class, registeredParentClass);

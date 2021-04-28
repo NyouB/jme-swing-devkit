@@ -8,6 +8,7 @@ import fr.exratio.jme.devkit.jme.AppStateUtils;
 import fr.exratio.jme.devkit.jme.CameraRotationWidgetState;
 import fr.exratio.jme.devkit.jme.DebugGridState;
 import fr.exratio.jme.devkit.lifecycle.ExitAction;
+import fr.exratio.jme.devkit.service.EditorJmeApplication;
 import java.awt.Frame;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JDialog;
@@ -16,6 +17,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
 import javax.swing.WindowConstants;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -29,10 +31,14 @@ public class MainMenu extends JMenuBar {
   JMenu windowItem;
   private final ExitAction exitAction;
   private final DevKitConfig devKitConfig;
+  private final EditorJmeApplication editorJmeApplication;
 
-  public MainMenu(ExitAction exitAction, DevKitConfig devKitConfig) {
+  @Autowired
+  public MainMenu(ExitAction exitAction, DevKitConfig devKitConfig,
+      EditorJmeApplication editorJmeApplication) {
     this.exitAction = exitAction;
     this.devKitConfig = devKitConfig;
+    this.editorJmeApplication = editorJmeApplication;
     // FILE menu
     fileMenu = add(new JMenu("File"));
 
@@ -56,7 +62,7 @@ public class MainMenu extends JMenuBar {
 
     configItem = editMenu.add(new JMenuItem("Configuration..."));
     configItem.addActionListener(e -> {
-      Configuration configuration = new Configuration();
+      Configuration configuration = new Configuration(this.editorJmeApplication);
       JDialog configDialog = new JDialog((Frame) null, Configuration.WINDOW_ID, true);
       configDialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
       configDialog.setContentPane(configuration.$$$getRootComponent$$$());

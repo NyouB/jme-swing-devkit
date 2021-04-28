@@ -52,7 +52,7 @@ class ReflectedPropertySectionBuilderTest extends AbstractJmeDevKitTest {
     Mesh myTestMesh = new Mesh();
     Geometry myTestGeometry = new Geometry("testGeometry", myTestMesh);
     ReflectedPropertySectionBuilder reflectedPropertySectionBuilder = new ReflectedPropertySectionBuilder(
-        myTestGeometry);
+        myTestGeometry, exactMatchFinder);
     List<PropertySection> propertySectionsResult = reflectedPropertySectionBuilder
         .build();
     Assertions.assertNotNull(propertySectionsResult);

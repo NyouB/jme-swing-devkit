@@ -167,7 +167,7 @@ public class MainTest2 {
 
   private void registerTools() {
     mainPageController.registerTool(sceneTreeService);
-    RunAppStateWindow runAppStateWindow = new RunAppStateWindow();
+    RunAppStateWindow runAppStateWindow = new RunAppStateWindow(editorJmeApplication);
     mainPageController.registerTool(runAppStateWindow);
     mainPageController.registerTool(propertyInspectorTool);
 

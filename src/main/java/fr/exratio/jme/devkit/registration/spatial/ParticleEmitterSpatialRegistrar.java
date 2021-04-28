@@ -12,10 +12,18 @@ import fr.exratio.jme.devkit.tree.spatial.GeometryTreeNode;
 import fr.exratio.jme.devkit.tree.spatial.menu.GeometryContextMenu;
 import javax.swing.JPopupMenu;
 import javax.swing.tree.TreeNode;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class ParticleEmitterSpatialRegistrar extends GeometryRegistrar {
 
-  public ParticleEmitterSpatialRegistrar() {
+  private final GeometryContextMenu geometryContextMenu;
+
+  @Autowired
+  public ParticleEmitterSpatialRegistrar(
+      GeometryContextMenu geometryContextMenu) {
+    this.geometryContextMenu = geometryContextMenu;
     setRegisteredClass(ParticleEmitter.class);
   }
 
@@ -49,10 +57,10 @@ public class ParticleEmitterSpatialRegistrar extends GeometryRegistrar {
   @Override
   public TreeNode createSceneTreeNode(Geometry geometry, SimpleApplication application) {
 
-    return new GeometryTreeNode(geometry) {
+    return new GeometryTreeNode(geometry, geometryContextMenu) {
       @Override
       public JPopupMenu getContextMenu() {
-        return new GeometryContextMenu(this);
+        return geometryContextMenu;
       }
     };
 

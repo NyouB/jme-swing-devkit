@@ -1,15 +1,15 @@
 package fr.exratio.jme.devkit.tree;
 
-import fr.exratio.jme.devkit.tree.spatial.menu.NodeContextMenu;
+import fr.exratio.jme.devkit.tree.spatial.menu.SpatialContextMenu;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JTree;
 
 public class SceneTreeMouseListener extends MouseAdapter {
 
-  private final NodeContextMenu nodeContextMenu;
+  private final SpatialContextMenu nodeContextMenu;
 
-  public SceneTreeMouseListener(NodeContextMenu nodeContextMenu) {
+  public SceneTreeMouseListener(SpatialContextMenu nodeContextMenu) {
     this.nodeContextMenu = nodeContextMenu;
   }
 

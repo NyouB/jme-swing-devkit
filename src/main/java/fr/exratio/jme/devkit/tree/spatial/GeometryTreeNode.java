@@ -6,8 +6,11 @@ import javax.swing.JPopupMenu;
 
 public class GeometryTreeNode extends SpatialTreeNode {
 
-  public GeometryTreeNode(Geometry geometry) {
+  private final GeometryContextMenu geometryContextMenu;
+
+  public GeometryTreeNode(Geometry geometry, GeometryContextMenu geometryContextMenu) {
     super(geometry);
+    this.geometryContextMenu = geometryContextMenu;
   }
 
   @Override
@@ -17,6 +20,6 @@ public class GeometryTreeNode extends SpatialTreeNode {
 
   @Override
   public JPopupMenu getContextMenu() {
-    return new GeometryContextMenu(this);
+    return geometryContextMenu;
   }
 }

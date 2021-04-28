@@ -4,16 +4,14 @@ import com.google.common.collect.ImmutableList;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.jme3.asset.ModelKey;
-import com.jme3.scene.AssetLinkNode;
+import fr.exratio.jme.devkit.action.RemoveLinkedAssetAction;
 import fr.exratio.jme.devkit.registration.spatial.AssetLinkNodeRegistrar.AssetLinkNodeTreeNode;
 import fr.exratio.jme.devkit.service.EditorJmeApplication;
-import fr.exratio.jme.devkit.service.SceneTreeService;
-import fr.exratio.jme.devkit.service.ServiceManager;
-import fr.exratio.jme.devkit.swing.ComponentUtilities;
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Insets;
-import java.awt.Window;
-import java.util.ArrayList;
-import java.util.List;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -21,18 +19,32 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-public class RemoveLinkedAsset {
+@Component
+public class RemoveLinkedAsset extends JPanel {
 
   private JPanel rootPanel;
-  private JList<ModelKey> modelKeysList;
+  private final RemoveLinkedAssetAction removeLinkedAssetAction;
+  private final EditorJmeApplication editorJmeApplication;
+  // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
+  // Generated using JFormDesigner Evaluation license - Quentin Raphaneau
+  private JList modelKeysList;
   private JButton removeLinkedAssetsButton;
 
-  public RemoveLinkedAsset(AssetLinkNodeTreeNode assetLinkNodeTreeNode) {
+  @Autowired
+  public RemoveLinkedAsset(AssetLinkNodeTreeNode assetLinkNodeTreeNode,
+      RemoveLinkedAssetAction removeLinkedAssetAction,
+      EditorJmeApplication editorJmeApplication) {
+    initComponents();
+    this.removeLinkedAssetAction = removeLinkedAssetAction;
+    this.editorJmeApplication = editorJmeApplication;
 
-    EditorJmeApplication engineService = ServiceManager.getService(EditorJmeApplication.class);
-
-    engineService.enqueue(() -> {
+    editorJmeApplication.enqueue(() -> {
       final ImmutableList<ModelKey> modelKeys = ImmutableList
           .copyOf(assetLinkNodeTreeNode.getUserObject().getAssetLoaderKeys());
 
@@ -48,54 +60,52 @@ public class RemoveLinkedAsset {
 
     });
 
-    removeLinkedAssetsButton.addActionListener(e -> {
+    removeLinkedAssetsButton.setAction(removeLinkedAssetAction);
 
-      int[] indices = modelKeysList.getSelectedIndices();
+  }
 
-      if (indices != null && indices.length > 0) {
+  private void initComponents() {
+    // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
+    // Generated using JFormDesigner Evaluation license - Quentin Raphaneau
+    var scrollPane1 = new JScrollPane();
+    modelKeysList = new JList();
+    removeLinkedAssetsButton = new JButton();
 
-        // disable the window
-        ComponentUtilities.enableComponents(rootPanel, false);
-
-        // then run this "later" so the GUI can display the "disabled" view now.
-        SwingUtilities.invokeLater(() -> {
-
-          // get the list of models in the AWT thread.
-          final List<ModelKey> selectedModelKeys = new ArrayList<>();
-          for (int index : indices) {
-            selectedModelKeys.add(modelKeysList.getModel().getElementAt(index));
-          }
-
-          engineService.enqueue(() -> {
-
-            AssetLinkNode assetLinkNode = assetLinkNodeTreeNode.getUserObject();
-
-            for (ModelKey key : selectedModelKeys) {
-              assetLinkNode.removeLinkedChild(key);
-            }
-
-            // reload all models.
-            assetLinkNode.attachLinkedChildren(engineService.getAssetManager());
-
-            // close the window on the AWT thread.
-            SwingUtilities.invokeLater(() -> {
-
-              ServiceManager.getService(SceneTreeService.class)
-                  .reloadTreeNode(assetLinkNodeTreeNode);
-
-              JButton button = (JButton) e.getSource();
-              Window window = SwingUtilities.getWindowAncestor(button);
-              window.dispose();
-            });
-
-          });
-
-        });
-
+    //======== this ========
+    setBorder(new CompoundBorder(new TitledBorder(new
+        EmptyBorder(0, 0, 0, 0), "JFor\u006dDesi\u0067ner \u0045valu\u0061tion",
+        TitledBorder.CENTER, TitledBorder.BOTTOM, new Font("Dia\u006cog", Font.BOLD, 12),
+        Color.red), getBorder()));
+    addPropertyChangeListener(new PropertyChangeListener() {
+      @Override
+      public void propertyChange(PropertyChangeEvent e) {
+        if ("bord\u0065r".equals(e.getPropertyName())) {
+          throw new RuntimeException();
+        }
       }
-
     });
+    setLayout(new GridLayoutManager(2, 1, new Insets(10, 10, 10, 10), -1, -1));
 
+    //======== scrollPane1 ========
+    {
+      scrollPane1.setViewportView(modelKeysList);
+    }
+    add(scrollPane1, new GridConstraints(0, 0, 1, 1,
+        GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH,
+        GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW
+            | GridConstraints.SIZEPOLICY_WANT_GROW,
+        GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW
+            | GridConstraints.SIZEPOLICY_WANT_GROW,
+        null, null, null));
+
+    //---- removeLinkedAssetsButton ----
+    removeLinkedAssetsButton.setText("Remove Selected Linked Assets");
+    add(removeLinkedAssetsButton, new GridConstraints(1, 0, 1, 1,
+        GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
+        GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+        GridConstraints.SIZEPOLICY_FIXED,
+        null, null, null));
+    // JFormDesigner - End of component initialization  //GEN-END:initComponents
   }
 
   {
@@ -136,6 +146,5 @@ public class RemoveLinkedAsset {
   public JComponent $$$getRootComponent$$$() {
     return rootPanel;
   }
-
-
+  // JFormDesigner - End of variables declaration  //GEN-END:variables
 }

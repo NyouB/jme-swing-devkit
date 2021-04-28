@@ -1,7 +1,11 @@
 package fr.exratio.jme.devkit.tree.spatial.menu;
 
+import fr.exratio.jme.devkit.service.ClipboardService;
+import fr.exratio.jme.devkit.service.EditorJmeApplication;
 import fr.exratio.jme.devkit.service.MenuController;
-import fr.exratio.jme.devkit.service.ServiceManager;
+import fr.exratio.jme.devkit.service.RegistrationService;
+import fr.exratio.jme.devkit.service.SceneGraphService;
+import fr.exratio.jme.devkit.service.SceneTreeService;
 import fr.exratio.jme.devkit.tree.spatial.GeometryTreeNode;
 import java.awt.HeadlessException;
 import java.util.List;
@@ -10,9 +14,28 @@ import javax.swing.JSeparator;
 
 public class GeometryContextMenu extends SpatialContextMenu {
 
-  public GeometryContextMenu(GeometryTreeNode geometryTreeNode) throws HeadlessException {
-    super(geometryTreeNode, sceneTreeService, sceneGraphService, clipboardService,
+  private final EditorJmeApplication editorJmeApplication;
+  private final SceneTreeService sceneTreeService;
+  private final SceneGraphService sceneGraphService;
+  private final ClipboardService clipboardService;
+  private final RegistrationService registrationService;
+  private final MenuController menuController;
+
+  public GeometryContextMenu(
+      EditorJmeApplication editorJmeApplication,
+      SceneTreeService sceneTreeService,
+      SceneGraphService sceneGraphService,
+      ClipboardService clipboardService,
+      RegistrationService registrationService,
+      MenuController menuController) throws HeadlessException {
+    super(editorJmeApplication, sceneTreeService, sceneGraphService, clipboardService,
         registrationService, menuController);
+    this.editorJmeApplication = editorJmeApplication;
+    this.sceneTreeService = sceneTreeService;
+    this.sceneGraphService = sceneGraphService;
+    this.clipboardService = clipboardService;
+    this.registrationService = registrationService;
+    this.menuController = menuController;
 
 //        // Determine if the geometry of this mesh is a child of an InstancedNode
 //        // If it is, give the user the option to create an instance based on this mesh.
@@ -64,8 +87,7 @@ public class GeometryContextMenu extends SpatialContextMenu {
 //        });
 
     // Allow users to also add their options....
-    List<JMenuItem> customItems = ServiceManager.getService(MenuController.class)
-        .getCustomMenuItems(GeometryTreeNode.class);
+    List<JMenuItem> customItems = menuController.getCustomMenuItems(GeometryTreeNode.class);
 
     if (customItems != null && !customItems.isEmpty()) {
 

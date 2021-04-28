@@ -35,9 +35,12 @@ public class ReflectedPropertySectionBuilder extends AbstractPropertySectionBuil
       .getField(PropertyDescriptor.class, "classRef", true);
   private final PropertySectionListFinder propertySectionListFinder;
   private final Map<Class<?>, Set<PropertyDescriptor>> groupedDescriptors;
+  private final ExactMatchFinder exactMatchFinder;
 
-  public ReflectedPropertySectionBuilder(Object object) {
+  public ReflectedPropertySectionBuilder(Object object,
+      ExactMatchFinder exactMatchFinder) {
     super(object);
+    this.exactMatchFinder = exactMatchFinder;
     groupedDescriptors = getPropertyDescriptorGroupByClass(object);
     propertySectionListFinder = new ExactMatchFinder();
     propertySectionListFinder.chainWith(new InheritedMatchFinder(registrationService));
