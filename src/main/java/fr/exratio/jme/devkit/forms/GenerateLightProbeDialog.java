@@ -154,8 +154,8 @@ public class GenerateLightProbeDialog {
     DefaultMutableTreeNode treeRoot = new DefaultMutableTreeNode("Root");
     sceneTree.setModel(new DefaultTreeModel(treeRoot));
 
-    NodeTreeNode guiNode = new NodeTreeNode(sceneTreeService.getJmeGuiNode(), nodeContextMenu);
-    NodeTreeNode rootNode = new NodeTreeNode(sceneTreeService.getJmeRootNode(), nodeContextMenu);
+    NodeTreeNode guiNode = new NodeTreeNode(sceneTreeService.getJmeGuiNode());
+    NodeTreeNode rootNode = new NodeTreeNode(sceneTreeService.getJmeRootNode());
 
     treeRoot.add(guiNode);
     treeRoot.add(rootNode);
@@ -184,7 +184,7 @@ public class GenerateLightProbeDialog {
             // add nodes on the AWT thread.
             SwingUtilities.invokeLater(() -> {
 
-              NodeTreeNode childNode = new NodeTreeNode((Node) child, nodeContextMenu);
+              NodeTreeNode childNode = new NodeTreeNode((Node) child);
               spatialTreeNode.add(childNode);
 
               // its a bit annoying, but we don't really have a way of determining when this is finished

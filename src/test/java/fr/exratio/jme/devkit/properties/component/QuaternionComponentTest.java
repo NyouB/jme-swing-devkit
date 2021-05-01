@@ -4,7 +4,7 @@ import com.jme3.math.Quaternion;
 import fr.exratio.jme.devkit.properties.component.quaternion.QuaternionEditor;
 import org.junit.jupiter.api.Assertions;
 
-class QuaternionComponentTest extends AbstractJmeDevKitTest {
+class QuaternionComponentTest {
 
   QuaternionEditor quaternionComponent;
 

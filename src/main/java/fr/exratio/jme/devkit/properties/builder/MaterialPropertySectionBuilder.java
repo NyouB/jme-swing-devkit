@@ -38,8 +38,11 @@ public class MaterialPropertySectionBuilder extends AbstractPropertySectionBuild
       .collect(Collectors.toList());
   private static final Logger LOGGER = LoggerFactory
       .getLogger(MaterialPropertySectionBuilder.class);
+  private final ReflectedPropertySectionBuilder reflectedPropertySectionBuilder;
 
-  public MaterialPropertySectionBuilder() {
+  public MaterialPropertySectionBuilder(
+      ReflectedPropertySectionBuilder reflectedPropertySectionBuilder) {
+    this.reflectedPropertySectionBuilder = reflectedPropertySectionBuilder;
   }
 
   @Override
@@ -93,9 +96,7 @@ public class MaterialPropertySectionBuilder extends AbstractPropertySectionBuild
 
 
   private List<PropertySection> createAdditionalRenderStateSection() {
-    ReflectedPropertySectionBuilder renderStateBuilder = new ReflectedPropertySectionBuilder(
-        object.getAdditionalRenderState(), exactMatchFinder);
-    return renderStateBuilder.build();
+    return reflectedPropertySectionBuilder.withObject(object).build();
   }
 
   private AbstractPropertyEditor componentFromVarType(VarType varType, String name, Object value) {

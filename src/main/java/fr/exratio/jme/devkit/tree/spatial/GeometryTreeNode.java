@@ -1,16 +1,11 @@
 package fr.exratio.jme.devkit.tree.spatial;
 
 import com.jme3.scene.Geometry;
-import fr.exratio.jme.devkit.tree.spatial.menu.GeometryContextMenu;
-import javax.swing.JPopupMenu;
 
 public class GeometryTreeNode extends SpatialTreeNode {
 
-  private final GeometryContextMenu geometryContextMenu;
-
-  public GeometryTreeNode(Geometry geometry, GeometryContextMenu geometryContextMenu) {
+  public GeometryTreeNode(Geometry geometry) {
     super(geometry);
-    this.geometryContextMenu = geometryContextMenu;
   }
 
   @Override
@@ -18,8 +13,4 @@ public class GeometryTreeNode extends SpatialTreeNode {
     return (Geometry) super.getUserObject();
   }
 
-  @Override
-  public JPopupMenu getContextMenu() {
-    return geometryContextMenu;
-  }
 }

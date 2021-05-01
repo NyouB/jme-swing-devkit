@@ -3,7 +3,6 @@ package fr.exratio.jme.devkit.properties.builder;
 import fr.exratio.jme.devkit.properties.PropertySection;
 import fr.exratio.jme.devkit.properties.component.enumeration.EnumEditor;
 import fr.exratio.jme.devkit.service.EditorJmeApplication;
-import fr.exratio.jme.devkit.service.ServiceManager;
 import fr.exratio.jme.devkit.service.inspector.ExactMatchFinder;
 import fr.exratio.jme.devkit.service.inspector.InheritedMatchFinder;
 import fr.exratio.jme.devkit.service.inspector.PropertySectionListFinder;
@@ -25,7 +24,10 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class ReflectedPropertySectionBuilder extends AbstractPropertySectionBuilder<Object> {
 
   private static final Logger LOGGER = LoggerFactory
@@ -34,16 +36,23 @@ public class ReflectedPropertySectionBuilder extends AbstractPropertySectionBuil
   private static final Field classRefField = FieldUtils
       .getField(PropertyDescriptor.class, "classRef", true);
   private final PropertySectionListFinder propertySectionListFinder;
-  private final Map<Class<?>, Set<PropertyDescriptor>> groupedDescriptors;
-  private final ExactMatchFinder exactMatchFinder;
+  private final EditorJmeApplication editorJmeApplication;
+  private Map<Class<?>, Set<PropertyDescriptor>> groupedDescriptors;
 
-  public ReflectedPropertySectionBuilder(Object object,
-      ExactMatchFinder exactMatchFinder) {
-    super(object);
-    this.exactMatchFinder = exactMatchFinder;
+  @Autowired
+  public ReflectedPropertySectionBuilder(ExactMatchFinder exactMatchFinder,
+      InheritedMatchFinder inheritedMatchFinder,
+      EditorJmeApplication editorJmeApplication) {
+    this.editorJmeApplication = editorJmeApplication;
+    propertySectionListFinder = exactMatchFinder;
+    propertySectionListFinder.chainWith(inheritedMatchFinder);
+  }
+
+  @Override
+  public AbstractPropertySectionBuilder<Object> withObject(Object object) {
+    super.withObject(object);
     groupedDescriptors = getPropertyDescriptorGroupByClass(object);
-    propertySectionListFinder = new ExactMatchFinder();
-    propertySectionListFinder.chainWith(new InheritedMatchFinder(registrationService));
+    return this;
   }
 
   public static Map<Class<?>, Set<PropertyDescriptor>> getPropertyDescriptorGroupByClass(
@@ -102,16 +111,15 @@ public class ReflectedPropertySectionBuilder extends AbstractPropertySectionBuil
               descriptor.getPropertyType(), descriptor.getName(), e);
           continue;
         }
-        editor.addPropertyChangeListener(evt -> ServiceManager.getService(EditorJmeApplication.class)
-            .enqueue(() -> {
-              try {
-                descriptor.getWriteMethod().invoke(object, evt.getNewValue());
-              } catch (Exception e) {
-                LOGGER.debug(
-                    "-- build() An error happened trying to set the field value of type {} and named {}, ignoring the field.",
-                    descriptor.getPropertyType(), descriptor.getName(), e);
-              }
-            }));
+        editor.addPropertyChangeListener(evt -> editorJmeApplication.enqueue(() -> {
+          try {
+            descriptor.getWriteMethod().invoke(object, evt.getNewValue());
+          } catch (Exception e) {
+            LOGGER.debug(
+                "-- build() An error happened trying to set the field value of type {} and named {}, ignoring the field.",
+                descriptor.getPropertyType(), descriptor.getName(), e);
+          }
+        }));
         propertySection.addProperty(descriptor.getDisplayName(), editor.getCustomEditor());
       }
       result.add(propertySection);

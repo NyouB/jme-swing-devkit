@@ -31,6 +31,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 /**
  * @author Quentin Raphaneau
  */
+
+@org.springframework.stereotype.Component
 public class PropertyInspectorTool extends Tool {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(PropertyInspectorTool.class);

@@ -1,34 +1,10 @@
-import com.jme3.system.AppSettings;
-import com.jme3.system.JmeSystem;
-import com.jme3.system.awt.AwtPanelsContext;
-import devkit.appstate.tool.MouseOverAppState;
-import devkit.appstate.tool.SpatialMoveToolState;
-import devkit.appstate.tool.SpatialRotateToolState2;
-import devkit.appstate.tool.SpatialSelectorState;
-import fr.exratio.jme.devkit.Main;
-import fr.exratio.jme.devkit.SpringConfiguration;
-import fr.exratio.jme.devkit.config.DevKitConfig;
-import fr.exratio.jme.devkit.service.ClipboardService;
-import fr.exratio.jme.devkit.service.EditorJmeApplication;
-import fr.exratio.jme.devkit.service.EventService;
-import fr.exratio.jme.devkit.service.MainPageController;
-import fr.exratio.jme.devkit.service.PluginService;
-import fr.exratio.jme.devkit.service.RegistrationService;
-import fr.exratio.jme.devkit.service.SceneGraphService;
-import fr.exratio.jme.devkit.service.ServiceManager;
-import fr.exratio.jme.devkit.service.impl.EditorJmeApplicationImpl;
-import fr.exratio.jme.devkit.swing.SwingTheme;
-import java.io.File;
-import javax.swing.JPopupMenu;
-import javax.swing.SwingUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 public class MainTest {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MainTest.class);
-
+/*
   public static void main(String[] args) {
     AnnotationConfigApplicationContext context =
         new AnnotationConfigApplicationContext(SpringConfiguration.class);
@@ -112,7 +88,7 @@ public class MainTest {
 
     });
 
-  }
+  }*/
 
 
 }

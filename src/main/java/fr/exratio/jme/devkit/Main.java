@@ -4,10 +4,10 @@ import com.jme3.asset.AssetManager;
 import com.jme3.asset.plugins.FileLocator;
 import com.jme3.system.AppSettings;
 import com.jme3.system.JmeSystem;
+import com.jme3.system.awt.AwtPanel;
 import com.jme3.system.awt.AwtPanelsContext;
 import fr.exratio.jme.devkit.config.DevKitConfig;
 import fr.exratio.jme.devkit.forms.RunAppStateWindow;
-import fr.exratio.jme.devkit.main.MainPage;
 import fr.exratio.jme.devkit.service.EditorJmeApplication;
 import fr.exratio.jme.devkit.service.MainPageController;
 import fr.exratio.jme.devkit.service.PluginService;
@@ -24,6 +24,7 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
@@ -136,10 +137,18 @@ public class Main {
 
       }
     });
-    MainPage mainPage = new MainPage();
     mainFrame.setJMenuBar(mainMenu);
-    mainFrame.setContentPane(mainPage);
+    mainFrame.setContentPane(mainPageController.getMainPage());
+    addJmePanel();
   }
+
+  private void addJmePanel() {
+    AwtPanel jmePanel = jmeEngineService.getAWTPanel();
+    jmePanel.setSize(devKitConfig.getCameraDimension());
+    ImageIcon icon = new ImageIcon("images/middle.gif");
+    mainPageController.getMainPage().addTabCenterPanel("Canvas", jmePanel, icon);
+  }
+
 
   private void startEngine() {
     jmeEngineService.start(true);

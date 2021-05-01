@@ -1,15 +1,17 @@
 package fr.exratio.jme.devkit.swing;
 
 import com.jme3.app.StatsAppState;
+import fr.exratio.jme.devkit.action.DisableAppStateAction;
+import fr.exratio.jme.devkit.action.EnableAppStateAction;
 import fr.exratio.jme.devkit.config.DevKitConfig;
 import fr.exratio.jme.devkit.forms.Configuration;
 import fr.exratio.jme.devkit.forms.ImportModel;
-import fr.exratio.jme.devkit.jme.AppStateUtils;
 import fr.exratio.jme.devkit.jme.CameraRotationWidgetState;
 import fr.exratio.jme.devkit.jme.DebugGridState;
 import fr.exratio.jme.devkit.lifecycle.ExitAction;
 import fr.exratio.jme.devkit.service.EditorJmeApplication;
 import java.awt.Frame;
+import java.awt.event.ItemEvent;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JDialog;
 import javax.swing.JMenu;
@@ -29,15 +31,11 @@ public class MainMenu extends JMenuBar {
   JMenuItem configItem;
   JMenu viewMenu;
   JMenu windowItem;
-  private final ExitAction exitAction;
-  private final DevKitConfig devKitConfig;
   private final EditorJmeApplication editorJmeApplication;
 
   @Autowired
   public MainMenu(ExitAction exitAction, DevKitConfig devKitConfig,
       EditorJmeApplication editorJmeApplication) {
-    this.exitAction = exitAction;
-    this.devKitConfig = devKitConfig;
     this.editorJmeApplication = editorJmeApplication;
     // FILE menu
     fileMenu = add(new JMenu("File"));
@@ -75,37 +73,55 @@ public class MainMenu extends JMenuBar {
     viewMenu = add(new JMenu("View"));
     JCheckBoxMenuItem statsMenuItem = (JCheckBoxMenuItem) viewMenu
         .add(new JCheckBoxMenuItem("Statistics"));
-    statsMenuItem.addActionListener(e -> {
-      JCheckBoxMenuItem checkBoxMenuItem = (JCheckBoxMenuItem) e.getSource();
-      AppStateUtils.toggleAppState(StatsAppState.class, checkBoxMenuItem.isSelected());
+    EnableAppStateAction enableStatsAppState = new EnableAppStateAction(
+        editorJmeApplication, StatsAppState.class);
+    DisableAppStateAction disableStatsAppState = new DisableAppStateAction(
+        editorJmeApplication, StatsAppState.class);
+    statsMenuItem.addItemListener(e -> {
+      boolean isSelected = e.getStateChange() == ItemEvent.SELECTED;
+      if (isSelected) {
+        enableStatsAppState.actionPerformed(null);
+      } else {
+        disableStatsAppState.actionPerformed(null);
+      }
     });
 
     JCheckBoxMenuItem camRotWidgetItem = (JCheckBoxMenuItem) viewMenu
         .add(new JCheckBoxMenuItem("Camera Rotation Widget"));
     camRotWidgetItem
         .setSelected(devKitConfig.isShowCamRotationWidget());
-    camRotWidgetItem.addActionListener(e -> {
-      JCheckBoxMenuItem checkBoxMenuItem = (JCheckBoxMenuItem) e.getSource();
-      final boolean isSelected = checkBoxMenuItem.isSelected();
-
-      AppStateUtils.toggleAppState(CameraRotationWidgetState.class, isSelected);
-
+    EnableAppStateAction enableCameraRotationWidgetState = new EnableAppStateAction(
+        editorJmeApplication, CameraRotationWidgetState.class);
+    DisableAppStateAction disableCameraRotationWidgetState = new DisableAppStateAction(
+        editorJmeApplication, CameraRotationWidgetState.class);
+    camRotWidgetItem.addItemListener(e -> {
+      boolean isSelected = e.getStateChange() == ItemEvent.SELECTED;
+      if (isSelected) {
+        enableCameraRotationWidgetState.actionPerformed(null);
+      } else {
+        disableCameraRotationWidgetState.actionPerformed(null);
+      }
       devKitConfig.setShowCamRotationWidget(isSelected);
       devKitConfig.save();
     });
 
+    EnableAppStateAction enableDebugGridState = new EnableAppStateAction(
+        editorJmeApplication, DebugGridState.class);
+    DisableAppStateAction disableDebugGridState = new DisableAppStateAction(
+        editorJmeApplication, DebugGridState.class);
+
     JCheckBoxMenuItem debugGridItem = (JCheckBoxMenuItem) viewMenu
         .add(new JCheckBoxMenuItem("Grid"));
     debugGridItem.setSelected(devKitConfig.isShowGrid());
-    debugGridItem.addActionListener(e -> {
-      JCheckBoxMenuItem checkBoxMenuItem = (JCheckBoxMenuItem) e.getSource();
-      final boolean isSelected = checkBoxMenuItem.isSelected();
-
-      AppStateUtils.toggleAppState(DebugGridState.class, isSelected);
-
-      devKitConfig.setShowGrid(isSelected);
+    debugGridItem.addItemListener(e -> {
+      boolean isSelected = e.getStateChange() == ItemEvent.SELECTED;
+      if (isSelected) {
+        enableDebugGridState.actionPerformed(null);
+      } else {
+        disableDebugGridState.actionPerformed(null);
+      }
+      devKitConfig.setShowCamRotationWidget(isSelected);
       devKitConfig.save();
-
     });
 
     // WINDOW menu

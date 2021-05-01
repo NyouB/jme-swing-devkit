@@ -1,12 +1,7 @@
 package fr.exratio.jme.devkit.service;
 
-import com.jme3.system.awt.AwtPanel;
-import fr.exratio.jme.devkit.config.DevKitConfig;
-import fr.exratio.jme.devkit.forms.RunAppStateWindow;
 import fr.exratio.jme.devkit.main.MainPage;
 import fr.exratio.jme.devkit.main.MainPage.Zone;
-import fr.exratio.jme.devkit.service.inspector.PropertyInspectorTool;
-import fr.exratio.jme.devkit.swing.MainMenu;
 import fr.exratio.jme.devkit.tool.Tool;
 import fr.exratio.jme.devkit.tool.ViewMode;
 import java.awt.Component;
@@ -20,17 +15,14 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 @Controller
@@ -38,35 +30,13 @@ public class MainPageController {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MainPageController.class);
   private final MainPage mainPage;
-  private final EditorJmeApplication jmeEngineService;
-  private final DevKitConfig devKitConfig;
-  private final MainMenu mainMenu;
-  private final SceneTreeService sceneTreeService;
   private Map<Zone, List<Tool>> toolsZone;
   private final Map<String, Tool> toolSet = new HashMap<>();
   private final JMenu toolViewMenu = new JMenu("View");
-  private final MenuController menuController;
 
-
-  public MainPageController(@Autowired EditorJmeApplication jmeEngineService,
-      @Autowired DevKitConfig devKitConfig, @Autowired MainMenu mainMenu,
-      @Autowired SceneTreeService sceneTreeService,  @Autowired MenuController menuController) {
-    this.jmeEngineService = jmeEngineService;
-    this.devKitConfig = devKitConfig;
-    this.mainMenu = mainMenu;
-    this.sceneTreeService = sceneTreeService;
-    this.menuController = menuController;
+  public MainPageController() {
     mainPage = new MainPage();
-
-    // position and size the jme panel
-
-    AwtPanel jmePanel = jmeEngineService.getAWTPanel();
-    jmePanel.setSize(devKitConfig.getCameraDimension());
-    ImageIcon icon = new ImageIcon("images/middle.gif");
-    mainPage.addTabCenterPanel("Canvas", jmePanel, icon);
-
     initializeMap();
-
   }
 
   public MainPage getMainPage() {

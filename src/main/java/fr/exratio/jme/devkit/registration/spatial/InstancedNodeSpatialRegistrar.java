@@ -35,9 +35,8 @@ public class InstancedNodeSpatialRegistrar extends NodeRegistrar {
 
   public static class InstancedNodeTreeNode extends NodeTreeNode {
 
-    public InstancedNodeTreeNode(InstancedNode instancedNode,
-        InstancedNodeContextMenu instancedNodeContextMenu) {
-      super(instancedNode, instancedNodeContextMenu);
+    public InstancedNodeTreeNode(InstancedNode instancedNode) {
+      super(instancedNode);
     }
 
     @Override

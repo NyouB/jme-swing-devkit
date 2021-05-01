@@ -11,8 +11,7 @@ public abstract class AbstractPropertySectionBuilder<T> implements Builder<List<
 
   protected List<Field> ignoredFields;
 
-  public AbstractPropertySectionBuilder(T object) {
-    this.object = object;
+  public AbstractPropertySectionBuilder() {
   }
 
   public AbstractPropertySectionBuilder<T> withObject(T object) {

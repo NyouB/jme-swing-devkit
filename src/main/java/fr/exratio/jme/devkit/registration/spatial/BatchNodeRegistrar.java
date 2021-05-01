@@ -4,8 +4,6 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.scene.BatchNode;
 import com.jme3.scene.Node;
 import fr.exratio.jme.devkit.tree.spatial.NodeTreeNode;
-import fr.exratio.jme.devkit.tree.spatial.menu.SpatialContextMenu;
-import javax.swing.JPopupMenu;
 import javax.swing.tree.TreeNode;
 
 public class BatchNodeRegistrar extends NodeRegistrar {
@@ -26,10 +24,8 @@ public class BatchNodeRegistrar extends NodeRegistrar {
 
   public static class BatchNodeTreeNode extends NodeTreeNode {
 
-    SpatialContextMenu nodeContextMenu;
-
-    public BatchNodeTreeNode(BatchNode node, SpatialContextMenu nodeContextMenu) {
-      super(node, nodeContextMenu);
+    public BatchNodeTreeNode(BatchNode node) {
+      super(node);
     }
 
     @Override
@@ -37,10 +33,6 @@ public class BatchNodeRegistrar extends NodeRegistrar {
       return (BatchNode) super.getUserObject();
     }
 
-    @Override
-    public JPopupMenu getContextMenu() {
-      return nodeContextMenu;
-    }
 
   }
 

@@ -10,7 +10,6 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import fr.exratio.jme.devkit.tree.spatial.GeometryTreeNode;
 import fr.exratio.jme.devkit.tree.spatial.menu.GeometryContextMenu;
-import javax.swing.JPopupMenu;
 import javax.swing.tree.TreeNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -57,12 +56,7 @@ public class ParticleEmitterSpatialRegistrar extends GeometryRegistrar {
   @Override
   public TreeNode createSceneTreeNode(Geometry geometry, SimpleApplication application) {
 
-    return new GeometryTreeNode(geometry, geometryContextMenu) {
-      @Override
-      public JPopupMenu getContextMenu() {
-        return geometryContextMenu;
-      }
-    };
+    return new GeometryTreeNode(geometry);
 
   }
 

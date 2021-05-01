@@ -151,8 +151,8 @@ public class SceneTreeService extends Tool {
       SwingUtilities.invokeLater(() -> {
 
         // create the TreeItems on the Swing thread.
-        editorGuiNode = new NodeTreeNode(jmeGuiNode, nodeContextMenu);
-        editorRootNode = new NodeTreeNode(jmeRootNode, nodeContextMenu);
+        editorGuiNode = new NodeTreeNode(jmeGuiNode);
+        editorRootNode = new NodeTreeNode(jmeRootNode);
 
         objectToNodeMap.put(jmeGuiNode, editorGuiNode);
         objectToNodeMap.put(jmeRootNode, editorRootNode);
@@ -289,7 +289,7 @@ public class SceneTreeService extends Tool {
           "-- onControlCreatedEvent() the control contained in the event is null. Doing nothing");
       return;
     }
-    ControlTreeNode newNode = new ControlTreeNode(control, controlContextMenu);
+    ControlTreeNode newNode = new ControlTreeNode(control);
     objectToNodeMap.put(control, newNode);
     objectToNodeMap.get(parent).add(newNode);
   }
@@ -449,7 +449,7 @@ public class SceneTreeService extends Tool {
     int controlCount = treeNode.getUserObject().getNumControls();
     for (int i = 0; i < controlCount; i++) {
       Control control = treeNode.getUserObject().getControl(i);
-      treeNode.add(new ControlTreeNode(control, controlContextMenu));
+      treeNode.add(new ControlTreeNode(control));
     }
 
   }
@@ -479,7 +479,7 @@ public class SceneTreeService extends Tool {
       if (treeNode == null) {
         LOGGER.trace("No TreeNode associated with object: {}, using default NodeTreeNode.",
             spatial.getClass());
-        treeNode = new NodeTreeNode(node, nodeContextMenu);
+        treeNode = new NodeTreeNode(node);
       }
     } else if (spatial instanceof Geometry) {
 
@@ -498,7 +498,7 @@ public class SceneTreeService extends Tool {
       if (treeNode == null) {
         LOGGER.trace("No TreeNode associated with object: {}, using default GeometryTreeNode.",
             spatial.getClass());
-        treeNode = new GeometryTreeNode(geometry, geometryContextMenu);
+        treeNode = new GeometryTreeNode(geometry);
       }
 
     }

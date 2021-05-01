@@ -13,6 +13,7 @@ import com.jme3.util.SkyFactory;
 import com.jme3.util.SkyFactory.EnvMapType;
 import fr.exratio.jme.devkit.config.DevKitConfig;
 import fr.exratio.jme.devkit.jme.TextureImage;
+import fr.exratio.jme.devkit.service.EditorJmeApplication;
 import fr.exratio.jme.devkit.service.SceneGraphService;
 import fr.exratio.jme.devkit.swing.ComponentUtilities;
 import java.awt.Insets;
@@ -51,8 +52,8 @@ public class CreateSkyBoxDialog {
   private final SceneGraphService sceneGraphService;
 
   public CreateSkyBoxDialog(SceneGraphService sceneGraphService,
-      AssetManager assetManager) {
-    this.assetManager = assetManager;
+      EditorJmeApplication editorJmeApplication) {
+    this.assetManager = editorJmeApplication.getAssetManager();
     this.sceneGraphService = sceneGraphService;
 
     populateListWithResources();

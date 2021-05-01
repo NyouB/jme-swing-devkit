@@ -8,7 +8,6 @@ import com.jme3.animation.AnimControl;
 import com.jme3.animation.LoopMode;
 import fr.exratio.jme.devkit.properties.component.AbstractPropertyEditor;
 import fr.exratio.jme.devkit.service.EditorJmeApplication;
-import fr.exratio.jme.devkit.service.ServiceManager;
 import java.awt.Insets;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -42,13 +41,16 @@ public class AnimControlEditor extends AbstractPropertyEditor<AnimControl> {
   private JComboBox<LoopMode> loopModeComboBox;
   // JME objects should be touched on the JME thread ONLY.
   private AnimChannel animChannel;
+  private final EditorJmeApplication editorJmeApplication;
 
-  public AnimControlEditor(AnimControl animControl) {
+  public AnimControlEditor(AnimControl animControl,
+      EditorJmeApplication editorJmeApplication) {
     super(animControl);
+    this.editorJmeApplication = editorJmeApplication;
   }
 
   public void cleanup() {
-    ServiceManager.getService(EditorJmeApplication.class).enqueue(value::clearChannels);
+    editorJmeApplication.enqueue(value::clearChannels);
     timer.stop();
   }
 
@@ -138,14 +140,12 @@ public class AnimControlEditor extends AbstractPropertyEditor<AnimControl> {
   private void createUIComponents() {
 
     contentPanel = this;
-    final EditorJmeApplication engineService = ServiceManager
-        .getService(EditorJmeApplication.class);
 
     timeSlider = new JSlider();
     timeSlider.setModel(animTimelineModel);
     timeSlider.addChangeListener(e -> {
       final float animTime = timeSlider.getValue() / 1000f;
-      engineService.enqueue(() -> animChannel.setTime(animTime));
+      editorJmeApplication.enqueue(() -> animChannel.setTime(animTime));
     });
 
     loopModeComboBox = new JComboBox();
@@ -155,7 +155,7 @@ public class AnimControlEditor extends AbstractPropertyEditor<AnimControl> {
 
     animationsList = new JList();
 
-    engineService.enqueue(() -> {
+    editorJmeApplication.enqueue(() -> {
       animChannel = value.createChannel();
       // fill our list
       SwingUtilities.invokeLater(() -> {
@@ -173,7 +173,7 @@ public class AnimControlEditor extends AbstractPropertyEditor<AnimControl> {
 
         if (animName != null) {
           // set the animation on the JME thread.
-          engineService.enqueue(() -> {
+          editorJmeApplication.enqueue(() -> {
             animChannel.setAnim(animName);
             animChannel.setLoopMode(loopMode);
             // update the slider on the AWT thread.
@@ -190,13 +190,14 @@ public class AnimControlEditor extends AbstractPropertyEditor<AnimControl> {
     speedSlider = new JSlider();
     speedSlider.setModel(new DefaultBoundedRangeModel(1000, 250, 0, 2000));
     speedSlider.addChangeListener(
-        e -> engineService.enqueue(() -> animChannel.setSpeed(speedSlider.getValue() / 1000f)));
+        e -> editorJmeApplication
+            .enqueue(() -> animChannel.setSpeed(speedSlider.getValue() / 1000f)));
 
     playButton = new JButton();
     playButton.addActionListener(e -> {
       // pressing stop sets the animSpeed to zero, so we need to set it to the value of the speed slider
       // when we press play.
-      engineService.enqueue(() -> {
+      editorJmeApplication.enqueue(() -> {
         animChannel.setSpeed(speedSlider.getValue() / 1000f);
         animChannel.setLoopMode((LoopMode) loopModeComboBox.getSelectedItem());
         animChannel.setTime(0);
@@ -205,11 +206,11 @@ public class AnimControlEditor extends AbstractPropertyEditor<AnimControl> {
 
     stopButton = new JButton();
     // set the speed on the animChannel, but not the slider.
-    stopButton.addActionListener(e -> engineService.enqueue(() -> animChannel.setSpeed(0)));
+    stopButton.addActionListener(e -> editorJmeApplication.enqueue(() -> animChannel.setSpeed(0)));
 
     // create a timer that queries the animation channel time so we can update the time slider position.
     timer = new Timer(10, e -> {
-      engineService.enqueue(() -> {
+      editorJmeApplication.enqueue(() -> {
         if (animChannel != null) {
           SwingUtilities
               .invokeLater(() -> timeSlider.setValue((int) (animChannel.getTime() * 1000)));

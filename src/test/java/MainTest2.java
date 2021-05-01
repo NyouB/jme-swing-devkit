@@ -44,6 +44,7 @@ public class MainTest2 {
   private final MainMenu mainMenu;
   private final SceneTreeService sceneTreeService;
   private final PropertyInspectorTool propertyInspectorTool;
+  private final RunAppStateWindow runAppStateWindow;
   private final EventBus eventBus;
 
   @Autowired
@@ -51,7 +52,8 @@ public class MainTest2 {
       DevKitConfig devKitConfig,
       PluginService pluginService, MainPageController mainPageController,
       MainMenu mainMenu, SceneTreeService sceneTreeService,
-      PropertyInspectorTool propertyInspectorTool, EventBus eventBus) {
+      PropertyInspectorTool propertyInspectorTool,
+      RunAppStateWindow runAppStateWindow, EventBus eventBus) {
     this.jmeEngineService = jmeEngineService;
     this.devKitConfig = devKitConfig;
     this.pluginService = pluginService;
@@ -59,6 +61,7 @@ public class MainTest2 {
     this.mainMenu = mainMenu;
     this.sceneTreeService = sceneTreeService;
     this.propertyInspectorTool = propertyInspectorTool;
+    this.runAppStateWindow = runAppStateWindow;
     this.eventBus = eventBus;
     mainFrame = new JFrame();
   }
@@ -167,7 +170,6 @@ public class MainTest2 {
 
   private void registerTools() {
     mainPageController.registerTool(sceneTreeService);
-    RunAppStateWindow runAppStateWindow = new RunAppStateWindow(editorJmeApplication);
     mainPageController.registerTool(runAppStateWindow);
     mainPageController.registerTool(propertyInspectorTool);
 

@@ -12,13 +12,18 @@ public class DefaultMatchFinder extends PropertySectionListFinder {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(DefaultMatchFinder.class);
 
+  private final ReflectedPropertySectionBuilder reflectedPropertySectionBuilder;
+
+  public DefaultMatchFinder(
+      ReflectedPropertySectionBuilder reflectedPropertySectionBuilder) {
+    this.reflectedPropertySectionBuilder = reflectedPropertySectionBuilder;
+  }
+
 
   @Override
   public List<PropertySection> find(Object object) {
     // we don't know what it is, so all we can do is display reflected properties.
-    ReflectedPropertySectionBuilder componentSetBuilder = new ReflectedPropertySectionBuilder(
-        object, exactMatchFinder);
-    return componentSetBuilder.build();
+    return reflectedPropertySectionBuilder.withObject(object).build();
   }
 
 }

@@ -4,11 +4,6 @@ import com.jme3.scene.BatchNode;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import fr.exratio.jme.devkit.action.CreateBoxAction;
-import fr.exratio.jme.devkit.action.CreateCylinderAction;
-import fr.exratio.jme.devkit.action.CreateDomeAction;
-import fr.exratio.jme.devkit.action.CreateQuadAction;
-import fr.exratio.jme.devkit.action.CreateSphereAction;
 import fr.exratio.jme.devkit.action.RemoveItemAction;
 import fr.exratio.jme.devkit.forms.AddModels;
 import fr.exratio.jme.devkit.forms.CreateSkyBoxDialog;
@@ -36,27 +31,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class NodeContextMenu extends SpatialContextMenu {
 
-  private final CreateBoxAction createBoxAction;
-  private final CreateCylinderAction createCylinderAction;
-  private final CreateDomeAction createDomeAction;
-  private final CreateQuadAction createQuadAction;
-  private final CreateSphereAction createSphereAction;
-  private final RemoveItemAction removeItemAction;
-  private final AddModels addModels;
-  private final CreateSkyBoxDialog createSkyBoxDialog;
-  private final RegistrationService registrationService;
-  private final SceneGraphService sceneGraphService;
-  private final EditorJmeApplication editorJmeApplication;
-  private final ClipboardService clipboardService;
-  private final MenuController menuController;
-  private final SceneTreeService sceneTreeService;
-
   @Autowired
-  public NodeContextMenu(CreateBoxAction createBoxAction,
-      CreateCylinderAction createCylinderAction,
-      CreateDomeAction createDomeAction,
-      CreateQuadAction createQuadAction,
-      CreateSphereAction createSphereAction,
+  public NodeContextMenu(
       RemoveItemAction removeItemAction, AddModels addModels,
       CreateSkyBoxDialog createSkyBoxDialog,
       RegistrationService registrationService,
@@ -67,20 +43,7 @@ public class NodeContextMenu extends SpatialContextMenu {
       SceneTreeService sceneTreeService) throws HeadlessException {
     super(editorJmeApplication, sceneTreeService, sceneGraphService, clipboardService,
         registrationService, menuController);
-    this.createBoxAction = createBoxAction;
-    this.createCylinderAction = createCylinderAction;
-    this.createDomeAction = createDomeAction;
-    this.createQuadAction = createQuadAction;
-    this.createSphereAction = createSphereAction;
-    this.removeItemAction = removeItemAction;
-    this.addModels = addModels;
-    this.createSkyBoxDialog = createSkyBoxDialog;
-    this.registrationService = registrationService;
-    this.sceneGraphService = sceneGraphService;
-    this.editorJmeApplication = editorJmeApplication;
-    this.clipboardService = clipboardService;
-    this.menuController = menuController;
-    this.sceneTreeService = sceneTreeService;
+
     // Add -> Shape
     JMenu addShapeMenu = (JMenu) getAddMenu().add(new JMenu("Shape..."));
     addShapes(addShapeMenu);

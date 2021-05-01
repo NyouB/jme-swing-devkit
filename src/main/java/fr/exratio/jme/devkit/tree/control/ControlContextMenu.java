@@ -6,12 +6,16 @@ import fr.exratio.jme.devkit.service.SceneTreeService;
 import fr.exratio.jme.devkit.tree.spatial.SpatialTreeNode;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ControlContextMenu extends JPopupMenu {
 
   private final SceneTreeService sceneTreeService;
   private final SceneGraphService sceneGraphService;
 
+  @Autowired
   public ControlContextMenu(SceneTreeService sceneTreeService,
       SceneGraphService sceneGraphService) {
     super();

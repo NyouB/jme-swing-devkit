@@ -2,8 +2,8 @@ package fr.exratio.jme.devkit.properties.builder;
 
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
+import fr.exratio.jme.devkit.SpringTestConfiguration;
 import fr.exratio.jme.devkit.properties.PropertySection;
-import fr.exratio.jme.devkit.properties.component.AbstractJmeDevKitTest;
 import java.awt.Component;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -18,8 +18,14 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
-class ReflectedPropertySectionBuilderTest extends AbstractJmeDevKitTest {
+@SpringJUnitConfig(SpringTestConfiguration.class)
+class ReflectedPropertySectionBuilderTest {
+
+  @Autowired
+  private ReflectedPropertySectionBuilder reflectedPropertySectionBuilder;
 
   @Test
   void descriptorsArrayToMapTest() throws IntrospectionException {
@@ -51,9 +57,8 @@ class ReflectedPropertySectionBuilderTest extends AbstractJmeDevKitTest {
   void build() {
     Mesh myTestMesh = new Mesh();
     Geometry myTestGeometry = new Geometry("testGeometry", myTestMesh);
-    ReflectedPropertySectionBuilder reflectedPropertySectionBuilder = new ReflectedPropertySectionBuilder(
-        myTestGeometry, exactMatchFinder);
     List<PropertySection> propertySectionsResult = reflectedPropertySectionBuilder
+        .withObject(myTestGeometry)
         .build();
     Assertions.assertNotNull(propertySectionsResult);
     for (PropertySection propertySection : propertySectionsResult) {
