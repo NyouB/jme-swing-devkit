@@ -172,6 +172,16 @@ public class SceneGraphService {
    * Removes the selected control from the tree and scene. This method **must** be called from the
    * AWT thread. Fire a @see ControlRemovedEvent on creation.
    *
+   * @param control The Control to remove
+   */
+  public void remove(Control control) {
+    remove(control, getParentOf(control));
+  }
+
+  /**
+   * Removes the selected control from the tree and scene. This method **must** be called from the
+   * AWT thread. Fire a @see ControlRemovedEvent on creation.
+   *
    * @param selectedObject the object selected
    */
   public void selectObject(Object selectedObject) {

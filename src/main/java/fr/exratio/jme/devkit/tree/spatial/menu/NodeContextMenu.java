@@ -1,10 +1,17 @@
 package fr.exratio.jme.devkit.tree.spatial.menu;
 
+import com.google.common.eventbus.EventBus;
 import com.jme3.scene.BatchNode;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import fr.exratio.jme.devkit.action.CreateBoxAction;
+import fr.exratio.jme.devkit.action.CreateCylinderAction;
+import fr.exratio.jme.devkit.action.CreateDomeAction;
+import fr.exratio.jme.devkit.action.CreateQuadAction;
+import fr.exratio.jme.devkit.action.CreateSphereAction;
 import fr.exratio.jme.devkit.action.RemoveItemAction;
+import fr.exratio.jme.devkit.event.BatchEvent;
 import fr.exratio.jme.devkit.forms.AddModels;
 import fr.exratio.jme.devkit.forms.CreateSkyBoxDialog;
 import fr.exratio.jme.devkit.registration.spatial.GeometryRegistrar;
@@ -14,7 +21,6 @@ import fr.exratio.jme.devkit.service.EditorJmeApplication;
 import fr.exratio.jme.devkit.service.MenuController;
 import fr.exratio.jme.devkit.service.RegistrationService;
 import fr.exratio.jme.devkit.service.SceneGraphService;
-import fr.exratio.jme.devkit.service.SceneTreeService;
 import fr.exratio.jme.devkit.tree.spatial.NodeTreeNode;
 import fr.exratio.jme.devkit.util.GUIUtils;
 import java.awt.HeadlessException;
@@ -32,6 +38,23 @@ import org.springframework.stereotype.Component;
 public class NodeContextMenu extends SpatialContextMenu {
 
   @Autowired
+  private final CreateQuadAction createQuadAction;
+
+  @Autowired
+  private final CreateDomeAction createDomeAction;
+
+  @Autowired
+  private final CreateCylinderAction createCylinderAction;
+
+  @Autowired
+  private final CreateSphereAction createSphereAction;
+
+  @Autowired
+  private final CreateBoxAction createBoxAction;
+  @Autowired
+  private final EventBus eventBus;
+
+  @Autowired
   public NodeContextMenu(
       RemoveItemAction removeItemAction, AddModels addModels,
       CreateSkyBoxDialog createSkyBoxDialog,
@@ -40,9 +63,19 @@ public class NodeContextMenu extends SpatialContextMenu {
       EditorJmeApplication editorJmeApplication,
       ClipboardService clipboardService,
       MenuController menuController,
-      SceneTreeService sceneTreeService) throws HeadlessException {
-    super(editorJmeApplication, sceneTreeService, sceneGraphService, clipboardService,
+      CreateQuadAction createQuadAction,
+      CreateDomeAction createDomeAction,
+      CreateCylinderAction createCylinderAction,
+      CreateSphereAction createSphereAction,
+      CreateBoxAction createBoxAction, EventBus eventBus) throws HeadlessException {
+    super(editorJmeApplication, sceneGraphService, clipboardService,
         registrationService, menuController);
+    this.createQuadAction = createQuadAction;
+    this.createDomeAction = createDomeAction;
+    this.createCylinderAction = createCylinderAction;
+    this.createSphereAction = createSphereAction;
+    this.createBoxAction = createBoxAction;
+    this.eventBus = eventBus;
 
     // Add -> Shape
     JMenu addShapeMenu = (JMenu) getAddMenu().add(new JMenu("Shape..."));
@@ -139,14 +172,26 @@ public class NodeContextMenu extends SpatialContextMenu {
     batchItem
         .addActionListener(e -> editorJmeApplication.enqueue(() -> {
           ((BatchNode) sceneGraphService.getSelectedObject()).batch();
-          sceneTreeService.reloadTreeNode(
-              sceneTreeService.jmeObjectToNode(sceneGraphService.getSelectedObject()));
+          eventBus.post(new BatchEvent(sceneGraphService.getSelectedObject()));
         }));
 
   }
 
   private void addShapes(JMenu parent) {
+    JMenuItem cubeItem = parent.add(new JMenuItem("Cube"));
+    cubeItem.setAction(createBoxAction);
 
+    JMenuItem cylinderItem = parent.add(new JMenuItem("Cylinder"));
+    cylinderItem.setAction(createCylinderAction);
+
+    JMenuItem domeItem = parent.add(new JMenuItem("Dome"));
+    domeItem.setAction(createDomeAction);
+
+    JMenuItem quadItem = parent.add(new JMenuItem("Quad"));
+    quadItem.setAction(createQuadAction);
+
+    JMenuItem sphereItem = parent.add(new JMenuItem("Sphere"));
+    sphereItem.setAction(createSphereAction);
   }
 
 

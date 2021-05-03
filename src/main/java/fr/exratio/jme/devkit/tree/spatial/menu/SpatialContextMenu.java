@@ -17,7 +17,6 @@ import fr.exratio.jme.devkit.service.EditorJmeApplication;
 import fr.exratio.jme.devkit.service.MenuController;
 import fr.exratio.jme.devkit.service.RegistrationService;
 import fr.exratio.jme.devkit.service.SceneGraphService;
-import fr.exratio.jme.devkit.service.SceneTreeService;
 import fr.exratio.jme.devkit.tree.TreeConstants;
 import fr.exratio.jme.devkit.tree.spatial.SpatialTreeNode;
 import fr.exratio.jme.devkit.util.GUIUtils;
@@ -40,21 +39,18 @@ public class SpatialContextMenu extends JPopupMenu {
   private final Spatial spatial;
   private final JMenu addMenu;
   private final EditorJmeApplication editorJmeApplication;
-  private final SceneTreeService sceneTreeService;
   private final SceneGraphService sceneGraphService;
   private final ClipboardService clipboardService;
 
   @Autowired
   public SpatialContextMenu(
       EditorJmeApplication editorJmeApplication,
-      SceneTreeService sceneTreeService,
       SceneGraphService sceneGraphService,
       ClipboardService clipboardService,
       RegistrationService registrationService,
       MenuController menuController) {
     super();
     this.editorJmeApplication = editorJmeApplication;
-    this.sceneTreeService = sceneTreeService;
     this.sceneGraphService = sceneGraphService;
     this.clipboardService = clipboardService;
     this.spatial = (Spatial) sceneGraphService.getSelectedObject();
@@ -228,7 +224,7 @@ public class SpatialContextMenu extends JPopupMenu {
 
     });
     GenerateLightProbeDialog generateLightProbeDialog = new GenerateLightProbeDialog(
-        editorJmeApplication, sceneGraphService, sceneTreeService, this);
+        editorJmeApplication, sceneGraphService);
     JMenuItem probeLight = menu.add(new JMenuItem("Generate LightProbe..."));
     probeLight.addActionListener(e -> GUIUtils.createDialog(SwingUtilities
             .getWindowAncestor(this), generateLightProbeDialog.$$$getRootComponent$$$(),

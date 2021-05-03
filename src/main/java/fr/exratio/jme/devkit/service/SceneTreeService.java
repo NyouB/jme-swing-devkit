@@ -10,6 +10,7 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
 import fr.exratio.jme.devkit.action.HighLightAction;
 import fr.exratio.jme.devkit.action.RemoveHighLightAction;
+import fr.exratio.jme.devkit.event.BatchEvent;
 import fr.exratio.jme.devkit.event.ControlCreatedEvent;
 import fr.exratio.jme.devkit.event.ControlRemovedEvent;
 import fr.exratio.jme.devkit.event.LightCreatedEvent;
@@ -42,6 +43,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
@@ -169,7 +171,8 @@ public class SceneTreeService extends Tool {
     tree.getSelectionModel().addTreeSelectionListener(e -> {
 
       TreePath[] paths = tree.getSelectionPaths();
-      removeHighLightAction.actionPerformed(new ActionEvent(tree, 0, HighLightAction.HIGHLIGHT_ACTION));
+      removeHighLightAction
+          .actionPerformed(new ActionEvent(tree, 0, HighLightAction.HIGHLIGHT_ACTION));
 
       if (paths == null) {
         return;
@@ -197,12 +200,12 @@ public class SceneTreeService extends Tool {
       }
 
 
-  });
+    });
 
-  // register our listener
+    // register our listener
     eventBus.register(this);
 
-}
+  }
 
 
   /**
@@ -344,6 +347,16 @@ public class SceneTreeService extends Tool {
     objectToNodeMap.remove(light);
   }
 
+  @Subscribe
+  public void onBatchEvent(BatchEvent event) {
+    Object node = event.getNode();
+    if (node == null) {
+      LOGGER.warn(
+          "-- onBatchEvent() the jme object contained in the event is null. Doing nothing");
+      return;
+    }
+    reloadTreeNode(jmeObjectToNode(node));
+  }
 
   /**
    * Removes the selected scene spatial from the tree and scene. This method **must** be called from
@@ -527,6 +540,61 @@ public class SceneTreeService extends Tool {
     DefaultTreeModel treeModel = (DefaultTreeModel) tree.getModel();
     treeModel.nodeChanged(treeNode);
   }
+
+  private void recurseSceneForNodes() {
+
+    // create the tree on the JME thread, then pass it to swing.
+
+    // NodeTreeNode treeRoot = new NodeTreeNode(sceneTreeService.getRootNode());
+    DefaultMutableTreeNode treeRoot = new DefaultMutableTreeNode("Root");
+    tree.setModel(new DefaultTreeModel(treeRoot));
+
+    NodeTreeNode guiNode = new NodeTreeNode(jmeGuiNode);
+    NodeTreeNode rootNode = new NodeTreeNode(jmeRootNode);
+
+    treeRoot.add(guiNode);
+    treeRoot.add(rootNode);
+
+    reloadTree();
+
+    recurse(guiNode);
+    recurse(rootNode);
+
+  }
+
+  private void recurse(NodeTreeNode nodeTreeNode) {
+
+    // query the node on the JME thread.
+    editorJmeApplication.enqueue(() -> {
+
+      Node node = nodeTreeNode.getUserObject();
+      List<Spatial> children = node.getChildren();
+
+      for (Spatial child : children) {
+
+        if (child instanceof Node) {
+          // add nodes on the AWT thread.
+          SwingUtilities.invokeLater(() -> {
+
+            NodeTreeNode childNode = new NodeTreeNode((Node) child);
+            nodeTreeNode.add(childNode);
+
+            // its a bit annoying, but we don't really have a way of determining when this is finished
+            // since we jump from thread to thread, so we'll just update the tree each time we
+            // add something.
+            reloadTree();
+
+            // recurse on the AWT thread.
+            recurse(childNode);
+          });
+        }
+
+      }
+
+    });
+
+  }
+
 
   /**
    * Called whenever a spatial name changed, so the visual text can be updated.

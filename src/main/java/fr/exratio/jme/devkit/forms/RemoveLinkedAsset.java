@@ -7,11 +7,10 @@ import com.jme3.asset.ModelKey;
 import fr.exratio.jme.devkit.action.RemoveLinkedAssetAction;
 import fr.exratio.jme.devkit.registration.spatial.AssetLinkNodeRegistrar.AssetLinkNodeTreeNode;
 import fr.exratio.jme.devkit.service.EditorJmeApplication;
+import fr.exratio.jme.devkit.service.SceneGraphService;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Insets;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -29,25 +28,23 @@ import org.springframework.stereotype.Component;
 public class RemoveLinkedAsset extends JPanel {
 
   private JPanel rootPanel;
-  private final RemoveLinkedAssetAction removeLinkedAssetAction;
-  private final EditorJmeApplication editorJmeApplication;
+
   // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
   // Generated using JFormDesigner Evaluation license - Quentin Raphaneau
   private JList modelKeysList;
   private JButton removeLinkedAssetsButton;
 
   @Autowired
-  public RemoveLinkedAsset(AssetLinkNodeTreeNode assetLinkNodeTreeNode,
+  public RemoveLinkedAsset(
       RemoveLinkedAssetAction removeLinkedAssetAction,
-      EditorJmeApplication editorJmeApplication) {
+      EditorJmeApplication editorJmeApplication,
+      SceneGraphService sceneGraphService) {
     initComponents();
-    this.removeLinkedAssetAction = removeLinkedAssetAction;
-    this.editorJmeApplication = editorJmeApplication;
 
     editorJmeApplication.enqueue(() -> {
       final ImmutableList<ModelKey> modelKeys = ImmutableList
-          .copyOf(assetLinkNodeTreeNode.getUserObject().getAssetLoaderKeys());
-
+          .copyOf(((AssetLinkNodeTreeNode) sceneGraphService
+              .getSelectedObject()).getUserObject().getAssetLoaderKeys());
       SwingUtilities.invokeLater(() -> {
         DefaultListModel<ModelKey> listModel = new DefaultListModel<>();
 
@@ -76,12 +73,9 @@ public class RemoveLinkedAsset extends JPanel {
         EmptyBorder(0, 0, 0, 0), "JFor\u006dDesi\u0067ner \u0045valu\u0061tion",
         TitledBorder.CENTER, TitledBorder.BOTTOM, new Font("Dia\u006cog", Font.BOLD, 12),
         Color.red), getBorder()));
-    addPropertyChangeListener(new PropertyChangeListener() {
-      @Override
-      public void propertyChange(PropertyChangeEvent e) {
-        if ("bord\u0065r".equals(e.getPropertyName())) {
-          throw new RuntimeException();
-        }
+    addPropertyChangeListener(e -> {
+      if ("bord\u0065r".equals(e.getPropertyName())) {
+        throw new RuntimeException();
       }
     });
     setLayout(new GridLayoutManager(2, 1, new Insets(10, 10, 10, 10), -1, -1));
