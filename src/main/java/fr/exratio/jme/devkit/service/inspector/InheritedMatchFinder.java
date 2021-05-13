@@ -3,7 +3,6 @@ package fr.exratio.jme.devkit.service.inspector;
 import fr.exratio.jme.devkit.properties.PropertySection;
 import fr.exratio.jme.devkit.properties.builder.AbstractPropertySectionBuilder;
 import fr.exratio.jme.devkit.service.RegistrationService;
-import fr.exratio.jme.devkit.service.ServiceManager;
 import java.util.List;
 import java.util.Set;
 import org.slf4j.Logger;
@@ -28,20 +27,12 @@ public class InheritedMatchFinder extends PropertySectionListFinder {
 
     Class<?> registeredParentClass = findRegisteredParentClass(
         object);
-    Class<? extends AbstractPropertySectionBuilder> sectionBuilderClass = registrationService
+    AbstractPropertySectionBuilder propertySectionBuilder = registrationService
         .getPropertySectionBuilder(registeredParentClass);
-    if (sectionBuilderClass != null) {
+    if (propertySectionBuilder != null) {
       LOGGER.debug("-- find() builder found for parent class {}, initial object class {}",
           registeredParentClass.getCanonicalName(), object.getClass().getCanonicalName());
-      try {
-        AbstractPropertySectionBuilder<?> builder = sectionBuilderClass
-            .getConstructor(registeredParentClass)
-            .newInstance(object);
-        return builder.build();
-      } catch (Exception e) {
-        LOGGER.warn("-- find() Error while instanciating builder {}",
-            sectionBuilderClass.getSimpleName(), e);
-      }
+      return propertySectionBuilder.withObject(object).build();
     }
     LOGGER.debug("-- find() No builder found for class {}",
         object.getClass().getCanonicalName());

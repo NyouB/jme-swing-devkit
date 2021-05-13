@@ -59,7 +59,7 @@ public class RegistrationService {
   private static final Logger LOGGER = LoggerFactory
       .getLogger(RegistrationService.class);
 
-  private final Map<Class<?>, Class<? extends AbstractPropertySectionBuilder>> propertySectionBuilders = new HashMap<>();
+  private final Map<Class<?>, AbstractPropertySectionBuilder> propertySectionBuilders = new HashMap<>();
 
   private final Registrar<NodeRegistrar> nodeRegistration = new Registrar<>(NodeRegistrar.class);
   private final Registrar<GeometryRegistrar> geometryRegistration = new Registrar<>(
@@ -68,17 +68,15 @@ public class RegistrationService {
   private final Registrar<ControlRegistrar> controlRegistration = new Registrar<>(
       ControlRegistrar.class);
 
-  private final NoArgsControlRegistrarFactory registrarFactory;
-  private final AssetLinkNodeRegistrar assetLinkNodeRegistrar;
-
   private final long threadId;
 
   @Autowired
   public RegistrationService(
       NoArgsControlRegistrarFactory registrarFactory,
-      AssetLinkNodeRegistrar assetLinkNodeRegistrar) {
-    this.registrarFactory = registrarFactory;
-    this.assetLinkNodeRegistrar = assetLinkNodeRegistrar;
+      AssetLinkNodeRegistrar assetLinkNodeRegistrar,
+      SpatialPropertySectionBuilder spatialPropertySectionBuilder,
+      GeometryPropertySectionBuilder geometryPropertySectionBuilder,
+      MaterialPropertySectionBuilder materialPropertySectionBuilder) {
 
     threadId = Thread.currentThread().getId();
     PropertyEditorManager.registerEditor(Boolean.class, BooleanEditor.class);
@@ -99,9 +97,9 @@ public class RegistrationService {
     PropertyEditorManager.registerEditor(AnimComposer.class, AnimComposerEditor.class);
     PropertyEditorManager.registerEditor(Material.class, MaterialChooserEditor.class);
 
-    registerPropertySectionBuilder(Spatial.class, SpatialPropertySectionBuilder.class);
-    registerPropertySectionBuilder(Geometry.class, GeometryPropertySectionBuilder.class);
-    registerPropertySectionBuilder(Material.class, MaterialPropertySectionBuilder.class);
+    registerPropertySectionBuilder(Spatial.class, spatialPropertySectionBuilder);
+    registerPropertySectionBuilder(Geometry.class, geometryPropertySectionBuilder);
+    registerPropertySectionBuilder(Material.class, materialPropertySectionBuilder);
 
     nodeRegistration.register(new NoArgsSpatialRegistrar(Node.class));
     nodeRegistration.register(assetLinkNodeRegistrar);
@@ -123,29 +121,12 @@ public class RegistrationService {
    * @param componentClass the component to create for the mapped class.
    */
   public <T> void registerPropertySectionBuilder(Class<T> clazz,
-      Class<? extends AbstractPropertySectionBuilder> componentClass) {
+      AbstractPropertySectionBuilder componentClass) {
     propertySectionBuilders.put(clazz, componentClass);
   }
 
-  public Class<? extends AbstractPropertySectionBuilder> getPropertySectionBuilder(Class clazz) {
+  public AbstractPropertySectionBuilder getPropertySectionBuilder(Class clazz) {
     return propertySectionBuilders.get(clazz);
-  }
-
-  public AbstractPropertySectionBuilder<?> getPropertySectionBuilderInstance(Class clazz,
-      Object object) {
-    Class<? extends AbstractPropertySectionBuilder> builderClass = propertySectionBuilders
-        .get(clazz);
-    if (builderClass == null) {
-      return null;
-    }
-    AbstractPropertySectionBuilder<?> builder = null;
-    try {
-      builder = builderClass.getConstructor(clazz).newInstance(object);
-    } catch (Exception e) {
-      LOGGER.warn("-- find() Error while instanciating builder {}",
-          builderClass.getSimpleName(), e);
-    }
-    return builder;
   }
 
   public Set<Class<?>> getRegisteredClasses() {

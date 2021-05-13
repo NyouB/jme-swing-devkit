@@ -2,14 +2,12 @@ package fr.exratio.jme.devkit.properties.builder;
 
 import com.jme3.material.Material;
 import com.jme3.scene.Geometry;
+import fr.exratio.jme.devkit.properties.MaterialSection;
 import fr.exratio.jme.devkit.properties.PropertySection;
 import fr.exratio.jme.devkit.properties.component.bool.BooleanEditor;
 import fr.exratio.jme.devkit.properties.component.integer.IntegerEditor;
 import fr.exratio.jme.devkit.properties.component.material.MaterialChooserEditor;
 import fr.exratio.jme.devkit.service.EditorJmeApplication;
-import fr.exratio.jme.devkit.service.inspector.PropertyInspectorTool;
-import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,7 +24,7 @@ public class GeometryPropertySectionBuilder extends AbstractPropertySectionBuild
   private final EditorJmeApplication editorJmeApplication;
   private final SpatialPropertySectionBuilder spatialPropertySectionBuilder;
   private final MaterialPropertySectionBuilder materialPropertySectionBuilder;
-  private final PropertyInspectorTool propertyInspectorTool;
+  private final ReflectedPropertySectionBuilder reflectedPropertySectionBuilder;
 
 
   @Autowired
@@ -34,12 +32,13 @@ public class GeometryPropertySectionBuilder extends AbstractPropertySectionBuild
       EditorJmeApplication editorJmeApplication,
       SpatialPropertySectionBuilder spatialPropertySectionBuilder,
       MaterialPropertySectionBuilder materialPropertySectionBuilder,
-      PropertyInspectorTool propertyInspectorTool) {
+      ReflectedPropertySectionBuilder reflectedPropertySectionBuilder) {
     this.editorJmeApplication = editorJmeApplication;
     this.spatialPropertySectionBuilder = spatialPropertySectionBuilder;
     this.materialPropertySectionBuilder = materialPropertySectionBuilder;
-    this.propertyInspectorTool = propertyInspectorTool;
+    this.reflectedPropertySectionBuilder = reflectedPropertySectionBuilder;
   }
+
 
   @Override
   public AbstractPropertySectionBuilder<Geometry> withObject(Geometry object) {
@@ -69,46 +68,29 @@ public class GeometryPropertySectionBuilder extends AbstractPropertySectionBuild
     }
     geometrySection.addProperty(lodLevelpropertyName, lodLevel.getCustomEditor());
 
-    // Material chooser.
-    MaterialChooserEditor materialChooser = new MaterialChooserEditor(object.getMaterial(),
-        editorJmeApplication);
-
-    // This listener trigger the update of material detail on material selection
-    PropertyChangeListener materialChangeListener = evt -> {
-      Material material = (Material) evt.getNewValue();
-      List<PropertySection> sections = buildMaterialSection(material);
-      if (!sections.isEmpty()) {
-        return;
-      }
-      propertyInspectorTool.updateSections(sections);
-    };
-
-    materialChooser.addPropertyChangeListener(materialChangeListener);
-    //this listener juste propagate the material change to the jmeEngine
-    materialChooser.addPropertyChangeListener(
-        value -> editorJmeApplication.enqueue(() -> object.setMaterial(
-                (Material) value.getNewValue())));
-
-    geometrySection.addProperty(MATERIAL, materialChooser.getCustomEditor());
-
-    propertySections.add(geometrySection);
-
     // Material
 
     Material material = object.getMaterial();
-    List<PropertySection> sections = buildMaterialSection(material);
-    if (!sections.isEmpty()) {
-      propertySections.addAll(sections);
-    }
+    MaterialSection materialSection = new MaterialSection(material,
+        reflectedPropertySectionBuilder);
+
+    // Material chooser.
+    MaterialChooserEditor materialChooser = new MaterialChooserEditor(material,
+        editorJmeApplication);
+
+    materialChooser.addPropertyChangeListener(evt -> {
+      materialSection.updateSection(material);
+    });
+    //this listener juste propagate the material change to the jmeEngine
+    materialChooser.addPropertyChangeListener(
+        value -> editorJmeApplication.enqueue(() -> object.setMaterial(
+            (Material) value.getNewValue())));
+
+    propertySections.add(geometrySection);
+    geometrySection.addProperty(MATERIAL, materialChooser.getCustomEditor());
+    propertySections.add(materialSection);
 
     return propertySections;
   }
 
-  public List<PropertySection> buildMaterialSection(Material material) {
-    List<PropertySection> sections = new ArrayList<>();
-    if (material != null) {
-      sections = materialPropertySectionBuilder.withObject(material).build();
-    }
-    return sections;
-  }
 }

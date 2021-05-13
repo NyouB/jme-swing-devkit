@@ -3,9 +3,6 @@ package fr.exratio.jme.devkit.properties.builder;
 import fr.exratio.jme.devkit.properties.PropertySection;
 import fr.exratio.jme.devkit.properties.component.enumeration.EnumEditor;
 import fr.exratio.jme.devkit.service.EditorJmeApplication;
-import fr.exratio.jme.devkit.service.inspector.ExactMatchFinder;
-import fr.exratio.jme.devkit.service.inspector.InheritedMatchFinder;
-import fr.exratio.jme.devkit.service.inspector.PropertySectionListFinder;
 import java.beans.IndexedPropertyDescriptor;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -35,17 +32,12 @@ public class ReflectedPropertySectionBuilder extends AbstractPropertySectionBuil
 
   private static final Field classRefField = FieldUtils
       .getField(PropertyDescriptor.class, "classRef", true);
-  private final PropertySectionListFinder propertySectionListFinder;
   private final EditorJmeApplication editorJmeApplication;
   private Map<Class<?>, Set<PropertyDescriptor>> groupedDescriptors;
 
   @Autowired
-  public ReflectedPropertySectionBuilder(ExactMatchFinder exactMatchFinder,
-      InheritedMatchFinder inheritedMatchFinder,
-      EditorJmeApplication editorJmeApplication) {
+  public ReflectedPropertySectionBuilder(EditorJmeApplication editorJmeApplication) {
     this.editorJmeApplication = editorJmeApplication;
-    propertySectionListFinder = exactMatchFinder;
-    propertySectionListFinder.chainWith(inheritedMatchFinder);
   }
 
   @Override

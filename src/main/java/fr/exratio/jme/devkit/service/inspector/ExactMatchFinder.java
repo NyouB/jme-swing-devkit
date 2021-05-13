@@ -17,20 +17,20 @@ public class ExactMatchFinder extends PropertySectionListFinder {
   private final RegistrationService registrationService;
 
   @Autowired
-  public ExactMatchFinder(RegistrationService registrationService){
+  public ExactMatchFinder(RegistrationService registrationService) {
     this.registrationService = registrationService;
   }
 
   @Override
   public List<PropertySection> find(Object object) {
     AbstractPropertySectionBuilder propertySectionBuilder = registrationService
-        .getPropertySectionBuilderInstance(object.getClass(), object);
+        .getPropertySectionBuilder(object.getClass());
     if (propertySectionBuilder != null) {
       LOGGER.debug("-- find() Factory {} found for class {}",
           propertySectionBuilder.getClass().getCanonicalName(),
           object.getClass().getCanonicalName());
       propertySectionBuilder.withObject(object);
-      return propertySectionBuilder.build();
+      return propertySectionBuilder.withObject(object).build();
     }
     return findNext(object);
   }

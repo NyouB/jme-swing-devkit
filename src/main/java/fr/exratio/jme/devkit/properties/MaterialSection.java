@@ -1,4 +1,4 @@
-package fr.exratio.jme.devkit.properties.builder;
+package fr.exratio.jme.devkit.properties;
 
 import com.jme3.material.MatParam;
 import com.jme3.material.Material;
@@ -10,7 +10,7 @@ import com.jme3.shader.VarType;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture2D;
 import fr.exratio.jme.devkit.jme.IgnoredProperties;
-import fr.exratio.jme.devkit.properties.PropertySection;
+import fr.exratio.jme.devkit.properties.builder.ReflectedPropertySectionBuilder;
 import fr.exratio.jme.devkit.properties.component.AbstractPropertyEditor;
 import fr.exratio.jme.devkit.properties.component.bool.BooleanEditor;
 import fr.exratio.jme.devkit.properties.component.colorgba.ColorRGBAEditor;
@@ -19,86 +19,28 @@ import fr.exratio.jme.devkit.properties.component.texture2d.Texture2DEditor;
 import fr.exratio.jme.devkit.properties.component.vector2f.Vector2fEditor;
 import fr.exratio.jme.devkit.properties.component.vector3f.Vector3fEditor;
 import fr.exratio.jme.devkit.properties.component.vector4f.Vector4fEditor;
+import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-@Component
-public class MaterialPropertySectionBuilder extends AbstractPropertySectionBuilder<Material> {
+public class MaterialSection extends UpdatablePropertySection<Material> {
 
-  //Build a lower case list of ignored properties
   public static final List<String> IGNORED_PROPERTIES = Arrays
       .asList(IgnoredProperties.material.clone()).stream()
       .map(String::toLowerCase)
       .collect(Collectors.toList());
-  private static final Logger LOGGER = LoggerFactory
-      .getLogger(MaterialPropertySectionBuilder.class);
+
   private final ReflectedPropertySectionBuilder reflectedPropertySectionBuilder;
 
-  @Autowired
-  public MaterialPropertySectionBuilder(
+  public MaterialSection(Material object,
       ReflectedPropertySectionBuilder reflectedPropertySectionBuilder) {
+    super("Material", object);
     this.reflectedPropertySectionBuilder = reflectedPropertySectionBuilder;
-  }
 
-  @Override
-  public List<PropertySection> build() {
-
-    List<PropertySection> propertySections = new ArrayList<>();
-    propertySections.add(createMaterialPropertySection());
-    propertySections.addAll(createAdditionalRenderStateSection());
-    return propertySections;
-  }
-
-  private PropertySection createMaterialPropertySection() {
-
-    PropertySection materialSection = new PropertySection("Material");
-
-    // a list of all possible params
-    Collection<MatParam> params = object.getMaterialDef().getMaterialParams();
-    List<MatParam> allParams = new ArrayList<>(params);
-
-    // sort by type then name
-    allParams.sort((o1, o2) -> {
-      int value1 = o1.getVarType().compareTo(o2.getVarType());
-      if (value1 == 0) {
-        int value2 = o1.getName().compareTo(o2.getName());
-        if (value2 == 0) {
-          return value1;
-        } else {
-          return value2;
-        }
-      }
-
-      return value1;
-    });
-
-    for (MatParam matParam : allParams) {
-
-      if (IGNORED_PROPERTIES.contains(matParam.getName().toLowerCase())) {
-        continue;
-      }
-
-      AbstractPropertyEditor propertyEditor = componentFromVarType(matParam.getVarType(),
-          matParam.getName(), object.getParamValue(matParam.getName()));
-      if (propertyEditor != null) {
-        materialSection.addProperty(matParam.getName(), propertyEditor.getCustomEditor());
-      }
-
-    }
-
-    return materialSection;
-  }
-
-
-  private List<PropertySection> createAdditionalRenderStateSection() {
-    return reflectedPropertySectionBuilder.withObject(object).build();
   }
 
   private AbstractPropertyEditor componentFromVarType(VarType varType, String name, Object value) {
@@ -200,5 +142,49 @@ public class MaterialPropertySectionBuilder extends AbstractPropertySectionBuild
     }
   }
 
+  @Override
+  public void buildView() {
 
+    // a list of all possible params
+    Collection<MatParam> params = object.getMaterialDef().getMaterialParams();
+    List<MatParam> allParams = new ArrayList<>(params);
+
+    // sort by type then name
+    allParams.sort((o1, o2) -> {
+      int value1 = o1.getVarType().compareTo(o2.getVarType());
+      if (value1 == 0) {
+        int value2 = o1.getName().compareTo(o2.getName());
+        if (value2 == 0) {
+          return value1;
+        } else {
+          return value2;
+        }
+      }
+
+      return value1;
+    });
+
+    for (MatParam matParam : allParams) {
+
+      if (IGNORED_PROPERTIES.contains(matParam.getName().toLowerCase())) {
+        continue;
+      }
+
+      AbstractPropertyEditor propertyEditor = componentFromVarType(matParam.getVarType(),
+          matParam.getName(), object.getParamValue(matParam.getName()));
+      if (propertyEditor != null) {
+        addProperty(matParam.getName(), propertyEditor.getCustomEditor());
+      }
+
+    }
+
+    List<PropertySection> renderStateSections = reflectedPropertySectionBuilder
+        .withObject(object.getAdditionalRenderState()).build();
+
+    for (PropertySection propertySection : renderStateSections) {
+      for (Entry<String, Component> entry : propertySection.getComponents().entrySet()) {
+        addProperty(entry.getKey(), entry.getValue());
+      }
+    }
+  }
 }

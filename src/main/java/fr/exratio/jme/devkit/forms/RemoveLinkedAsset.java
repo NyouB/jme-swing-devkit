@@ -140,5 +140,6 @@ public class RemoveLinkedAsset extends JPanel {
   public JComponent $$$getRootComponent$$$() {
     return rootPanel;
   }
+
   // JFormDesigner - End of variables declaration  //GEN-END:variables
 }
