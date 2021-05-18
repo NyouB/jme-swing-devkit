@@ -51,6 +51,13 @@ public class Main {
   private final MainMenu mainMenu;
 
   public static void main(String[] args) {
+    // Enable font anti-aliasing. On my setup (manjaro linux) this is definitely required.
+    // I'll have to do further research to see if this has adverse effects on other systems.
+    // System.setProperty("awt.useSystemAAFontSettings","on");
+    // cleartype - I think this one looks better.
+    System.setProperty("awt.useSystemAAFontSettings", "lcd");
+    // set the theme.
+    SwingTheme.setTheme(DevKitConfig.getInstance().getTheme());
     AnnotationConfigApplicationContext context =
         new AnnotationConfigApplicationContext(SpringConfiguration.class);
     Main bean = context.getBean(Main.class);
@@ -80,13 +87,7 @@ public class Main {
     LOGGER.info("Engine Version: {}", JmeSystem.getFullName());
     LOGGER.info(
         "Operating System: {} {}", System.getProperty("os.name"), System.getProperty("os.arch"));
-    // Enable font anti-aliasing. On my setup (manjaro linux) this is definitely required.
-    // I'll have to do further research to see if this has adverse effects on other systems.
-    // System.setProperty("awt.useSystemAAFontSettings","on");
-    // cleartype - I think this one looks better.
-    System.setProperty("awt.useSystemAAFontSettings", "lcd");
-    // set the theme.
-    SwingTheme.setTheme(DevKitConfig.getInstance().getTheme());
+
     configureJMEEngine();
     startEngine();
     configureJFrame();
