@@ -29,7 +29,6 @@ import lombok.Setter;
 import org.apache.commons.lang3.builder.Builder;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -110,7 +109,7 @@ public class DevKitConfig {
   public static final File storageDir = new File("devkit");
   public static final File pluginStorageDir = Paths.get(storageDir.toString(), "plugins").toFile();
   private static final Logger log = Logger.getLogger(DevKitConfig.class.getName());
-  private static final File configFile = Paths.get(storageDir.toString(), "devkit-config.json")
+  private static final File configFile = Paths.get(storageDir.toString(), "reference.conf")
       .toFile();
   private static final ObjectMapper objectMapper = new ObjectMapper()
       .enable(SerializationFeature.INDENT_OUTPUT)
@@ -201,7 +200,7 @@ public class DevKitConfig {
   }
 
   public Dimension getSize() {
-    return new Dimension(conf.getInt( MAIN_SIZE_WIDTH),
+    return new Dimension(conf.getInt(MAIN_SIZE_WIDTH),
         conf.getInt(MAIN_SIZE_HEIGHT));
   }
 

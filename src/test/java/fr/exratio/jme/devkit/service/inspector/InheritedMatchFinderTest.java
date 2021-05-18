@@ -30,9 +30,10 @@ class InheritedMatchFinderTest {
   void find() {
     Picture picture = new Picture("myTestGeometry");
     List<PropertySection> res = inheritedMatchFinder.find(picture);
-    Assertions.assertEquals(3, res.size());
+    Assertions.assertEquals(4, res.size());
     Assertions.assertTrue(res.stream().map(propertySection -> propertySection.getTitle()).collect(
-        Collectors.toList()).containsAll(Arrays.asList("Geometry", "Spatial", "Transform")));
+        Collectors.toList())
+        .containsAll(Arrays.asList("Geometry", "Spatial", "Transform", "Material")));
   }
 
   @Test

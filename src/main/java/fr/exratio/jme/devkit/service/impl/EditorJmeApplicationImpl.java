@@ -28,11 +28,10 @@ public class EditorJmeApplicationImpl extends EditorJmeApplication {
   private FilterPostProcessor fpp;
   private AwtPanel jmePanel;
   private boolean initialised;
-  private DevKitConfig devKitConfig;
   private final EventBus eventBus;
 
-  public EditorJmeApplicationImpl(@Autowired DevKitConfig devKitConfig, @Autowired EventBus eventBus){
-    this.devKitConfig = devKitConfig;
+  @Autowired
+  public EditorJmeApplicationImpl(EventBus eventBus) {
     this.eventBus = eventBus;
   }
 
@@ -92,7 +91,7 @@ public class EditorJmeApplicationImpl extends EditorJmeApplication {
    */
   @Override
   public void applyCameraFrustumSizes() {
-    
+
     float width, height;
 
     if (jmePanel != null) {
