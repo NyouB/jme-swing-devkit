@@ -73,7 +73,7 @@ public class MainPage extends JPanel {
     centerPanel.addComponentListener(new ComponentAdapter() {
       @Override
       public void componentResized(ComponentEvent e) {
-        SwingUtilities.getRoot(e.getComponent()).revalidate();
+        SwingUtilities.getRoot(centerPanel).revalidate();
       }
     });
 

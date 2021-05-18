@@ -37,21 +37,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class NodeContextMenu extends SpatialContextMenu {
 
-  @Autowired
   private final CreateQuadAction createQuadAction;
-
-  @Autowired
   private final CreateDomeAction createDomeAction;
-
-  @Autowired
   private final CreateCylinderAction createCylinderAction;
-
-  @Autowired
   private final CreateSphereAction createSphereAction;
-
-  @Autowired
   private final CreateBoxAction createBoxAction;
-  @Autowired
   private final EventBus eventBus;
 
   @Autowired
