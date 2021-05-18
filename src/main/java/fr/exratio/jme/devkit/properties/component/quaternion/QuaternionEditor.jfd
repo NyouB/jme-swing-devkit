@@ -1,0 +1,124 @@
+JFDML JFormDesigner: "7.0.3.0.337" Java: "11.0.10" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.intellij.uiDesigner.core.GridLayoutManager ) {
+			"$columnCount": 2
+			"$rowCount": 4
+		} ) {
+			name: "this"
+			auxiliary() {
+				"JavaCodeGenerator.customCreate": true
+			}
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label1"
+				"foreground": new java.awt.Color( 187, 24, 22, 255 )
+				"text": "x"
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+			}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
+				"hSizePolicy": 0
+				"vSizePolicy": 0
+			} )
+			add( new FormComponent( "javax.swing.JFormattedTextField" ) {
+				name: "xTextField"
+				auxiliary() {
+					"JavaCodeGenerator.customCreate": true
+				}
+			}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
+				"column": 1
+				"anchor": 8
+				"fill": 1
+				"hSizePolicy": 6
+				"vSizePolicy": 0
+				"minimumSize": new java.awt.Dimension( 20, -1 )
+				"preferredSize": new java.awt.Dimension( 80, -1 )
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label2"
+				"foreground": new java.awt.Color( 31, 187, 42, 255 )
+				"text": "y"
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+			}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
+				"row": 1
+				"hSizePolicy": 0
+				"vSizePolicy": 0
+			} )
+			add( new FormComponent( "javax.swing.JFormattedTextField" ) {
+				name: "yTextField"
+				auxiliary() {
+					"JavaCodeGenerator.customCreate": true
+				}
+			}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
+				"column": 1
+				"row": 1
+				"anchor": 8
+				"fill": 1
+				"hSizePolicy": 6
+				"vSizePolicy": 0
+				"minimumSize": new java.awt.Dimension( 20, -1 )
+				"preferredSize": new java.awt.Dimension( 80, -1 )
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label3"
+				"foreground": new java.awt.Color( 49, 168, 187, 255 )
+				"text": "z"
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+			}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
+				"row": 2
+				"hSizePolicy": 0
+				"vSizePolicy": 0
+			} )
+			add( new FormComponent( "javax.swing.JFormattedTextField" ) {
+				name: "zTextField"
+				auxiliary() {
+					"JavaCodeGenerator.customCreate": true
+				}
+			}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
+				"column": 1
+				"row": 2
+				"anchor": 8
+				"fill": 1
+				"hSizePolicy": 6
+				"vSizePolicy": 0
+				"minimumSize": new java.awt.Dimension( 20, -1 )
+				"preferredSize": new java.awt.Dimension( 80, -1 )
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label4"
+				"text": "w"
+				auxiliary() {
+					"JavaCodeGenerator.variableLocal": true
+				}
+			}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
+				"row": 3
+				"hSizePolicy": 0
+				"vSizePolicy": 0
+			} )
+			add( new FormComponent( "javax.swing.JFormattedTextField" ) {
+				name: "wTextField"
+				auxiliary() {
+					"JavaCodeGenerator.customCreate": true
+				}
+			}, new FormLayoutConstraints( class com.intellij.uiDesigner.core.GridConstraints ) {
+				"column": 1
+				"row": 3
+				"anchor": 8
+				"fill": 1
+				"hSizePolicy": 6
+				"vSizePolicy": 0
+				"minimumSize": new java.awt.Dimension( 20, -1 )
+				"preferredSize": new java.awt.Dimension( 80, -1 )
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 754, 400 )
+		} )
+	}
+}

@@ -109,7 +109,7 @@ public class SpatialContextMenu extends JPopupMenu {
 
       JDialog dialog = new JDialog(mainWindow, "Save Spatial", true);
       dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-      dialog.setContentPane(saveSpatial.$$$getRootComponent$$$());
+      dialog.setContentPane(saveSpatial);
       dialog.setLocationRelativeTo(mainWindow);
       dialog.pack();
 
@@ -227,7 +227,7 @@ public class SpatialContextMenu extends JPopupMenu {
         editorJmeApplication, sceneGraphService);
     JMenuItem probeLight = menu.add(new JMenuItem("Generate LightProbe..."));
     probeLight.addActionListener(e -> GUIUtils.createDialog(SwingUtilities
-            .getWindowAncestor(this), generateLightProbeDialog.$$$getRootComponent$$$(),
+            .getWindowAncestor(this), generateLightProbeDialog,
         "Generate LightProbe"));
 
     return menu;

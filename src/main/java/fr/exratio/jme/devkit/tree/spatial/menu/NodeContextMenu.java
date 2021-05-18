@@ -85,13 +85,13 @@ public class NodeContextMenu extends SpatialContextMenu {
     // Add -> Model(s)...
     JMenuItem addModelsItem = getAddMenu().add(new JMenuItem("Model(s)..."));
     addModelsItem.addActionListener(e -> GUIUtils.createDialog(SwingUtilities
-        .getWindowAncestor(this), addModels.$$$getRootComponent$$$(), "Add Model(s)"));
+        .getWindowAncestor(this), addModels, "Add Model(s)"));
     addModelsItem.setMnemonic('M');
 
     // Add -> SkyBox...
     JMenuItem genSkyBoxItem = getAddMenu().add(new JMenuItem("SkyBox..."));
     genSkyBoxItem.addActionListener(e -> GUIUtils.createDialog(SwingUtilities
-        .getWindowAncestor(this), createSkyBoxDialog.$$$getRootComponent$$$(), "Create SkyBox"));
+        .getWindowAncestor(this), createSkyBoxDialog, "Create SkyBox"));
     genSkyBoxItem.setMnemonic('K');
 
     // Add -> Registered Spatials

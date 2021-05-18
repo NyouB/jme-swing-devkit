@@ -19,7 +19,6 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
@@ -28,25 +27,138 @@ import javax.swing.colorchooser.DefaultColorSelectionModel;
 import org.springframework.stereotype.Controller;
 
 @Controller
-public class DebugLights {
+public class DebugLights extends JPanel {
 
   public static final String DEBUG_LIGHTS_WINDOW_TITLE = "Debug Lights";
 
-  private JCheckBox ambientCheckBox;
-  private JCheckBox directionalCheckBox;
-  private JCheckBox probeCheckBox;
-  private JComboBox<DemoProbe> probesComboBox;
   private JPanel rootPanel;
-  private JTabbedPane tabbedPane1;
-  private JColorChooser ambientColorChooser;
-  private JColorChooser directionalColorChooser;
 
   private AmbientLight ambientLight;
   private DirectionalLight directionalLight;
   private LightProbe lightProbe;
   private final EditorJmeApplication editorJmeApplication;
 
+  // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
+  private JTabbedPane tabbedPane1;
+
+  public LightProbe extractProbe(DemoProbe demoProbe) {
+
+    Spatial probeHolder = editorJmeApplication.getAssetManager()
+        .loadModel(demoProbe.getResourcePath());
+
+    LightProbe lightProbe = (LightProbe) probeHolder.getLocalLightList().get(0);
+    probeHolder.removeLight(lightProbe);
+
+    lightProbe.getArea().setRadius(500);
+    lightProbe.setName(demoProbe.resourcePath);
+
+    return lightProbe;
+  }
+
+  private void querySceneForDebugLights() {
+
+    editorJmeApplication.enqueue(() -> {
+
+      // read the lights from the JME thread.
+      LightList lights = editorJmeApplication.getRootNode().getLocalLightList();
+
+      for (Light light : lights) {
+
+        if (light instanceof AmbientLight) {
+
+          // set the ambientLight reference from the JME thread.
+          ambientLight = (AmbientLight) light;
+          final ColorRGBA colorRGBA = ambientLight.getColor();
+
+          // set the JavaFX value from the JavaFX thread.
+          SwingUtilities.invokeLater(() -> {
+            ambientCheckBox.setSelected(true);
+            ambientColorChooser.setColor(ColorConverter.toColor(colorRGBA));
+          });
+        } else if (light instanceof DirectionalLight) {
+
+          // set the ambientLight reference from the JME thread.
+          directionalLight = (DirectionalLight) light;
+          final ColorRGBA colorRGBA = directionalLight.getColor();
+
+          // set the JavaFX value from the JavaFX thread.
+          SwingUtilities.invokeLater(() -> {
+            directionalCheckBox.setSelected(true);
+            directionalColorChooser.setColor(ColorConverter.toColor(colorRGBA));
+          });
+        } else if (light instanceof LightProbe) {
+
+          // set the ambientLight reference from the JME thread.
+          lightProbe = (LightProbe) light;
+          final String name = lightProbe.getName();
+
+          if (name != null) {
+
+            // set the JavaFX value from the JavaFX thread.
+            SwingUtilities.invokeLater(() -> {
+              probeCheckBox.setSelected(true);
+              //DemoProbe demoProbe = DemoProbe.fromResourcePath(name);
+              //probeChoiceBox.getSelectionModel().select(demoProbe);
+            });
+
+          }
+
+        }
+
+      }
+
+    });
+
+  }
+
+
+  private enum DemoProbe {
+
+    Bathroom("Probes/bathroom.j3o"),
+    City_Night_Lights("Probes/City_Night_Lights.j3o"),
+    Corsica_Beach("Probes/corsica_beach.j3o"),
+    Dresden_Station_Night("Probes/dresden_station_night.j3o"),
+    Flower_Road("Probes/flower_road.j3o"),
+    Glass_Passage("Probes/glass_passage.j3o"),
+    Parking_Lot("Probes/Parking_Lot.j3o"),
+    River_Road("Probes/River_Road.j3o"),
+    Road_In_Tenerife_Mountain("Probes/road_in_tenerife_mountain.j3o"),
+    Sky_Cloudy("Probes/Sky_Cloudy.j3o"),
+    StoneWall("Probes/Stonewall.j3o"),
+    Studio("Probes/studio.j3o");
+
+    private final String resourcePath;
+
+    DemoProbe(String resourcePath) {
+      this.resourcePath = resourcePath;
+    }
+
+    public static DemoProbe fromResourcePath(String resourcePath) {
+
+      for (DemoProbe demoProbe : values()) {
+        if (demoProbe.getResourcePath().equals(resourcePath)) {
+          return demoProbe;
+        }
+      }
+
+      return null;
+    }
+
+    public String getResourcePath() {
+      return resourcePath;
+    }
+
+  }
+
+  private JCheckBox ambientCheckBox;
+  private JColorChooser ambientColorChooser;
+  private JCheckBox directionalCheckBox;
+  private JColorChooser directionalColorChooser;
+  private JCheckBox probeCheckBox;
+  private JComboBox probesComboBox;
+
   public DebugLights(EditorJmeApplication editorJmeApplication) {
+    initComponents();
     this.editorJmeApplication = editorJmeApplication;
 
     // we don't want preview panels.
@@ -212,209 +324,121 @@ public class DebugLights {
     querySceneForDebugLights();
   }
 
-  public LightProbe extractProbe(DemoProbe demoProbe) {
-
-    Spatial probeHolder = editorJmeApplication.getAssetManager()
-        .loadModel(demoProbe.getResourcePath());
-
-    LightProbe lightProbe = (LightProbe) probeHolder.getLocalLightList().get(0);
-    probeHolder.removeLight(lightProbe);
-
-    lightProbe.getArea().setRadius(500);
-    lightProbe.setName(demoProbe.resourcePath);
-
-    return lightProbe;
-  }
-
-  private void querySceneForDebugLights() {
-
-    editorJmeApplication.enqueue(() -> {
-
-      // read the lights from the JME thread.
-      LightList lights = editorJmeApplication.getRootNode().getLocalLightList();
-
-      for (Light light : lights) {
-
-        if (light instanceof AmbientLight) {
-
-          // set the ambientLight reference from the JME thread.
-          ambientLight = (AmbientLight) light;
-          final ColorRGBA colorRGBA = ambientLight.getColor();
-
-          // set the JavaFX value from the JavaFX thread.
-          SwingUtilities.invokeLater(() -> {
-            ambientCheckBox.setSelected(true);
-            ambientColorChooser.setColor(ColorConverter.toColor(colorRGBA));
-          });
-        } else if (light instanceof DirectionalLight) {
-
-          // set the ambientLight reference from the JME thread.
-          directionalLight = (DirectionalLight) light;
-          final ColorRGBA colorRGBA = directionalLight.getColor();
-
-          // set the JavaFX value from the JavaFX thread.
-          SwingUtilities.invokeLater(() -> {
-            directionalCheckBox.setSelected(true);
-            directionalColorChooser.setColor(ColorConverter.toColor(colorRGBA));
-          });
-        } else if (light instanceof LightProbe) {
-
-          // set the ambientLight reference from the JME thread.
-          lightProbe = (LightProbe) light;
-          final String name = lightProbe.getName();
-
-          if (name != null) {
-
-            // set the JavaFX value from the JavaFX thread.
-            SwingUtilities.invokeLater(() -> {
-              probeCheckBox.setSelected(true);
-              //DemoProbe demoProbe = DemoProbe.fromResourcePath(name);
-              //probeChoiceBox.getSelectionModel().select(demoProbe);
-            });
-
-          }
-
-        }
-
-      }
-
-    });
-
-  }
-
-  {
-// GUI initializer generated by IntelliJ IDEA GUI Designer
-// >>> IMPORTANT!! <<<
-// DO NOT EDIT OR ADD ANY CODE HERE!
-    $$$setupUI$$$();
-  }
-
-  /**
-   * Method generated by IntelliJ IDEA GUI Designer >>> IMPORTANT!! <<< DO NOT edit this method OR
-   * call it in your code!
-   *
-   * @noinspection ALL
-   */
-  private void $$$setupUI$$$() {
-    rootPanel = new JPanel();
-    rootPanel.setLayout(new GridLayoutManager(2, 2, new Insets(0, 0, 0, 0), -1, -1));
+  private void initComponents() {
+    // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
     tabbedPane1 = new JTabbedPane();
-    rootPanel.add(tabbedPane1,
-        new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH,
-            GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
-            GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null,
-            new Dimension(200, 200), null, 0, false));
-    final JPanel panel1 = new JPanel();
-    panel1.setLayout(new GridLayoutManager(2, 1, new Insets(0, 0, 0, 0), -1, -1));
-    tabbedPane1.addTab("Ambient", panel1);
+    var panel1 = new JPanel();
     ambientCheckBox = new JCheckBox();
-    ambientCheckBox.setText("Enabled");
-    panel1.add(ambientCheckBox,
-        new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
-            GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
-            GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     ambientColorChooser = new JColorChooser();
-    panel1.add(ambientColorChooser,
-        new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE,
-            GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
-            GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null,
-            null, 0, false));
-    final JPanel panel2 = new JPanel();
-    panel2.setLayout(new GridLayoutManager(2, 1, new Insets(0, 0, 0, 0), -1, -1));
-    tabbedPane1.addTab("Directional", panel2);
+    var panel2 = new JPanel();
     directionalCheckBox = new JCheckBox();
-    directionalCheckBox.setText("Enabled");
-    panel2.add(directionalCheckBox,
-        new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
-            GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
-            GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     directionalColorChooser = new JColorChooser();
-    panel2.add(directionalColorChooser,
-        new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE,
-            GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
-            GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null,
-            null, 0, false));
-    final JPanel panel3 = new JPanel();
-    panel3.setLayout(new GridLayoutManager(3, 3, new Insets(0, 0, 0, 0), -1, -1));
-    tabbedPane1.addTab("LightProbe", panel3);
+    var panel3 = new JPanel();
     probeCheckBox = new JCheckBox();
-    probeCheckBox.setText("Enabled");
-    panel3.add(probeCheckBox,
-        new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
-            GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
-            GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-    final Spacer spacer1 = new Spacer();
-    panel3.add(spacer1, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER,
-        GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0,
-        false));
-    final JLabel label1 = new JLabel();
-    label1.setText("Probe");
-    panel3.add(label1,
-        new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE,
-            GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0,
-            false));
+    var vSpacer1 = new Spacer();
+    var label1 = new JLabel();
     probesComboBox = new JComboBox();
-    panel3.add(probesComboBox, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_WEST,
-        GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW,
-        GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-    final Spacer spacer2 = new Spacer();
-    panel3.add(spacer2, new GridConstraints(1, 2, 1, 1, GridConstraints.ANCHOR_CENTER,
-        GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null,
-        0, false));
-    final Spacer spacer3 = new Spacer();
-    rootPanel.add(spacer3, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER,
-        GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0,
-        false));
-    final Spacer spacer4 = new Spacer();
-    rootPanel.add(spacer4, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER,
-        GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null,
-        0, false));
-  }
+    var hSpacer1 = new Spacer();
+    var vSpacer2 = new Spacer();
+    var hSpacer2 = new Spacer();
 
-  /**
-   * @noinspection ALL
-   */
-  public JComponent $$$getRootComponent$$$() {
-    return rootPanel;
-  }
+    //======== this ========
+    setLayout(new GridLayoutManager(2, 2, new Insets(0, 0, 0, 0), -1, -1));
 
+    //======== tabbedPane1 ========
+    {
 
-  private enum DemoProbe {
+      //======== panel1 ========
+      {
+        panel1.setLayout(new GridLayoutManager(2, 1, new Insets(0, 0, 0, 0), -1, -1));
 
-    Bathroom("Probes/bathroom.j3o"),
-    City_Night_Lights("Probes/City_Night_Lights.j3o"),
-    Corsica_Beach("Probes/corsica_beach.j3o"),
-    Dresden_Station_Night("Probes/dresden_station_night.j3o"),
-    Flower_Road("Probes/flower_road.j3o"),
-    Glass_Passage("Probes/glass_passage.j3o"),
-    Parking_Lot("Probes/Parking_Lot.j3o"),
-    River_Road("Probes/River_Road.j3o"),
-    Road_In_Tenerife_Mountain("Probes/road_in_tenerife_mountain.j3o"),
-    Sky_Cloudy("Probes/Sky_Cloudy.j3o"),
-    StoneWall("Probes/Stonewall.j3o"),
-    Studio("Probes/studio.j3o");
-
-    private final String resourcePath;
-
-    DemoProbe(String resourcePath) {
-      this.resourcePath = resourcePath;
-    }
-
-    public static DemoProbe fromResourcePath(String resourcePath) {
-
-      for (DemoProbe demoProbe : values()) {
-        if (demoProbe.getResourcePath().equals(resourcePath)) {
-          return demoProbe;
-        }
+        //---- ambientCheckBox ----
+        ambientCheckBox.setText("Enabled");
+        panel1.add(ambientCheckBox, new GridConstraints(0, 0, 1, 1,
+            GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
+            GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+            GridConstraints.SIZEPOLICY_FIXED,
+            null, null, null));
+        panel1.add(ambientColorChooser, new GridConstraints(1, 0, 1, 1,
+            GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE,
+            GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+            GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+            null, null, null));
       }
+      tabbedPane1.addTab("Ambient", panel1);
 
-      return null;
+      //======== panel2 ========
+      {
+        panel2.setLayout(new GridLayoutManager(2, 1, new Insets(0, 0, 0, 0), -1, -1));
+
+        //---- directionalCheckBox ----
+        directionalCheckBox.setText("Enabled");
+        panel2.add(directionalCheckBox, new GridConstraints(0, 0, 1, 1,
+            GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
+            GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+            GridConstraints.SIZEPOLICY_FIXED,
+            null, null, null));
+        panel2.add(directionalColorChooser, new GridConstraints(1, 0, 1, 1,
+            GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE,
+            GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+            GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+            null, null, null));
+      }
+      tabbedPane1.addTab("Directional", panel2);
+
+      //======== panel3 ========
+      {
+        panel3.setLayout(new GridLayoutManager(3, 3, new Insets(0, 0, 0, 0), -1, -1));
+
+        //---- probeCheckBox ----
+        probeCheckBox.setText("Enabled");
+        panel3.add(probeCheckBox, new GridConstraints(0, 0, 1, 1,
+            GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
+            GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+            GridConstraints.SIZEPOLICY_FIXED,
+            null, null, null));
+        panel3.add(vSpacer1, new GridConstraints(2, 0, 1, 1,
+            GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL,
+            GridConstraints.SIZEPOLICY_CAN_SHRINK,
+            GridConstraints.SIZEPOLICY_CAN_GROW | GridConstraints.SIZEPOLICY_WANT_GROW,
+            null, null, null));
+
+        //---- label1 ----
+        label1.setText("Probe");
+        panel3.add(label1, new GridConstraints(1, 0, 1, 1,
+            GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE,
+            GridConstraints.SIZEPOLICY_FIXED,
+            GridConstraints.SIZEPOLICY_FIXED,
+            null, null, null));
+        panel3.add(probesComboBox, new GridConstraints(1, 1, 1, 1,
+            GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL,
+            GridConstraints.SIZEPOLICY_CAN_GROW,
+            GridConstraints.SIZEPOLICY_FIXED,
+            null, null, null));
+        panel3.add(hSpacer1, new GridConstraints(1, 2, 1, 1,
+            GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL,
+            GridConstraints.SIZEPOLICY_CAN_GROW | GridConstraints.SIZEPOLICY_WANT_GROW,
+            GridConstraints.SIZEPOLICY_CAN_SHRINK,
+            null, null, null));
+      }
+      tabbedPane1.addTab("LightProbe", panel3);
     }
-
-    public String getResourcePath() {
-      return resourcePath;
-    }
-
+    add(tabbedPane1, new GridConstraints(0, 0, 1, 1,
+        GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH,
+        GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+        GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+        null, new Dimension(200, 200), null));
+    add(vSpacer2, new GridConstraints(1, 0, 1, 1,
+        GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL,
+        GridConstraints.SIZEPOLICY_CAN_SHRINK,
+        GridConstraints.SIZEPOLICY_CAN_GROW | GridConstraints.SIZEPOLICY_WANT_GROW,
+        null, null, null));
+    add(hSpacer2, new GridConstraints(0, 1, 1, 1,
+        GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL,
+        GridConstraints.SIZEPOLICY_CAN_GROW | GridConstraints.SIZEPOLICY_WANT_GROW,
+        GridConstraints.SIZEPOLICY_CAN_SHRINK,
+        null, null, null));
+    // JFormDesigner - End of component initialization  //GEN-END:initComponents
   }
-
+  // JFormDesigner - End of variables declaration  //GEN-END:variables
 }

@@ -41,11 +41,11 @@ public class MainMenu extends JMenuBar {
     fileMenu = add(new JMenu("File"));
 
     importModelItem = fileMenu.add(new JMenuItem("Import Model..."));
+    ImportModel importModel = new ImportModel();
     importModelItem.addActionListener(e -> {
-      ImportModel importModel = new ImportModel();
       JDialog importModelDialog = new JDialog((Frame) null, "Import Model", true);
       importModelDialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-      importModelDialog.setContentPane(importModel.$$$getRootComponent$$$());
+      importModelDialog.setContentPane(importModel);
       importModelDialog.pack();
       importModelDialog.setVisible(true);
     });
@@ -59,11 +59,11 @@ public class MainMenu extends JMenuBar {
     editMenu = add(new JMenu("Edit"));
 
     configItem = editMenu.add(new JMenuItem("Configuration..."));
+    Configuration configuration = new Configuration(this.editorJmeApplication);
     configItem.addActionListener(e -> {
-      Configuration configuration = new Configuration(this.editorJmeApplication);
       JDialog configDialog = new JDialog((Frame) null, Configuration.WINDOW_ID, true);
       configDialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-      configDialog.setContentPane(configuration.$$$getRootComponent$$$());
+      configDialog.setContentPane(configuration);
       configDialog.pack();
       configDialog.setVisible(true);
 
