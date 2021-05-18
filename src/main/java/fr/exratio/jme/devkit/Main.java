@@ -102,7 +102,7 @@ public class Main {
       // show the window.
       mainFrame.setVisible(true);
     });
-
+    registerTools();
     // verify that the asset root directory has been set properly.
     checkAssetRootDir();
     // load any available plugins.
@@ -155,12 +155,8 @@ public class Main {
 
   private void startEngine() {
     jmeEngineService.start(true);
-    if (jmeEngineService == null) {
-      LOGGER.info("<< startEngine() Unable to create instance of JmejmeEngineService. Exiting.");
-      System.exit(-1);
-    }
 
-    while (jmeEngineService.getViewPort() == null) {
+    while (jmeEngineService.getAWTPanel() == null) {
       try {
         Thread.sleep(100);
       } catch (InterruptedException e) {
@@ -182,7 +178,6 @@ public class Main {
     mainPageController.registerTool(sceneTreeService);
     mainPageController.registerTool(runAppStateWindow);
     mainPageController.registerTool(propertyInspectorTool);
-
   }
 
 
