@@ -168,20 +168,20 @@ public class NodeContextMenu extends SpatialContextMenu {
   }
 
   private void addShapes(JMenu parent) {
-    JMenuItem cubeItem = parent.add(new JMenuItem("Cube"));
-    cubeItem.setAction(createBoxAction);
+    JMenuItem cubeItem = parent.add(new JMenuItem(createBoxAction));
+    cubeItem.setText("Cube");
 
-    JMenuItem cylinderItem = parent.add(new JMenuItem("Cylinder"));
-    cylinderItem.setAction(createCylinderAction);
+    JMenuItem cylinderItem = parent.add(new JMenuItem(createCylinderAction));
+    cylinderItem.setText("Cylinder");
 
-    JMenuItem domeItem = parent.add(new JMenuItem("Dome"));
-    domeItem.setAction(createDomeAction);
+    JMenuItem domeItem = parent.add(new JMenuItem(createDomeAction));
+    domeItem.setText("Dome");
 
-    JMenuItem quadItem = parent.add(new JMenuItem("Quad"));
-    quadItem.setAction(createQuadAction);
+    JMenuItem quadItem = parent.add(new JMenuItem(createQuadAction));
+    quadItem.setText("Quad");
 
-    JMenuItem sphereItem = parent.add(new JMenuItem("Sphere"));
-    sphereItem.setAction(createSphereAction);
+    JMenuItem sphereItem = parent.add(new JMenuItem(createSphereAction));
+    sphereItem.setText("Sphere");
   }
 
 

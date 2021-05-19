@@ -14,7 +14,7 @@ public class CreateBoxAction extends CreateShapeAction {
   @Autowired
   public CreateBoxAction(SceneGraphService sceneGraphService,
       EditorJmeApplication editorJmeApplication) {
-    super(sceneGraphService, editorJmeApplication.getAssetManager());
+    super(sceneGraphService, editorJmeApplication);
   }
 
   @Override

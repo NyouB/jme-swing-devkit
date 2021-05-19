@@ -14,7 +14,7 @@ public class CreateSphereAction extends CreateShapeAction {
   @Autowired
   public CreateSphereAction(SceneGraphService sceneGraphService,
       EditorJmeApplication editorJmeApplication) {
-    super(sceneGraphService, editorJmeApplication.getAssetManager());
+    super(sceneGraphService, editorJmeApplication);
   }
 
   @Override

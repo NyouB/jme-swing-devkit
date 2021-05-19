@@ -14,7 +14,7 @@ public class CreateCylinderAction extends CreateShapeAction {
   @Autowired
   public CreateCylinderAction(SceneGraphService sceneGraphService,
       EditorJmeApplication editorJmeApplication) {
-    super(sceneGraphService, editorJmeApplication.getAssetManager());
+    super(sceneGraphService, editorJmeApplication);
   }
 
   @Override

@@ -14,7 +14,7 @@ public class CreateQuadAction extends CreateShapeAction {
   @Autowired
   public CreateQuadAction(SceneGraphService sceneGraphService,
       EditorJmeApplication editorJmeApplication) {
-    super(sceneGraphService, editorJmeApplication.getAssetManager());
+    super(sceneGraphService, editorJmeApplication);
   }
 
   @Override

@@ -14,7 +14,7 @@ public class CreateDomeAction extends CreateShapeAction {
   @Autowired
   public CreateDomeAction(SceneGraphService sceneGraphService,
       EditorJmeApplication editorJmeApplication) {
-    super(sceneGraphService, editorJmeApplication.getAssetManager());
+    super(sceneGraphService, editorJmeApplication);
   }
 
   @Override
